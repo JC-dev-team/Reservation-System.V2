@@ -1,1 +1,27 @@
-# softway-system
+# food-platform
+### When you need to upload to the github ##
+### settings.py  security key need to be remove or set the project into privacy ##
+
+### When the project is going to online the settings.py DEBUG need to set to False ##
+
+### Test the website
+    cd project_food 
+    python manage.py runserver
+
+### Create or upadate requirements
+   pip freeze > requirements.txt
+
+### Environment install requirements
+   Python 3.7 or Higher
+   Use venv as environment setting and connect to Anaconda's python or something else
+
+   pip install -r requirements.txt
+
+### When you change any thing in the database
+    python3 manage.py makemigrations
+    python3 manage.py migrate
+
+
+### Unit test ###
+   #### Write unit test to avoid the big change of the Project, ex: fetch from github or merge ####
+
