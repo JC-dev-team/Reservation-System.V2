@@ -77,8 +77,15 @@ WSGI_APPLICATION = 'softway_sys.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'databaspe-mysql',
+        'USER':'root',
+        'PASSWORD': 'rootadmin',
+        'HOST':'database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com',
+        'PORT':'3306',
+        'OPTIONS':{
+            'init_command':"SET sql_mode='STRICT_TRANS_TABLES'"
+        }
     }
 }
 
