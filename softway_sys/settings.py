@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+ADMIN_ENABLED = False
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'booking',
-    'checkbooking',
+
 ]
 
 MIDDLEWARE = [
@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'softway_sys.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'databaspe-mysql',
+        'NAME': 'softway',
         'USER':'root',
         'PASSWORD': 'rootadmin',
         'HOST':'database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com',

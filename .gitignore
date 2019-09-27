@@ -4,3 +4,10 @@ booking/__pycache__
 booking/migrations/__pycache__
 checkbooking/__pycache__
 checkbooking/migrations/__pycache__
+.idea/misc.xml
+.idea/modules.xml
+.idea/system.iml
+.idea/vcs.xml
+.idea/workspace.xml
+__pycache__/manage.cpython-36.pyc
+.idea/libraries/R_User_Library.xml
