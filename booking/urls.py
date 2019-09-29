@@ -3,6 +3,6 @@ from . import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    path('', views.booking_index, name='index'),
+    path('', views.booking_index, name='bk_index'),
 
 ]
