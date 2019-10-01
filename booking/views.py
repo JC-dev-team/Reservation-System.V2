@@ -1,18 +1,25 @@
 from django.shortcuts import render, redirect
 from . import models
+from .serializers import account
+from rest_framework import viewsets
 
 # Create your views here.
 
-def booking_index(request):
-    return render(request,'book_index.html',)
+class AccountViewSet(viewsets.ModelViewSet):
+    queryset = account.objects.all()
+    serializer_class = account
 
-def insert_bookings(request):
-    try:
-        
-        return 
-    except :
+# def booking_index(request):
+#     return render(request,'book_index.html',)
 
-        return 
+# def insert_accounts(request):
+#     try:
+#         models.objects.get
+#         models.objects.create(user_id='',)
+#         return 
+#     except :
+
+#         return 
     
 # def query_member(request):
 #     return render
