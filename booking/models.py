@@ -20,19 +20,19 @@ class ActionLog(models.Model):
 
 
 class BkList(models.Model):
-    bk_id = models.CharField(primary_key=True, max_length=45)
-    user = models.ForeignKey('Account', models.PROTECT)
-    store = models.ForeignKey('Store', models.PROTECT)
-    bk_date = models.CharField(max_length=45)
-    bk_st = models.CharField(max_length=45)
-    bk_ed = models.CharField(max_length=45, blank=True, null=True)
-    wh_bk = models.CharField(max_length=45)
-    adult = models.CharField(max_length=45)
-    children = models.CharField(max_length=45)
-    bk_ps = models.CharField(max_length=45, blank=True, null=True)
-    tk_service = models.CharField(max_length=45)
-    is_cancel = models.CharField(max_length=45)
-    entire_time = models.CharField(max_length=45)
+    bk_uuid = models.CharField(primary_key=True, max_length=45)
+    user = models.ForeignKey(Account, models.DO_NOTHING)
+    store = models.ForeignKey('Store', models.DO_NOTHING)
+    bk_date = models.DateTimeField()
+    bk_st = models.DateField()
+    bk_ed = models.DateField(blank=True, null=True)
+    wh_bk = models.DateTimeField()
+    adult = models.IntegerField()
+    children = models.IntegerField()
+    bk_ps = models.CharField(max_length=200, blank=True, null=True)
+    tk_service = models.IntegerField()
+    is_cancel = models.IntegerField()
+    entire_time = models.IntegerField()
 
     class Meta:
         db_table = 'bk_list'
@@ -52,7 +52,7 @@ class Account(models.Model):
 
 
 class Production(models.Model):
-    prod_id = models.CharField(primary_key=True, max_length=45)
+    prod_uuid = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.PROTECT)
     prod_name = models.CharField(max_length=45)
     prod_img = models.CharField(max_length=100)
