@@ -1,36 +1,39 @@
 from rest_framework import serializers
-from .models import Account,ActionLog, BkList, Production, Staff, Store
+from .models import Account, ActionLog, BkList, Production, Staff, Store
 
 
-class account(serializers.ModelSerializer):
+class Acc_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = '__all__'
-        # fields =()
+        # fields =('user_id','social_id','username','phone')
 
-class action_log(serializers.ModelSerializer):
+
+class Actlog_Serializer(serializers.ModelSerializer):
     class Meta:
         model = ActionLog
         fields = '__all__'
 
-class bk_list(serializers.ModelSerializer):
+
+class Bklist_Serializer(serializers.ModelSerializer):
     class Meta:
         model = BkList
         fields = '__all__'
 
-class production(serializers.ModelSerializer):
+
+class Prod_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Production
         fields = '__all__'
 
 
-class staff(serializers.ModelSerializer):
+class Staff_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
         fields = '__all__'
 
-class store(serializers.ModelSerializer):
+
+class Store_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = '__all__'
-

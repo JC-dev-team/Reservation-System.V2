@@ -21,7 +21,7 @@ class ActionLog(models.Model):
 
 class BkList(models.Model):
     bk_uuid = models.CharField(primary_key=True, max_length=45)
-    user = models.ForeignKey(Account, models.DO_NOTHING)
+    user = models.ForeignKey('Account', models.DO_NOTHING)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     bk_date = models.DateTimeField()
     bk_st = models.DateField()
@@ -47,8 +47,6 @@ class Account(models.Model):
     class Meta:
         db_table = 'account'
 
-    def __str__(self):
-        return self.username
 
 
 class Production(models.Model):
@@ -62,8 +60,6 @@ class Production(models.Model):
     class Meta:
         db_table = 'production'
 
-    def __str__(self):
-        return self.prod_name
 
 
 class Staff(models.Model):
@@ -83,8 +79,6 @@ class Staff(models.Model):
     class Meta:
         db_table = 'staff'
 
-    def __str__(self):
-        return self.staff_name
 
 
 class Store(models.Model):
@@ -100,5 +94,3 @@ class Store(models.Model):
     class Meta:
         db_table = 'store'
 
-    def __str__(self):
-        return self.store_name
