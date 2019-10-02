@@ -40,8 +40,8 @@ class StaffViewSet(viewsets.ModelViewSet):
     serializer_class = Staff_Serializer
 
 
-def booking_index(request):
-    return render(request, 'book_index.html',)
+def member(request):
+    return render(request, 'member.html',)
 
 
 

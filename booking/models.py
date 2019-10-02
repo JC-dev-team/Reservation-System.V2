@@ -11,7 +11,7 @@ from django.db import models
 
 class ActionLog(models.Model):
     act_id = models.CharField(primary_key=True, max_length=45)
-    staff = models.ForeignKey('StaffDb', models.DO_NOTHING)
+    staff = models.ForeignKey('Store', models.DO_NOTHING)
     act_time = models.DateTimeField()
     act_ops = models.CharField(max_length=45)
 
@@ -21,8 +21,8 @@ class ActionLog(models.Model):
 
 class BkList(models.Model):
     bk_uuid = models.CharField(primary_key=True, max_length=45)
-    user = models.ForeignKey(AccDb, models.DO_NOTHING)
-    store = models.ForeignKey('StoreDb', models.DO_NOTHING)
+    user = models.ForeignKey('Account', models.DO_NOTHING)
+    store = models.ForeignKey('Store', models.DO_NOTHING)
     bk_date = models.DateField()
     bk_st = models.TimeField()
     bk_ed = models.TimeField(blank=True, null=True)
@@ -53,7 +53,7 @@ class Account(models.Model):
 
 class Production(models.Model):
     prod_uuid = models.CharField(primary_key=True, max_length=45)
-    store = models.ForeignKey('StoreDb', models.DO_NOTHING)
+    store = models.ForeignKey('Store', models.DO_NOTHING)
     prod_name = models.CharField(max_length=45)
     prod_img = models.CharField(max_length=100)
     prod_price = models.PositiveIntegerField(blank=True, null=True)
@@ -66,7 +66,7 @@ class Production(models.Model):
 
 class Staff(models.Model):
     staff_id = models.CharField(primary_key=True, max_length=45)
-    store = models.ForeignKey('StoreDb', models.DO_NOTHING)
+    store = models.ForeignKey('Store', models.DO_NOTHING)
     staff_name = models.CharField(max_length=45)
     staff_id_num = models.CharField(unique=True, max_length=10)
     staff_phone = models.CharField(max_length=10)
