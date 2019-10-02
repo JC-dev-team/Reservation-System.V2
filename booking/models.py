@@ -9,8 +9,23 @@
 from django.db import models
 
 
+class Account(models.Model):
+    user_id = models.CharField(
+        primary_key=True, max_length=36, default=None,)
+    social_id = models.CharField(max_length=45, blank=True, null=True)
+    social_app = models.CharField(max_length=45, blank=True, null=True)
+    username = models.CharField(max_length=45)
+    phone = models.CharField(max_length=10)
+    birth = models.DateField(blank=True, null=True)
+    created_date = models.DateTimeField()
+
+    class Meta:
+        db_table = 'acc___db'
+
+
 class ActionLog(models.Model):
-    act_id = models.CharField(primary_key=True, max_length=45)
+    act_id = models.CharField(
+        primary_key=True, max_length=36, default=None)
     staff = models.ForeignKey('Store', models.DO_NOTHING)
     act_time = models.DateTimeField()
     act_ops = models.CharField(max_length=45)
@@ -20,39 +35,29 @@ class ActionLog(models.Model):
 
 
 class BkList(models.Model):
-    bk_uuid = models.CharField(primary_key=True, max_length=45)
-    user = models.ForeignKey('Account', models.DO_NOTHING)
+    bk_uuid = models.CharField(
+        primary_key=True, max_length=36, default=None)
+    user = models.ForeignKey(Account, models.DO_NOTHING)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     bk_date = models.DateField()
     bk_st = models.TimeField()
     bk_ed = models.TimeField(blank=True, null=True)
     wh_bk = models.DateTimeField()
-    adult = models.IntegerField()
-    children = models.IntegerField()
+    adult = models.PositiveIntegerField()
+    children = models.PositiveIntegerField()
     bk_ps = models.CharField(max_length=200, blank=True, null=True)
     tk_service = models.IntegerField()
     is_cancel = models.IntegerField()
     entire_time = models.IntegerField()
-    waiting_num = models.IntegerField()
+    waiting_num = models.PositiveIntegerField()
 
     class Meta:
         db_table = 'bk_list___db'
 
 
-class Account(models.Model):
-    user_id = models.CharField(primary_key=True, max_length=45)
-    social_id = models.CharField(max_length=45, blank=True, null=True)
-    social_app = models.CharField(max_length=45, blank=True, null=True)
-    username = models.CharField(max_length=45)
-    phone = models.CharField(max_length=10)
-
-    class Meta:
-        db_table = 'acc___db'
-
-
-
 class Production(models.Model):
-    prod_uuid = models.CharField(primary_key=True, max_length=45)
+    prod_uuid = models.CharField(
+        primary_key=True, max_length=36, default=None)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     prod_name = models.CharField(max_length=45)
     prod_img = models.CharField(max_length=100)
@@ -63,9 +68,9 @@ class Production(models.Model):
         db_table = 'prod___db'
 
 
-
 class Staff(models.Model):
-    staff_id = models.CharField(primary_key=True, max_length=45)
+    staff_id = models.CharField(
+        primary_key=True, max_length=36, default=None)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     staff_name = models.CharField(max_length=45)
     staff_id_num = models.CharField(unique=True, max_length=10)
@@ -77,14 +82,15 @@ class Staff(models.Model):
     staff_level = models.PositiveIntegerField()
     staff_age = models.PositiveIntegerField()
     staff_skills = models.CharField(max_length=45, blank=True, null=True)
+    staff_created = models.DateTimeField()
 
     class Meta:
         db_table = 'staff___db'
 
 
-
 class Store(models.Model):
-    store_id = models.CharField(primary_key=True, max_length=45)
+    store_id = models.CharField(
+        primary_key=True, max_length=36, default=None)
     store_name = models.CharField(max_length=45)
     store_address = models.CharField(max_length=45)
     store_phone = models.CharField(max_length=20)
@@ -95,4 +101,3 @@ class Store(models.Model):
 
     class Meta:
         db_table = 'store___db'
-

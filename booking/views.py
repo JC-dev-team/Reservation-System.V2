@@ -14,6 +14,17 @@ class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = Acc_Serializer
 
+class check_members(viewsets.ModelViewSet):
+    # queryset = Account.objects.filter()
+    serializer_class = Acc_Serializer
+    def get_queryset(self):
+        """
+        This view should return a list of all the Account
+        for the currently authenticated user.
+        """
+        
+        return
+
 
 class ActionLogViewSet(viewsets.ModelViewSet):
     queryset = ActionLog.objects.all()

@@ -25,3 +25,7 @@
 ### Unit test ###
    #### Write unit test to avoid the big change of the Project, ex: fetch from github or merge ####
 
+### Remove migration
+   python manage.py migrate --fake <your_app>
+   find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+   find . -path "*/migrations/*.pyc"  -delete
