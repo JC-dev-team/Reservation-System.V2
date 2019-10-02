@@ -15,5 +15,6 @@ router.register(r'staff',views.StaffViewSet) # The url will be booking/api/staff
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('', views.booking_index, name='bk_index'),
+
     path('api/', include(router.urls)), 
 ]

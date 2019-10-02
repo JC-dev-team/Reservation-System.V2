@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.renderers import JSONOpenAPIRenderer, BrowsableAPIRenderer
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
 
@@ -43,18 +44,4 @@ def booking_index(request):
     return render(request, 'book_index.html',)
 
 
-# def insert_accounts(request):
-#     try:
-#         models.objects.get
-#         models.objects.create(user_id='',)
-#         return
-#     except :
 
-#         return
-
-# def query_member(request):
-#     return render
-#
-#
-# def insert_member(request):
-#     return redirect

@@ -11,21 +11,21 @@ from django.db import models
 
 class ActionLog(models.Model):
     act_id = models.CharField(primary_key=True, max_length=45)
-    staff = models.ForeignKey('Staff', models.PROTECT)
+    staff = models.ForeignKey('StaffDb', models.DO_NOTHING)
     act_time = models.DateTimeField()
     act_ops = models.CharField(max_length=45)
 
     class Meta:
-        db_table = 'action_log'
+        db_table = 'action_log___db'
 
 
 class BkList(models.Model):
     bk_uuid = models.CharField(primary_key=True, max_length=45)
-    user = models.ForeignKey('Account', models.DO_NOTHING)
-    store = models.ForeignKey('Store', models.DO_NOTHING)
-    bk_date = models.DateTimeField()
-    bk_st = models.DateField()
-    bk_ed = models.DateField(blank=True, null=True)
+    user = models.ForeignKey(AccDb, models.DO_NOTHING)
+    store = models.ForeignKey('StoreDb', models.DO_NOTHING)
+    bk_date = models.DateField()
+    bk_st = models.TimeField()
+    bk_ed = models.TimeField(blank=True, null=True)
     wh_bk = models.DateTimeField()
     adult = models.IntegerField()
     children = models.IntegerField()
@@ -33,38 +33,40 @@ class BkList(models.Model):
     tk_service = models.IntegerField()
     is_cancel = models.IntegerField()
     entire_time = models.IntegerField()
+    waiting_num = models.IntegerField()
 
     class Meta:
-        db_table = 'bk_list'
+        db_table = 'bk_list___db'
 
 
 class Account(models.Model):
     user_id = models.CharField(primary_key=True, max_length=45)
-    social_id = models.CharField(unique=True, max_length=45)
+    social_id = models.CharField(max_length=45, blank=True, null=True)
+    social_app = models.CharField(max_length=45, blank=True, null=True)
     username = models.CharField(max_length=45)
     phone = models.CharField(max_length=10)
 
     class Meta:
-        db_table = 'account'
+        db_table = 'acc___db'
 
 
 
 class Production(models.Model):
     prod_uuid = models.CharField(primary_key=True, max_length=45)
-    store = models.ForeignKey('Store', models.PROTECT)
+    store = models.ForeignKey('StoreDb', models.DO_NOTHING)
     prod_name = models.CharField(max_length=45)
     prod_img = models.CharField(max_length=100)
     prod_price = models.PositiveIntegerField(blank=True, null=True)
     prod_desc = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
-        db_table = 'production'
+        db_table = 'prod___db'
 
 
 
 class Staff(models.Model):
     staff_id = models.CharField(primary_key=True, max_length=45)
-    store = models.ForeignKey('Store', models.PROTECT)
+    store = models.ForeignKey('StoreDb', models.DO_NOTHING)
     staff_name = models.CharField(max_length=45)
     staff_id_num = models.CharField(unique=True, max_length=10)
     staff_phone = models.CharField(max_length=10)
@@ -77,7 +79,7 @@ class Staff(models.Model):
     staff_skills = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
-        db_table = 'staff'
+        db_table = 'staff___db'
 
 
 
@@ -89,8 +91,8 @@ class Store(models.Model):
     store_fax = models.CharField(max_length=20, blank=True, null=True)
     tk_service = models.IntegerField()
     stay_time = models.IntegerField()
-    pay_md = models.CharField(max_length=4)
+    pay_md = models.CharField(max_length=4, blank=True, null=True)
 
     class Meta:
-        db_table = 'store'
+        db_table = 'store___db'
 
