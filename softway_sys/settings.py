@@ -31,13 +31,14 @@ ADMIN_ENABLED = False
 # Application definition
 
 INSTALLED_APPS = [
+    'booking',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'booking',
+    
 
 ]
 
@@ -77,33 +78,33 @@ WSGI_APPLICATION = 'softway_sys.wsgi.application'
 ## You need to downgrade openssl by conda install openssl=1.0.2r 
 ## when you are using macOS
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'softway',
-#         'USER':'root',
-#         'PASSWORD': 'rootadmin',
-#         'HOST':'database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com',
-#         'PORT':'3306',
-#         'OPTIONS':{
-#             'init_command':"SET sql_mode='STRICT_TRANS_TABLES'",
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'softway',
+        'USER':'root',
+        'PASSWORD': 'rootadmin',
+        'HOST':'database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com',
+        'PORT':'3306',
+        'OPTIONS':{
+            'init_command':"SET sql_mode='STRICT_TRANS_TABLES'",
 
-#         }
-#     }
-# }
-import mysql.connector
-from mysql.connector import errorcode
-try:
-    mysql.connector.connect(host="database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com",
-                        user="root", passwd="rootadmin", 
-                        database="softway", use_pure=True, sql_mode='STRICT_TRANS_TABLES')
-except mysql.connector.Error as err:
-  if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-    print("Something is wrong with your user name or password")
-  elif err.errno == errorcode.ER_BAD_DB_ERROR:
-    print("Database does not exist")
-  else:
-    print(err)
+        }
+    }
+}
+# import mysql.connector
+# from mysql.connector import errorcode
+# try:
+#     mysql.connector.connect(host="database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com",
+#                         user="root", passwd="rootadmin", 
+#                         database="softway", use_pure=True, sql_mode='STRICT_TRANS_TABLES')
+# except mysql.connector.Error as err:
+#   if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+#     print("Something is wrong with your user name or password")
+#   elif err.errno == errorcode.ER_BAD_DB_ERROR:
+#     print("Database does not exist")
+#   else:
+#     print(err)
 
 
 
