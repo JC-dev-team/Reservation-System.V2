@@ -165,9 +165,10 @@
     function member_send(data) {
       $.ajax({
         type: "post",
-        url: "booking/api/account",
+        url: "/booking/api/account",
         data: data,
-        success: function(){
+        success: function(response) {
+          console.log(response)
           alert("註冊會員成功！！")
         },
         error:function (XMLHttpRequest, textStatus, errorThrown) {
