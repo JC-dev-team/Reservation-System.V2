@@ -20,6 +20,7 @@ class Account(models.Model):
     created_date = models.DateTimeField()
 
     class Meta:
+        app_label = 'booking'
         db_table = 'acc___db'
 
 
@@ -31,6 +32,7 @@ class ActionLog(models.Model):
     act_ops = models.CharField(max_length=45)
 
     class Meta:
+        app_label = 'booking'
         db_table = 'action_log___db'
 
 
@@ -52,6 +54,7 @@ class BkList(models.Model):
     waiting_num = models.PositiveIntegerField()
 
     class Meta:
+        app_label = 'booking'
         db_table = 'bk_list___db'
 
 
@@ -65,6 +68,7 @@ class Production(models.Model):
     prod_desc = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
+        app_label = 'booking'
         db_table = 'prod___db'
 
 
@@ -85,6 +89,7 @@ class Staff(models.Model):
     staff_created = models.DateTimeField()
 
     class Meta:
+        app_label = 'booking'
         db_table = 'staff___db'
 
 
@@ -100,4 +105,5 @@ class Store(models.Model):
     pay_md = models.CharField(max_length=4, blank=True, null=True)
 
     class Meta:
+        app_label = 'booking'
         db_table = 'store___db'

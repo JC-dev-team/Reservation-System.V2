@@ -3,180 +3,188 @@
 <!-- include 'header.html'   => image-->
 <!-- Headmessage-->
 {% block headmessage %}
-    <div class="w3-center">
-    <h3>會員註冊</h3>
-    </div>
- {% endblock %}
-    
+<div class="w3-center">
+  <h3>會員註冊</h3>
+</div>
+{% endblock %}
+
 <!-- Content-->
 {% block content %}
 <div class="container">
-    <form name='member-form'>
-        <font size="4">
-            <label><b>姓名</b></label>
-            <input id="member_name" class="w3-input w3-border w3-round-large" type="text" placeholder="E.g. : 王小明"
-            value='' required>
-        </font>
-      <br>
-        <font size="4">
-            <label><b>綁定手機</b></label>
-            <input id="member_phone" class="w3-input w3-border w3-round-large" type="tel" placeholder="E.g. : 0900123456"
-            autocomplete="off" pattern="[0]{1}[9]{1}[0-9]{8}" value='' required>
-        </font>
+  <form name='member-form'>
+    {% csrf_token %}
+    <font size="4">
+      <label><b>姓名</b></label>
+      <input id="member_name" class="w3-input w3-border w3-round-large" type="text" placeholder="E.g. : 王小明" value=''
+        required>
+    </font>
+    <br>
+    <font size="4">
+      <label><b>綁定手機</b></label>
+      <input id="member_phone" class="w3-input w3-border w3-round-large" type="tel" placeholder="E.g. : 0900123456"
+        autocomplete="off" pattern="[0]{1}[9]{1}[0-9]{8}" value='' required>
+    </font>
 
-        <font size="3">
-            <input type='checkbox' id="privacy_policy" class="w3-check" style="min-height:20px;min-width:20px;" checked>
-            <label>我已閱讀並同意<a title="Softway隱私權條款"
-                onclick="document.getElementById('modal').style.display = 'block' "><u> Softway隱私權條款</u></a></label>
-        </font>
-        <font size='4'>
-            <button id="member_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right" disabled="false">
-            建立會員並下一步訂位
-            </button>
-        </font>
-        
-    </form>
-    
-    
-    <div id='modal' class="w3-modal">
-        <span onclick="document.getElementById('modal').style.display='none'"
-          class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
-        <div class="w3-display-container mySlides">
-        {% load static%}
-          <img src="{% static "/images/0001.jpg" %}" style="width:100%;">
-        </div>
-        <div class="w3-display-container mySlides">
-        {% load static%}
-          <img src="{% static '/images/0002.jpg' %}" style="width:100%">
-        </div>
-        <div class="w3-display-container mySlides">
-        {% load static%}
-          <img src="{% static '/images/0003.jpg' %}" style="width:100%">
-        </div>
+    <font size="3">
+      <input type='checkbox' id="privacy_policy" class="w3-check" style="min-height:20px;min-width:20px;" checked>
+      <label>我已閱讀並同意<a title="Softway隱私權條款" onclick="document.getElementById('modal').style.display = 'block' "><u>
+            Softway隱私權條款</u></a></label>
+    </font>
+    <font size='4'>
+      <button id="member_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
+        disabled="false">
+        建立會員並下一步訂位
+      </button>
+    </font>
+
+  </form>
 
 
-        <!-- Slideshow next/previous buttons -->
-        <div class="w3-container w3-dark-grey w3-padding w3-xlarge">
-          <div class="w3-left" onclick="plusDivs(-1)"><i class="fa fa-arrow-circle-left w3-hover-text-teal"></i></div>
-          <div class="w3-right" onclick="plusDivs(1)"><i class="fa fa-arrow-circle-right w3-hover-text-teal"></i></div>
-        </div>
+  <div id='modal' class="w3-modal">
+    <span onclick="document.getElementById('modal').style.display='none'"
+      class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
+    <div class="w3-display-container mySlides">
+      {% load static%}
+      <img src="{% static "/images/0001.jpg" %}" style="width:100%;">
+    </div>
+    <div class="w3-display-container mySlides">
+      {% load static%}
+      <img src="{% static '/images/0002.jpg' %}" style="width:100%">
+    </div>
+    <div class="w3-display-container mySlides">
+      {% load static%}
+      <img src="{% static '/images/0003.jpg' %}" style="width:100%">
+    </div>
 
-      </div>
+
+    <!-- Slideshow next/previous buttons -->
+    <div class="w3-container w3-dark-grey w3-padding w3-xlarge">
+      <div class="w3-left" onclick="plusDivs(-1)"><i class="fa fa-arrow-circle-left w3-hover-text-teal"></i></div>
+      <div class="w3-right" onclick="plusDivs(1)"><i class="fa fa-arrow-circle-right w3-hover-text-teal"></i></div>
+    </div>
+
+  </div>
 </div>
 
 <!--script function -->
 <!--Slideshow -->
-  <script type="text/javascript">
-    // Slideshow
-    var slideIndex = 1;
-    showDivs(slideIndex);
+<script type="text/javascript">
+  $.ajaxSetup({
+    data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+  });
+  // Slideshow
+  var slideIndex = 1;
+  showDivs(slideIndex);
 
-    function plusDivs(n) {
-      showDivs(slideIndex += n);
+  function plusDivs(n) {
+    showDivs(slideIndex += n);
+  }
+
+  function showDivs(n) {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+
+    if (n > x.length) {
+      slideIndex = 1
+    }
+    if (n < 1) {
+      slideIndex = x.length
+    };
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
     }
 
-    function showDivs(n) {
-      var i;
-      var x = document.getElementsByClassName("mySlides");
-      
-      if (n > x.length) {
-        slideIndex = 1
-      }
-      if (n < 1) {
-        slideIndex = x.length
-      };
-      for (i = 0; i < x.length; i++) {
-        x[i].style.display = "none";
-      }
-      
-      x[slideIndex - 1].style.display = "block";
-      
-    }
-    </script>
+    x[slideIndex - 1].style.display = "block";
+
+  }
+</script>
 
 
 <!-- Line LIFF -->
-    <script>
-    $(document).ready(function () {
-      $("#member_submit").attr("disabled", false);
-      //check privacy_policy
-      $('#privacy_policy').click(function () {
-        if ($('#privacy_policy').is(':checked')) {
-          $("#member_submit").attr("disabled", false);
-        }
-        if ($('#privacy_policy').is(':checked') == false) {
-          $("#member_submit").attr("disabled", true);
-        }
-      });
-
-    })
-
-    function initializeApp(data) {
-      liff.getProfile().then(profile => {
-        var disname = {
-          'name': profile.displayName
-        };
-        disname_json = JSON.parse(JSON.stringify(disname.name))
-        $('#userid').val(data.context.userId); //data.context.userId
-        $('#img').attr('src', profile.pictureUrl);
-        $('#displayname').html(profile.displayName);
-        $('#social_app').val('Line');
-      })
-    }
-    //ready
-    $(function () {
-      //init LIFF
-      liff.init(function (data) {
-        initializeApp(data);
-      });
-      //ButtonSendMsg
-
+<script>
+  $(document).ready(function () {
+    $("#member_submit").attr("disabled", false);
+    //check privacy_policy
+    $('#privacy_policy').click(function () {
+      if ($('#privacy_policy').is(':checked')) {
+        $("#member_submit").attr("disabled", false);
+      }
+      if ($('#privacy_policy').is(':checked') == false) {
+        $("#member_submit").attr("disabled", true);
+      }
     });
 
+  })
 
-    $(function () {
-      $('#member_submit').click(function (e) {
-        var status = true;
-        //userid
-        var userid = $('#userid').val();
-        //social_app
-        var social_app = $('#social_app').val();
-        // 姓名
-        var member_name = $('#member_name').val();
-        // 電話
-        var member_phone = $('#member_phone').val();
-        
-        if (status) {
-          var data = {
-            'social_id': userid,
-            'social_app': social_app,
-            'username': member_name,
-            'phone': member_phone,
-          }
-
-          $("#submit").attr("disabled", true);
-          // 呼叫 send ajax function
-          member_send(data);
-        }
-
-      });
+  function initializeApp(data) {
+    liff.getProfile().then(profile => {
+      var disname = {
+        'name': profile.displayName
+      };
+      disname_json = JSON.parse(JSON.stringify(disname.name))
+      $('#userid').val(data.context.userId); //data.context.userId
+      $('#img').attr('src', profile.pictureUrl);
+      $('#displayname').html(profile.displayName);
+      $('#social_app').val('Line');
     })
+  }
+  //ready
+  $(function () {
+    //init LIFF
+    liff.init(function (data) {
+      initializeApp(data);
+    });
+    //ButtonSendMsg
 
-    function member_send(data) {
-      $.ajax({
-        type: "post",
-        url: "/booking/api/account",
-        data: data,
-        success: function(response) {
-          console.log(response)
-          alert("註冊會員成功！！")
-        },
-        error:function (XMLHttpRequest, textStatus, errorThrown) {
-          alert(":( 發生錯誤，請重新載入")
+  });
+
+
+  $(function () {
+    $('#member_submit').click(function (e) {
+      var status = true;
+      //userid
+      var userid = $('#userid').val();
+      //social_app
+      var social_app = $('#social_app').val();
+      // 姓名
+      var member_name = $('#member_name').val();
+      // 電話
+      var member_phone = $('#member_phone').val();
+
+      if (status) {
+        var data = {
+          'social_id': userid,
+          'social_app': social_app,
+          'username': member_name,
+          'phone': member_phone,
         }
-      });
-    }
+
+        $("#submit").attr("disabled", true);
+        // 呼叫 send ajax function
+        member_send(data);
+      }
+
+    });
+  })
+
+  function member_send(data) {
+    console.log(data)
+    $.ajax({
+      type: "post",
+      url: "/booking/api/account?",
+      data: data,
+      dataType: "json",
+      contentType: "application/json; charset=utf-8",
+      // processData:false,
+      success: function (response) {
+        alert("註冊會員成功！！")
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        alert(":( 發生錯誤，請重新載入")
+      }
+    });
+  }
 
 
-  </script>
+</script>
 {% endblock %}

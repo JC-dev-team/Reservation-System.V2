@@ -5,8 +5,8 @@ from .models import Account, ActionLog, BkList, Production, Staff, Store
 class Acc_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        # fields = '__all__'
-        fields = ('user_id', 'social_id', 'social_app', 'username', 'phone','birth',)
+        fields = '__all__'
+        # fields = ('user_id', 'social_id', 'social_app', 'username', 'phone','birth',)
 
 
 class Actlog_Serializer(serializers.ModelSerializer):
