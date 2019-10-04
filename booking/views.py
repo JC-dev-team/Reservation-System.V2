@@ -99,9 +99,6 @@ class StaffViewSet(viewsets.ModelViewSet):
     serializer_class = Staff_Serializer
 
 
-def member(request):
-    return render(request, 'member.html',)
-
 
 def error(request):
     return render(request, 'error.html',)
@@ -110,5 +107,5 @@ def error(request):
 def testtemplate(request):
     return render(request, 'test.html')
     
-def test_member(request):
-    return render(request, 'test_member.html')
+def member(request):
+    return render(request, 'member.html')
