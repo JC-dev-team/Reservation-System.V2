@@ -38,9 +38,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    
+
 
 ]
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_RENDERER_CLASSES': (
+#         'rest_framework.renderers.JSONRenderer',
+#     ),
+#     'DEFAULT_PARSER_CLASSES': (
+#         'rest_framework.parsers.JSONParser',
+#     )
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -75,19 +84,19 @@ WSGI_APPLICATION = 'softway_sys.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-## You need to downgrade openssl by conda install openssl=1.0.2r 
-## when you are using macOS
+# You need to downgrade openssl by conda install openssl=1.0.2r
+# when you are using macOS
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'softway',
-        'USER':'root',
+        'USER': 'root',
         'PASSWORD': 'rootadmin',
-        'HOST':'database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com',
-        'PORT':'3306',
-        'OPTIONS':{
-            'init_command':"SET sql_mode='STRICT_TRANS_TABLES'",
+        'HOST': 'database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 
         }
     }
@@ -96,7 +105,7 @@ DATABASES = {
 # from mysql.connector import errorcode
 # try:
 #     mysql.connector.connect(host="database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com",
-#                         user="root", passwd="rootadmin", 
+#                         user="root", passwd="rootadmin",
 #                         database="softway", use_pure=True, sql_mode='STRICT_TRANS_TABLES')
 # except mysql.connector.Error as err:
 #   if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -105,7 +114,6 @@ DATABASES = {
 #     print("Database does not exist")
 #   else:
 #     print(err)
-
 
 
 # Password validation
@@ -144,7 +152,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_URL = '/static/'
-STATICFILES_DIRS =(
+STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'staticfiles'),
 )
 
