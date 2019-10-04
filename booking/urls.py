@@ -34,6 +34,7 @@ urlpatterns = [
     path('test01/',views.testView.as_view()),
     # path('test/',views.check_members)
     # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('error/', views.error, name='error'),
 ]
 
 

@@ -13,6 +13,7 @@
 <div class="container">
   <form name='member-form'>
     {% csrf_token %}
+    {% load static %}
     <font size="4">
       <label><b>姓名</b></label>
       <input id="member_name" class="w3-input w3-border w3-round-large" type="text" placeholder="E.g. : 王小明" value=''
@@ -44,7 +45,7 @@
     <span onclick="document.getElementById('modal').style.display='none'"
       class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
     <div class="w3-display-container mySlides">
-      {% load static %}
+      
       <img src="{% static "/images/0001.jpg" %}" style="width:100%;">
     </div>
     <div class="w3-display-container mySlides">
