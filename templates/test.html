@@ -9,7 +9,9 @@
 </head>
 
 <body>
+    
     <form action="/booking/test01/" method="post">
+        {% csrf_token %}
         username:<br>
         <input type="text" name="firstname" value="">
         <br>

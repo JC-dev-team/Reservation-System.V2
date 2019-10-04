@@ -47,18 +47,11 @@ class testView(APIView):  # render html
             serializer = Acc_Serializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                queryset = Account.objects.filter(
-                    phone=request.data.phone,
-                    line_id=request.data.line_id,
-                    
-                )
-
                 return Response({'data': request.data}, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response(e.message)
-        
-
+            return Response({'exception':e})
+            
     def get(self, request, format=None):
         try:
             phone = request.query_params.get('phone', None)
