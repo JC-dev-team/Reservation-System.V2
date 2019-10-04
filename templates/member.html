@@ -10,7 +10,7 @@
 
 {% block content %}
 <div class="container">
-<form id='member_form' action="/booking/test01/" method="post">
+<form id='member_form' method="post">
     {% csrf_token %}
     <input id="social_id" style="display: none" name='social_id' value="">
     <input id="social_app" style="display: none" name='social_app' value="LINE">
@@ -35,16 +35,6 @@
     <font size='4'>
       <button id="member_submit"  class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
           disabled="false" >建立會員並下一步訂位</button>
-
-
-    <!-- {% csrf_token %}
-    username:<br>
-    <input type="text" name="username" value="1231231">
-    <br>
-    phone:<br>
-    <input type="text" name="phone" value="0900123456">
-    <br><br>
-    <input type="submit" value="Submit"> -->
 </form>
 </div>
 
@@ -71,7 +61,7 @@
 <script>
   function dosave(){
     if(true){
-        document.getElementById("member_form").action = "/booking/test01/";
+        document.getElementById("member_form").action = "/booking/booking/";
         document.getElementById("member_form").submit();
     }
   }
@@ -124,6 +114,7 @@
       var member_name = $('#member_name').val();
       // 電話
       var member_phone = $('#member_phone').val();
+      var reg_phone = new RegExp(/^09\d{8}$/);
 
       if(member_name == ''){
         alert('請輸入姓名！')
@@ -132,10 +123,12 @@
         alert('請輸入電話！')
         status = false;
       }
-
-      if (true) {
+      else if (reg_phone.test(member_phone) ==false){
+          alert('手機號碼格式不正確');
+          status = false;
+      }
+      if (status) {
         dosave()
-        console.log('suc')
       }
 
     });

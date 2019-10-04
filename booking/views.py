@@ -48,16 +48,17 @@ def test(request):  # render html
     return render(request, 'booking.html', {'data': serializer_class.data})
 
 
-class testView(APIView):  # render html
+class ToBookingView(APIView):  # render html
     renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'booking.html'
+    template_name = None
 
     def post(self, request, format=None):
         try:
+            self.template_name = 'booking.html'
             serializer = Acc_Serializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({'data': serializer.data}, status=status.HTTP_201_CREATED)
+                return Response({'data': request.data}, status=status.HTTP_201_CREATED)
             return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'exception': e})
