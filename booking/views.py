@@ -31,11 +31,21 @@ class AccountViewSet(viewsets.ModelViewSet):  # api get account data
         return query_set
 
 
-# def test(request):  # render html
-#     queryset = Account.objects.all()
-#     serializer_class = Acc_Serializer(queryset, many=True)
+def test(request):  # render html
+    phone = request.POST.get('phone', None)
+    username = request.POST.get('username', None)
+    social_id = request.POST.get('social_id', None)
+    social_app = request.POST.get('social_app', None)
 
-#     return render(request, 'booking.html', {'data': serializer_class.data})
+    queryset = Account.objects.create(
+        phone=phone,
+        username=username,
+        social_id=social_id,
+        social_app=social_app
+    )
+    serializer_class = Acc_Serializer(queryset)
+
+    return render(request, 'booking.html', {'data': serializer_class.data})
 
 
 class testView(APIView):  # render html
@@ -44,22 +54,22 @@ class testView(APIView):  # render html
 
     def post(self, request, format=None):
         try:
-            print(request.query_params)
             serializer = Acc_Serializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
+
                 return Response({'data': request.data}, status=status.HTTP_201_CREATED)
-            return Response({'error':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'exception':e})
-            
+            return Response({'exception': e})
+
     def get(self, request, format=None):
         try:
             phone = request.query_params.get('phone', None)
             queryset = Account.objects.filter(phone=phone)
             serializer_class = Acc_Serializer(queryset, many=True)
             return Response({'data': serializer_class.data}, status=status.HTTP_201_CREATED)
-        except :
+        except:
             return Http404("Data not found")
 
 
@@ -92,8 +102,10 @@ class StaffViewSet(viewsets.ModelViewSet):
 def member(request):
     return render(request, 'member.html',)
 
+
 def error(request):
     return render(request, 'error.html',)
+
 
 def testtemplate(request):
     return render(request, 'test.html')
