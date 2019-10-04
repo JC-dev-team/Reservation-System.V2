@@ -44,7 +44,7 @@ class testView(APIView):  # render html
 
     def post(self, request, format=None):
         try:
-            print(request.data)
+            print(request.query_params)
             serializer = Acc_Serializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()

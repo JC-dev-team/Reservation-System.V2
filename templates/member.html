@@ -14,18 +14,18 @@
   <form name='member-form' id='member_form' methid='post'>
     {% csrf_token %}
     {% load static %}
-    <input id="social_id" style="display: none" name='Member_social_id' value="">
-    <input id="social_app" style="display: none" name='Member_social_app' value="LINE">
+    <input id="social_id" style="display: none" name='social_id' value="">
+    <input id="social_app" style="display: none" name='social_app' value="LINE">
     <!-- Remember to delet the social_app's value -->
     <font size="4">
       <label><b>姓名</b></label>
-      <input id="member_name" name='Member_name' class="w3-input w3-border w3-round-large" type="text" placeholder="E.g. : 王小明" value=''
+      <input id="member_name" name='username' class="w3-input w3-border w3-round-large" type="text" placeholder="E.g. : 王小明" value=''
         required>
     </font>
     <br>
     <font size="4">
       <label><b>綁定手機</b></label>
-      <input id="member_phone" name='Member_phone' class="w3-input w3-border w3-round-large" type="tel" placeholder="E.g. : 0900123456"
+      <input id="member_phone" name='phone' class="w3-input w3-border w3-round-large" type="tel" placeholder="E.g. : 0900123456"
         autocomplete="off" pattern="[0]{1}[9]{1}[0-9]{8}" value='' required>
     </font>
 
