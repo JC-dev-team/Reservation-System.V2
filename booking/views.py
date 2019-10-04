@@ -57,8 +57,7 @@ class testView(APIView):  # render html
             serializer = Acc_Serializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-
-                return Response({'data': request.data}, status=status.HTTP_201_CREATED)
+                return Response({'data': serializer.data}, status=status.HTTP_201_CREATED)
             return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'exception': e})
@@ -109,6 +108,6 @@ def error(request):
 
 def testtemplate(request):
     return render(request, 'test.html')
-    
+
 def test_member(request):
     return render(request, 'test_member.html')
