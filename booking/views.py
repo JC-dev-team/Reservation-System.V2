@@ -54,5 +54,7 @@ class StaffViewSet(viewsets.ModelViewSet):
 def member(request):
     return render(request, 'member.html',)
 
+def error(request):
+    return render(request, 'error.html',)
 
 
