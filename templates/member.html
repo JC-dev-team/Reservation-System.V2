@@ -8,12 +8,10 @@
 </div>
 {% endblock %}
 
-<!-- Content-->
 {% block content %}
 <div class="container">
-  <form  action = "/booking/test01/" methid='post'>
+<form id='member_form' action="/booking/test01/" method="post">
     {% csrf_token %}
-    {% load static %}
     <input id="social_id" style="display: none" name='social_id' value="">
     <input id="social_app" style="display: none" name='social_app' value="LINE">
     <!-- Remember to delet the social_app's value -->
@@ -35,77 +33,49 @@
             Softway隱私權條款</u></a></label>
     </font>
     <font size='4'>
-      <button id="member_submit" type="submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
-         disabled="false">
-        建立會員並下一步訂位
-      </button>
-    </font> 
-
-  </form>
+      <button id="member_submit"  class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
+          disabled="false" >建立會員並下一步訂位</button>
 
 
-  <div id='modal' class="w3-modal">
-    <span onclick="document.getElementById('modal').style.display='none'"
-      class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
-    <div class="w3-display-container mySlides">
-      
-      <img src="{% static '/images/0001.jpg' %}" style="width:100%;">
-    </div>
-    <div class="w3-display-container mySlides">
-      
-      <img src="{% static '/images/0002.jpg' %}" style="width:100%">
-    </div>
-    <div class="w3-display-container mySlides">
-      
-      <img src="{% static '/images/0003.jpg' %}" style="width:100%">
-    </div>
-
-
-    <!-- Slideshow next/previous buttons -->
-    <div class="w3-container w3-dark-grey w3-padding w3-xlarge">
-      <div class="w3-left" onclick="plusDivs(-1)"><i class="fa fa-arrow-circle-left w3-hover-text-teal"></i></div>
-      <div class="w3-right" onclick="plusDivs(1)"><i class="fa fa-arrow-circle-right w3-hover-text-teal"></i></div>
-    </div>
-
-  </div>
+    <!-- {% csrf_token %}
+    username:<br>
+    <input type="text" name="username" value="1231231">
+    <br>
+    phone:<br>
+    <input type="text" name="phone" value="0900123456">
+    <br><br>
+    <input type="submit" value="Submit"> -->
+</form>
 </div>
 
-<!--script function -->
-<!--Slideshow -->
-<script type="text/javascript">
-  // $.ajaxSetup({
-  //   data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
-  // });
-  // Slideshow
-  var slideIndex = 1;
-  showDivs(slideIndex);
-
-  function plusDivs(n) {
-    showDivs(slideIndex += n);
-  }
-
-  function showDivs(n) {
-    var i;
-    var x = document.getElementsByClassName("mySlides");
-
-    if (n > x.length) {
-      slideIndex = 1
-    }
-    if (n < 1) {
-      slideIndex = x.length
-    };
-    for (i = 0; i < x.length; i++) {
-      x[i].style.display = "none";
-    }
-
-    x[slideIndex - 1].style.display = "block";
-
-  }
-</script>
-
-
-<!-- Line LIFF -->
+<div id='modal' class="w3-modal">
+        <span onclick="document.getElementById('modal').style.display='none'"
+          class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
+        <div class="w3-display-container mySlides">
+                {% load static %}
+          <img src="{% static '/images/0001.jpg' %}" style="width:100%;">
+        </div>
+        <div class="w3-display-container mySlides">
+          
+          <img src="{% static '/images/0002.jpg' %}" style="width:100%">
+        </div>
+        <div class="w3-display-container mySlides">
+          
+          <img src="{% static '/images/0003.jpg' %}" style="width:100%">
+        </div>
+    
+    
+      </div>
+    
+    
 <script>
+  function dosave(){
+    if(true){
+        document.getElementById("member_form").action = "/booking/test01/";
+        document.getElementById("member_form").submit();
+    }
+  }
+
   $(document).ready(function () {
     $("#member_submit").attr("disabled", false);
     //check privacy_policy
@@ -163,55 +133,17 @@
         status = false;
       }
 
-      // if (social_id == '' || social_app == '') {
-      //   alert('請用Line開啟網頁');
-      //   status = false;
-      // }
-      
-      // if (status) {
-      //     dosave();
-      //   }
-
-        // if (status) {
-      //   var data = {
-      //     'social_id': userid,
-      //     'social_app': social_app,
-      //     'username': member_name,
-      //     'phone': member_phone,
-      //   }
-      //    }
-        // 呼叫 send ajax function
-        // member_send(data);
-      
+      if (true) {
+        dosave()
+        console.log('suc')
+      }
 
     });
-  })
-
-//   function dosave(){
-//     if(true){
-//         document.getElementById("member_form").action = "/booking/test01/";
-//         document.getElementById("member_form").submit();
-//     }
-// }
-
-  // function member_send(data) {
-  //   console.log(data)
-  //   $.ajax({
-  //     type: "post",
-  //     url: "/booking/test01/",
-  //     data: data,
-  //     // dataType: "json",
-  //     // contentType: "application/json; charset=utf-8",
-  //     // processData:false,
-  //     success: function (response) {
-  //       alert("註冊會員成功！！")
-  //     },
-  //     error: function (XMLHttpRequest, textStatus, errorThrown) {
-  //       alert(":( 發生錯誤，請重新載入")
-  //     }
-  //   });
-  // }
+  });
+    </script>
 
 
-</script>
 {% endblock %}
+
+
+
