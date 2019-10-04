@@ -10,7 +10,7 @@
 
 {% block content %}
 <div class="container">
-<form action="/booking/test01/" method="post">
+<form id='member_form' action="/booking/test01/" method="post">
     {% csrf_token %}
     <input id="social_id" style="display: none" name='social_id' value="">
     <input id="social_app" style="display: none" name='social_app' value="LINE">
@@ -33,8 +33,8 @@
             Softway隱私權條款</u></a></label>
     </font>
     <font size='4'>
-      <button id="member_submit" type="submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
-         disabled="false">建立會員並下一步訂位</button>
+      <button id="member_submit"  class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
+          disabled="false" >建立會員並下一步訂位</button>
 
 
     <!-- {% csrf_token %}
@@ -69,6 +69,13 @@
     
     
 <script>
+  function dosave(){
+    if(true){
+        document.getElementById("member_form").action = "/booking/test01/";
+        document.getElementById("member_form").submit();
+    }
+  }
+
   $(document).ready(function () {
     $("#member_submit").attr("disabled", false);
     //check privacy_policy
@@ -124,6 +131,11 @@
       }else if(member_phone == ''){
         alert('請輸入電話！')
         status = false;
+      }
+
+      if (true) {
+        dosave()
+        console.log('suc')
       }
 
     });

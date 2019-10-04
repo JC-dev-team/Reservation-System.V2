@@ -103,7 +103,6 @@ class StaffViewSet(viewsets.ModelViewSet):
 def error(request):
     return render(request, 'error.html',)
 
-
 def testtemplate(request):
     return render(request, 'test.html')
     
