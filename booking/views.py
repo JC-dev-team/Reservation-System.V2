@@ -65,10 +65,22 @@ class ToBookingView(APIView):  # render html
 
     def get(self, request, format=None):
         try:
-            phone = request.query_params.get('phone', None)
-            queryset = Account.objects.filter(phone=phone)
-            serializer_class = Acc_Serializer(queryset, many=True)
-            return Response({'data': serializer_class.data}, status=status.HTTP_201_CREATED)
+            social_id = request.query_params.get('social_id', None)
+            social_app = request.query_params.get('social_app', None)
+
+            queryset = Account.objects.filter(
+                social_id=social_id,
+                social_app=social_app,
+            )
+            if len(queryset) == 0 :
+                self.template_name = 'member.html'
+                return 
+            elif len(queryset) == 1 :
+                self.template_name = 'booking.html'
+                serializer_class = Acc_Serializer(queryset)
+                return Response({'data': serializer_class.data}, status=status.HTTP_201_CREATED) 
+            else :
+                return
         except:
             return Http404("Data not found")
 
@@ -99,12 +111,13 @@ class StaffViewSet(viewsets.ModelViewSet):
     serializer_class = Staff_Serializer
 
 
-
 def error(request):
     return render(request, 'error.html',)
 
+
 def testtemplate(request):
     return render(request, 'test.html')
-    
+
+
 def member(request):
     return render(request, 'member.html')
