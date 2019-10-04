@@ -11,7 +11,7 @@
 <!-- Content-->
 {% block content %}
 <div class="container">
-  <form name='member-form' id='member_form' methid='post'>
+  <form  action = "/booking/test01/" methid='post'>
     {% csrf_token %}
     {% load static %}
     <input id="social_id" style="display: none" name='social_id' value="">
@@ -35,7 +35,7 @@
             Softway隱私權條款</u></a></label>
     </font>
     <font size='4'>
-      <button id="member_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
+      <button id="member_submit" type="submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
          disabled="false">
         建立會員並下一步訂位
       </button>
@@ -73,9 +73,9 @@
 <!--script function -->
 <!--Slideshow -->
 <script type="text/javascript">
-  $.ajaxSetup({
-    data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
-  });
+  // $.ajaxSetup({
+  //   data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+  // });
   // Slideshow
   var slideIndex = 1;
   showDivs(slideIndex);
@@ -168,9 +168,9 @@
       //   status = false;
       // }
       
-      if (status) {
-          dosave();
-        }
+      // if (status) {
+      //     dosave();
+      //   }
 
         // if (status) {
       //   var data = {
@@ -187,30 +187,30 @@
     });
   })
 
-  function dosave(){
-    if(true){
-        document.getElementById("member_form").action = "/booking/test01/";
-        document.getElementById("member_form").submit();
-    }
-}
+//   function dosave(){
+//     if(true){
+//         document.getElementById("member_form").action = "/booking/test01/";
+//         document.getElementById("member_form").submit();
+//     }
+// }
 
-  function member_send(data) {
-    console.log(data)
-    $.ajax({
-      type: "post",
-      url: "/booking/test01/",
-      data: data,
-      // dataType: "json",
-      // contentType: "application/json; charset=utf-8",
-      // processData:false,
-      success: function (response) {
-        alert("註冊會員成功！！")
-      },
-      error: function (XMLHttpRequest, textStatus, errorThrown) {
-        alert(":( 發生錯誤，請重新載入")
-      }
-    });
-  }
+  // function member_send(data) {
+  //   console.log(data)
+  //   $.ajax({
+  //     type: "post",
+  //     url: "/booking/test01/",
+  //     data: data,
+  //     // dataType: "json",
+  //     // contentType: "application/json; charset=utf-8",
+  //     // processData:false,
+  //     success: function (response) {
+  //       alert("註冊會員成功！！")
+  //     },
+  //     error: function (XMLHttpRequest, textStatus, errorThrown) {
+  //       alert(":( 發生錯誤，請重新載入")
+  //     }
+  //   });
+  // }
 
 
 </script>

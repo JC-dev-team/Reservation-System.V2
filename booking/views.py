@@ -109,3 +109,6 @@ def error(request):
 
 def testtemplate(request):
     return render(request, 'test.html')
+    
+def test_member(request):
+    return render(request, 'test_member.html')
