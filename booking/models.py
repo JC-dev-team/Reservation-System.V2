@@ -17,7 +17,7 @@ class Account(models.Model):
     username = models.CharField(max_length=45)
     phone = models.CharField(max_length=10)
     birth = models.DateField(blank=True, null=True)
-    created_date = models.DateTimeField()
+    created_date = models.DateTimeField(default=None)
 
     class Meta:
         app_label = 'booking'
@@ -28,7 +28,7 @@ class ActionLog(models.Model):
     act_id = models.CharField(
         primary_key=True, max_length=36, default=None)
     staff = models.ForeignKey('Store', models.DO_NOTHING)
-    act_time = models.DateTimeField()
+    act_time = models.DateTimeField(default=None)
     act_ops = models.CharField(max_length=45)
 
     class Meta:
@@ -44,7 +44,7 @@ class BkList(models.Model):
     bk_date = models.DateField()
     bk_st = models.TimeField()
     bk_ed = models.TimeField(blank=True, null=True)
-    wh_bk = models.DateTimeField()
+    wh_bk = models.DateTimeField(default=None)
     adult = models.PositiveIntegerField()
     children = models.PositiveIntegerField()
     bk_ps = models.CharField(max_length=200, blank=True, null=True)
@@ -86,7 +86,7 @@ class Staff(models.Model):
     staff_level = models.PositiveIntegerField()
     staff_age = models.PositiveIntegerField()
     staff_skills = models.CharField(max_length=45, blank=True, null=True)
-    staff_created = models.DateTimeField()
+    staff_created = models.DateTimeField(default=None)
 
     class Meta:
         app_label = 'booking'
