@@ -28,7 +28,7 @@ router.register(r'staff', views.StaffViewSet)
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('member/', views.member, name='member'),
-    path('testtemplate/', views.testtemplate, name='testtemplate'),
+    path('test_member/', views.test_member, name='testtemplate'),
     path('api/', include(router.urls)),
     # path('test/',views.test),
     path('test01/',views.testView.as_view()),

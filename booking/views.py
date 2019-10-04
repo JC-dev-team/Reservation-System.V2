@@ -44,7 +44,7 @@ class testView(APIView):  # render html
 
     def post(self, request, format=None):
         try:
-            print(request.query_params)
+            print(request.data)
             serializer = Acc_Serializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -95,5 +95,5 @@ def member(request):
 def error(request):
     return render(request, 'error.html',)
 
-def testtemplate(request):
-    return render(request, 'test.html')
+def test_member(request):
+    return render(request, 'test_member.html')
