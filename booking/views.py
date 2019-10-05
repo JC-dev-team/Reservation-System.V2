@@ -115,24 +115,26 @@ class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = Staff_Serializer
 
+
 def login(request):
     return render(request, 'login.html',)
 
+
 def reservation(request):
     return render(request, 'reservation.html')
+
 
 def member(request):
     social_id = request.POST.get('social_id', None)
     social_app = request.POST.get('social_app', None)
     result = com.CheckClientAuth(social_id, social_app)
-    print(result)
-    
+
     if result == None:  # Using PC or No social login
         return render(request, 'login.html',)
     elif result == False:  # Account Not Exist
         return render(request, 'member.html',)
-    elif result.key == 'error': # error occurred
-        return render(request, 'error.html', {'error': result.error})
+    elif list(result.keys())[0] == 'error':  # error occurred
+        return render(request, '/error/error.html', {'error': result.error})
     else:  # Account Exist
         return render(request, 'reservation.html', {'data': result})
 
@@ -149,7 +151,7 @@ def checkbooking(request):
         serializer = Acc_Serializer(queryset)
         return render(request, 'checkbooking.html', {'data': serializer.data})
     except Exception as e:
-        return render(request, 'error.html', {'error': e})
+        return render(request, '/error/error.html', {'error': e})
 
 
 def testtemplate(request):
