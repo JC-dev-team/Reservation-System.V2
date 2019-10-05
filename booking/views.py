@@ -121,19 +121,19 @@ def login(request):
 
 
 def reservation(request):
+
     return render(request, 'reservation.html')
 
 
 def member(request):
     social_id = request.POST.get('social_id', None)
     social_app = request.POST.get('social_app', None)
-    print(social_id,social_app)
     result = com.CheckClientAuth(social_id, social_app)
-    print(social_id, social_app)
     if result == None:  # Using PC or No social login
-        return reverse('login.html',)
+        return redirect('/booking/login/',)
     elif result == False:  # Account Not Exist
         return render(request, 'member.html',)
+        # return redirect(reverse('member'),args=())
     elif list(result.keys())[0] == 'error':  # error occurred
         return render(request, '/error/error.html', {'error': result.error})
     else:  # Account Exist
@@ -148,11 +148,11 @@ def checkbooking(request):
             social_id=social_id,
             social_app=social_app,
         )
-
         serializer = Acc_Serializer(queryset)
         return render(request, 'checkbooking.html', {'data': serializer.data})
     except Exception as e:
         return render(request, '/error/error.html', {'error': e})
+
 
 
 def testtemplate(request):

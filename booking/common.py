@@ -5,7 +5,6 @@ from .serializers import Acc_Serializer
 
 # class LoginBackend(ModelBackend):
 
-
 def CheckClientAuth(social_id, social_app): # Account Check Auth
     try:
         if (social_id == None) or (social_app == None): # Using PC or No social login
