@@ -7,8 +7,8 @@
         <font size="10">
             <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
         </font>
-        <h4>真抱歉，找不到頁面 😵<br><br>
-            (oops ! Page Not Found)</h4>
+        <h4>真抱歉，發生錯誤 😵<br><br>
+            {{error.e}}</h4>
         <br>
         <font size='4'>
         <a id="error_button" href="{% url 'member' %}" class="w3-btn w3-round-large  w3-teal w3-padding">
@@ -16,14 +16,5 @@
         </font>
     </div>
 
-
-    <!-- <script>
-
-    function back_homepage(){
-        if(true){
-            document.getElementById("member_form").action = "/booking/test01/";
-            console.log(';;kkkk')
-        }
-    } -->
     </script>
  {% endblock %}

@@ -31,12 +31,13 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('booking/',views.ToBookingView.as_view()),
     # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('error/', views.error, name='error'),
+    
     path('checkbooking/',views.checkbooking, name='checkbooking'),
     
-    # Test Views
+    # Test Views deploy delete 
     path('test001/',views.test),
     path('testtemplate/',views.testtemplate, name='testtemplate'),
+    path('error/', views.error, name='error'),
 ]
 
 

@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
 
-
 ]
 
 # REST_FRAMEWORK = {
@@ -52,6 +51,7 @@ INSTALLED_APPS = [
 # }
 
 MIDDLEWARE = [
+    'django_session_timeout.middleware.SessionTimeoutMiddleware'
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+SESSION_EXPIRE_SECONDS = 300
 
 ROOT_URLCONF = 'softway_sys.urls'
 

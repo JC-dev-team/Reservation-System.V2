@@ -9,8 +9,8 @@ from rest_framework.permissions import IsAuthenticated, BasePermission
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404
+from . import common as com
 
-# Create your views here.
 # class isLogin(BasePermission):
 #     message = 'no perosn login'
 #     def has_permission(self, request, view):
@@ -77,14 +77,14 @@ class ToBookingView(APIView):  # render html
                 social_id=social_id,
                 social_app=social_app,
             )
-            if len(queryset) == 0 :
+            if len(queryset) == 0:
                 self.template_name = 'member.html'
-                return 
-            elif len(queryset) == 1 :
+                return
+            elif len(queryset) == 1:
                 self.template_name = 'booking.html'
                 serializer_class = Acc_Serializer(queryset)
-                return Response({'data': serializer_class.data}, status=status.HTTP_201_CREATED) 
-            else :
+                return Response({'data': serializer_class.data}, status=status.HTTP_201_CREATED)
+            else:
                 return
         except:
             return Http404("Data not found")
@@ -120,12 +120,19 @@ def error(request):
     return render(request, 'error.html',)
 
 
-def testtemplate(request):
-    return render(request, 'test.html')
-
-
 def member(request):
-    return render(request, 'member.html')
+    social_id = request.POST.get('social_id', None)
+    social_app = request.POST.get('social_app', None)
+    result = com.CheckClientAuth(social_id, social_app)
+    if result == None:  # Using PC or No social login
+        return render(request, 'login.html')
+    elif ~result:  # Account Not Exist
+        return render(request, 'member.html',)
+    elif result.key == 'error': # error occurred
+        return render(request, 'error.html', {'error': result.error})
+    else:  # Account Exist
+        return render(request, 'reservation.html', {'data': result})
+
 
 def checkbooking(request):
     try:
@@ -137,7 +144,10 @@ def checkbooking(request):
         )
 
         serializer = Acc_Serializer(queryset)
-        return render(request, 'checkbooking.html',{'data':serializer.data})
+        return render(request, 'checkbooking.html', {'data': serializer.data})
     except Exception as e:
-        return render(request, '',{'error':e})
-    
+        return render(request, 'error.html', {'error': e})
+
+
+def testtemplate(request):
+    return render(request, 'test.html')
