@@ -10,14 +10,13 @@ from django.db import models
 
 
 class Account(models.Model):
-    user_id = models.CharField(
-        primary_key=True, max_length=36, default=None,)
+    user_id = models.CharField(primary_key=True, max_length=45)
     social_id = models.CharField(max_length=45, blank=True, null=True)
     social_app = models.CharField(max_length=45, blank=True, null=True)
     username = models.CharField(max_length=45)
     phone = models.CharField(max_length=10)
     birth = models.DateField(blank=True, null=True)
-    created_date = models.DateTimeField(default=None)
+    created_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         app_label = 'booking'
@@ -25,10 +24,9 @@ class Account(models.Model):
 
 
 class ActionLog(models.Model):
-    act_id = models.CharField(
-        primary_key=True, max_length=36, default=None)
-    staff = models.ForeignKey('Store', models.DO_NOTHING)
-    act_time = models.DateTimeField(default=None)
+    act_id = models.CharField(primary_key=True, max_length=45)
+    staff = models.ForeignKey('Staff', models.DO_NOTHING)
+    act_time = models.DateTimeField(blank=True, null=True)
     act_ops = models.CharField(max_length=45)
 
     class Meta:
@@ -37,14 +35,13 @@ class ActionLog(models.Model):
 
 
 class BkList(models.Model):
-    bk_uuid = models.CharField(
-        primary_key=True, max_length=36, default=None)
+    bk_uuid = models.CharField(primary_key=True, max_length=45)
     user = models.ForeignKey(Account, models.DO_NOTHING)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     bk_date = models.DateField()
     bk_st = models.TimeField()
     bk_ed = models.TimeField(blank=True, null=True)
-    wh_bk = models.DateTimeField(default=None)
+    wh_bk = models.DateTimeField(blank=True, null=True)
     adult = models.PositiveIntegerField()
     children = models.PositiveIntegerField()
     bk_ps = models.CharField(max_length=200, blank=True, null=True)
@@ -59,13 +56,13 @@ class BkList(models.Model):
 
 
 class Production(models.Model):
-    prod_uuid = models.CharField(
-        primary_key=True, max_length=36, default=None)
+    prod_uuid = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     prod_name = models.CharField(max_length=45)
     prod_img = models.CharField(max_length=100)
     prod_price = models.PositiveIntegerField(blank=True, null=True)
     prod_desc = models.CharField(max_length=200, blank=True, null=True)
+    prod_created = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         app_label = 'booking'
@@ -73,8 +70,7 @@ class Production(models.Model):
 
 
 class Staff(models.Model):
-    staff_id = models.CharField(
-        primary_key=True, max_length=36, default=None)
+    staff_id = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     staff_name = models.CharField(max_length=45)
     staff_id_num = models.CharField(unique=True, max_length=10)
@@ -86,7 +82,8 @@ class Staff(models.Model):
     staff_level = models.PositiveIntegerField()
     staff_age = models.PositiveIntegerField()
     staff_skills = models.CharField(max_length=45, blank=True, null=True)
-    staff_created = models.DateTimeField(default=None)
+    staff_created = models.DateTimeField(blank=True, null=True)
+    staff_ended = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         app_label = 'booking'
@@ -94,8 +91,7 @@ class Staff(models.Model):
 
 
 class Store(models.Model):
-    store_id = models.CharField(
-        primary_key=True, max_length=36, default=None)
+    store_id = models.CharField(primary_key=True, max_length=45)
     store_name = models.CharField(max_length=45)
     store_address = models.CharField(max_length=45)
     store_phone = models.CharField(max_length=20)
@@ -103,6 +99,8 @@ class Store(models.Model):
     tk_service = models.IntegerField()
     stay_time = models.IntegerField()
     pay_md = models.CharField(max_length=4, blank=True, null=True)
+    seat = models.PositiveIntegerField()
+    store_created = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         app_label = 'booking'

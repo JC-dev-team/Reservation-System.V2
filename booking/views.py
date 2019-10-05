@@ -43,8 +43,13 @@ def test(request):  # render html
         social_id=social_id,
         social_app=social_app
     )
+    queryset = Account.objects.get(
+        phone=phone,
+        username=username,
+        social_id=social_id,
+        social_app=social_app
+    )
     serializer_class = Acc_Serializer(queryset)
-
     return render(request, 'booking.html', {'data': serializer_class.data})
 
 
@@ -121,3 +126,18 @@ def testtemplate(request):
 
 def member(request):
     return render(request, 'member.html')
+
+def checkbooking(request):
+    try:
+        social_id = request.POST.get('social_id', None)
+        social_app = request.POST.get('social_app', None)
+        queryset = BkList.objects.get(
+            social_id=social_id,
+            social_app=social_app,
+        )
+
+        serializer = Acc_Serializer(queryset)
+        return render(request, 'checkbooking.html',{'data':serializer.data})
+    except Exception as e:
+        return render(request, '',{'error':e})
+    
