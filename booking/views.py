@@ -127,10 +127,11 @@ def reservation(request):
 def member(request):
     social_id = request.POST.get('social_id', None)
     social_app = request.POST.get('social_app', None)
+    print(social_id,social_app)
     result = com.CheckClientAuth(social_id, social_app)
 
     if result == None:  # Using PC or No social login
-        return render(request, 'login.html',)
+        return reverse('login.html',)
     elif result == False:  # Account Not Exist
         return render(request, 'member.html',)
     elif list(result.keys())[0] == 'error':  # error occurred
