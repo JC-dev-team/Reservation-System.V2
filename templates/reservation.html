@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+<!-- include 'header.html' -->
+<!-- Headmessage-->
+{% block headmessage %}
+<div class="w3-center">
+  <h3><b>訂位系統</b></h3>
+</div>
+{% endblock %}
+
+<!-- content-->
+{% block content %}
+
+
+<script>
+    function initializeApp(data) {
+        liff.getProfile().then(profile => {
+            var disname = {
+              'name': profile.displayName
+            };
+            disname_json = JSON.parse(JSON.stringify(disname.name))
+
+            $('#img').attr('src', profile.pictureUrl);
+            
+            
+            
+        })
+    }
+    //ready
+    $(function () {
+        $('#displayName').html('楊意義');
+        $('#displayPhone').html('0900123123');
+
+        
+        //init LIFF
+        liff.init(function (data) {
+            initializeApp(data);
+        });
+        
+        
+        
+    });
+
+
+</script>
+{% endblock %}

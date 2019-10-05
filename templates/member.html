@@ -12,9 +12,6 @@
 <div class="container">
 <form id='member_form' method="post">
     {% csrf_token %}
-    <input id="social_id" style="display: none" name='social_id' value="">
-    <input id="social_app" style="display: none" name='social_app' value="LINE">
-    <!-- Remember to delet the social_app's value -->
     <font size="4">
       <label><b>姓名</b></label>
       <input id="member_name" name='username' class="w3-input w3-border w3-round-large" type="text" placeholder="E.g. : 王小明" value=''
@@ -82,13 +79,12 @@
 
   function initializeApp(data) {
     liff.getProfile().then(profile => {
-      var disname = {
-        'name': profile.displayName
-      };
-      disname_json = JSON.parse(JSON.stringify(disname.name))
+      // var disname = {
+      //   'name': profile.displayName
+      // };
+      // disname_json = JSON.parse(JSON.stringify(disname.name))
       $('#social_id').val(data.context.userId); //data.context.userId
       $('#img').attr('src', profile.pictureUrl);
-      $('#displayname').html(profile.displayName);
       $('#social_app').val('Line');
     })
   }
@@ -107,9 +103,9 @@
     $('#member_submit').click(function (e) {
       var status = true;
       //userid
-      var social_id = $('#social_id').val();
-      //social_app
-      var social_app = $('#social_app').val();
+      // var social_id = $('#social_id').val();
+      // //social_app
+      // var social_app = $('#social_app').val();
       // 姓名
       var member_name = $('#member_name').val();
       // 電話
