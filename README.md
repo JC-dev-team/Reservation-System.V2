@@ -18,8 +18,8 @@
    pip install -r requirements.txt
 
 ### When you change any thing in the database
-    python3 manage.py makemigrations
-    python3 manage.py migrate
+    python manage.py makemigrations
+    python manage.py migrate
 
 
 ### Unit test ###
