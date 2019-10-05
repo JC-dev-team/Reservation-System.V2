@@ -33,8 +33,8 @@
             // };
             // disname_json = JSON.parse(JSON.stringify(disname.name))
             // $('#img').attr('src', profile.pictureUrl);
-            $('#social_id').val(data.context.userId); //data.context.userId
-            $('#social_app').val('Line');
+            // $('#social_id').val(data.context.userId); //data.context.userId
+            // $('#social_app').val('Line');
             
         })
     }
@@ -44,9 +44,14 @@
         liff.init(function (data) {
             initializeApp(data);
         });
+        //remember to edit it to Line Liff
+        $('#social_id').val('9636ff56-e78b-11e9-a2b8-0ec425232520'); //data.context.userId
+        $('#social_app').val('Line');
+
         //send data 
-        if($('#social_id').val != '' & $('#social_app').val != ''){
+        if($('#social_id').val() != '' && $('#social_app').val() != ''){
             send()
+            
         }
         
     });

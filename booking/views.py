@@ -128,7 +128,7 @@ def member(request):
     social_id = request.POST.get('social_id', None)
     social_app = request.POST.get('social_app', None)
     result = com.CheckClientAuth(social_id, social_app)
-
+    print(social_id, social_app)
     if result == None:  # Using PC or No social login
         return render(request, 'login.html',)
     elif result == False:  # Account Not Exist
