@@ -115,6 +115,14 @@ class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = Staff_Serializer
 
+def login(request):
+    return render(request, 'login.html',)
+
+def member(request):
+    return render(request, 'member.html')
+
+def reservation(request):
+    return render(request, 'reservation.html')
 
 def error(request):
     return render(request, 'error.html',)
@@ -124,8 +132,7 @@ def testtemplate(request):
     return render(request, 'test.html')
 
 
-def member(request):
-    return render(request, 'member.html')
+
 
 def checkbooking(request):
     try:

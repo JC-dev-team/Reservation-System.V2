@@ -27,11 +27,14 @@ router.register(r'staff', views.StaffViewSet)
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
+    path('login/', views.login, name='login'),
     path('member/', views.member, name='member'),
+    path('reservation/', views.reservation, name='reservation'),
     path('api/', include(router.urls)),
     path('booking/',views.ToBookingView.as_view()),
     # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('error/', views.error, name='error'),
+    #checking system
     path('checkbooking/',views.checkbooking, name='checkbooking'),
     
     # Test Views
