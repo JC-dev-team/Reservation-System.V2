@@ -39,7 +39,6 @@ urlpatterns = [
     # Test Views deploy delete 
     path('test001/',views.test),
     path('testtemplate/',views.testtemplate, name='testtemplate'),
-    path('error/', views.error, name='error'),
 ]
 
 

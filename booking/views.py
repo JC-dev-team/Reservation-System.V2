@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from .models import ActionLog, BkList, Account, Production, Staff, Store
 from .serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
 from rest_framework import viewsets, status
@@ -118,23 +118,18 @@ class StaffViewSet(viewsets.ModelViewSet):
 def login(request):
     return render(request, 'login.html',)
 
-def member(request):
-    return render(request, 'member.html')
-
 def reservation(request):
     return render(request, 'reservation.html')
-
-def error(request):
-    return render(request, 'error.html',)
-
 
 def member(request):
     social_id = request.POST.get('social_id', None)
     social_app = request.POST.get('social_app', None)
     result = com.CheckClientAuth(social_id, social_app)
+    print(result)
+    
     if result == None:  # Using PC or No social login
-        return render(request, 'login.html')
-    elif ~result:  # Account Not Exist
+        return render(request, 'login.html',)
+    elif result == False:  # Account Not Exist
         return render(request, 'member.html',)
     elif result.key == 'error': # error occurred
         return render(request, 'error.html', {'error': result.error})
