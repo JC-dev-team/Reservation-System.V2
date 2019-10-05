@@ -28,9 +28,8 @@
     }
     //ready
     $(function () {
-        $('#displayName').html('楊意義');
-        $('#displayPhone').html('0900123123');
-
+        $('#displayName').html('{{ data.username }}');
+        $('#displayPhone').html('{{ data.phone }}');
         
         //init LIFF
         liff.init(function (data) {
