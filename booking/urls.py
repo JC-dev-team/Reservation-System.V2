@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('booking/',views.ToBookingView.as_view()),
     # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
     #checking system
     path('checkbooking/',views.checkbooking, name='checkbooking'),
     
