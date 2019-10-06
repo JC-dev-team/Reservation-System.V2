@@ -1,11 +1,11 @@
-from django.contrib.auth.models import User
-from django.contrib.auth.backends import ModelBackend
+# from django.contrib.auth.models import User
+# from django.contrib.auth.backends import ModelBackend
 from .models import Account
 from .serializers import Acc_Serializer
 
 # class LoginBackend(ModelBackend):
 
-def CheckClientAuth(social_id, social_app): # Account Check Auth
+def Authentication(social_id, social_app): # Account Check Auth
     try:
         if (social_id == None) or (social_app == None): # Using PC or No social login
             return None
