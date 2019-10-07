@@ -33,10 +33,19 @@ class ActionLog(models.Model):
         app_label = 'booking'
         db_table = 'action_log___db'
 
+class AccountLog(models.Model):
+    acclog_id = models.CharField(primary_key=True, max_length=45)
+    user = models.ForeignKey(Account, models.DO_NOTHING)
+    wh_happen = models.DateTimeField(blank=True, null=True)
+    acc_oops = models.CharField(max_length=200, blank=True, null=True)
+
+    class Meta:
+        app_label = 'booking'
+        db_table = 'acc_log___db'
 
 class BkList(models.Model):
     bk_uuid = models.CharField(primary_key=True, max_length=45)
-    user = models.ForeignKey(Account, models.DO_NOTHING)
+    user = models.ForeignKey(Account, models.DO_NOTHING, blank=True, null=True)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     bk_date = models.DateField()
     bk_st = models.TimeField()
@@ -45,9 +54,8 @@ class BkList(models.Model):
     adult = models.PositiveIntegerField()
     children = models.PositiveIntegerField()
     bk_ps = models.CharField(max_length=200, blank=True, null=True)
-    tk_service = models.IntegerField()
+    event_type = models.CharField(max_length=20, blank=True, null=True)
     is_cancel = models.IntegerField()
-    entire_time = models.IntegerField()
     waiting_num = models.PositiveIntegerField()
 
     class Meta:

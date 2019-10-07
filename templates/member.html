@@ -10,56 +10,57 @@
 
 {% block content %}
 <div class="container">
-<form id='member_form' method="post">
+  <form id='member_form' method="post">
     {% csrf_token %}
     <font size="4">
       <label><b>姓名</b></label>
-      <input id="member_name" name='username' class="w3-input w3-border w3-round-large" type="text" placeholder="E.g. : 王小明" value=''
-        required>
+      <input id="member_name" name='username' class="w3-input w3-border w3-round-large" type="text"
+        placeholder="E.g. : 王小明" value='' required>
     </font>
     <br>
     <font size="4">
       <label><b>綁定手機</b></label>
-      <input id="member_phone" name='phone' class="w3-input w3-border w3-round-large" type="tel" placeholder="E.g. : 0900123456"
-        autocomplete="off" pattern="[0]{1}[9]{1}[0-9]{8}" value='' required>
+      <input id="member_phone" name='phone' class="w3-input w3-border w3-round-large" type="tel"
+        placeholder="E.g. : 0900123456" autocomplete="off" pattern="[0]{1}[9]{1}[0-9]{8}" value='' required>
     </font>
 
     <font size="3">
-      <input type='checkbox' name='Member_agree' id="privacy_policy" class="w3-check" style="min-height:20px;min-width:20px;" checked>
+      <input type='checkbox' name='Member_agree' id="privacy_policy" class="w3-check"
+        style="min-height:20px;min-width:20px;" checked>
       <label>我已閱讀並同意<a title="Softway隱私權條款" onclick="document.getElementById('modal').style.display = 'block' "><u>
             Softway隱私權條款</u></a></label>
     </font>
     <font size='4'>
-      <button id="member_submit"  class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
-          disabled="false" >建立會員並下一步訂位</button>
-</form>
+      <button id="member_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
+        disabled="false">建立會員並下一步訂位</button>
+  </form>
 </div>
 
 <div id='modal' class="w3-modal">
-        <span onclick="document.getElementById('modal').style.display='none'"
-          class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
-        <div class="w3-display-container mySlides">
-                {% load static %}
-          <img src="{% static '/images/0001.jpg' %}" style="width:100%;">
-        </div>
-        <div class="w3-display-container mySlides">
-          
-          <img src="{% static '/images/0002.jpg' %}" style="width:100%">
-        </div>
-        <div class="w3-display-container mySlides">
-          
-          <img src="{% static '/images/0003.jpg' %}" style="width:100%">
-        </div>
-    
-    
-      </div>
-    
-    
+  <span onclick="document.getElementById('modal').style.display='none'"
+    class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
+  <div class="w3-display-container mySlides">
+    {% load static %}
+    <img src="{% static '/images/0001.jpg' %}" style="width:100%;">
+  </div>
+  <div class="w3-display-container mySlides">
+
+    <img src="{% static '/images/0002.jpg' %}" style="width:100%">
+  </div>
+  <div class="w3-display-container mySlides">
+
+    <img src="{% static '/images/0003.jpg' %}" style="width:100%">
+  </div>
+
+
+</div>
+
+
 <script>
-  function dosave(){
-    if(true){
-        document.getElementById("member_form").action = "/booking/booking/";
-        document.getElementById("member_form").submit();
+  function dosave() {
+    if (true) {
+      document.getElementById("member_form").action = "/booking/booking/";
+      document.getElementById("member_form").submit();
     }
   }
 
@@ -112,16 +113,15 @@
       var member_phone = $('#member_phone').val();
       var reg_phone = new RegExp(/^09\d{8}$/);
 
-      if(member_name == ''){
+      if (member_name == '') {
         alert('請輸入姓名！')
         status = false;
-      }else if(member_phone == ''){
+      } else if (member_phone == '') {
         alert('請輸入電話！')
         status = false;
-      }
-      else if (reg_phone.test(member_phone) ==false){
-          alert('手機號碼格式不正確');
-          status = false;
+      } else if (reg_phone.test(member_phone) == false) {
+        alert('手機號碼格式不正確');
+        status = false;
       }
       if (status) {
         dosave()
@@ -129,10 +129,8 @@
 
     });
   });
-    </script>
+
+</script>
 
 
 {% endblock %}
-
-
-

@@ -10,13 +10,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from . import common as com
-from django.db import transaction
+from django.db import transaction, DatabaseError
 
-# class isLogin(BasePermission):
-#     message = 'no perosn login'
-#     def has_permission(self, request, view):
-#         member = request.query_params.get("apikey",0)
-#         return super().has_permission(request, view)
+# ----- Class site ----------------------
 
 
 class AccountViewSet(viewsets.ModelViewSet):  # api get account data
@@ -32,64 +28,24 @@ class AccountViewSet(viewsets.ModelViewSet):  # api get account data
         return query_set
 
 
-def test(request):  # render html
-    phone = request.POST.get('phone', None)
-    username = request.POST.get('username', None)
-    social_id = request.POST.get('social_id', None)
-    social_app = request.POST.get('social_app', None)
-
-    queryset = Account.objects.create(
-        phone=phone,
-        username=username,
-        social_id=social_id,
-        social_app=social_app
-    )
-    queryset = Account.objects.get(
-        phone=phone,
-        username=username,
-        social_id=social_id,
-        social_app=social_app
-    )
-    serializer_class = Acc_Serializer(queryset)
-    return render(request, 'booking.html', {'data': serializer_class.data})
-
-
 class ToBookingView(APIView):  # render html
     renderer_classes = [TemplateHTMLRenderer]
     template_name = None
 
     def post(self, request, format=None):
         try:
-            with transaction.atomic():
-                self.template_name = 'booking.html'
+            self.template_name = 'reservation.html'
+            with transaction.atomic():  # transaction
                 serializer = Acc_Serializer(data=request.data)
                 if serializer.is_valid():
                     serializer.save()
                     return Response({'data': request.data}, status=status.HTTP_201_CREATED)
-                return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    self.template_name = 'error/error.html'
+                    return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'exception': e})
-
-    def get(self, request, format=None):
-        try:
-            social_id = request.query_params.get('social_id', None)
-            social_app = request.query_params.get('social_app', None)
-
-            queryset = Account.objects.filter(
-                social_id=social_id,
-                social_app=social_app,
-            )
-            if len(queryset) == 0:
-                self.template_name = 'member.html'
-                return
-            elif len(queryset) == 1:
-                self.template_name = 'booking.html'
-                serializer_class = Acc_Serializer(queryset)
-                return Response({'data': serializer_class.data}, status=status.HTTP_201_CREATED)
-            else:
-                return
-        except:
-            return Http404("Data not found")
+            self.template_name = 'error/error.html'
+            return Response({'error': e})
 
 
 class ActionLogViewSet(viewsets.ModelViewSet):
@@ -117,13 +73,23 @@ class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = Staff_Serializer
 
+# Definition site ------------------------------------------------
+
+
+def booking_list(request):
+    try:
+        # phone = request.POST.get('phone', None)
+
+        return render(request, '')
+    except Exception as e:
+        return render(request, 'error/error.html', {'error': e})
+
 
 def login(request):
     return render(request, 'login.html',)
 
 
 def reservation(request):
-
     return render(request, 'reservation.html')
 
 
@@ -137,7 +103,8 @@ def member(request):
         return render(request, 'member.html',)
         # return redirect(reverse('member'),args=())
     elif list(result.keys())[0] == 'error':  # error occurred
-        return render(request, '/error/error.html', {'error': result.error})
+        print('result: ', result)
+        return render(request, 'error/error.html', {'error': result['error']})
     else:  # Account Exist
         return render(request, 'reservation.html', {'data': result})
 
@@ -146,16 +113,42 @@ def checkbooking(request):
     try:
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
-        queryset = BkList.objects.get(
+        queryset = BkList.objects.select_for_update().get(  # sql for update
             social_id=social_id,
             social_app=social_app,
         )
         serializer = Acc_Serializer(queryset)
         return render(request, 'checkbooking.html', {'data': serializer.data})
     except Exception as e:
-        return render(request, '/error/error.html', {'error': e})
+        return render(request, 'error/error.html', {'error': e})
 
 
-
+# Test function ------------------------
 def testtemplate(request):
-    return render(request, 'test.html')
+    return render(request, 'test/test.html')
+
+
+def test(request):  # render html
+    try:
+        phone = request.POST.get('phone', None)
+        username = request.POST.get('username', None)
+        social_id = request.POST.get('social_id', None)
+        social_app = request.POST.get('social_app', None)
+        with transaction.atomic():  # transaction
+            queryset = Account.objects.create(
+                phone=phone,
+                username=username,
+                social_id=social_id,
+                social_app=social_app,
+            )
+        queryset = Account.objects.get(
+            phone=phone,
+            username=username,
+            social_id=social_id,
+            social_app=social_app
+        )
+
+        # serializer_class = Acc_Serializer
+        return render(request, 'test/booking.html', {'data': queryset})
+    except Exception as e:
+        return render(request, 'error/error.html', {'error': e})

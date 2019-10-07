@@ -4,42 +4,47 @@
 <!-- Headmessage-->
 {% block headmessage %}
 <div class="w3-center">
-  <h3><b>訂位系統</b></h3>
+    <h3><b>舒微生活訂位</b></h3>
 </div>
 {% endblock %}
 
 <!-- content-->
 {% block content %}
+{% load static %}
+<div class="container">
+    <form id="BookingForm" method="post">
+        {% csrf_token %}
 
+    </form>
+</div>
 
 <script>
     function initializeApp(data) {
         liff.getProfile().then(profile => {
             var disname = {
-              'name': profile.displayName
+                'name': profile.displayName
             };
             disname_json = JSON.parse(JSON.stringify(disname.name))
 
             $('#img').attr('src', profile.pictureUrl);
-            
-            
-            
+
+
+
         })
     }
     //ready
     $(function () {
         $('#displayName').html('{{ data.username }}');
         $('#displayPhone').html('{{ data.phone }}');
-        
+
         //init LIFF
         liff.init(function (data) {
             initializeApp(data);
         });
-        
-        
-        
-    });
 
+
+
+    });
 
 </script>
 {% endblock %}

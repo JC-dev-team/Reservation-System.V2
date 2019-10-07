@@ -3,7 +3,7 @@ from . import views
 from rest_framework.routers import DefaultRouter
 from django.conf.urls.static import static
 
-
+## Maybe need to remove in future
 router = DefaultRouter()
 # The url will be booking/api/account
 router.register(r'account', views.AccountViewSet)
