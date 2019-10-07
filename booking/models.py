@@ -33,6 +33,7 @@ class ActionLog(models.Model):
         app_label = 'booking'
         db_table = 'action_log___db'
 
+
 class AccountLog(models.Model):
     acclog_id = models.CharField(primary_key=True, max_length=45)
     user = models.ForeignKey(Account, models.DO_NOTHING)
@@ -43,11 +44,13 @@ class AccountLog(models.Model):
         app_label = 'booking'
         db_table = 'acc_log___db'
 
+
 class BkList(models.Model):
     bk_uuid = models.CharField(primary_key=True, max_length=45)
     user = models.ForeignKey(Account, models.DO_NOTHING, blank=True, null=True)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     bk_date = models.DateField()
+    time_session = models.CharField(max_length=10)
     bk_st = models.TimeField()
     bk_ed = models.TimeField(blank=True, null=True)
     wh_bk = models.DateTimeField(blank=True, null=True)
@@ -57,7 +60,7 @@ class BkList(models.Model):
     event_type = models.CharField(max_length=20, blank=True, null=True)
     is_cancel = models.IntegerField()
     waiting_num = models.PositiveIntegerField()
-
+    entire_time = models.IntegerField()
     class Meta:
         app_label = 'booking'
         db_table = 'bk_list___db'
@@ -100,7 +103,7 @@ class Staff(models.Model):
 
 class Store(models.Model):
     store_id = models.CharField(primary_key=True, max_length=45)
-    store_name = models.CharField(max_length=45)
+    store_name = models.CharField(unique=True, max_length=45)
     store_address = models.CharField(max_length=45)
     store_phone = models.CharField(max_length=20)
     store_fax = models.CharField(max_length=20, blank=True, null=True)

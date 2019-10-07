@@ -28,26 +28,6 @@ class AccountViewSet(viewsets.ModelViewSet):  # api get account data
         return query_set
 
 
-class ToBookingView(APIView):  # render html
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = None
-
-    def post(self, request, format=None):
-        try:
-            self.template_name = 'reservation.html'
-            with transaction.atomic():  # transaction
-                serializer = Acc_Serializer(data=request.data)
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response({'data': request.data}, status=status.HTTP_201_CREATED)
-                else:
-                    self.template_name = 'error/error.html'
-                    return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            self.template_name = 'error/error.html'
-            return Response({'error': e})
-
-
 class ActionLogViewSet(viewsets.ModelViewSet):
     queryset = ActionLog.objects.all()
     serializer_class = Actlog_Serializer
@@ -76,11 +56,98 @@ class StaffViewSet(viewsets.ModelViewSet):
 # Definition site ------------------------------------------------
 
 
-def booking_list(request):
+def ToBookingView(request):  # The member.html via here in oreder to enroll new member
     try:
-        # phone = request.POST.get('phone', None)
+        phone = request.POST.get('phone', None)
+        username = request.POST.get('username', None)
+        social_id = request.POST.get('social_id', None)
+        social_app = request.POST.get('social_app', None)
+        with transaction.atomic():  # transaction
+            queryset = Account.objects.create(
+                phone=phone,
+                username=username,
+                social_id=social_id,
+                social_app=social_app,
+            )
+        queryset = Account.objects.get(
+            phone=phone,
+            username=username,
+            social_id=social_id,
+            social_app=social_app
+        )
+        serializer_class = Acc_Serializer(queryset)
+        # render html
+        return render(request, 'reservation.html', {'data': serializer_class.data})
+    except Exception as e:
+        return render(request, 'error/error.html', {'error': e})  # render html
 
-        return render(request, '')
+
+def booking_list(request):  # the booking list
+    try:
+        user_id = request.POST.get('user_id', None)
+        store_id = request.POST.get('store_id', None)
+        bk_date = request.POST.get('bk_date', None)
+        bk_st = request.POST.get('bk_st', None)
+        bk_ed = request.POST.get('bk_ed', None)
+        adult = request.POST.get('adult', None)
+        children = request.POST.get('children', None)
+        bk_ps = request.POST.get('bk_ps', None)
+        event_type = request.POST.get('event_type', None)
+        time_session = request.POST.get('time_session', None)
+        entire_time = request.POST.get('entire_time', False)
+        is_cancel = False
+        waiting_num = 0
+        total = int(adult)+int(children)
+        exact_seat = 0
+
+        with transaction.atomic():  # transaction
+            # get the store seat
+            store_query = Store.objects.select_for_update.get(
+                store_id=store_id
+            )
+            if store_query.seat < total:
+                raise Exception('超過總容納人數')
+            # get the booking event of that time session
+            bk_queryset = BkList.objects.select_for_update.filter(
+                store_id=store_id,
+                bk_date=bk_date,
+                time_session=time_session,
+                is_cancel=is_cancel,
+            )
+
+            # count is that enough for seat values
+            for i in bk_queryset:
+                number = int(i.adult)+int(i.children)
+                exact_seat += number
+
+            if (exact_seat+total) > store_query.seat:
+                return render(request, 'reservation.html', {'error': '人數過多'})
+            else:
+                # get waiting_num
+                waiting_num = BkList.objects.select_for_update.filter(
+                    store_id=store_id,
+                    bk_date=bk_date,
+                    time_session=time_session,
+                    is_cancel=is_cancel,
+                ).count()
+
+                final_queryset = BkList.objects.create( # insert data
+                    user_id=user_id,
+                    store_id=store_id,
+                    bk_date=bk_date,
+                    bk_st=bk_st,
+                    bk_ed=bk_ed,
+                    adult=adult,
+                    children=children,
+                    bk_ps=bk_ps,
+                    event_type=event_type,
+                    time_session=time_session,
+                    entire_time=entire_time,
+                    is_cancel=is_cancel,
+                    waiting_num=waiting_num,
+                )
+                serializer_class = Bklist_Serializer(final_queryset)
+                return render(request, '', {'data': serializer_class.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
@@ -94,19 +161,21 @@ def reservation(request):
 
 
 def member(request):
-    social_id = request.POST.get('social_id', None)
-    social_app = request.POST.get('social_app', None)
-    result = com.Authentication(social_id, social_app)
-    if result == None:  # Using PC or No social login
-        return redirect('/booking/login/',)
-    elif result == False:  # Account Not Exist
-        return render(request, 'member.html',)
-        # return redirect(reverse('member'),args=())
-    elif list(result.keys())[0] == 'error':  # error occurred
-        print('result: ', result)
-        return render(request, 'error/error.html', {'error': result['error']})
-    else:  # Account Exist
-        return render(request, 'reservation.html', {'data': result})
+    try:
+        social_id = request.POST.get('social_id', None)
+        social_app = request.POST.get('social_app', None)
+        result = com.Authentication(social_id, social_app)
+        if result == None:  # Using PC or No social login
+            return redirect('/booking/login/',)
+        elif result == False:  # Account Not Exist
+            return render(request, 'member.html',)
+            # return redirect(reverse('member'),args=())
+        elif list(result.keys())[0] == 'error':  # error occurred
+            return render(request, 'error/error.html', {'error': result['error']})
+        else:  # Account Exist
+            return render(request, 'reservation.html', {'data': result})
+    except Exception as e:
+        return render(request, 'error/error.html', {'error': e})
 
 
 def checkbooking(request):
@@ -128,27 +197,21 @@ def testtemplate(request):
     return render(request, 'test/test.html')
 
 
-def test(request):  # render html
-    try:
-        phone = request.POST.get('phone', None)
-        username = request.POST.get('username', None)
-        social_id = request.POST.get('social_id', None)
-        social_app = request.POST.get('social_app', None)
-        with transaction.atomic():  # transaction
-            queryset = Account.objects.create(
-                phone=phone,
-                username=username,
-                social_id=social_id,
-                social_app=social_app,
-            )
-        queryset = Account.objects.get(
-            phone=phone,
-            username=username,
-            social_id=social_id,
-            social_app=social_app
-        )
+class testView(APIView):  # render html
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = None
 
-        # serializer_class = Acc_Serializer
-        return render(request, 'test/booking.html', {'data': queryset})
-    except Exception as e:
-        return render(request, 'error/error.html', {'error': e})
+    def post(self, request, format=None):
+        try:
+            self.template_name = 'booking.html'
+            with transaction.atomic():  # transaction
+                serializer = Acc_Serializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({'data': request.data}, status=status.HTTP_201_CREATED)
+                else:
+                    self.template_name = 'error/error.html'
+                    return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            self.template_name = 'error/error.html'
+            return Response({'error': e})
