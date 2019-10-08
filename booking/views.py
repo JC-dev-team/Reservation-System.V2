@@ -42,7 +42,6 @@ class StaffViewSet(viewsets.ModelViewSet):
 
 # admin dashboard -------------------
 
-
 def staff_login(request):  # authentication staff
     try:
         social_id = request.POST.get('social_id', None)
@@ -58,6 +57,16 @@ def staff_login(request):  # authentication staff
             return render(request, 'admin_dashboard.html', {'data': result})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
+
+def staff_checkbooking(request):
+    try:
+        store_id = request.POST.get('store_id', None)
+        bk_date = request.POST.get('bk_date',None)
+        
+        pass
+    except Exception as e:
+        pass
+
 
 
 class AccountViewSet(viewsets.ModelViewSet):  # api get account data
