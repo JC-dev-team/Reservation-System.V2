@@ -3,7 +3,7 @@ from . import views
 from rest_framework.routers import DefaultRouter
 from django.conf.urls.static import static
 
-
+## Maybe need to remove in future
 router = DefaultRouter()
 # The url will be booking/api/account
 router.register(r'account', views.AccountViewSet)
@@ -31,13 +31,15 @@ urlpatterns = [
     path('member/', views.member, name='member'),
     path('reservation/', views.reservation, name='reservation'),
     path('api/', include(router.urls)),
-    path('booking/',views.ToBookingView.as_view()),
+    path('booking/',views.ToBookingView),
     # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
     #checking system
     path('checkbooking/',views.checkbooking, name='checkbooking'),
     
+    
     # Test Views deploy delete 
-    path('test001/',views.test),
+    path('test001/',views.testView),
     path('testtemplate/',views.testtemplate, name='testtemplate'),
 ]
 

@@ -34,22 +34,33 @@ class ActionLog(models.Model):
         db_table = 'action_log___db'
 
 
+class AccountLog(models.Model):
+    acclog_id = models.CharField(primary_key=True, max_length=45)
+    user = models.ForeignKey(Account, models.DO_NOTHING)
+    wh_happen = models.DateTimeField(blank=True, null=True)
+    acc_oops = models.CharField(max_length=200, blank=True, null=True)
+
+    class Meta:
+        app_label = 'booking'
+        db_table = 'acc_log___db'
+
+
 class BkList(models.Model):
     bk_uuid = models.CharField(primary_key=True, max_length=45)
-    user = models.ForeignKey(Account, models.DO_NOTHING)
+    user = models.ForeignKey(Account, models.DO_NOTHING, blank=True, null=True)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     bk_date = models.DateField()
+    time_session = models.CharField(max_length=10)
     bk_st = models.TimeField()
     bk_ed = models.TimeField(blank=True, null=True)
     wh_bk = models.DateTimeField(blank=True, null=True)
     adult = models.PositiveIntegerField()
     children = models.PositiveIntegerField()
     bk_ps = models.CharField(max_length=200, blank=True, null=True)
-    tk_service = models.IntegerField()
+    event_type = models.CharField(max_length=20, blank=True, null=True)
     is_cancel = models.IntegerField()
-    entire_time = models.IntegerField()
     waiting_num = models.PositiveIntegerField()
-
+    entire_time = models.IntegerField()
     class Meta:
         app_label = 'booking'
         db_table = 'bk_list___db'
@@ -92,7 +103,7 @@ class Staff(models.Model):
 
 class Store(models.Model):
     store_id = models.CharField(primary_key=True, max_length=45)
-    store_name = models.CharField(max_length=45)
+    store_name = models.CharField(unique=True, max_length=45)
     store_address = models.CharField(max_length=45)
     store_phone = models.CharField(max_length=20)
     store_fax = models.CharField(max_length=20, blank=True, null=True)

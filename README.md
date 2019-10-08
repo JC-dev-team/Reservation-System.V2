@@ -29,3 +29,6 @@
    python manage.py migrate --fake <your_app>
    find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
    find . -path "*/migrations/*.pyc"  -delete
+
+### Reset migrations
+   https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html
