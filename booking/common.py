@@ -15,6 +15,7 @@ def Authentication(social_id, social_app):  # Account Check Auth
                     social_id=social_id,
                     social_app=social_app,
                 )
+
                 serializer = Acc_Serializer(queryset)
                 return serializer.data
     except Account.DoesNotExist:  # Account Not Exist

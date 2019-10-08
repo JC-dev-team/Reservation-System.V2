@@ -102,13 +102,13 @@ def booking_list(request):  # the booking list
 
         with transaction.atomic():  # transaction
             # get the store seat
-            store_query = Store.objects.select_for_update.get(
+            store_query = Store.objects.only('seat').select_for_update().get(
                 store_id=store_id
             )
             if store_query.seat < total:
                 raise Exception('超過總容納人數')
             # get the booking event of that time session
-            bk_queryset = BkList.objects.select_for_update.filter(
+            bk_queryset = BkList.objects.select_for_update().filter(
                 store_id=store_id,
                 bk_date=bk_date,
                 time_session=time_session,
@@ -122,15 +122,16 @@ def booking_list(request):  # the booking list
 
             if (exact_seat+total) > store_query.seat:
                 return render(request, 'reservation.html', {'error': '人數過多'})
+
             else:
                 # get waiting_num
-                waiting_num = BkList.objects.select_for_update.filter(
+                waiting_num = BkList.objects.only('waiting_num').select_for_update().filter(
                     store_id=store_id,
                     bk_date=bk_date,
                     time_session=time_session,
                     is_cancel=is_cancel,
                 ).count()
-
+                waiting_num+=1
                 final_queryset = BkList.objects.create( # insert data
                     user_id=user_id,
                     store_id=store_id,
@@ -146,10 +147,12 @@ def booking_list(request):  # the booking list
                     is_cancel=is_cancel,
                     waiting_num=waiting_num,
                 )
+
                 serializer_class = Bklist_Serializer(final_queryset)
                 return render(request, '', {'data': serializer_class.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
+
 
 
 def login(request):
@@ -182,11 +185,20 @@ def checkbooking(request):
     try:
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
-        queryset = BkList.objects.select_for_update().get(  # sql for update
+
+        acc_queryset = Account.objects.only('user_id').get(
             social_id=social_id,
             social_app=social_app,
         )
-        serializer = Acc_Serializer(queryset)
+
+        user_id=acc_queryset.user_id
+        BkList.objects.get(
+            user_id = user_id,
+
+        )
+
+
+        serializer = Acc_Serializer(acc_queryset)
         return render(request, 'checkbooking.html', {'data': serializer.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
