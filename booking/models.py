@@ -83,18 +83,21 @@ class Production(models.Model):
 class Staff(models.Model):
     staff_id = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
+    social_id = models.CharField(max_length=45)
+    social_app = models.CharField(max_length=45, blank=True, null=True)
     staff_name = models.CharField(max_length=45)
-    staff_id_num = models.CharField(unique=True, max_length=10)
-    staff_phone = models.CharField(max_length=10)
-    staff_birth = models.DateField()
+    staff_id_num = models.CharField(unique=True, max_length=10, blank=True, null=True)
+    staff_phone = models.CharField(max_length=10, blank=True, null=True)
+    staff_birth = models.DateField(blank=True, null=True)
     staff_gender = models.CharField(max_length=45)
-    staff_address = models.CharField(max_length=45)
-    staff_email = models.CharField(max_length=45)
+    staff_address = models.CharField(max_length=200, blank=True, null=True)
+    staff_email = models.CharField(max_length=100)
     staff_level = models.PositiveIntegerField()
-    staff_age = models.PositiveIntegerField()
+    staff_age = models.PositiveIntegerField(blank=True, null=True)
     staff_skills = models.CharField(max_length=45, blank=True, null=True)
     staff_created = models.DateTimeField(blank=True, null=True)
     staff_ended = models.DateTimeField(blank=True, null=True)
+    end_reason = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         app_label = 'booking'
