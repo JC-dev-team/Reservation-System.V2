@@ -11,20 +11,84 @@
 <!-- content-->
 {% block content %}
 {% load static %}
-<div class="container">
+
+<!-- <div class="container">
     <form id="BookingForm" method="post">
         {% csrf_token %}
-
     </form>
+</div> -->
+
+<div class="container">
+    <div id='calendar'></div>
 </div>
+
+<div class="container w3-center" style="display: none">
+    <p>請輸入用餐人數</p>
+        <div class="left-half" style="width:100%;">
+          <font size="4.5">
+            <label><i class="fa fa-male"></i> 成人</label>
+            <select class="select form-control" style='font-size:18px; height:40px;' type="number" value="" id="adult"
+              required>
+              <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
+              <option value="1">1 大</option>
+              <option value="2" selected>2 大</option>
+              <option value="3">3 大</option>
+              <option value="4">4 大</option>
+              <option value="5">5 大</option>
+              <option value="6">6 大</option>
+              <option value="7">7 大</option>
+              <option value="8">8 大</option>
+              <option value="10">10 大</option>
+              <option value="11">11 大</option>
+              <option value="12">12 大</option>
+              <option value="13">13 大</option>
+              <option value="14">14 大</option>
+              <option value="15">15 大</option>
+              <option value="16">16 大</option>
+              <option value="17">17 大</option>
+              <option value="18">18 大</option>
+              <option value="19">19 大</option>
+              <option value="20">20 大</option>
+            </select>
+          </font>
+        </div>
+        <br>
+        <div class="right-half" style="width:100%;">
+          <font size="4.5">
+            <label><i class="fa fa-child"></i> 兒童</label>
+            <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+              id="children" required>
+              <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+              <option value="0" selected>0 小</option>
+              <option value="1">1 小</option>
+              <option value="2">2 小</option>
+              <option value="3">3 小</option>
+              <option value="4">4 小</option>
+              <option value="5">5 小</option>
+              <option value="6">6 小</option>
+              <option value="7">7 小</option>
+              <option value="8">8 小</option>
+              <option value="9">9 小</option>
+              <option value="10">10 小</option>
+            </select>
+          </font>
+        </div>
+
+        <font size='4'>
+                <button id="member_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right">
+                    下一步訂位</button>
+              </font>
+</div>
+
 
 <script>
     function initializeApp(data) {
         liff.getProfile().then(profile => {
-            var disname = {
-                'name': profile.displayName
-            };
-            disname_json = JSON.parse(JSON.stringify(disname.name))
+            //Line name 
+            // var disname = {
+            //     'name': profile.displayName
+            // };
+            // disname_json = JSON.parse(JSON.stringify(disname.name))
 
             $('#img').attr('src', profile.pictureUrl);
 
@@ -46,5 +110,169 @@
 
     });
 
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            columnHeaderText: function (date) {
+                if (date.getDay() === 0) {
+                    return '日';
+                }
+                if (date.getDay() === 1) {
+                    return '一';
+                }
+                if (date.getDay() === 2) {
+                    return '二';
+                }
+                if (date.getDay() === 3) {
+                    return '三';
+                }
+                if (date.getDay() === 4) {
+                    return '四';
+                }
+                if (date.getDay() === 5) {
+                    return '五';
+                }
+                if (date.getDay() === 6) {
+                    return '六';
+                }
+
+            },
+            height: 'auto',
+            contentHeight: 500,
+
+            header: {
+                left: 'prev',
+                center: 'title',
+                right: 'next'
+            },
+            titleFormat: {
+                year: 'numeric', month: 'short'
+            },
+            showNonCurrentDates: false,
+
+            plugins: ['interaction', 'dayGrid'],
+            defaultView: 'dayGridMonth',
+            selectable: true,
+            dateClick: function (info) {
+                alert('clicked ' + info.dateStr);
+            },
+
+            events: [
+                // {
+                //     title: '額滿',
+                //     start: '2019-10-08',
+                //     rendering: 'background',
+                // },
+                {
+                    title: '午餐',
+                    start: '2019-10-08',
+                    backgroundColor: 'red',
+                    textColor: 'white',
+                    borderColor: 'red'
+                },
+                {
+                    title: '晚餐',
+                    start: '2019-10-08',
+                    backgroundColor: 'green',
+                    textColor: 'white',
+                },
+                {
+                    title: '午餐',
+                    start: '2019-10-09',
+                    backgroundColor: 'red',
+                    textColor: 'white',
+                    borderColor: 'red'
+                },
+                {
+                    title: '晚餐',
+                    start: '2019-10-09',
+                    backgroundColor: 'green',
+                    textColor: 'white',
+                },
+                {
+                    title: '午餐',
+                    start: '2019-10-10',
+                    backgroundColor: 'red',
+                    textColor: 'white',
+                    borderColor: 'red'
+                },
+                {
+                    title: '晚餐',
+                    start: '2019-10-10',
+                    backgroundColor: 'green',
+                    textColor: 'white',
+                },
+                {
+                    title: '午餐',
+                    start: '2019-10-11',
+                    backgroundColor: 'red',
+                    textColor: 'white',
+                    borderColor: 'red'
+                },
+                {
+                    title: '晚餐',
+                    start: '2019-10-11',
+                    backgroundColor: 'green',
+                    textColor: 'white',
+                },
+                {
+                    title: '午餐',
+                    start: '2019-10-12',
+                    backgroundColor: 'red',
+                    textColor: 'white',
+                    borderColor: 'red'
+                },
+                {
+                    title: '晚餐',
+                    start: '2019-10-12',
+                    backgroundColor: 'green',
+                    textColor: 'white',
+                },
+
+                
+            ],
+            color: 'yellow',
+            textColor: 'blue'
+        });
+
+        calendar.render();
+        
+    });
+
+    // $(document).ready(function () {
+    //     $('#calendar').fullCalendar({
+    //         dayClick: function (date, jsEvent, view) {
+
+    //             // change the day's background color just for fun
+    //             $(this).css('background-color', 'red');
+    //         },
+    //         locale: 'zh-tw',
+    //         plugins: ['bootstrap'],
+    //         themeSystem: 'bootstrap',
+    //         header: {
+    //             left: 'prev',
+    //             center: 'title',
+    //             right: 'next'
+    //         },
+    //         defaultView: 'month',
+    //         events: [{
+
+    //             startTime: '10:00', // a start time (10am in this example)
+    //             endTime: '18:00', // an end time (6pm in this example)
+    //             daysOfWeek: [1, 2, 3, 4],
+
+
+
+    //         }, ]
+
+    //         // eventAfterAllRender: function (view) {
+    //         //     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator
+    //         //             .userAgent)) {
+    //         //         $('#calendar').fullCalendar('changeView', 'month');
+    //         //     } //IF MOBILE CHANGE VIEW TO AGENDA DAY
+    //         // }
+    //     });
+    // });
 </script>
 {% endblock %}
