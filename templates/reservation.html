@@ -18,70 +18,89 @@
     </form>
 </div> -->
 
-<div class="container">
-    <div id='calendar'></div>
-</div>
 
-<div class="container w3-center" style="display: none">
-    <p>請輸入用餐人數</p>
-        <div class="left-half" style="width:100%;">
-          <font size="4.5">
+
+<div class="w3-display-container">
+<div class="container">
+    
+
+    <div class="left-half" style="width:100%;">
+        <font size="4.5">
             <label><i class="fa fa-male"></i> 成人</label>
             <select class="select form-control" style='font-size:18px; height:40px;' type="number" value="" id="adult"
-              required>
-              <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
-              <option value="1">1 大</option>
-              <option value="2" selected>2 大</option>
-              <option value="3">3 大</option>
-              <option value="4">4 大</option>
-              <option value="5">5 大</option>
-              <option value="6">6 大</option>
-              <option value="7">7 大</option>
-              <option value="8">8 大</option>
-              <option value="10">10 大</option>
-              <option value="11">11 大</option>
-              <option value="12">12 大</option>
-              <option value="13">13 大</option>
-              <option value="14">14 大</option>
-              <option value="15">15 大</option>
-              <option value="16">16 大</option>
-              <option value="17">17 大</option>
-              <option value="18">18 大</option>
-              <option value="19">19 大</option>
-              <option value="20">20 大</option>
+                required>
+                <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
+                <option value="1">1 大</option>
+                <option value="2" selected>2 大</option>
+                <option value="3">3 大</option>
+                <option value="4">4 大</option>
+                <option value="5">5 大</option>
+                <option value="6">6 大</option>
+                <option value="7">7 大</option>
+                <option value="8">8 大</option>
+                <option value="10">10 大</option>
+                <option value="11">11 大</option>
+                <option value="12">12 大</option>
+                <option value="13">13 大</option>
+                <option value="14">14 大</option>
+                <option value="15">15 大</option>
+                <option value="16">16 大</option>
+                <option value="17">17 大</option>
+                <option value="18">18 大</option>
+                <option value="19">19 大</option>
+                <option value="20">20 大</option>
             </select>
-          </font>
-        </div>
-        <br>
-        <div class="right-half" style="width:100%;">
-          <font size="4.5">
+        </font>
+    </div>
+    <br>
+    <div class="right-half" style="width:100%;">
+        <font size="4.5">
             <label><i class="fa fa-child"></i> 兒童</label>
             <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-              id="children" required>
-              <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-              <option value="0" selected>0 小</option>
-              <option value="1">1 小</option>
-              <option value="2">2 小</option>
-              <option value="3">3 小</option>
-              <option value="4">4 小</option>
-              <option value="5">5 小</option>
-              <option value="6">6 小</option>
-              <option value="7">7 小</option>
-              <option value="8">8 小</option>
-              <option value="9">9 小</option>
-              <option value="10">10 小</option>
+                id="children" required>
+                <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                <option value="0" selected>0 小</option>
+                <option value="1">1 小</option>
+                <option value="2">2 小</option>
+                <option value="3">3 小</option>
+                <option value="4">4 小</option>
+                <option value="5">5 小</option>
+                <option value="6">6 小</option>
+                <option value="7">7 小</option>
+                <option value="8">8 小</option>
+                <option value="9">9 小</option>
+                <option value="10">10 小</option>
             </select>
-          </font>
-        </div>
-
-        <font size='4'>
-                <button id="member_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right">
-                    下一步訂位</button>
-              </font>
+        </font>
+    </div>
 </div>
 
+    <font size='4'>
+        <button id="people_number_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding">
+            查詢訂位</button>
+    </font>
+</div>
+<hr>
+<div id='calendar-container' class="container" style="display: none">
+        <div id='calendar'></div>
+    </div>
 
 <script>
+    function people_number() {
+        $.ajax({
+            type: 'POST',
+            url: '',
+            data: data,
+            success: function(){
+
+            },
+            error: function(){
+
+            }
+
+        })
+    }
+
     function initializeApp(data) {
         liff.getProfile().then(profile => {
             //Line name 
@@ -89,15 +108,27 @@
             //     'name': profile.displayName
             // };
             // disname_json = JSON.parse(JSON.stringify(disname.name))
-
             $('#img').attr('src', profile.pictureUrl);
-
-
-
         })
     }
     //ready
     $(function () {
+        $('#people_number_submit').click(function(e) {
+            var status = true;
+            var adult = $('#adult').val();
+            var child = $('#children').val();
+
+            if (status) {
+                var data = {
+                    'adult': adult,
+                    'children': child,
+                    'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+                }
+                people_number(data) 
+            }
+            $('#calendar-container').css('display', 'inline')
+
+        })
         $('#displayName').html('{{ data.username }}');
         $('#displayPhone').html('{{ data.phone }}');
 
@@ -105,15 +136,13 @@
         liff.init(function (data) {
             initializeApp(data);
         });
-
-
-
     });
 
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
+            //ColumnHeaderText
             columnHeaderText: function (date) {
                 if (date.getDay() === 0) {
                     return '日';
@@ -138,106 +167,80 @@
                 }
 
             },
+            //Plugins - 'interaction','dayGrid'
+            plugins: ['interaction', 'dayGrid', 'moment'],
+            //Default View
+            defaultView: 'dayGridMonth',
+            //Height
             height: 'auto',
             contentHeight: 500,
-
+            //Header
             header: {
                 left: 'prev',
                 center: 'title',
                 right: 'next'
             },
-            titleFormat: {
-                year: 'numeric', month: 'short'
-            },
+            //Header - Title format
+            // titleFormat: {
+            //     year: 'numeric', month: '2-digit'
+            // },
+            titleFormat: 'YYYY  MM月',
+            //Show none current date (False)
             showNonCurrentDates: false,
 
-            plugins: ['interaction', 'dayGrid'],
-            defaultView: 'dayGridMonth',
+            //Date selectable (true)
             selectable: true,
+
+            //Function
             dateClick: function (info) {
                 alert('clicked ' + info.dateStr);
             },
 
             events: [
+
+                {
+                    id: '1',
+                    title: '午餐',
+                    start: new Date(),
+                    startRecur: new Date(),
+                    backgroundColor: 'green',
+                    textColor: 'white',
+                    daysOfWeek: [1, 2, 3, 4, 5, 6, 0]
+                },
+                {
+                    id: '2',
+                    title: '晚餐',
+                    start: new Date(),
+                    startRecur: new Date(),
+                    backgroundColor: 'green',
+                    textColor: 'white',
+                    daysOfWeek: [1, 2, 3, 4, 5, 6, 0]
+                },
                 // {
-                //     title: '額滿',
-                //     start: '2019-10-08',
-                //     rendering: 'background',
-                // },
-                {
-                    title: '午餐',
-                    start: '2019-10-08',
-                    backgroundColor: 'red',
-                    textColor: 'white',
-                    borderColor: 'red'
-                },
-                {
-                    title: '晚餐',
-                    start: '2019-10-08',
-                    backgroundColor: 'green',
-                    textColor: 'white',
-                },
-                {
-                    title: '午餐',
-                    start: '2019-10-09',
-                    backgroundColor: 'red',
-                    textColor: 'white',
-                    borderColor: 'red'
-                },
-                {
-                    title: '晚餐',
-                    start: '2019-10-09',
-                    backgroundColor: 'green',
-                    textColor: 'white',
-                },
-                {
-                    title: '午餐',
-                    start: '2019-10-10',
-                    backgroundColor: 'red',
-                    textColor: 'white',
-                    borderColor: 'red'
-                },
-                {
-                    title: '晚餐',
-                    start: '2019-10-10',
-                    backgroundColor: 'green',
-                    textColor: 'white',
-                },
-                {
-                    title: '午餐',
-                    start: '2019-10-11',
-                    backgroundColor: 'red',
-                    textColor: 'white',
-                    borderColor: 'red'
-                },
-                {
-                    title: '晚餐',
-                    start: '2019-10-11',
-                    backgroundColor: 'green',
-                    textColor: 'white',
-                },
-                {
-                    title: '午餐',
-                    start: '2019-10-12',
-                    backgroundColor: 'red',
-                    textColor: 'white',
-                    borderColor: 'red'
-                },
-                {
-                    title: '晚餐',
-                    start: '2019-10-12',
-                    backgroundColor: 'green',
-                    textColor: 'white',
-                },
+                //     id: '3',
+                //     title: '午餐3',
+                //     start: '2019-10-10',
+                //     backgroundColor: 'green',
+                //     textColor: 'white',
 
-                
+                // }
+
+
             ],
-            color: 'yellow',
-            textColor: 'blue'
-        });
 
+        });
+        var event = calendar.getEvents()
+        var tmp = 0
+        for (var i = 0; i < event.length; i++) {
+            var start = event[i].start
+            tmp +=1
+            console.log(start)
+           
+        }
+        console.log(tmp)
         calendar.render();
-        
+
+
     });
 
     // $(document).ready(function () {
