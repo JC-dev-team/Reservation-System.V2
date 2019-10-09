@@ -42,6 +42,7 @@ class StaffViewSet(viewsets.ModelViewSet):
 
 # admin dashboard -------------------
 
+
 def staff_login(request):  # authentication staff
     try:
         social_id = request.POST.get('social_id', None)
@@ -58,15 +59,16 @@ def staff_login(request):  # authentication staff
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
+
 def staff_checkbooking(request):
     try:
         store_id = request.POST.get('store_id', None)
-        bk_date = request.POST.get('bk_date',None)
-        
+        bk_date = request.POST.get('bk_date', None)
 
         pass
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
+
 
 def staff_approval_booking(request):
     try:
@@ -197,7 +199,7 @@ def reservation(request):
 
 
 def member(request):
-    try:
+    try: # Check Login
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
         result = com.ClientAuthentication(social_id, social_app)
@@ -209,6 +211,7 @@ def member(request):
         elif list(result.keys())[0] == 'error':  # error occurred
             return render(request, 'error/error.html', {'error': result['error']})
         else:  # Account Exist
+            # request.session['member_id'] = result.user_id
             return render(request, 'reservation.html', {'data': result})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
