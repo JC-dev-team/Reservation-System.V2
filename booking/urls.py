@@ -30,8 +30,9 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('member/', views.member, name='member'),
     path('reservation/', views.reservation, name='reservation'),
-    path('api/', include(router.urls)),
+    # path('api/', include(router.urls)),
     path('booking/',views.ToBookingView),
+    path('getCalendar/',views.getCalendar),
     # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     #checking system

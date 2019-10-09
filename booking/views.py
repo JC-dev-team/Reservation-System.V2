@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated, BasePermission
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404
-from . import common as com
+from . import auth 
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 # ----- Class site ----------------------
@@ -47,7 +47,7 @@ def staff_login(request):  # authentication staff
     try:
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
-        result = com.StaffAuthentication(social_id, social_app)
+        result = auth.StaffAuthentication(social_id, social_app)
 
         if result == None or result == False:
             return render(request, 'error/error404.html')
@@ -72,6 +72,7 @@ def staff_checkbooking(request):
 
 def staff_approval_booking(request):
     try:
+        bk_id = request.POST.get('bk_id',None)
         pass
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
@@ -91,7 +92,6 @@ class AccountViewSet(viewsets.ModelViewSet):  # api get account data
 
 # Definition site ------------------------------------------------
 
-
 def ToBookingView(request):  # The member.html via here in oreder to enroll new member
     try:
         phone = request.POST.get('phone', None)
@@ -105,18 +105,18 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                 social_id=social_id,
                 social_app=social_app,
             )
-        queryset = Account.objects.get(
-            phone=phone,
-            username=username,
-            social_id=social_id,
-            social_app=social_app
-        )
+            queryset = Account.objects.select_for_update().get(
+                phone=phone,
+                username=username,
+                social_id=social_id,
+                social_app=social_app
+            )
+        
         serializer_class = Acc_Serializer(queryset)
         # render html
         return render(request, 'reservation.html', {'data': serializer_class.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})  # render html
-
 
 def booking_list(request):  # the booking list
     try:
@@ -183,7 +183,7 @@ def booking_list(request):  # the booking list
                     is_cancel=is_cancel,
                     waiting_num=waiting_num,
                 )
-
+                # request.session.flush()
                 serializer_class = Bklist_Serializer(final_queryset)
                 return render(request, '', {'data': serializer_class.data})
     except Exception as e:
@@ -202,7 +202,8 @@ def member(request):
     try: # Check Login
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
-        result = com.ClientAuthentication(social_id, social_app)
+        result = auth.ClientAuthentication(social_id, social_app) # queryset or something else
+
         if result == None:  # Using PC or No social login
             return redirect('/booking/login/',)
         elif result == False:  # Account Not Exist
@@ -211,8 +212,9 @@ def member(request):
         elif list(result.keys())[0] == 'error':  # error occurred
             return render(request, 'error/error.html', {'error': result['error']})
         else:  # Account Exist
+            serializer = Acc_Serializer(result)
             # request.session['member_id'] = result.user_id
-            return render(request, 'reservation.html', {'data': result})
+            return render(request, 'reservation.html', {'data': serializer.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
@@ -228,15 +230,19 @@ def checkbooking(request):
             social_id=social_id,
             social_app=social_app,
         )
-        user_id = acc_queryset.user_id
-
         queryset = BkList.objects.filter(
-            user_id=user_id,
+            user_id=acc_queryset.user_id,
             store_id=store_id,
         )
 
         serializer = Acc_Serializer(queryset)
         return render(request, 'checkbooking.html', {'data': serializer.data})
+    except Exception as e:
+        return render(request, 'error/error.html', {'error': e})
+
+def getCalendar(request):
+    try:
+        pass
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
