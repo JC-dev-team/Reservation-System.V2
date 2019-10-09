@@ -46,16 +46,33 @@
 
     <link href="{% static '/js/packages/core/main.css' %}" rel='stylesheet' />
     <link href="{% static '/js/packages/daygrid/main.css' %}" rel='stylesheet' />
-    
+
 
     <script src="{% static '/js/packages/core/main.js' %}"></script>
     <script src="{% static '/js/packages/daygrid/main.js' %}"></script>
     <script src="{% static '/js/packages/interaction/main.js' %}"></script>
+    <script src="{% static '/js/packages/moment/main.js' %}"></script>
 
     <script src="{% static '/js/packages/core/locales-all.js' %}"></script>
 
 </head>
 
+<style>
+    .container {
+        display: flex;
+        padding: 4px
+    }
+
+    .left-half {
+        flex: 1;
+        width: 100%;
+    }
+
+    .right-half {
+        flex: 1;
+        width: 100%;
+    }
+</style>
 
 
 <body>

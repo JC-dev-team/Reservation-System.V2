@@ -35,12 +35,14 @@ urlpatterns = [
     # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     #checking system
-    path('checkbooking/',views.checkbooking, name='checkbooking'),
+    path('check_reservation/',views.check_reservation, name='check_reservation'),
     
     
     # Test Views deploy delete 
     path('test001/',views.testView),
     path('testtemplate/',views.testtemplate, name='testtemplate'),
+    path('test_check_reservation/',views.test_check_reservation, name='test_check_reservation'),
+    
 ]
 
 

@@ -197,6 +197,9 @@ def login(request):
 def reservation(request):
     return render(request, 'reservation.html')
 
+def test_check_reservation(request):
+    return render(request, 'test_check_reservation.html')
+
 
 def member(request):
     try: # Check Login
@@ -217,7 +220,7 @@ def member(request):
         return render(request, 'error/error.html', {'error': e})
 
 
-def checkbooking(request):
+def check_reservation(request):
     try:
         store_id = request.POST.get('store_id', None)
         # bk_date = request.POST.get('bk_date',None)
@@ -236,7 +239,7 @@ def checkbooking(request):
         )
 
         serializer = Acc_Serializer(queryset)
-        return render(request, 'checkbooking.html', {'data': serializer.data})
+        return render(request, 'check_reservation.html', {'data': serializer.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
