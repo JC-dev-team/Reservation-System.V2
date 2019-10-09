@@ -63,10 +63,16 @@ def staff_checkbooking(request):
         store_id = request.POST.get('store_id', None)
         bk_date = request.POST.get('bk_date',None)
         
+
         pass
     except Exception as e:
-        pass
+        return render(request, 'error/error.html', {'error': e})
 
+def staff_approval_booking(request):
+    try:
+        pass
+    except Exception as e:
+        return render(request, 'error/error.html', {'error': e})
 
 
 class AccountViewSet(viewsets.ModelViewSet):  # api get account data

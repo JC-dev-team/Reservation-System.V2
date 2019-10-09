@@ -3,6 +3,14 @@
 from .models import Account, Staff
 from .serializers import Acc_Serializer
 from django.db import transaction, DatabaseError
+from functools import wraps
+
+
+# def login_required(fun):
+    # @wrap(fun)
+    # def wrapper(request,*args, **kwargs):
+    #     if check_login():
+    #         return 403
 
 
 def ClientAuthentication(social_id, social_app):  # Account Check Auth
@@ -23,7 +31,8 @@ def ClientAuthentication(social_id, social_app):  # Account Check Auth
     except Exception as e:
         return {'error': e}
 
-def StaffAuthentication(social_id, social_app): # staff account checking
+
+def StaffAuthentication(social_id, social_app):  # staff account checking
     try:
         if (social_id == None) or (social_app == None):  # Using PC or No social login
             return None
@@ -35,15 +44,14 @@ def StaffAuthentication(social_id, social_app): # staff account checking
                 'staff_ended',
                 'social_id',
                 'social_app',
-                ).get(
+            ).get(
                 social_id=social_id,
                 social_app=social_app,
             )
             serializer = Acc_Serializer(queryset)
             return serializer.data
-        
+
     except Account.DoesNotExist:  # Account Not Exist
-        return False   
+        return False
     except Exception as e:
         return {'error': e}
-
