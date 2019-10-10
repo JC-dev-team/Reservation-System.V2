@@ -7,20 +7,20 @@ from django.db import transaction, DatabaseError
 from functools import wraps
 
 
-def Clientlogin_required(fun):
-    def wrapper(request):
-        social_id = request.POST.get('social_id', None)
-        social_app = request.POST.get('social_app', None)
-        result = ClientAuthentication()
-        if result == None:  # Using PC or No social login
-            return redirect('/booking/login/',)
-        elif result == False:  # Account Not Exist
-            return render(request, 'member.html',)
-        elif list(result.keys())[0] == 'error':  # error occurred
-            return render(request, 'error/error.html', {'error': result['error']})
-        else:  # Account Exist
-            # request.session['member_id'] = result.user_id
-            return wrapper
+# def Clientlogin_required(fun):
+#     def wrapper(request):
+#         social_id = request.POST.get('social_id', None)
+#         social_app = request.POST.get('social_app', None)
+#         result = ClientAuthentication()
+#         if result == None:  # Using PC or No social login
+#             return redirect('/booking/login/',)
+#         elif result == False:  # Account Not Exist
+#             return render(request, 'member.html',)
+#         elif list(result.keys())[0] == 'error':  # error occurred
+#             return render(request, 'error/error.html', {'error': result['error']})
+#         else:  # Account Exist
+#             # request.session['member_id'] = result.user_id
+#             return wrapper
 
 
 def ClientAuthentication(social_id, social_app):  # Account Check Auth

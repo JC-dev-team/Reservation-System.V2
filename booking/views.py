@@ -206,14 +206,13 @@ def member(request):
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
         result = auth.ClientAuthentication(social_id, social_app) # queryset or something else
-
         if result == None:  # Using PC or No social login
             return redirect('/booking/login/',)
         elif result == False:  # Account Not Exist
             return render(request, 'member.html',)
             # return redirect(reverse('member'),args=())
-        elif list(result.keys())[0] == 'error':  # error occurred
-            return render(request, 'error/error.html', {'error': result['error']})
+        # elif list(result.keys())[0] == 'error':  # error occurred
+        #     return render(request, 'error/error.html', {'error': result['error']})
         else:  # Account Exist
             serializer = Acc_Serializer(result)
             # request.session['member_id'] = result.user_id
