@@ -93,13 +93,14 @@
         },
     });
 
-    function people_number() {
+    function people_number(data) {
+        
         $.ajax({
             type: 'POST',
             url: '/booking/getCalendar/',
             data: data,
-            success: function () {
-
+            success: function (response) {
+                console.log(response)
             },
             error: function () {
 
@@ -221,6 +222,17 @@
             ],
 
             eventRender: function (info) {
+                // $.ajax({
+                //     type: 'POST',
+                //     url: '/booking/getCalendar/',
+                //     data: '',
+                //     success: function (){
+
+                //     },
+                //     error: function (){
+
+                //     }
+                // })
                 var start = info.event.start
                 var title = info.event.title
                 var color = info.event.backgroundColor
@@ -229,22 +241,13 @@
                 if (time == '2019-10-09' && title == '午餐') {
                     info.el.style.backgroundColor = 'red'
                     
-                    console.log(info.el.style.backgroundColor)
-                    // console.log(info.event.backgroundColor)
-                    // console.log(color)
-                    // console.log(time)
+                    
+                    
 
                 }
 
             }
-            // eventClick: function (info) {
-            //     alert('Event: ' + info.event.title);
-            //     alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-            //     alert('View: ' + info.view.type);
 
-            //     // change the border color just for fun
-            //     info.el.style.borderColor = 'red';
-            // }
 
         });
 
@@ -272,7 +275,8 @@
                     'start_month': start_month,
                     'end_month': end_month,
                 }
-                //people_number(data) 
+                
+                people_number(data) 
             }
             $('#calendar-container').css('display', 'inline')
 
