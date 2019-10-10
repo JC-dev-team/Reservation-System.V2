@@ -100,7 +100,8 @@
             url: '/booking/getCalendar/',
             data: data,
             success: function (response) {
-                console.log(response)
+                console.log(response.result)
+
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.log(errorThrown)
