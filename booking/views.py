@@ -292,7 +292,7 @@ def getCalendar(request):
                 event_sub_arr['backgroundColor'] = 'green'
             event_sub_arr['textColor'] = 'white'
             event_arr.append(event_sub_arr)
-
+        
         return JsonResponse(event_arr)
     except Exception as e:
         return JsonResponse({'error': e})
