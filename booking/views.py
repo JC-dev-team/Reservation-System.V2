@@ -9,9 +9,8 @@ from rest_framework.renderers import JSONOpenAPIRenderer, BrowsableAPIRenderer, 
 from rest_framework.permissions import IsAuthenticated, BasePermission
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from django.http import Http404, HttpResponse
+from django.http import Http404, JsonResponse
 from . import auth
-import json
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 # from django.contrib.auth import login, logout
@@ -315,8 +314,8 @@ def getCalendar(request):
             #     event_sub_arr['title']
 
         #     if int(i.adult)+int(i.children)+int(adults)+int(children) > store_query.seat :
-
-        return HttpResponse(json.dumps(event_arr), content_type="application/json")
+        
+        return JsonResponse(event_arr)
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
