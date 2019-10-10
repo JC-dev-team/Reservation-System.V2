@@ -278,16 +278,16 @@ def getCalendar(request):
         for i in bookinglist:
             event_sub_arr = {}  # event dictionary noon
             if i.entire_time == True:
-                event_sub_arr['title'] = i.time_session+i.event_type
-                event_sub_arr['start'] = i.bk_st
+                event_sub_arr['title'] = i.time_session
+                event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'red'
             elif int(i.adult)+int(i.children)+int(adult)+int(children) > store_query.seat:
                 event_sub_arr['title'] = i.time_session
-                event_sub_arr['start'] = i.bk_st
+                event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'red'
             else:
                 event_sub_arr['title'] = i.time_session
-                event_sub_arr['start'] = i.bk_st
+                event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'green'
             event_sub_arr['textColor'] = 'white'
             event_arr.append(event_sub_arr)
