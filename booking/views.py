@@ -256,19 +256,18 @@ def getCalendar(request):
         store_id = request.POST.get('store_id', None)
         start_month = request.POST.get('start_month', None)
         end_month = request.POST.get('end_month', None)
-        adults = request.POST.get('adults', None)
+        adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
-
+        
         # Convert string to time
         start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
         end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
+
         # The days between start and end
         # days = (end_month-start_month).days()
-
-        store_query = Store.objects.only('seat').select_for_update().get(
+        store_query = Store.objects.only('seat').get(
             store_id=store_id
         )
-
         bookinglist = BkList.objects.filter(
             store_id=store_id,
             bk_date__range=(start_month, end_month),
@@ -282,7 +281,7 @@ def getCalendar(request):
                 event_sub_arr['title'] = i.time_session+i.event_type
                 event_sub_arr['start'] = i.bk_st
                 event_sub_arr['backgroundColor'] = 'red'
-            elif int(i.adult)+int(i.children)+int(adults)+int(children) > store_query.seat:
+            elif int(i.adult)+int(i.children)+int(adult)+int(children) > store_query.seat:
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_st
                 event_sub_arr['backgroundColor'] = 'red'
@@ -292,8 +291,7 @@ def getCalendar(request):
                 event_sub_arr['backgroundColor'] = 'green'
             event_sub_arr['textColor'] = 'white'
             event_arr.append(event_sub_arr)
-
-        return JsonResponse(event_arr)
+        return JsonResponse({'result':event_arr})
     except Exception as e:
         return JsonResponse({'error': e})
 
