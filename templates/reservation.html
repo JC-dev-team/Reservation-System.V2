@@ -181,9 +181,6 @@
                 right: 'next'
             },
             //Header - Title format
-            // titleFormat: {
-            //     year: 'numeric', month: '2-digit'
-            // },
             titleFormat: 'YYYY  MM月',
             //Show none current date (False)
             showNonCurrentDates: false,
@@ -238,15 +235,15 @@
             ],
 
         });
-        var event = calendar.getEvents()
-        var tmp = 0
-        for (var i = 0; i < event.length; i++) {
-            var start = event[i].start
-            tmp +=1
-            console.log(start)
+        var event = calendar.getEvents('2019-10-10')
+        var remove =  event.remove()
+        // for (var i = 0; i < event.length; i++) {
+        //     var start = event[i].start
+        //     tmp +=1
+        //     console.log(start)
            
-        }
-        console.log(tmp)
+        // }
+        console.log(remove)
         calendar.render();
 
 
