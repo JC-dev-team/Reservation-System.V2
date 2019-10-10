@@ -29,12 +29,12 @@ def ClientAuthentication(social_id, social_app):  # Account Check Auth
             return None
         else:   # parameter not None
             with transaction.atomic():  # transaction
-                queryset = Account.objects.select_for_update().get(
+                User = Account.objects.select_for_update().get(
                     social_id=social_id,
                     social_app=social_app,
                 )
                 # serializer = Acc_Serializer(queryset)
-                return queryset
+                return User
     except Account.DoesNotExist:  # Account Not Exist
         return False
     except Exception as e:

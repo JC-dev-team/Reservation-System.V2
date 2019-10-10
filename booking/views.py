@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from .models import ActionLog, BkList, Account, Production, Staff, Store
 from .serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
@@ -8,10 +9,13 @@ from rest_framework.renderers import JSONOpenAPIRenderer, BrowsableAPIRenderer, 
 from rest_framework.permissions import IsAuthenticated, BasePermission
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from django.http import Http404
-from . import auth 
+from django.http import Http404, HttpResponse
+from . import auth
+import json
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
+# from django.contrib.auth import login, logout
+# from django.contrib.auth.decorators import login_required
 # ----- Class site ----------------------
 
 
@@ -72,7 +76,7 @@ def staff_checkbooking(request):
 
 def staff_approval_booking(request):
     try:
-        bk_id = request.POST.get('bk_id',None)
+        bk_id = request.POST.get('bk_id', None)
         pass
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
@@ -91,6 +95,7 @@ class AccountViewSet(viewsets.ModelViewSet):  # api get account data
         return query_set
 
 # Definition site ------------------------------------------------
+
 
 def ToBookingView(request):  # The member.html via here in oreder to enroll new member
     try:
@@ -111,12 +116,13 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                 social_id=social_id,
                 social_app=social_app
             )
-        
+
         serializer_class = Acc_Serializer(queryset)
         # render html
         return render(request, 'reservation.html', {'data': serializer_class.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})  # render html
+
 
 def booking_list(request):  # the booking list
     try:
@@ -190,32 +196,35 @@ def booking_list(request):  # the booking list
         return render(request, 'error/error.html', {'error': e})
 
 
-def login(request):
+def login_portal(request):
     return render(request, 'login.html',)
 
 
 def reservation(request):
     return render(request, 'reservation.html')
 
+
 def test_check_reservation(request):
     return render(request, 'test_check_reservation.html')
 
 
 def member(request):
-    try: # Check Login
+    try:  # Check Login
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
-        result = auth.ClientAuthentication(social_id, social_app) # queryset or something else
+        result = auth.ClientAuthentication(
+            social_id, social_app)  # queryset or something else
         if result == None:  # Using PC or No social login
             return redirect('/booking/login/',)
         elif result == False:  # Account Not Exist
             return render(request, 'member.html',)
             # return redirect(reverse('member'),args=())
-        # elif list(result.keys())[0] == 'error':  # error occurred
-        #     return render(request, 'error/error.html', {'error': result['error']})
+        # error occurred the type of result is {'error' : error}
+        elif type(result) == dict:
+            return render(request, 'error/error.html', {'error': result['error']})
         else:  # Account Exist
             serializer = Acc_Serializer(result)
-            # request.session['member_id'] = result.user_id
+            request.session['member_id'] = result.user_id
             return render(request, 'reservation.html', {'data': serializer.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
@@ -242,9 +251,72 @@ def check_reservation(request):
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
+
 def getCalendar(request):
     try:
-        pass
+        store_id = request.POST.get('store_id', None)
+        start_month = request.POST.get('start_month', None)
+        end_month = request.POST.get('end_month', None)
+        adults = request.POST.get('adults', None)
+        children = request.POST.get('children', None)
+
+        # Convert string to time
+        start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
+        end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
+        # The days between start and end
+        # days = (end_month-start_month).days()
+
+        store_query = Store.objects.only('seat').select_for_update().get(
+            store_id=store_id
+        )
+
+        bookinglist = BkList.objects.filter(
+            store_id=store_id,
+            bk_date__range=(start_month, end_month),
+            is_cancel=False,
+            waiting_num=0,
+        )
+        event_arr = []
+        for i in bookinglist:
+            event_sub_arr = {}  # event dictionary noon
+            if i.entire_time == True:
+                event_sub_arr['title'] = i.time_session+i.event_type
+                event_sub_arr['start'] = i.bk_st
+                event_sub_arr['backgroundColor'] = 'red'
+            elif int(i.adult)+int(i.children)+int(adults)+int(children) > store_query.seat:
+                event_sub_arr['title'] = i.time_session
+                event_sub_arr['start'] = i.bk_st
+                event_sub_arr['backgroundColor'] = 'red'
+            else:
+                event_sub_arr['title'] = i.time_session
+                event_sub_arr['start'] = i.bk_st
+                event_sub_arr['backgroundColor'] = 'green'
+            event_sub_arr['textColor'] = 'white'
+            event_arr.append(event_sub_arr)
+
+        # for i in range(days):
+        #     event_sub_arr = {}  # event dictionary noon
+
+        #     event_sub_arr['title'] = '午餐'
+        #     event_sub_arr['start'] = (
+        #         start_month+datetime.timedelta(days=i)).strftime('%Y-%m-%d')
+        #     event_sub_arr['backgroundColor'] = 'green'
+        #     event_sub_arr['textColor'] = 'white'
+        #     event_arr.append(event_sub_arr)
+        #     event_sub_arr_n = {}  # event dictionary night
+        #     event_sub_arr_n['title'] = '晚餐'
+        #     event_sub_arr_n['start'] = (
+        #         start_month+datetime.timedelta(days=i)).strftime('%Y-%m-%d')
+        #     event_sub_arr_n['backgroundColor'] = 'green'
+        #     event_sub_arr_n['textColor'] = 'white'
+        #     event_arr.append(event_sub_arr_n)
+
+            # if bookinglist[i].entire_time == True:
+            #     event_sub_arr['title']
+
+        #     if int(i.adult)+int(i.children)+int(adults)+int(children) > store_query.seat :
+
+        return HttpResponse(json.dumps(event_arr), content_type="application/json")
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 

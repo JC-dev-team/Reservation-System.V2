@@ -27,7 +27,7 @@ router.register(r'staff', views.StaffViewSet)
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    path('login/', views.login, name='login'),
+    path('login/', views.login_portal, name='login'),
     path('member/', views.member, name='member'),
     path('reservation/', views.reservation, name='reservation'),
     # path('api/', include(router.urls)),
