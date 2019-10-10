@@ -250,7 +250,7 @@ def check_reservation(request):
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
-
+# Ajax api -------------------------------------------------------------- 
 def getCalendar(request):
     try:
         store_id = request.POST.get('store_id', None)
@@ -292,28 +292,6 @@ def getCalendar(request):
                 event_sub_arr['backgroundColor'] = 'green'
             event_sub_arr['textColor'] = 'white'
             event_arr.append(event_sub_arr)
-
-        # for i in range(days):
-        #     event_sub_arr = {}  # event dictionary noon
-
-        #     event_sub_arr['title'] = '午餐'
-        #     event_sub_arr['start'] = (
-        #         start_month+datetime.timedelta(days=i)).strftime('%Y-%m-%d')
-        #     event_sub_arr['backgroundColor'] = 'green'
-        #     event_sub_arr['textColor'] = 'white'
-        #     event_arr.append(event_sub_arr)
-        #     event_sub_arr_n = {}  # event dictionary night
-        #     event_sub_arr_n['title'] = '晚餐'
-        #     event_sub_arr_n['start'] = (
-        #         start_month+datetime.timedelta(days=i)).strftime('%Y-%m-%d')
-        #     event_sub_arr_n['backgroundColor'] = 'green'
-        #     event_sub_arr_n['textColor'] = 'white'
-        #     event_arr.append(event_sub_arr_n)
-
-            # if bookinglist[i].entire_time == True:
-            #     event_sub_arr['title']
-
-        #     if int(i.adult)+int(i.children)+int(adults)+int(children) > store_query.seat :
 
         return JsonResponse(event_arr)
     except Exception as e:
