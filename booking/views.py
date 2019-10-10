@@ -314,10 +314,10 @@ def getCalendar(request):
             #     event_sub_arr['title']
 
         #     if int(i.adult)+int(i.children)+int(adults)+int(children) > store_query.seat :
-        
+
         return JsonResponse(event_arr)
     except Exception as e:
-        return render(request, 'error/error.html', {'error': e})
+        return JsonResponse({'error': e})
 
 
 # Test function ------------------------
