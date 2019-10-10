@@ -21,80 +21,87 @@
 
 
 <div class="w3-display-container">
-<div class="container">
-    
+    <div class="container">
 
-    <div class="left-half" style="width:100%;">
-        <font size="4.5">
-            <label><i class="fa fa-male"></i> 成人</label>
-            <select class="select form-control" style='font-size:18px; height:40px;' type="number" value="" id="adult"
-                required>
-                <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
-                <option value="1">1 大</option>
-                <option value="2" selected>2 大</option>
-                <option value="3">3 大</option>
-                <option value="4">4 大</option>
-                <option value="5">5 大</option>
-                <option value="6">6 大</option>
-                <option value="7">7 大</option>
-                <option value="8">8 大</option>
-                <option value="10">10 大</option>
-                <option value="11">11 大</option>
-                <option value="12">12 大</option>
-                <option value="13">13 大</option>
-                <option value="14">14 大</option>
-                <option value="15">15 大</option>
-                <option value="16">16 大</option>
-                <option value="17">17 大</option>
-                <option value="18">18 大</option>
-                <option value="19">19 大</option>
-                <option value="20">20 大</option>
-            </select>
-        </font>
+
+        <div class="left-half" style="width:100%;">
+            <font size="4.5">
+                <label><i class="fa fa-male"></i> 成人</label>
+                <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+                    id="adult" required>
+                    <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
+                    <option value="1">1 大</option>
+                    <option value="2" selected>2 大</option>
+                    <option value="3">3 大</option>
+                    <option value="4">4 大</option>
+                    <option value="5">5 大</option>
+                    <option value="6">6 大</option>
+                    <option value="7">7 大</option>
+                    <option value="8">8 大</option>
+                    <option value="10">10 大</option>
+                    <option value="11">11 大</option>
+                    <option value="12">12 大</option>
+                    <option value="13">13 大</option>
+                    <option value="14">14 大</option>
+                    <option value="15">15 大</option>
+                    <option value="16">16 大</option>
+                    <option value="17">17 大</option>
+                    <option value="18">18 大</option>
+                    <option value="19">19 大</option>
+                    <option value="20">20 大</option>
+                </select>
+            </font>
+        </div>
+        <br>
+        <div class="right-half" style="width:100%;">
+            <font size="4.5">
+                <label><i class="fa fa-child"></i> 兒童</label>
+                <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+                    id="children" required>
+                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                    <option value="0" selected>0 小</option>
+                    <option value="1">1 小</option>
+                    <option value="2">2 小</option>
+                    <option value="3">3 小</option>
+                    <option value="4">4 小</option>
+                    <option value="5">5 小</option>
+                    <option value="6">6 小</option>
+                    <option value="7">7 小</option>
+                    <option value="8">8 小</option>
+                    <option value="9">9 小</option>
+                    <option value="10">10 小</option>
+                </select>
+            </font>
+        </div>
     </div>
-    <br>
-    <div class="right-half" style="width:100%;">
-        <font size="4.5">
-            <label><i class="fa fa-child"></i> 兒童</label>
-            <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                id="children" required>
-                <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                <option value="0" selected>0 小</option>
-                <option value="1">1 小</option>
-                <option value="2">2 小</option>
-                <option value="3">3 小</option>
-                <option value="4">4 小</option>
-                <option value="5">5 小</option>
-                <option value="6">6 小</option>
-                <option value="7">7 小</option>
-                <option value="8">8 小</option>
-                <option value="9">9 小</option>
-                <option value="10">10 小</option>
-            </select>
-        </font>
-    </div>
-</div>
 
     <font size='4'>
         <button id="people_number_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding">
-                <i class="fa fa-search"></i> 查詢空位</button>
+            <i class="fa fa-search"></i> 查詢空位</button>
     </font>
 </div>
 <hr>
 <div id='calendar-container' class="container" style="display: none">
-        <div id='calendar'></div>
-    </div>
+    <div id='calendar'></div>
+</div>
 
 <script>
+    //csrf_ajax
+    $.ajaxSetup({
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+    });
+
     function people_number() {
         $.ajax({
             type: 'POST',
             url: '/booking/getCalendar/',
             data: data,
-            success: function(){
+            success: function () {
 
             },
-            error: function(){
+            error: function () {
 
             }
 
@@ -113,22 +120,7 @@
     }
     //ready
     $(function () {
-        $('#people_number_submit').click(function(e) {
-            var status = true;
-            var adult = $('#adult').val();
-            var child = $('#children').val();
-            
-            if (status) {
-                var data = {
-                    'adult': adult,
-                    'children': child,
-                    'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
-                }
-                //people_number(data) 
-            }
-            $('#calendar-container').css('display', 'inline')
 
-        })
         $('#displayName').html('{{ data.username }}');
         $('#displayPhone').html('{{ data.phone }}');
 
@@ -138,7 +130,7 @@
         });
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
+    $(function () {
         var calendarEl = document.getElementById('calendar');
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -169,8 +161,11 @@
             },
             //Plugins - 'interaction','dayGrid'
             plugins: ['interaction', 'dayGrid', 'moment'],
+            editable: true,
             //Default View
             defaultView: 'dayGridMonth',
+            //defaultDate
+            defaultDate: (new Date()).toISOString().slice(0, 10),
             //Height
             height: 'auto',
             contentHeight: 500,
@@ -222,66 +217,67 @@
                     textColor: 'white',
                     daysOfWeek: [1]
                 },
-                // {
-                //     id: '3',
-                //     title: '午餐3',
-                //     start: '2019-10-10',
-                //     backgroundColor: 'green',
-                //     textColor: 'white',
-
-                // }
-
 
             ],
 
+            eventRender: function (info) {
+                var start = info.event.start
+                var title = info.event.title
+                var color = info.event.backgroundColor
+                var time = (new Date(start)).toISOString().slice(0, 10)
+                
+                if (time == '2019-10-09' && title == '午餐') {
+                    info.el.style.backgroundColor = 'red'
+                    
+                    console.log(info.el.style.backgroundColor)
+                    // console.log(info.event.backgroundColor)
+                    // console.log(color)
+                    // console.log(time)
+
+                }
+
+            }
+            // eventClick: function (info) {
+            //     alert('Event: ' + info.event.title);
+            //     alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+            //     alert('View: ' + info.view.type);
+
+            //     // change the border color just for fun
+            //     info.el.style.borderColor = 'red';
+            // }
+
         });
-        var event = calendar.getEvents('2019-10-10')
-        var remove =  event.remove()
-        // for (var i = 0; i < event.length; i++) {
-        //     var start = event[i].start
-        //     tmp +=1
-        //     console.log(start)
-           
-        // }
-        console.log(remove)
+
+
         calendar.render();
 
 
+        $('#people_number_submit').click(function (e) {
+
+            calendar.rerenderEvents()
+            var status = true;
+            var adult = $('#adult').val();
+            var child = $('#children').val();
+            var start_month = moment().format('YYYY-MM-DD');
+            var end_month = moment().endOf('month').format('YYYY-MM-DD');
+            if (moment().startOf('month').format('YYYY-MM') != moment().format('YYYY-MM')) {
+                start_month = moment().startOf('month').format('YYYY-MM-DD');
+            }
+
+            if (status) {
+                var data = {
+                    'adult': adult,
+                    'children': child,
+                    'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+                    'start_month': start_month,
+                    'end_month': end_month,
+                }
+                //people_number(data) 
+            }
+            $('#calendar-container').css('display', 'inline')
+
+        })
+
     });
-
-    // $(document).ready(function () {
-    //     $('#calendar').fullCalendar({
-    //         dayClick: function (date, jsEvent, view) {
-
-    //             // change the day's background color just for fun
-    //             $(this).css('background-color', 'red');
-    //         },
-    //         locale: 'zh-tw',
-    //         plugins: ['bootstrap'],
-    //         themeSystem: 'bootstrap',
-    //         header: {
-    //             left: 'prev',
-    //             center: 'title',
-    //             right: 'next'
-    //         },
-    //         defaultView: 'month',
-    //         events: [{
-
-    //             startTime: '10:00', // a start time (10am in this example)
-    //             endTime: '18:00', // an end time (6pm in this example)
-    //             daysOfWeek: [1, 2, 3, 4],
-
-
-
-    //         }, ]
-
-    //         // eventAfterAllRender: function (view) {
-    //         //     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator
-    //         //             .userAgent)) {
-    //         //         $('#calendar').fullCalendar('changeView', 'month');
-    //         //     } //IF MOBILE CHANGE VIEW TO AGENDA DAY
-    //         // }
-    //     });
-    // });
 </script>
 {% endblock %}
