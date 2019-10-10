@@ -94,7 +94,7 @@
     });
 
     function people_number(data) {
-        
+
         $.ajax({
             type: 'POST',
             url: '/booking/getCalendar/',
@@ -102,8 +102,8 @@
             success: function (response) {
                 console.log(response)
             },
-            error: function () {
-
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown)
             }
 
         })
@@ -237,12 +237,12 @@
                 var title = info.event.title
                 var color = info.event.backgroundColor
                 var time = (new Date(start)).toISOString().slice(0, 10)
-                
+
                 if (time == '2019-10-09' && title == '午餐') {
                     info.el.style.backgroundColor = 'red'
-                    
-                    
-                    
+
+
+
 
                 }
 
@@ -254,10 +254,10 @@
 
         calendar.render();
 
-
+        //button Click
         $('#people_number_submit').click(function (e) {
 
-            calendar.rerenderEvents()
+            //ajax data
             var status = true;
             var adult = $('#adult').val();
             var child = $('#children').val();
@@ -267,6 +267,7 @@
                 start_month = moment().startOf('month').format('YYYY-MM-DD');
             }
 
+
             if (status) {
                 var data = {
                     'adult': adult,
@@ -275,10 +276,13 @@
                     'start_month': start_month,
                     'end_month': end_month,
                 }
-                
-                people_number(data) 
+                // do ajax fuction
+                people_number(data)
+                //rerenderEvents
+                calendar.rerenderEvents()
+                $('#calendar-container').css('display', 'inline')
             }
-            $('#calendar-container').css('display', 'inline')
+
 
         })
 
