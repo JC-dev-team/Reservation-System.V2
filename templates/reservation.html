@@ -77,14 +77,15 @@
                     onclick="priceClick(this)">
 
 
-            </font>
+            
             <br>
             <button class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">確定送出 <i
                     class="fa fa-check"></i></button>
             <button class="w3-button w3-red w3-section"
                 onclick="document.getElementById('information_Modal').style.display='none'">關閉 <i
                     class="fa fa-remove"></i></button>
-            <p class="w3-right">Need <a href="#" class="w3-text-blue">help?</a></p>
+            <p class="w3-right">聯絡我們 <a href="tel:0936336233" class="w3-text-blue">0936336233</a></p>
+        </font>
         </div>
     </div>
 </div>
@@ -378,7 +379,7 @@
 
 
     //button Click
-    $('#people_number_submit').click(function (e) {
+    $('#people_number_submit, .fc-button-primary').click(function (e) {
         console.log('people_number_submit.click()')
         //ajax data
         var status = true;
