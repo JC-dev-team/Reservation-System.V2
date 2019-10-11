@@ -194,12 +194,11 @@
             data: data,
             success: function (response) {
                 console.log(response)
-                //insert Modal of date
-                document.getElementById('modal_date').innerHTML =
-                    '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' + start
+                var lunch_status = response.lunch_status
+                var dinner_status = response.dinner_status
                 //insert Modal of state
                 document.getElementById('modal_status').innerHTML =
-                    '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + title + ' : '
+                    '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + '<br>' + lunch_status + ' / ' + dinner_status
                 //Show the Modal
                 document.getElementById('information_Modal').style.display = 'inline'
             },
@@ -327,17 +326,17 @@
             eventMouseEnter: function (info) {
                 var adult = $('#adult').val();
                 var child = $('#children').val();
-                console.log(adult,child)
+                
                 console.log(info)
                 var evMousEnter_st = info.event.start
                 var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
                 var title = info.event.title
                 var color = info.el.style.backgroundColor
-                // if (color == 'green') {
-                //    var status_color = '可訂位'
-                // }else {
-                //     status_color = '候補'
-                // }
+
+                //insert Modal of date
+                document.getElementById('modal_date').innerHTML =
+                    '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' + start
+
                 //ajax eventClick_sendDate(data)
                 var data = {
                     'adult': adult,
