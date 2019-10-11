@@ -1,6 +1,8 @@
 .vscode
 softway_sys/__pycache__
 booking/__pycache__
+admin/__pycache__
+checkreservation/__pycache__
 booking/migrations/__pycache__
 checkbooking/__pycache__
 checkbooking/migrations/__pycache__
