@@ -268,12 +268,19 @@ def getCalendar(request):
         store_query = Store.objects.only('seat').get(
             store_id=store_id
         )
-        bookinglist = BkList.objects.filter(
+        # Get waiting list
+        bk_queryset = BkList.objects.filter( # get all available waiting_num
             store_id=store_id,
             bk_date__range=(start_month, end_month),
             is_cancel=False,
+            
+        )
+
+        # get all orded reservation
+        bookinglist = bk_queryset.filter( # filter waiting_num != 0
             waiting_num=0,
         )
+
         event_arr = []
         for i in bookinglist:
             event_sub_arr = {}  # event dictionary noon
@@ -289,9 +296,11 @@ def getCalendar(request):
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'green'
-            event_sub_arr['textColor'] = 'white'
             event_arr.append(event_sub_arr)
-        return JsonResponse({'result':event_arr})
+        
+        # make waiting_num list
+
+        return JsonResponse({'result':event_arr,})
     except Exception as e:
         return JsonResponse({'error': e})
 

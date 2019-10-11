@@ -74,7 +74,6 @@
             </font>
         </div>
     </div>
-
     <font size='4'>
         <button id="people_number_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding">
             <i class="fa fa-search"></i> 查詢空位</button>
@@ -101,6 +100,7 @@
             data: data,
             success: function (response) {
                 console.log(response.result)
+                
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {

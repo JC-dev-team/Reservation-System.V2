@@ -61,6 +61,8 @@ class BkList(models.Model):
     is_cancel = models.IntegerField()
     waiting_num = models.PositiveIntegerField()
     entire_time = models.IntegerField()
+    bk_price = models.PositiveIntegerField()
+
     class Meta:
         app_label = 'booking'
         db_table = 'bk_list___db'
@@ -86,7 +88,8 @@ class Staff(models.Model):
     social_id = models.CharField(max_length=45)
     social_app = models.CharField(max_length=45, blank=True, null=True)
     staff_name = models.CharField(max_length=45)
-    staff_id_num = models.CharField(unique=True, max_length=10, blank=True, null=True)
+    staff_id_num = models.CharField(
+        unique=True, max_length=10, blank=True, null=True)
     staff_phone = models.CharField(max_length=10, blank=True, null=True)
     staff_birth = models.DateField(blank=True, null=True)
     staff_gender = models.CharField(max_length=45)
