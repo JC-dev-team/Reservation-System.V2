@@ -181,6 +181,7 @@
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.log(XMLHttpRequest)
                 console.log(errorThrown)
+                window.location.replace('/booking/error/');
             }
 
         })
@@ -351,7 +352,7 @@
         if (moment().startOf('month').format('YYYY-MM') != moment().format('YYYY-MM')) {
             start_month = moment().startOf('month').format('YYYY-MM-DD');
         }
-
+        
         if (status) {
             var data = {
                 'adult': adult,
