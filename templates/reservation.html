@@ -3,7 +3,7 @@
 <!-- include 'header.html' -->
 <!-- Headmessage-->
 {% block headmessage %}
-<div class="w3-center">
+<div class='w3-center'>
     <h3><b>舒微生活訂位</b></h3>
 </div>
 {% endblock %}
@@ -18,11 +18,78 @@
     </form>
 </div> -->
 
+<!-- Modal -->
+<div id="information_Modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+        <header class="w3-container w3-teal w3-center w3-padding-32">
+            <span onclick="document.getElementById('information_Modal').style.display='none'"
+                class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
+            <h2 class="w3-wide"><i class="fa fa-bell"></i> 訂位資訊</h2>
+        </header>
+        <div class="w3-container">
+            <br>
+            <font size="4">
+                <!-- Date-->
+                <p id='final_date'></p>
+                <!-- Time-->
+                <label><i class="fa fa-clock-o"></i> 時段(必選)： </label>
+                <!-- Time Button-->
+                <!-- <input type="button" class="w3-btn w3-border w3-round-large w3-normal" value="中餐"
+                    onclick="priceClick(this)">
+                <input type="button" class="w3-btn w3-border w3-round-large w3-normal" value="晚餐"
+                    onclick="priceClick(this)"> -->
+                <!-- Time Select-->
+                <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+                    id="children" required>
+                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                    <option value="1" selected>中午：11:00</option>
+                    <option value="2">中午：11:30</option>
+                    <option value="3">中午：12:00</option>
+                    <option value="4">中午：12:30</option>
+                    <option value="5">中午：13:00</option>
+                    <option value="6">中午：13:30</option>
+                    <option selected disabled hidden>------</option>
+                    <option value="1">晚上：17:00</option>
+                    <option value="2">晚上：17:30</option>
+                    <option value="3">晚上：18:00</option>
+                    <option value="4">晚上：18:30</option>
+                    <option value="5">晚上：19:00</option>
+                    <option value="6">晚上：19:30</option>
+                    
+                </select>
+                <!-- <input class="w3-input w3-border" type="text" placeholder="How many?">
+            <input class="w3-input w3-border" type="text" placeholder="Enter email"> -->
+                <br>
+                <!-- Price-->
+                <p><label><i class="fa fa-usd"></i> 價位/每人(必選)：</label></p>
+                <input id="price" style="display: none" value="" required>
+                <input type="button" name="price" class="w3-btn w3-border w3-round-large w3-normal" value="$500"
+                    onclick="priceClick(this)">
+                <input type="button" name="price" class="w3-btn w3-border w3-round-large w3-normal" value="$600"
+                    onclick="priceClick(this)">
+                <input type="button" name="price" class="w3-btn w3-border w3-round-large w3-normal" value="$800"
+                    onclick="priceClick(this)">
+                <input type="button" name="price" class="w3-btn w3-border w3-round-large w3-normal" value="$1000"
+                    onclick="priceClick(this)">
+                <input type="button" name="price" class="w3-btn w3-border w3-round-large w3-normal" value="$1200"
+                    onclick="priceClick(this)">
+
+
+            </font>
+            <br>
+            <button class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">確定送出 <i
+                    class="fa fa-check"></i></button>
+            <button class="w3-button w3-red w3-section"
+                onclick="document.getElementById('information_Modal').style.display='none'">關閉 <i
+                    class="fa fa-remove"></i></button>
+            <p class="w3-right">Need <a href="#" class="w3-text-blue">help?</a></p>
+        </div>
+    </div>
+</div>
 
 
 <div class="w3-display-container">
     <div class="container">
-
 
         <div class="left-half" style="width:100%;">
             <font size="4.5">
@@ -81,7 +148,7 @@
     </font>
 </div>
 <hr>
-<div id='calendar-container' class="container" style="display: none">
+<div id='cc' class="container">
     <div id='calendar'></div>
 </div>
 
@@ -93,15 +160,18 @@
         },
     });
 
-    function people_number(data) {
+    function people_number(data, calendar) {
 
         $.ajax({
             type: 'POST',
             url: '/booking/getCalendar/',
             data: data,
             success: function (response) {
-                console.log(response.result)
-
+                result = response.result
+                // console.log(result)
+                //Function of calendar (return calendar.render())
+                calendar_fun(result)
+                
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.log(errorThrown)
@@ -120,21 +190,10 @@
             $('#img').attr('src', profile.pictureUrl);
         })
     }
-    //ready
-    $(function () {
 
-        $('#displayName').html('{{ data.username }}');
-        $('#displayPhone').html('{{ data.phone }}');
-
-        //init LIFF
-        liff.init(function (data) {
-            initializeApp(data);
-        });
-    });
-
-    $(function () {
+    function calendar_fun(result) {
+        document.getElementById('calendar').innerHTML = ''
         var calendarEl = document.getElementById('calendar');
-
         var calendar = new FullCalendar.Calendar(calendarEl, {
             //ColumnHeaderText
             columnHeaderText: function (date) {
@@ -185,14 +244,7 @@
             //Date selectable (true)
             selectable: true,
 
-            //Function
-            dateClick: function (info) {
-                alert('clicked ' + info.dateStr);
-            },
-
-            events: [
-
-                {
+            events: [{
                     id: '1',
                     title: '午餐',
                     start: new Date(),
@@ -223,70 +275,96 @@
             ],
 
             eventRender: function (info) {
-                // $.ajax({
-                //     type: 'POST',
-                //     url: '/booking/getCalendar/',
-                //     data: '',
-                //     success: function (){
-
-                //     },
-                //     error: function (){
-
-                //     }
-                // })
-                var start = info.event.start
+                var st = info.event.start
+                var start = (new Date(st).addDays(1)).toISOString().slice(0, 10)
                 var title = info.event.title
                 var color = info.event.backgroundColor
-                var time = (new Date(start)).toISOString().slice(0, 10)
-
-                if (time == '2019-10-09' && title == '午餐') {
-                    info.el.style.backgroundColor = 'red'
-
-
-
-
+                // console.log(info.event)
+                // console.log(result[0].title)
+                for (var i = 0; i < result.length; i++) {
+                    if (result[i].start == start && result[i].title == title && result[i].backgroundColor ==
+                        'red') {
+                        info.el.style.backgroundColor = 'red'
+                    }
                 }
+            },
 
+            //Function
+            dateClick: function (info) {
+                console.log('dateClick: ' + info)
+
+            },
+            eventMouseEnter: function (info) {
+                console.log(info)
+                var evMousEnter_st = info.event.start
+                var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
+                //insert the html of Modal's date
+                document.getElementById('final_date').innerHTML = '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' + start
+                //Show the Modal
+                document.getElementById('information_Modal').style.display = 'inline'
             }
 
 
         });
 
-
         calendar.render();
 
-        //button Click
-        $('#people_number_submit').click(function (e) {
-
-            //ajax data
-            var status = true;
-            var adult = $('#adult').val();
-            var child = $('#children').val();
-            var start_month = moment().format('YYYY-MM-DD');
-            var end_month = moment().endOf('month').format('YYYY-MM-DD');
-            if (moment().startOf('month').format('YYYY-MM') != moment().format('YYYY-MM')) {
-                start_month = moment().startOf('month').format('YYYY-MM-DD');
-            }
 
 
-            if (status) {
-                var data = {
-                    'adult': adult,
-                    'children': child,
-                    'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
-                    'start_month': start_month,
-                    'end_month': end_month,
-                }
-                // do ajax fuction
-                people_number(data)
-                //rerenderEvents
-                calendar.rerenderEvents()
-                $('#calendar-container').css('display', 'inline')
-            }
 
+    }
 
-        })
+    //ready
+    $(function () {
+        Date.prototype.addDays = function (days) {
+            var date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        }
 
+        $('#displayName').html('{{ data.username }}');
+        $('#displayPhone').html('{{ data.phone }}');
+
+        //init LIFF
+        liff.init(function (data) {
+            initializeApp(data);
+        });
     });
+
+
+
+    //button Click
+    $('#people_number_submit').click(function (e) {
+        console.log('people_number_submit.click()')
+        //ajax data
+        var status = true;
+        var adult = $('#adult').val();
+        var child = $('#children').val();
+        var start_month = moment().format('YYYY-MM-DD');
+        var end_month = moment().endOf('month').format('YYYY-MM-DD');
+        if (moment().startOf('month').format('YYYY-MM') != moment().format('YYYY-MM')) {
+            start_month = moment().startOf('month').format('YYYY-MM-DD');
+        }
+
+        if (status) {
+            var data = {
+                'adult': adult,
+                'children': child,
+                'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+                'start_month': start_month,
+                'end_month': end_month,
+            }
+            //Clean the calendar
+            document.getElementById('calendar').innerHTML = ''
+            document.getElementById('calendar').innerHTML =
+                '<div class="w3-center"><font size="10"><img src=\'{% static "/images/Spinner01.svg" %}\' /></font></div>'
+
+            // do ajax fuction
+            people_number(data)
+
+        }
+
+
+    })
 </script>
 {% endblock %}
