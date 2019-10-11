@@ -30,7 +30,9 @@
             <br>
             <font size="4">
                 <!-- Date-->
-                <p id='final_date'></p>
+                <p id='modal_date'></p>
+                <!-- State-->
+                <p id='modal_status'></p>
                 <!-- Time-->
                 <label><i class="fa fa-clock-o"></i> 時段(必選)： </label>
                 <!-- Time Button-->
@@ -48,7 +50,7 @@
                     <option value="4">中午：12:30</option>
                     <option value="5">中午：13:00</option>
                     <option value="6">中午：13:30</option>
-                    <option selected disabled hidden>------</option>
+                    <option disabled>------------</option>
                     <option value="1">晚上：17:00</option>
                     <option value="2">晚上：17:30</option>
                     <option value="3">晚上：18:00</option>
@@ -160,7 +162,6 @@
     });
 
     function people_number(data, calendar) {
-
         $.ajax({
             type: 'POST',
             url: '/booking/getCalendar/',
@@ -182,6 +183,21 @@
                 console.log(XMLHttpRequest)
                 console.log(errorThrown)
                 window.location.replace('/booking/error/');
+            }
+
+        })
+    }
+
+    function eventClick_sendDate(data) {
+        $.ajax({
+            type: 'POST',
+            url: '/booking/getWaitingList/',
+            data: data,
+            success: function (response) {
+
+            },
+            error: function (response) {
+
             }
 
         })
@@ -305,8 +321,24 @@
                 console.log(info)
                 var evMousEnter_st = info.event.start
                 var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
-                //insert the html of Modal's date
-                document.getElementById('final_date').innerHTML = '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' + start
+                var title = info.event.title
+                var color = info.el.style.backgroundColor
+                // if (color == 'green') {
+                //    var status_color = '可訂位'
+                // }else {
+                //     status_color = '候補'
+                // }
+                //ajax eventClick_sendDate(data)
+                var data = {
+                    'event_date': start,
+                    'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'
+                }
+                eventClick_sendDate(data)
+
+                //insert Modal of date
+                document.getElementById('modal_date').innerHTML = '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' + start
+                //insert Modal of state
+                document.getElementById('modal_status').innerHTML = '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + title + ' : ' + status_color
                 //Show the Modal
                 document.getElementById('information_Modal').style.display = 'inline'
             }
