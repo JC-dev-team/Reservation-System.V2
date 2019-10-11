@@ -200,7 +200,6 @@ def getWaitingList(request):  # get waiting list
         store_id = request.POST.get('store_id', None)
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
-
         store_query = Store.objects.only('seat').get(
             store_id=store_id
         )
@@ -219,13 +218,20 @@ def getWaitingList(request):  # get waiting list
             waiting_num=0,
             time_session='晚餐'
         )
+        noon_count=0
+        for i in bk_list_noon:
+            noon_count+=int(i.children)+int(i.adult)
 
-        if int(bk_list_noon.children)+int(bk_list_noon.adult)+int(adult)+int(children) > store_query.seat:
+        night_count=0
+        for i in bk_list_night:
+            night_count+=int(i.children)+int(i.adult)
+
+        if  noon_count > store_query.seat:
             status_noon = 'red'
         else:
             status_noon = 'green'
 
-        if int(bk_list_night.children)+int(bk_list_night.adult)+int(adult)+int(children) > store_query.seat:
+        if night_count > store_query.seat:
             status_night = 'red'
         else:
             status_night = 'green'
@@ -251,7 +257,7 @@ def getWaitingList(request):  # get waiting list
 
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
-        return JsonResponse({'error': e})
+        return JsonResponse({'error': '發生未知錯誤'})
 
 
 def getCalendar(request):  # full calendar
@@ -306,7 +312,7 @@ def getCalendar(request):  # full calendar
 
         return JsonResponse({'result': event_arr})
     except Exception as e:
-        return JsonResponse({'error': e})
+        return JsonResponse({'error': '發生未知錯誤'})
 
 
 # Test function ------------------------
