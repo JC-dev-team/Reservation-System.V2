@@ -77,15 +77,15 @@
                     onclick="priceClick(this)">
 
 
-            
-            <br>
-            <button class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">確定送出 <i
-                    class="fa fa-check"></i></button>
-            <button class="w3-button w3-red w3-section"
-                onclick="document.getElementById('information_Modal').style.display='none'">關閉 <i
-                    class="fa fa-remove"></i></button>
-            <p class="w3-right">聯絡我們 <a href="tel:0936336233" class="w3-text-blue">0936336233</a></p>
-        </font>
+
+                <br>
+                <button class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">確定送出 <i
+                        class="fa fa-check"></i></button>
+                <button class="w3-button w3-red w3-section"
+                    onclick="document.getElementById('information_Modal').style.display='none'">關閉 <i
+                        class="fa fa-remove"></i></button>
+                <p class="w3-right">聯絡我們 <a href="tel:0936336233" class="w3-text-blue">0936336233</a></p>
+            </font>
         </div>
     </div>
 </div>
@@ -93,12 +93,12 @@
 
 <div class="w3-display-container">
     <div class="container">
-
+        <input id="date_num" value="0" type="text" style="display: none">
         <div class="left-half" style="width:100%;">
             <font size="4.5">
                 <label><i class="fa fa-male"></i> 成人</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    id="adult" required>
+                    id="adult" disabled='disabled'>
                     <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
                     <option value="1">1 大</option>
                     <option value="2" selected>2 大</option>
@@ -127,7 +127,7 @@
             <font size="4.5">
                 <label><i class="fa fa-child"></i> 兒童</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    id="children" required>
+                    id="children" disabled='disabled'>
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
                     <option value="0" selected>0 小</option>
                     <option value="1">1 小</option>
@@ -150,8 +150,15 @@
     </font>
 </div>
 <hr>
-<div id='cc' class="container">
-    <div id='calendar'></div>
+<div id='calendar_container' class="container" style='display: none'>
+    <p>
+        <font color="red">紅色</font>：已額滿(可後補）
+    </p>
+    <p>
+        <font color="green">綠色</font>：可訂位
+    </p>
+    <div id='calendar'>
+    </div>
 </div>
 
 <script>
@@ -162,7 +169,7 @@
         },
     });
 
-    function people_number(data, calendar) {
+    function people_number(data,num,calendar) {
         $.ajax({
             type: 'POST',
             url: '/booking/getCalendar/',
@@ -175,7 +182,8 @@
                     result = response.result
                     // console.log(result)
                     //Function of calendar (return calendar.render())
-                    calendar_fun(result)
+                    calendar_fun(result,num)
+                    
                 }
 
             },
@@ -188,6 +196,33 @@
         })
     }
 
+    // function people_number(data, calendar) {
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '/booking/getCalendar/',
+    //         data: data,
+    //         success: function (response) {
+    //             if (response.error != null) {
+    //                 // console.log(response.error)
+    //                 window.location.replace('/booking/error/');
+    //             } else {
+    //                 result = response.result
+    //                 // console.log(result)
+    //                 //Function of calendar (return calendar.render())
+    //                 calendar_fun(result, 'rerender')
+                    
+    //             }
+
+    //         },
+    //         error: function (XMLHttpRequest, textStatus, errorThrown) {
+    //             console.log(XMLHttpRequest)
+    //             console.log(errorThrown)
+    //             window.location.replace('/booking/error/');
+    //         }
+
+    //     })
+    // }
+
     function eventClick_sendDate(data) {
         $.ajax({
             type: 'POST',
@@ -199,7 +234,8 @@
                 var dinner_status = response.dinner_status
                 //insert Modal of state
                 document.getElementById('modal_status').innerHTML =
-                    '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + '<br>' + lunch_status + ' / ' + dinner_status
+                    '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + '<br>' + lunch_status +
+                    ' / ' + dinner_status
                 //Show the Modal
                 document.getElementById('information_Modal').style.display = 'inline'
             },
@@ -221,8 +257,9 @@
         })
     }
 
-    function calendar_fun(result) {
+    function calendar_fun(result,num=0) {
         document.getElementById('calendar').innerHTML = ''
+        document.getElementById('calendar_container').style.display = 'inline'
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             //ColumnHeaderText
@@ -256,7 +293,7 @@
             //Default View
             defaultView: 'dayGridMonth',
             //defaultDate
-            defaultDate: (new Date()).toISOString().slice(0, 10),
+            defaultDate: (new Date().addMonths(num)).toISOString().slice(0, 10),
             //Height
             height: 'auto',
             contentHeight: 500,
@@ -299,7 +336,8 @@
                     startRecur: new Date(),
                     backgroundColor: 'red',
                     textColor: 'white',
-                    daysOfWeek: [1]
+                    daysOfWeek: [1],
+
                 },
 
             ],
@@ -327,13 +365,18 @@
             eventMouseEnter: function (info) {
                 var adult = $('#adult').val();
                 var child = $('#children').val();
-                
+
                 console.log(info)
                 var evMousEnter_st = info.event.start
                 var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
                 var title = info.event.title
                 var color = info.el.style.backgroundColor
 
+                //Monday disable
+                if (title == '店休') {
+                    alert('週一店休喔！！')
+                    return false
+                }
                 //insert Modal of date
                 document.getElementById('modal_date').innerHTML =
                     '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' + start
@@ -344,52 +387,35 @@
                     'children': child,
                     'event_date': start,
                     'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
-                    
+
                 }
                 eventClick_sendDate(data)
 
 
             }
         });
+        return calendar.render();
+        // if (action == 'render') {
+        //     return calendar.render();
+        // }
+        // if (action == 'rerenderEvents') {
+        //     return calendar.rerenderEvents()
+        // };
 
-        calendar.render();
-
-
-
-
+       
     }
 
-    //ready
-    $(function () {
-        Date.prototype.addDays = function (days) {
-            var date = new Date(this.valueOf());
-            date.setDate(date.getDate() + days);
-            return date;
-        }
-
-        $('#displayName').html('{{ data.username }}');
-        $('#displayPhone').html('{{ data.phone }}');
-
-        //init LIFF
-        liff.init(function (data) {
-            initializeApp(data);
-        });
-    });
-
-
-
-    //button Click
-    $('#people_number_submit, .fc-button-primary').click(function (e) {
-        console.log('people_number_submit.click()')
+    
+    function ajax_post(num=0) {
         //ajax data
         var status = true;
         var adult = $('#adult').val();
         var child = $('#children').val();
-        var start_month = moment().format('YYYY-MM-DD');
-        var end_month = moment().endOf('month').format('YYYY-MM-DD');
-        if (moment().startOf('month').format('YYYY-MM') != moment().format('YYYY-MM')) {
-            start_month = moment().startOf('month').format('YYYY-MM-DD');
-        }
+        // var Date = moment().add(1,'M')
+        var start_month = moment().add(num,'M').startOf('month').format('YYYY-MM-DD')
+        var end_month = moment().add(num,'M').endOf('month').format('YYYY-MM-DD');
+        
+        console.log(start_month,end_month)
 
         if (status) {
             var data = {
@@ -405,11 +431,67 @@
                 '<div class="w3-center"><font size="10"><img src=\'{% static "/images/Spinner01.svg" %}\' /></font></div>'
 
             // do ajax fuction
-            people_number(data)
-
+            people_number(data,num)
         }
 
 
+    }
+    //ready
+    $(function () {
+        Date.prototype.addDays = function (days) {
+            var date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        }
+        Date.prototype.addMonths = function (months) {
+            var date = new Date(this.valueOf());
+            date.setMonth(date.getMonth() + months);
+            return date;
+        }
+
+        $('#displayName').html('{{ data.username }}');
+        $('#displayPhone').html('{{ data.phone }}');
+
+        //init LIFF
+        liff.init(function (data) {
+            initializeApp(data);
+        });
+
+
+    });
+
+    
+    // $('.fc-button-primary span').click(function (e) {
+    //     $('#date').val((new Date().addMonths(1)).toISOString().slice(0, 10));
+    // })
+
+    $('body').on('click', 'button.fc-next-button', function () {
+        var num_str = $('#date_num').val()
+        var num = parseInt(num_str)+1
+        $('#date_num').val(num)
+        
+        console.log(num)
+        ajax_post(num)
     })
+
+    $('body').on('click', 'button.fc-prev-button', function () {
+        var num_str = $('#date_num').val()
+        var num = parseInt(num_str)-1
+        $('#date_num').val(num)
+
+        console.log(num)
+        ajax_post(num)
+    })
+
+    $('#people_number_submit').click(function (e) {
+        console.log('people_number_submit.click()')
+        var num = parseInt($('#date_num').val())
+        console.log(num)
+        //do the fuction of ajax_post()
+        ajax_post(num)
+
+    })
+
+
 </script>
 {% endblock %}
