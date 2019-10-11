@@ -24,6 +24,8 @@ def check_reservation(request):
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
 
+        
+
         acc_queryset = Account.objects.only('user_id').get(
             social_id=social_id,
             social_app=social_app,
@@ -37,3 +39,4 @@ def check_reservation(request):
         return render(request, 'check_reservation.html', {'data': serializer.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
+

@@ -13,6 +13,7 @@ from django.http import Http404, JsonResponse
 from . import auth
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
+
 # from django.contrib.auth import login, logout
 # from django.contrib.auth.decorators import login_required
 # ----- Class site ----------------------
@@ -86,7 +87,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         return render(request, 'error/error.html', {'error': e})  # render html
 
 
-def booking_list(request):  # the booking list
+def booking_list(request):  # insert booking list
     try:
         user_id = request.POST.get('user_id', None)
         store_id = request.POST.get('store_id', None)
@@ -99,6 +100,8 @@ def booking_list(request):  # the booking list
         event_type = request.POST.get('event_type', None)
         time_session = request.POST.get('time_session', None)
         entire_time = request.POST.get('entire_time', False)
+        bk_price = request.POST.get('price',None)
+
         is_cancel = False
         waiting_num = 0
         total = int(adult)+int(children)
@@ -150,10 +153,11 @@ def booking_list(request):  # the booking list
                     entire_time=entire_time,
                     is_cancel=is_cancel,
                     waiting_num=waiting_num,
+                    bk_price=bk_price,
                 )
                 # request.session.flush()
                 serializer_class = Bklist_Serializer(final_queryset)
-                return render(request, '', {'data': serializer_class.data})
+                return render(request, 'reservation_finsih.html', {'data': serializer_class.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
@@ -235,7 +239,7 @@ def getWaitingList(request):  # get waiting list
 
         night_count+=int(children)+int(adult)
     # judge if red or green
-    # green = booking available, red = waiting 
+    # green = booking available, red = waiting line
         if  noon_count > store_query.seat:
             status_noon = 'red'
         else:

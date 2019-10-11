@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block headmessage %}
+<div class="w3-center">
+    <h3>訂位結果</h3>
+</div>
+{% endblock %}
+{% block content %}
+{% load static %}
+<div class="w3-center">
+    <font size="10">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+    </font>
+    <h4>訂位完成，稍後將會有專員向您確認<br><br></h4>
+    <br>
+    <font size='4'>
+        <button id="error_button" onclick="windowClose();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
+    </font>
+</div>
+<script type="text/javascript">
+    function windowClose() {
+        window.open('', '_parent', '');
+        window.close();
+    }
+
+</script>
+{% endblock %}
