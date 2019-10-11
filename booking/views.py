@@ -43,43 +43,6 @@ class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = Staff_Serializer
 
-# admin dashboard -------------------
-
-
-def staff_login(request):  # authentication staff
-    try:
-        social_id = request.POST.get('social_id', None)
-        social_app = request.POST.get('social_app', None)
-        result = auth.StaffAuthentication(social_id, social_app)
-
-        if result == None or result == False:
-            return render(request, 'error/error404.html')
-
-        elif list(result.keys())[0] == 'error':  # error occurred
-            return render(request, 'error/error.html', {'error': result['error']})
-        else:
-            return render(request, 'admin_dashboard.html', {'data': result})
-    except Exception as e:
-        return render(request, 'error/error.html', {'error': e})
-
-
-def staff_checkbooking(request):
-    try:
-        store_id = request.POST.get('store_id', None)
-        bk_date = request.POST.get('bk_date', None)
-
-        pass
-    except Exception as e:
-        return render(request, 'error/error.html', {'error': e})
-
-
-def staff_approval_booking(request):
-    try:
-        bk_id = request.POST.get('bk_id', None)
-        pass
-    except Exception as e:
-        return render(request, 'error/error.html', {'error': e})
-
 
 class AccountViewSet(viewsets.ModelViewSet):  # api get account data
     queryset = Account.objects.all()
@@ -198,15 +161,13 @@ def booking_list(request):  # the booking list
 def login_portal(request):
     return render(request, 'login.html',)
 
+
 def error(request):
     return render(request, 'error/error.html')
 
+
 def reservation(request):
     return render(request, 'reservation.html')
-
-
-def test_check_reservation(request):
-    return render(request, 'test_check_reservation.html')
 
 
 def member(request):
@@ -231,36 +192,45 @@ def member(request):
         return render(request, 'error/error.html', {'error': e})
 
 
-def check_reservation(request):
+# Ajax api --------------------------------------------------------------
+
+def getWaitingList(request):  # get waiting list
     try:
+        bk_date = request.POST.get('bk_date', None)
         store_id = request.POST.get('store_id', None)
-        # bk_date = request.POST.get('bk_date',None)
-        social_id = request.POST.get('social_id', None)
-        social_app = request.POST.get('social_app', None)
-
-        acc_queryset = Account.objects.only('user_id').get(
-            social_id=social_id,
-            social_app=social_app,
-        )
-        queryset = BkList.objects.filter(
-            user_id=acc_queryset.user_id,
+        bk_queryset = BkList.objects.filter(  # get all available waiting_num
             store_id=store_id,
+            bk_date=bk_date,
+            is_cancel=False,
+            waiting_num__gt=0,
+
         )
+        lunch_waiting = bk_queryset.filter(  # Get waiting numbers lunch
+            time_session='午餐',
+        ).count()
+        dinner_waiting = bk_queryset.filter(  # Get waiting numbers dinner
+            time_session='晚餐',
+        ).count()
 
-        serializer = Acc_Serializer(queryset)
-        return render(request, 'check_reservation.html', {'data': serializer.data})
+        if(lunch_waiting == 0):
+            lunch_waiting = '可訂位'
+
+        if (dinner_waiting == 0):
+            dinner_waiting = '可訂位'
+
+        return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
-        return render(request, 'error/error.html', {'error': e})
+        return JsonResponse({'error': e})
 
-# Ajax api -------------------------------------------------------------- 
-def getCalendar(request):
+
+def getCalendar(request):  # full calendar
     try:
         store_id = request.POST.get('store_id', None)
         start_month = request.POST.get('start_month', None)
         end_month = request.POST.get('end_month', None)
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
-        
+
         # Convert string to time
         start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
         end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
@@ -271,41 +241,41 @@ def getCalendar(request):
             store_id=store_id
         )
         # Get waiting list
-        bk_queryset = BkList.objects.filter( # get all available waiting_num
+        bk_queryset = BkList.objects.filter(  # get all available waiting_num
             store_id=store_id,
             bk_date__range=(start_month, end_month),
             is_cancel=False,
-             
         )
 
         # get all orded reservation
-        bookinglist = bk_queryset.filter( # filter waiting_num != 0
-           waiting_num=0,
+        bookinglist = bk_queryset.filter(  # filter waiting_num != 0
+            waiting_num=0,
         )
         event_arr = []
 
         for i in bookinglist:
-            event_sub_arr = {}  # event dictionary noon
+            event_sub_arr = {}  # event dictionary
             if i.entire_time == True:
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'red'
-            
+                # event_sub_arr['status'] = '候補'
+
             elif int(i.adult)+int(i.children)+int(adult)+int(children) > store_query.seat:
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'red'
+                # event_sub_arr['status'] = '候補'
             else:
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'green'
+
             event_arr.append(event_sub_arr)
 
-        # make waiting_num list
-
-        return JsonResponse({'result':event_arr})
+        return JsonResponse({'result': event_arr})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': e})
 
 
 # Test function ------------------------

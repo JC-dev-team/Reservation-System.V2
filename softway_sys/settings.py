@@ -32,6 +32,8 @@ ADMIN_ENABLED = False
 
 INSTALLED_APPS = [
     'booking',
+    'checkreservation', 
+    'admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
