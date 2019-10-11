@@ -198,6 +198,8 @@ def booking_list(request):  # the booking list
 def login_portal(request):
     return render(request, 'login.html',)
 
+def error(request):
+    return render(request, 'error/error.html')
 
 def reservation(request):
     return render(request, 'reservation.html')
@@ -273,21 +275,22 @@ def getCalendar(request):
             store_id=store_id,
             bk_date__range=(start_month, end_month),
             is_cancel=False,
-            
+             
         )
 
         # get all orded reservation
         bookinglist = bk_queryset.filter( # filter waiting_num != 0
-            waiting_num=0,
+           waiting_num=0,
         )
-
         event_arr = []
+
         for i in bookinglist:
             event_sub_arr = {}  # event dictionary noon
             if i.entire_time == True:
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'red'
+            
             elif int(i.adult)+int(i.children)+int(adult)+int(children) > store_query.seat:
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
@@ -297,13 +300,12 @@ def getCalendar(request):
                 event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'green'
             event_arr.append(event_sub_arr)
-        
-        # make waiting_num list
-        
 
-        return JsonResponse({'result':event_arr,})
+        # make waiting_num list
+
+        return JsonResponse({'result':event_arr})
     except Exception as e:
-        return JsonResponse({'error': e})
+        return JsonResponse({'error': '發生未知錯誤'})
 
 
 # Test function ------------------------

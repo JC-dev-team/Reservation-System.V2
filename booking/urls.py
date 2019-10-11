@@ -33,6 +33,7 @@ urlpatterns = [
     # path('api/', include(router.urls)),
     path('booking/',views.ToBookingView),
     path('getCalendar/',views.getCalendar, name='getCalendar'),
+    path('error/',views.error, name='error'),
     # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     #checking system

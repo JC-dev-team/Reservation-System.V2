@@ -40,7 +40,7 @@
                     onclick="priceClick(this)"> -->
                 <!-- Time Select-->
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    id="children" required>
+                     required>
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
                     <option value="1" selected>中午：11:00</option>
                     <option value="2">中午：11:30</option>
@@ -166,13 +166,21 @@
             url: '/booking/getCalendar/',
             data: data,
             success: function (response) {
-                result = response.result
+                if(response.error!=null) {
+                    // console.log(response.error)
+                    window.location.replace('/booking/error/');
+                }
+                else{
+                    result = response.result
                 // console.log(result)
                 //Function of calendar (return calendar.render())
-                calendar_fun(result)
+                    calendar_fun(result)
+                }
+                
                 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest)
                 console.log(errorThrown)
             }
 
