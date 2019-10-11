@@ -248,7 +248,7 @@ def getWaitingList(request):  # get waiting list
             dinner_waiting = '晚餐: 可訂位'
         elif (status_night == 'red'):
             dinner_waiting = '晚餐: 候補' + dinner_waiting
-
+        
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
         return JsonResponse({'error': e})

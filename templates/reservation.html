@@ -327,7 +327,7 @@
             eventMouseEnter: function (info) {
                 var adult = $('#adult').val();
                 var child = $('#children').val();
-
+                console.log(adult,child)
                 console.log(info)
                 var evMousEnter_st = info.event.start
                 var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
