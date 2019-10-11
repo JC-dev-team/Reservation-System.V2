@@ -224,6 +224,7 @@ def getWaitingList(request):  # get waiting list
             if i.entire_time ==True:
                 noon_count=20
             noon_count+=int(i.children)+int(i.adult)
+
         noon_count+=int(children)+int(adult)
 
         night_count=0 # Get number of dinner total
@@ -231,8 +232,9 @@ def getWaitingList(request):  # get waiting list
             if i.entire_time ==True:
                 night_count=20
             night_count+=int(i.children)+int(i.adult)
-        night_count+=int(children)+int(adult)
 
+        night_count+=int(children)+int(adult)
+    # judge if red or green
         if  noon_count > store_query.seat:
             status_noon = 'red'
         else:
@@ -255,15 +257,15 @@ def getWaitingList(request):  # get waiting list
         if(lunch_waiting == 0 and status_noon == 'green'):
             lunch_waiting = '午餐: 可訂位'
         else:
-            lunch_waiting = '午餐: 候補' + lunch_waiting
+            lunch_waiting = '午餐: 候補 ' + str(lunch_waiting)
 
         if (dinner_waiting == 0 and status_night == 'green'):
             dinner_waiting = '晚餐: 可訂位'
         else:
-            dinner_waiting = '晚餐: 候補' + dinner_waiting
-        
+            dinner_waiting = '晚餐: 候補 ' + str(dinner_waiting)
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
+        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 
