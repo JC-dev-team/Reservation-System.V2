@@ -196,27 +196,58 @@ def member(request):
 
 def getWaitingList(request):  # get waiting list
     try:
-        bk_date = request.POST.get('bk_date', None)
+        bk_date = request.POST.get('event_date', None)
         store_id = request.POST.get('store_id', None)
-        bk_queryset = BkList.objects.filter(  # get all available waiting_num
+        adult = request.POST.get('adult', None)
+        children = request.POST.get('children', None)
+
+        store_query = Store.objects.only('seat').get(
+            store_id=store_id
+        )
+        bk_queryset = BkList.objects.filter(  # get all data
             store_id=store_id,
             bk_date=bk_date,
             is_cancel=False,
-            waiting_num__gt=0,
-
+            # waiting_num__gt=0,
         )
+
+        bk_list_noon = bk_queryset.filter(  # get bookinglist of noon
+            waiting_num=0,
+            time_session='午餐'
+        )
+        bk_list_night = bk_queryset.filter(  # get bookinglist of night
+            waiting_num=0,
+            time_session='晚餐'
+        )
+
+        if int(bk_list_noon.children)+int(bk_list_noon.adult)+int(adult)+int(children) > store_query.seat:
+            status_noon = 'red'
+        else:
+            status_noon = 'green'
+
+        if int(bk_list_night.children)+int(bk_list_night.adult)+int(adult)+int(children) > store_query.seat:
+            status_night = 'red'
+        else:
+            status_night = 'green'
+
         lunch_waiting = bk_queryset.filter(  # Get waiting numbers lunch
             time_session='午餐',
+            waiting_num__gt=0,
         ).count()
         dinner_waiting = bk_queryset.filter(  # Get waiting numbers dinner
             time_session='晚餐',
+            waiting_num__gt=0,
         ).count()
 
-        if(lunch_waiting == 0):
-            lunch_waiting = '可訂位'
+        if(lunch_waiting == 0 and status_noon == 'green'):
+            lunch_waiting = '中餐: 可訂位'
+        elif (status_noon == 'red'):
+            lunch_waiting = '中餐: 候補' + lunch_waiting
 
-        if (dinner_waiting == 0):
-            dinner_waiting = '可訂位'
+        if (dinner_waiting == 0 and status_night == 'green'):
+            dinner_waiting = '晚餐: 可訂位'
+        elif (status_night == 'red'):
+            dinner_waiting = '晚餐: 候補' + dinner_waiting
 
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
