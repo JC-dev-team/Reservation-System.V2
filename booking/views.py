@@ -299,6 +299,7 @@ def getCalendar(request):
             event_arr.append(event_sub_arr)
         
         # make waiting_num list
+        
 
         return JsonResponse({'result':event_arr,})
     except Exception as e:
