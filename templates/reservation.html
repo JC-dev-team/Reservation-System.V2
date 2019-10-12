@@ -476,9 +476,9 @@
             $('#children').val($('#children_select').val())
             //Information of reservation date & time
             $('#bk_date').val($('#bk_date_select').text())
-            $('#time_session').val($('#bk_st_select').val().slice(0))
-            $('#bk_st').val($('#bk_st_select').val().slice(1, -1))
-            //$('#entire_time').val() //Default False
+            $('#time_session').val($('#bk_st_select').val().slice(0,1))
+            $('#bk_st').val($('#bk_st_select').val().slice(1, ))
+            $('#entire_time').val(0) //Default False
             $('#event_type').val('online-reservation')
             //Information of reservation ps & price
             $('#bk_ps').val($('#bk_ps_select').val())
