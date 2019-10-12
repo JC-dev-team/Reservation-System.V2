@@ -119,7 +119,6 @@ def InsertReservation(request):  # insert booking list
         time_session = request.POST.get('time_session', None)
         entire_time = request.POST.get('entire_time', False)
         bk_price = request.POST.get('price', None)
-
         is_cancel = False
         waiting_num = 0
 
@@ -204,8 +203,8 @@ def InsertReservation(request):  # insert booking list
                     bklist_serializer.data.time_session = '午餐'
 
                 if bklist_serializer.data.waiting_num > 0:
-                    bklist_serializer.data.waiting_num = '候補 ' + \
-                        str(bklist_serializer.data.waiting_num)
+                    bklist_serializer.data.waiting_num = '(候補 ' + \
+                        str(bklist_serializer.data.waiting_num)+')'
                 else:
                     bklist_serializer.data.waiting_num = None
                 # request.session.flush()
