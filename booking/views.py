@@ -20,7 +20,6 @@ from django.db.models import Q  # complex lookup
 import sys
 import os
 sys.path.append(os.path.join(settings.BASE_DIR, 'utility'))
-# import .
 
 # from django.contrib.auth import login, logout
 # from django.contrib.auth.decorators import login_required
@@ -75,7 +74,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 
         serializer_class = Acc_Serializer(queryset)
         # render html
-        
+
         return render(request, 'reservation.html', {
             'data': serializer_class.data,
             'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
@@ -182,18 +181,38 @@ def InsertReservation(request):  # insert booking list
                     waiting_num=waiting_num,
                     bk_price=bk_price,
                 )
-                # request.session.flush()
+                get_user_info = Account.only('username').get(
+                    user_id=user_id,
+                    social_id=social_id,
+                    social_app=social_app,
+                )
+
                 get_store_name = Store.objects.only(
                     'store_name',
                     'store_address',
                     'store_phone',).get(
                         store_id=store_id
                 )
+
+                account_serializer = Acc_Serializer(get_user_info)
                 store_serializer = Store_Serializer(get_store_name)
-                serializer_class = Bklist_Serializer(final_queryset)
+                bklist_serializer = Bklist_Serializer(final_queryset)
+
+                if bklist_serializer.data.time_session == 'Dinner':
+                    bklist_serializer.data.time_session = '晚餐'
+                else:
+                    bklist_serializer.data.time_session = '午餐'
+
+                if bklist_serializer.data.waiting_num > 0:
+                    bklist_serializer.data.waiting_num = '候補 ' + \
+                        str(bklist_serializer.data.waiting_num)
+                else:
+                    bklist_serializer.data.waiting_num = None
+                # request.session.flush()
                 return render(request, 'reservation_finish.html', {
-                    'data': serializer_class.data,
-                    'store': store_serializer.data})
+                    'data': bklist_serializer.data,
+                    'store': store_serializer.data,
+                    'user_info': account_serializer.data, })
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 

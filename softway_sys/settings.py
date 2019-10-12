@@ -41,10 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
 ]
-
-# RECAPTCHA_PUBLIC_KEY = '6LcnQr0UAAAAAG7-ZNOR_y6KGHV3-5cABxc3XXsk'
-# RECAPTCHA_PRIVATE_KEY = '6LcnQr0UAAAAAB1EdAeQCOpW6JSHUDIl7Ao8yYg3'
-# Invisible
+# Invisible reCaptcha
 RECAPTCHA_PUBLIC_KEY = '6LftQr0UAAAAAJ8Pkllthz85Wzj7gaAmsPLISMcu'
 RECAPTCHA_PRIVATE_KEY = '6LftQr0UAAAAAJqjEwg2fiEzZXAd-NGgGWQwDulz'
 
