@@ -18,6 +18,8 @@ from django.db.models import Q  # complex lookup
 import sys
 import os 
 sys.path.append(os.path.join(settings.BASE_DIR,'utility'))
+from utility import recaptcha
+
 # from django.contrib.auth import login, logout
 # from django.contrib.auth.decorators import login_required
 # ----- Class site ----------------------
@@ -190,10 +192,10 @@ def member(request):
             'social_id': social_id,
             'social_app': social_app
         })
-        if valid.is_valid():
-            raise Exception('valid')
-        else:
-            raise Exception('no valid')
+        # if valid.is_valid():
+        #     raise Exception('valid')
+        # else:
+        #     raise Exception('no valid')
         result = auth.ClientAuthentication(
             social_id, social_app)  # queryset or something else
         if result == None:  # Using PC or No social login
