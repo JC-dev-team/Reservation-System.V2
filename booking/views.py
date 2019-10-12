@@ -193,21 +193,20 @@ def InsertReservation(request):  # insert booking list
                         store_id=store_id
                 )
 
+                if final_queryset.time_session == 'Dinner':
+                    final_queryset.time_session = '晚餐'
+                else:
+                    final_queryset.time_session = '午餐'
+
+                if final_queryset.waiting_num > 0:
+                    final_queryset.waiting_num = '(候補 ' + \
+                        str(final_queryset.waiting_num)+')'
+                else:
+                    final_queryset.waiting_num = None
+                # request.session.flush()
                 account_serializer = Acc_Serializer(get_user_info)
                 store_serializer = Store_Serializer(get_store_name)
                 bklist_serializer = Bklist_Serializer(final_queryset)
-
-                if bklist_serializer.data.time_session == 'Dinner':
-                    bklist_serializer.data.time_session = '晚餐'
-                else:
-                    bklist_serializer.data.time_session = '午餐'
-
-                if bklist_serializer.data.waiting_num > 0:
-                    bklist_serializer.data.waiting_num = '(候補 ' + \
-                        str(bklist_serializer.data.waiting_num)+')'
-                else:
-                    bklist_serializer.data.waiting_num = None
-                # request.session.flush()
                 return render(request, 'reservation_finish.html', {
                     'data': bklist_serializer.data,
                     'store': store_serializer.data,
