@@ -2,7 +2,17 @@ from rest_framework import serializers
 from .models import Account, ActionLog, BkList, Production, Staff, Store
 
 
+class check_bklist(serializers.ModelSerializer):
+    class Meta:
+        model = BkList
+        fields = ('user_id', 'store_id', 'bk_date', 'bk_st',
+                  'bk_ed', 'adult', 'children', 'bk_ps', 'event_type', 
+                  'time_session', 'entire_time', 'bk_price')
+
+# class
+
 class Acc_Serializer(serializers.ModelSerializer):
+
     class Meta:
         model = Account
         fields = '__all__'

@@ -26,19 +26,17 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
     path('login/', views.login_portal, name='login'),
     path('member/', views.member, name='member'),
-    path('reservation/', views.reservation, name='reservation'),
-    # path('api/', include(router.urls)),
+    path('reservation/', views.InsertReservation, name='InsertReservation'),
     path('booking/',views.ToBookingView),
     path('getCalendar/',views.getCalendar, name='getCalendar'),
     path('error/',views.error, name='error'),
     path('getWaitingList/',views.getWaitingList, name='getWaitingList'),
-    # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
-    #checking system
-    # path('check_reservation/',views.check_reservation, name='check_reservation'),
+    # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # path('admin/', admin.site.urls),
+    # path('api/', include(router.urls)),
     
     # Test Views deploy delete 
     path('test001/',views.testView),

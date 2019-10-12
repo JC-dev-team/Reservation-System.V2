@@ -40,8 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-
+    'captcha',
 ]
+
+# NOCAPTCHA = True
+RECAPTCHA_PUBLIC_KEY = '6LfPO70UAAAAANYia4LF4GneETX5uMzfl_wrzYwK'
+RECAPTCHA_PRIVATE_KEY = '6LfPO70UAAAAADBQc6AUv8Pvpp9i4aAAE1Y8M3No'
+RECAPTCHA_REQUIRED_SCORE = 0.5
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_RENDERER_CLASSES': (

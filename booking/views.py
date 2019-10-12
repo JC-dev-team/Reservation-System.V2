@@ -12,8 +12,12 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
 from . import auth
 from django.db import transaction, DatabaseError
+from django.views.decorators.http import require_http_methods, require_POST
+from django.conf import settings
 from django.db.models import Q  # complex lookup
-
+import sys
+import os 
+sys.path.append(os.path.join(settings.BASE_DIR,'utility'))
 # from django.contrib.auth import login, logout
 # from django.contrib.auth.decorators import login_required
 # ----- Class site ----------------------
@@ -60,6 +64,7 @@ class AccountViewSet(viewsets.ModelViewSet):  # api get account data
 # Definition site ------------------------------------------------
 
 
+@require_http_methods(['POST'])
 def ToBookingView(request):  # The member.html via here in oreder to enroll new member
     try:
         phone = request.POST.get('phone', None)
@@ -87,8 +92,14 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         return render(request, 'error/error.html', {'error': e})  # render html
 
 
-def booking_list(request):  # insert booking list
+@require_http_methods(['POST'])
+def InsertReservation(request):  # insert booking list
     try:
+        # For validation
+        social_id = request.POST.get('social_id',None)
+        social_app = request.POST.get('social_app', None)
+
+        # insert data
         user_id = request.POST.get('user_id', None)
         store_id = request.POST.get('store_id', None)
         bk_date = request.POST.get('bk_date', None)
@@ -100,7 +111,7 @@ def booking_list(request):  # insert booking list
         event_type = request.POST.get('event_type', None)
         time_session = request.POST.get('time_session', None)
         entire_time = request.POST.get('entire_time', False)
-        bk_price = request.POST.get('price',None)
+        bk_price = request.POST.get('price', None)
 
         is_cancel = False
         waiting_num = 0
@@ -157,7 +168,7 @@ def booking_list(request):  # insert booking list
                 )
                 # request.session.flush()
                 serializer_class = Bklist_Serializer(final_queryset)
-                return render(request, 'reservation_finsih.html', {'data': serializer_class.data})
+                return render(request, 'reservation_finish.html', {'data': serializer_class.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
@@ -169,21 +180,26 @@ def login_portal(request):
 def error(request):
     return render(request, 'error/error.html')
 
-
-def reservation(request):
-    return render(request, 'reservation.html')
-
-
+@require_http_methods(['POST','GET'])
 def member(request):
     try:  # Check Login
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
+
+        valid = Acc_Serializer(data={
+            'social_id': social_id,
+            'social_app': social_app
+        })
+        if valid.is_valid():
+            raise Exception('valid')
+        else:
+            raise Exception('no valid')
         result = auth.ClientAuthentication(
             social_id, social_app)  # queryset or something else
         if result == None:  # Using PC or No social login
             return redirect('/booking/login/',)
         elif result == False:  # Account Not Exist
-            return render(request, 'member.html',)
+            return render(request, 'member.html',{'google_keys':settings.RECAPTCHA_PUBLIC_KEY})
             # return redirect(reverse('member'),args=())
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
@@ -197,7 +213,7 @@ def member(request):
 
 
 # Ajax api --------------------------------------------------------------
-
+@require_http_methods(['POST'])
 def getWaitingList(request):  # get waiting list
     try:
         bk_date = request.POST.get('event_date', None)
@@ -207,6 +223,7 @@ def getWaitingList(request):  # get waiting list
         store_query = Store.objects.only('seat').get(
             store_id=store_id
         )
+
         bk_queryset = BkList.objects.filter(  # get all data
             store_id=store_id,
             bk_date=bk_date,
@@ -216,31 +233,31 @@ def getWaitingList(request):  # get waiting list
 
         bk_list_noon = bk_queryset.filter(  # get bookinglist of noon
             waiting_num=0,
-            time_session='午餐'
+            time_session='Lunch'
         )
         bk_list_night = bk_queryset.filter(  # get bookinglist of night
             waiting_num=0,
-            time_session='晚餐'
+            time_session='Dinner'
         )
 
-        noon_count=0 # Get number of noon total
+        noon_count = 0  # Get number of noon total
         for i in bk_list_noon:
-            if i.entire_time ==True:
-                noon_count=20
-            noon_count+=int(i.children)+int(i.adult)
+            if i.entire_time == True:
+                noon_count = 20
+            noon_count += int(i.children)+int(i.adult)
 
-        noon_count+=int(children)+int(adult)
+        noon_count += int(children)+int(adult)
 
-        night_count=0 # Get number of dinner total
+        night_count = 0  # Get number of dinner total
         for i in bk_list_night:
-            if i.entire_time ==True:
-                night_count=20
-            night_count+=int(i.children)+int(i.adult)
+            if i.entire_time == True:
+                night_count = 20
+            night_count += int(i.children)+int(i.adult)
 
-        night_count+=int(children)+int(adult)
+        night_count += int(children)+int(adult)
     # judge if red or green
     # green = booking available, red = waiting line
-        if  noon_count > store_query.seat:
+        if noon_count > store_query.seat:
             status_noon = 'red'
         else:
             status_noon = 'green'
@@ -251,11 +268,11 @@ def getWaitingList(request):  # get waiting list
             status_night = 'green'
 
         lunch_waiting = bk_queryset.filter(  # Get waiting numbers lunch
-            time_session='午餐',
+            time_session='Lunch',
             waiting_num__gt=0,
         ).count()
         dinner_waiting = bk_queryset.filter(  # Get waiting numbers dinner
-            time_session='晚餐',
+            time_session='Dinner',
             waiting_num__gt=0,
         ).count()
 
@@ -273,6 +290,7 @@ def getWaitingList(request):  # get waiting list
         return JsonResponse({'error': '發生未知錯誤'})
 
 
+@require_http_methods(['POST'])
 def getCalendar(request):  # full calendar
     try:
         store_id = request.POST.get('store_id', None)
@@ -280,6 +298,7 @@ def getCalendar(request):  # full calendar
         end_month = request.POST.get('end_month', None)
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
+
 
         # Convert string to time
         start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
@@ -305,6 +324,12 @@ def getCalendar(request):  # full calendar
 
         for i in bookinglist:
             event_sub_arr = {}  # event dictionary
+            # Convert time_session to chiness
+            if i.time_session == 'Lunch':
+                i.time_session ='午餐'
+            else:
+                i.time_session ='晚餐'
+
             if i.entire_time == True:
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
