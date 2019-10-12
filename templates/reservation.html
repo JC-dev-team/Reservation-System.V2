@@ -12,7 +12,7 @@
 <!-- content-->
 {% block content %}
 {% load static %}
-
+<div id="cover-spin"></div>
 <div class="container" style='display: none'>
     <form id="reservation_form" method="post">
         {% csrf_token %}
@@ -242,7 +242,9 @@
                     '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + '<br>' + lunch_status +
                     ' / ' + dinner_status
                 //Show the Modal
-                document.getElementById('information_Modal').style.display = 'inline'
+                document.getElementById('information_Modal').style.display = 'inline';
+                //Hidden spinner
+                $('#cover-spin').hide();
             },
             error: function (response) {
 
@@ -391,6 +393,8 @@
                     'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
 
                 }
+                //spinner
+                $('#cover-spin').show(0)
                 eventClick_sendDate(data)
 
 
@@ -489,6 +493,8 @@
             if (status) {
                 document.getElementById("reservation_form").action = "/booking/reservation/";
                 document.getElementById("reservation_form").submit();
+                //spinner
+                $('#cover-spin').show(0)
             }
         });
 
@@ -525,6 +531,7 @@
         var num = parseInt($('#date_num').val())
         //do the fuction of ajax_post()
         ajax_post(num)
+
         
     })
 </script>
