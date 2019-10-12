@@ -20,12 +20,12 @@
 
 <div class="w3-center">
     <font size='6'>
-        <h2>訂位資訊</h2>
-        <!-- <h2>訂位資訊 {{data.waiting_num}}</h2> -->
+        <h2 id='information'>訂位資訊</h2>
+        <!-- <h2 id='data_waiting_num'>訂位資訊 {{data.waiting_num}}</h2> -->
         <hr>
         <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3>
         <div class="w3-container" align="center">
-            <h4>店家：＄{{store.store_name}}</h4>
+            <h4>店家：{{store.store_name}}</h4>
             <h4>人數： {{data.adult}} 大 {{data.children}} 小</h4>
             <h4>用餐日期：{{data.bk_date}}</h4>
             <h4>用餐時段： {{data.time_session}} - {{data.bk_st}}</h4>
@@ -50,5 +50,18 @@
         window.open('', '_parent', '');
         window.close();
     }
+
+    $(function () {
+        console.log(document.getElementById('information').innerText)
+        if ('{{data.waiting_num}}'== '0'){
+            document.getElementById('information').innerText = "訂位資訊"
+        }
+        else{
+            document.getElementById('information').innerText = "訂位資訊 (候補 " + '{{data.waiting_num}}' + ")"
+        }
+        
+        
+
+    })
 </script>
 {% endblock %}
