@@ -1,3 +1,4 @@
+from utility.recaptcha import check_recaptcha
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from .models import ActionLog, BkList, Account, Production, Staff, Store
@@ -17,14 +18,14 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.conf import settings
 from django.db.models import Q  # complex lookup
 import sys
-import os 
-sys.path.append(os.path.join(settings.BASE_DIR,'utility'))
-from utility import recaptcha
+import os
+sys.path.append(os.path.join(settings.BASE_DIR, 'utility'))
 # import .
 
 # from django.contrib.auth import login, logout
 # from django.contrib.auth.decorators import login_required
 # ----- Class site ----------------------
+
 
 class AccountViewSet(viewsets.ModelViewSet):  # api get account data
     queryset = Account.objects.all()
@@ -42,6 +43,7 @@ class AccountViewSet(viewsets.ModelViewSet):  # api get account data
 
 
 @require_http_methods(['POST'])
+@check_recaptcha
 def ToBookingView(request):  # The member.html via here in oreder to enroll new member
     try:
         phone = request.POST.get('phone', None)
@@ -52,8 +54,8 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         valid = applymember(data={
             'social_id': social_id,
             'social_app': social_app,
-            'username':username,
-            'phone':phone,
+            'username': username,
+            'phone': phone,
         })
         if valid.is_valid() == False:
             raise Exception('Not valid, 輸入資料格式錯誤')
@@ -73,16 +75,21 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 
         serializer_class = Acc_Serializer(queryset)
         # render html
-        return render(request, 'reservation.html', {'data': serializer_class.data})
+        
+        return render(request, 'reservation.html', {
+            'data': serializer_class.data,
+            'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
+
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})  # render html
 
 
 @require_http_methods(['POST'])
+@check_recaptcha
 def InsertReservation(request):  # insert booking list
     try:
         # For validation
-        social_id = request.POST.get('social_id',None)
+        social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
         # Check data format
         valid = checkAuth(data={
@@ -116,13 +123,14 @@ def InsertReservation(request):  # insert booking list
 
         is_cancel = False
         waiting_num = 0
+
         total = int(adult)+int(children)
         exact_seat = 0
         # modify insert data
         if time_session == 'D':
-            time_session='Dinner'
+            time_session = 'Dinner'
         elif time_session == 'L':
-            time_session='Lunch'
+            time_session = 'Lunch'
         else:
             raise Exception('資料輸入時，發生錯誤')
 
@@ -175,17 +183,17 @@ def InsertReservation(request):  # insert booking list
                     bk_price=bk_price,
                 )
                 # request.session.flush()
-                get_store_name =Store.objects.only(
+                get_store_name = Store.objects.only(
                     'store_name',
                     'store_address',
                     'store_phone',).get(
                         store_id=store_id
-                    )
-                store_serializer=Store_Serializer(get_store_name)
+                )
+                store_serializer = Store_Serializer(get_store_name)
                 serializer_class = Bklist_Serializer(final_queryset)
                 return render(request, 'reservation_finish.html', {
                     'data': serializer_class.data,
-                    'store':store_serializer.data})
+                    'store': store_serializer.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
@@ -194,10 +202,11 @@ def login_portal(request):
     return render(request, 'login.html',)
 
 
-def error(request): # error page
+def error(request):  # error page
     return render(request, 'error/error.html')
 
-@require_http_methods(['POST','GET'])
+
+@require_http_methods(['POST', 'GET'])
 def member(request):
     try:  # Check Login
         social_id = request.POST.get('social_id', None)
@@ -215,7 +224,7 @@ def member(request):
         if result == None:  # Using PC or No social login
             return redirect('/booking/login/',)
         elif result == False:  # Account Not Exist
-            return render(request, 'member.html',{'google_keys':settings.RECAPTCHA_PUBLIC_KEY})
+            return render(request, 'member.html', {'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
             # return redirect(reverse('member'),args=())
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
@@ -223,7 +232,9 @@ def member(request):
         else:  # Account Exist
             serializer = Acc_Serializer(result)
             request.session['member_id'] = result.user_id
-            return render(request, 'reservation.html', {'data': serializer.data})
+            return render(request, 'reservation.html', {
+                'data': serializer.data,
+                'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
@@ -315,7 +326,6 @@ def getCalendar(request):  # full calendar
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
 
-
         # Convert string to time
         start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
         end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
@@ -342,9 +352,9 @@ def getCalendar(request):  # full calendar
             event_sub_arr = {}  # event dictionary
             # Convert time_session to chiness
             if i.time_session == 'Lunch':
-                i.time_session ='午餐'
+                i.time_session = '午餐'
             else:
-                i.time_session ='晚餐'
+                i.time_session = '晚餐'
 
             if i.entire_time == True:
                 event_sub_arr['title'] = i.time_session

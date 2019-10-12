@@ -5,6 +5,7 @@
 {% block headmessage %}
 <div class='w3-center'>
     <h3><b>舒微生活訂位</b></h3>
+
 </div>
 {% endblock %}
 
@@ -32,7 +33,7 @@
 
         <input id='bk_ps' name='bk_ps' type="text" value="" style="display: none">
         <input id='price' name='price' type="number" value="" style="display: none">
-
+        
         <!-- <input id="reservation_form_submit" type="submit" style="display: none"> -->
     </form>
 </div>
@@ -103,8 +104,8 @@
                     <option value="1000">蛋奶素</option>
 
                 </select>
-
-
+                <div class="g-recaptcha" data-sitekey={{google_keys}} data-callback="onSubmit" data-size="invisible">
+                </div>
                 <br>
                 <button id='button_submit' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">確定送出 <i
                         class="fa fa-check"></i></button>
