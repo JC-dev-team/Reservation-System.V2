@@ -180,7 +180,7 @@ def InsertReservation(request):  # insert booking list
                     waiting_num=waiting_num,
                     bk_price=bk_price,
                 )
-                get_user_info = Account.only('username').get(
+                get_user_info = Account.objects.only('username').get(
                     user_id=user_id,
                     social_id=social_id,
                     social_app=social_app,
