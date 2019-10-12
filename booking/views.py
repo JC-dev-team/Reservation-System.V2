@@ -26,17 +26,17 @@ sys.path.append(os.path.join(settings.BASE_DIR, 'utility'))
 # ----- Class site ----------------------
 
 
-class AccountViewSet(viewsets.ModelViewSet):  # api get account data
-    queryset = Account.objects.all()
-    serializer_class = Acc_Serializer
+# class AccountViewSet(viewsets.ModelViewSet):  # api get account data
+#     queryset = Account.objects.all()
+#     serializer_class = Acc_Serializer
 
-    def get_queryset(self):
-        queryset = self.queryset
-        phone = self.request.query_params.get('phone', None)
-        social_id = self.request.query_params.get('social_id', None)
+#     def get_queryset(self):
+#         queryset = self.queryset
+#         phone = self.request.query_params.get('phone', None)
+#         social_id = self.request.query_params.get('social_id', None)
 
-        query_set = queryset.filter(phone=phone)
-        return query_set
+#         query_set = queryset.filter(phone=phone)
+#         return query_set
 
 # Definition site ------------------------------------------------
 
@@ -121,7 +121,23 @@ def InsertReservation(request):  # insert booking list
         bk_price = request.POST.get('price', None)
         is_cancel = False
         waiting_num = 0
-
+        # Check data format
+        Bklist_Serializer(data={
+            'user_id': user_id,
+            'store_id': store_id,
+            'bk_st': bk_st,
+            'bk_ed': bk_ed,
+            'adult': adult,
+            'children': children,
+            'bk_ps': bk_ps,
+            'event_type': event_type,
+            'time_session': time_session,
+            'entire_time': entire_time,
+            'bk_price': bk_price,
+            'is_cancel': is_cancel,
+            'is_cancel': is_cancel,
+        })
+        # ---------------------------------
         total = int(adult)+int(children)
         exact_seat = 0
         # modify insert data
@@ -163,7 +179,9 @@ def InsertReservation(request):  # insert booking list
                     time_session=time_session,
                     is_cancel=is_cancel,
                 ).count()
-                waiting_num += 1
+                if waiting_num > 0:
+                    waiting_num += 1
+                
                 final_queryset = BkList.objects.create(  # insert data
                     user_id=user_id,
                     store_id=store_id,
@@ -198,15 +216,19 @@ def InsertReservation(request):  # insert booking list
                 else:
                     final_queryset.time_session = '午餐'
 
-                if final_queryset.waiting_num > 0:
-                    final_queryset.waiting_num = '(候補 ' + \
-                        str(final_queryset.waiting_num)+')'
-                else:
-                    final_queryset.waiting_num = None
                 # request.session.flush()
+                
                 account_serializer = Acc_Serializer(get_user_info)
                 store_serializer = Store_Serializer(get_store_name)
                 bklist_serializer = Bklist_Serializer(final_queryset)
+
+                # if bklist_serializer.data['waiting_num'] > 0:
+                #     bklist_serializer.data['waiting_num'] = '(候補 ' + \
+                #         str(bklist_serializer.data['waiting_num'])+')'
+                    
+                # else:
+                #     bklist_serializer.data['waiting_num'] = None
+
                 return render(request, 'reservation_finish.html', {
                     'data': bklist_serializer.data,
                     'store': store_serializer.data,
@@ -264,6 +286,7 @@ def getWaitingList(request):  # get waiting list
         store_id = request.POST.get('store_id', None)
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
+
         store_query = Store.objects.only('seat').get(
             store_id=store_id
         )
