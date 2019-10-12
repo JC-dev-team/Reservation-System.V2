@@ -7,22 +7,44 @@
 {% endblock %}
 {% block content %}
 {% load static %}
+<!-- Finish title-->
 <div class="w3-center">
     <font size="10">
-        <i class="fa fa-check-circle" aria-hidden="true"></i>
+        <i class="far fa-check-circle" aria-hidden="true"></i>
     </font>
     <h4>訂位完成，稍後向您確認訂位<br><br></h4>
-    <br>
-    
-    <font size='4'>
-        <button id="error_button" onclick="windowClose();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
-    </font>
 </div>
+
+<!-- reservation information-->
+
+
+<div class="w3-center">
+    <font size='6'>
+        <h2>訂位資訊</h2>
+        <hr>
+        <h3><label><i class="fas fa-user-circle"></i> 訂位人： </label></h3>
+        <div class="w3-container" align="center">
+            <h4>人數： 2大 4小</h4>
+            <h4>用餐日期：2019-10-10</h4>
+            <h4>用餐時段： 中午：12:00</h4>
+            <h4>備註：不吃牛</h4>
+        </div>
+    </font>
+
+    <font size='4'>
+        <button id="close_button" onclick="windowClose();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
+    </font>
+
+
+</div>
+
+
+
+
 <script type="text/javascript">
     function windowClose() {
         window.open('', '_parent', '');
         window.close();
     }
-
 </script>
 {% endblock %}
