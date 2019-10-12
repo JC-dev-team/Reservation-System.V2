@@ -2,7 +2,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from .models import ActionLog, BkList, Account, Production, Staff, Store
 from .serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
-from .serializers import checkAuth, check_bklist
+from .serializers import checkAuth, check_bklist, applymember
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -48,6 +48,15 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         username = request.POST.get('username', None)
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
+        # Check data format
+        valid = applymember(data={
+            'social_id': social_id,
+            'social_app': social_app,
+            'username':username,
+            'phone':phone,
+        })
+        if valid.is_valid() == False:
+            raise Exception('Not valid, 輸入資料格式錯誤')
         with transaction.atomic():  # transaction
             queryset = Account.objects.create(
                 phone=phone,
@@ -81,7 +90,7 @@ def InsertReservation(request):  # insert booking list
             'social_app': social_app
         })
         if valid.is_valid() == False:
-            raise Exception('No valid')
+            raise Exception('Not valid, 輸入資料格式錯誤')
         result = auth.ClientAuthentication(
             social_id, social_app)
         if result == None or result == False:  # Using PC or No social login # Account Not Exist
@@ -166,8 +175,17 @@ def InsertReservation(request):  # insert booking list
                     bk_price=bk_price,
                 )
                 # request.session.flush()
+                get_store_name =Store.objects.only(
+                    'store_name',
+                    'store_address',
+                    'store_phone',).get(
+                        store_id=store_id
+                    )
+                store_serializer=Store_Serializer(get_store_name)
                 serializer_class = Bklist_Serializer(final_queryset)
-                return render(request, 'reservation_finish.html', {'data': serializer_class.data})
+                return render(request, 'reservation_finish.html', {
+                    'data': serializer_class.data,
+                    'store':store_serializer.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
@@ -176,7 +194,7 @@ def login_portal(request):
     return render(request, 'login.html',)
 
 
-def error(request):
+def error(request): # error page
     return render(request, 'error/error.html')
 
 @require_http_methods(['POST','GET'])
@@ -190,7 +208,7 @@ def member(request):
             'social_app': social_app
         })
         if valid.is_valid() == False:
-            raise Exception('No valid')
+            raise Exception('Not valid, 輸入資料格式錯誤')
 
         result = auth.ClientAuthentication(
             social_id, social_app)  # queryset or something else
@@ -353,7 +371,7 @@ def getCalendar(request):  # full calendar
 
 # Test function ------------------------
 def testtemplate(request):
-    return render(request, 'test/test.html')
+    return render(request, 'reservation_finish.html')
 
 
 class testView(APIView):  # render html
