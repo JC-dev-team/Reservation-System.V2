@@ -12,11 +12,30 @@
 {% block content %}
 {% load static %}
 
-<!-- <div class="container">
-    <form id="BookingForm" method="post">
+<div class="container" style='display: none'>
+    <form id="reservation_form" method="post">
         {% csrf_token %}
+        <input id='social_id' type="text" value="" style="display: none">
+        <input id='social_app' type="text" value="" style="display: none">
+
+        <input id='user_id' type="text" value='' style="display: none">
+        <input id='store_id' type="text" value="" style="display: none">
+
+        <input id='adult' type="number" value="" style="display: none">
+        <input id='children' type="number" value="" style="display: none">
+
+        <input id='bk_date' type="text" value="" style="display: none">
+        <input id='time_session' type="text" value="" style="display: none">
+        <input id='bk_st' type="text" value="" style="display: none">
+        <input id='entire_time' type="text" value="" style="display: none">
+        <input id='event_type' type="text" value="" style="display: none">
+
+        <input id='bk_ps' type="text" value="" style="display: none">
+        <input id='price' type="number" value="" style="display: none">
+
+        <!-- <input id="reservation_form_submit" type="submit" style="display: none"> -->
     </form>
-</div> -->
+</div>
 
 <!-- Modal -->
 <div id="information_Modal" class="w3-modal">
@@ -35,51 +54,59 @@
                 <p id='modal_status'></p>
                 <!-- Time-->
                 <label><i class="fa fa-clock-o"></i> 時段(必選)： </label>
-                <!-- Time Button-->
-                <!-- <input type="button" class="w3-btn w3-border w3-round-large w3-normal" value="中餐"
-                    onclick="priceClick(this)">
-                <input type="button" class="w3-btn w3-border w3-round-large w3-normal" value="晚餐"
-                    onclick="priceClick(this)"> -->
                 <!-- Time Select-->
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    required>
+                    id='bk_st_select' required>
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                    <option value="1" selected>中午：11:00</option>
-                    <option value="2">中午：11:30</option>
-                    <option value="3">中午：12:00</option>
-                    <option value="4">中午：12:30</option>
-                    <option value="5">中午：13:00</option>
-                    <option value="6">中午：13:30</option>
+                    <option value="L11" selected>中午：11:00</option>
+                    <option value="L11.5">中午：11:30</option>
+                    <option value="L12">中午：12:00</option>
+                    <option value="L12.5">中午：12:30</option>
+                    <option value="L13">中午：13:00</option>
+                    <option value="L13.5">中午：13:30</option>
                     <option disabled>------------</option>
-                    <option value="1">晚上：17:00</option>
-                    <option value="2">晚上：17:30</option>
-                    <option value="3">晚上：18:00</option>
-                    <option value="4">晚上：18:30</option>
-                    <option value="5">晚上：19:00</option>
-                    <option value="6">晚上：19:30</option>
+                    <option value="D17">晚上：17:00</option>
+                    <option value="D17.5">晚上：17:30</option>
+                    <option value="D18">晚上：18:00</option>
+                    <option value="D18.5">晚上：18:30</option>
+                    <option value="D19">晚上：19:00</option>
+                    <option value="D19.5">晚上：19:30</option>
 
                 </select>
-                <!-- <input class="w3-input w3-border" type="text" placeholder="How many?">
-            <input class="w3-input w3-border" type="text" placeholder="Enter email"> -->
+
                 <br>
+
                 <!-- Price-->
-                <p><label><i class="fa fa-usd"></i> 價位/每人(必選)：</label></p>
-                <input id="price" style="display: none" value="" required>
-                <input type="button" name="price" class="w3-btn w3-border w3-round-large w3-normal" value="$500"
-                    onclick="priceClick(this)">
-                <input type="button" name="price" class="w3-btn w3-border w3-round-large w3-normal" value="$600"
-                    onclick="priceClick(this)">
-                <input type="button" name="price" class="w3-btn w3-border w3-round-large w3-normal" value="$800"
-                    onclick="priceClick(this)">
-                <input type="button" name="price" class="w3-btn w3-border w3-round-large w3-normal" value="$1000"
-                    onclick="priceClick(this)">
-                <input type="button" name="price" class="w3-btn w3-border w3-round-large w3-normal" value="$1200"
-                    onclick="priceClick(this)">
+                <label><i class="fa fa-usd"></i> 價位/每人(必選)：</label>
+                <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+                    id='price_select' required>
+                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                    <option value="500" selected>$500</option>
+                    <option value="600">$600</option>
+                    <option value="800">$800</option>
+                    <option value="1000">$1000(戰斧牛排套餐)</option>
+                    <option value="1200">$1200</option>
+                </select>
 
+                <br>
+
+                <!-- Ps-->
+                <label><i class="fa fa-bell"></i> 飲食習慣：</label>
+                <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+                    id='bk_ps_select' required>
+                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                    <option value="1200" selected>無</option>
+                    <option value="500">不吃牛</option>
+                    <option value="600">不吃海鮮</option>
+                    <option disabled>----素食-----</option>
+                    <option value="800">全素食（無辛香料）</option>
+                    <option value="1000">蛋奶素</option>
+
+                </select>
 
 
                 <br>
-                <button class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">確定送出 <i
+                <button id='button_submit' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">確定送出 <i
                         class="fa fa-check"></i></button>
                 <button class="w3-button w3-red w3-section"
                     onclick="document.getElementById('information_Modal').style.display='none'">關閉 <i
@@ -90,15 +117,17 @@
     </div>
 </div>
 
-
+<!-- Adult & Children Select-->
 <div class="w3-display-container">
     <div class="container">
+        <!-- Date num calculated-->
         <input id="date_num" value="0" type="text" style="display: none">
+        <!-- adult & children-->
         <div class="left-half" style="width:100%;">
             <font size="4.5">
                 <label><i class="fa fa-male"></i> 成人</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    id="adult" disabled='disabled'>
+                    id="adult_select" disabled='disabled'>
                     <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
                     <option value="1">1 大</option>
                     <option value="2" selected>2 大</option>
@@ -127,7 +156,7 @@
             <font size="4.5">
                 <label><i class="fa fa-child"></i> 兒童</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    id="children" disabled='disabled'>
+                    id="children_select" disabled='disabled'>
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
                     <option value="0" selected>0 小</option>
                     <option value="1">1 小</option>
@@ -150,6 +179,8 @@
     </font>
 </div>
 <hr>
+
+<!-- Calendar-->
 <div id='calendar_container' class="container" style='display: none'>
     <p>
         <font color="red">紅色</font>：已額滿(可後補）
@@ -169,7 +200,7 @@
         },
     });
 
-    function people_number(data,num,calendar) {
+    function people_number(data, num, calendar) {
         $.ajax({
             type: 'POST',
             url: '/booking/getCalendar/',
@@ -182,8 +213,8 @@
                     result = response.result
                     // console.log(result)
                     //Function of calendar (return calendar.render())
-                    calendar_fun(result,num)
-                    
+                    calendar_fun(result, num)
+
                 }
 
             },
@@ -195,33 +226,6 @@
 
         })
     }
-
-    // function people_number(data, calendar) {
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/booking/getCalendar/',
-    //         data: data,
-    //         success: function (response) {
-    //             if (response.error != null) {
-    //                 // console.log(response.error)
-    //                 window.location.replace('/booking/error/');
-    //             } else {
-    //                 result = response.result
-    //                 // console.log(result)
-    //                 //Function of calendar (return calendar.render())
-    //                 calendar_fun(result, 'rerender')
-                    
-    //             }
-
-    //         },
-    //         error: function (XMLHttpRequest, textStatus, errorThrown) {
-    //             console.log(XMLHttpRequest)
-    //             console.log(errorThrown)
-    //             window.location.replace('/booking/error/');
-    //         }
-
-    //     })
-    // }
 
     function eventClick_sendDate(data) {
         $.ajax({
@@ -248,16 +252,12 @@
 
     function initializeApp(data) {
         liff.getProfile().then(profile => {
-            //Line name 
-            // var disname = {
-            //     'name': profile.displayName
-            // };
-            // disname_json = JSON.parse(JSON.stringify(disname.name))
+            //Line user's profile picture
             $('#img').attr('src', profile.pictureUrl);
         })
     }
 
-    function calendar_fun(result,num=0) {
+    function calendar_fun(result, num = 0) {
         document.getElementById('calendar').innerHTML = ''
         document.getElementById('calendar_container').style.display = 'inline'
         var calendarEl = document.getElementById('calendar');
@@ -363,8 +363,8 @@
 
             },
             eventMouseEnter: function (info) {
-                var adult = $('#adult').val();
-                var child = $('#children').val();
+                var adult = $('#adult_select').val();
+                var child = $('#children_select').val();
 
                 console.log(info)
                 var evMousEnter_st = info.event.start
@@ -379,7 +379,8 @@
                 }
                 //insert Modal of date
                 document.getElementById('modal_date').innerHTML =
-                    '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' + start
+                    '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' + '<p id="bk_date_select">' +
+                    start + '</p>'
 
                 //ajax eventClick_sendDate(data)
                 var data = {
@@ -402,20 +403,19 @@
         //     return calendar.rerenderEvents()
         // };
 
-       
+
     }
 
-    
-    function ajax_post(num=0) {
+    function ajax_post(num = 0) {
         //ajax data
         var status = true;
-        var adult = $('#adult').val();
-        var child = $('#children').val();
+        var adult = $('#adult_select').val();
+        var child = $('#children_select').val();
         // var Date = moment().add(1,'M')
-        var start_month = moment().add(num,'M').startOf('month').format('YYYY-MM-DD')
-        var end_month = moment().add(num,'M').endOf('month').format('YYYY-MM-DD');
-        
-        console.log(start_month,end_month)
+        var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
+        var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
+
+        console.log(start_month, end_month)
 
         if (status) {
             var data = {
@@ -427,17 +427,22 @@
             }
             //Clean the calendar
             document.getElementById('calendar').innerHTML = ''
+
+            // do ajax fuction
+            people_number(data, num)
+
+            //spinner icon
+            document.getElementById('calendar_container').style.display = 'inline'
             document.getElementById('calendar').innerHTML =
                 '<div class="w3-center"><font size="10"><img src=\'{% static "/images/Spinner01.svg" %}\' /></font></div>'
 
-            // do ajax fuction
-            people_number(data,num)
         }
 
 
     }
     //ready
     $(function () {
+        //Date addDays() & addMonths()
         Date.prototype.addDays = function (days) {
             var date = new Date(this.valueOf());
             date.setDate(date.getDate() + days);
@@ -449,49 +454,76 @@
             return date;
         }
 
+        //Initial User of displayName & displayPhone
         $('#displayName').html('{{ data.username }}');
         $('#displayPhone').html('{{ data.phone }}');
 
-        //init LIFF
+        //Init LIFF
         liff.init(function (data) {
             initializeApp(data);
         });
 
+        $('#button_submit').click(function (e) {
+            var status = true;
+            //Information of social 
+            $('#social_id').val('{{data.social_id}}');
+            $('#social_app').val('{{data.social_app}}');
+            //Information of user & store
+            $('#user_id').val('{{data.user_id}}');
+            $('#store_id').val('6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'); //###
+            //Information of people number
+            $('#adult').val($('#adult_select').val())
+            $('#children').val($('#children_select').val())
+            //Information of reservation date & time
+            $('#bk_date').val($('#bk_date_select').text())
+            $('#time_session').val(('#bk_st_select').val().slice(0))
+            $('#bk_st').val($('#bk_st_select').val().slice(1, -1))
+            $('#entire_time').val(false)
+            $('#event_type').val('online-reservation')
+            //Information of reservation ps & price
+            $('#bk_ps').val($('#bk_ps_select').val())
+            $('#price').val($('#price_select').val())
+
+            if (status) {
+                document.getElementById("reservation_form").action = "/booking/reservation/";
+                document.getElementById("reservation_form").submit();
+            }
+        });
+
+
+
+
+
 
     });
 
-    
+
     // $('.fc-button-primary span').click(function (e) {
     //     $('#date').val((new Date().addMonths(1)).toISOString().slice(0, 10));
     // })
 
     $('body').on('click', 'button.fc-next-button', function () {
         var num_str = $('#date_num').val()
-        var num = parseInt(num_str)+1
+        var num = parseInt(num_str) + 1
         $('#date_num').val(num)
-        
-        console.log(num)
+        //do the fuction of ajax_post()
         ajax_post(num)
     })
 
     $('body').on('click', 'button.fc-prev-button', function () {
         var num_str = $('#date_num').val()
-        var num = parseInt(num_str)-1
+        var num = parseInt(num_str) - 1
         $('#date_num').val(num)
-
-        console.log(num)
+        //do the fuction of ajax_post()
         ajax_post(num)
     })
 
     $('#people_number_submit').click(function (e) {
         console.log('people_number_submit.click()')
         var num = parseInt($('#date_num').val())
-        console.log(num)
         //do the fuction of ajax_post()
         ajax_post(num)
 
     })
-
-
 </script>
 {% endblock %}
