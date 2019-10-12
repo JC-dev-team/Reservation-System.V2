@@ -15,23 +15,23 @@
 <div class="container" style='display: none'>
     <form id="reservation_form" method="post">
         {% csrf_token %}
-        <input id='social_id' type="text" value="" style="display: none">
-        <input id='social_app' type="text" value="" style="display: none">
+        <input id='social_id' name="social_id" type="text" value="" style="display: none">
+        <input id='social_app' name='social_app' type="text" value="" style="display: none">
 
-        <input id='user_id' type="text" value='' style="display: none">
-        <input id='store_id' type="text" value="" style="display: none">
+        <input id='user_id' name='user_id' type="text" value='' style="display: none">
+        <input id='store_id' name='store_id' type="text" value="" style="display: none">
 
-        <input id='adult' type="number" value="" style="display: none">
-        <input id='children' type="number" value="" style="display: none">
+        <input id='adult' name='adult' type="text" value="" style="display: none">
+        <input id='children' name='children' type="text" value="" style="display: none">
 
-        <input id='bk_date' type="text" value="" style="display: none">
-        <input id='time_session' type="text" value="" style="display: none">
-        <input id='bk_st' type="text" value="" style="display: none">
-        <input id='entire_time' type="text" value="" style="display: none">
-        <input id='event_type' type="text" value="" style="display: none">
+        <input id='bk_date' name='bk_date' type="text" value="" style="display: none">
+        <input id='time_session' name='time_session' type="text" value="" style="display: none">
+        <input id='bk_st' name='bk_st' type="text" value="" style="display: none">
+        <input id='entire_time' name='entire_time' type="text" value="" style="display: none">
+        <input id='event_type' name='event_type' type="text" value="" style="display: none">
 
-        <input id='bk_ps' type="text" value="" style="display: none">
-        <input id='price' type="number" value="" style="display: none">
+        <input id='bk_ps' name='bk_ps' type="text" value="" style="display: none">
+        <input id='price' name='price' type="number" value="" style="display: none">
 
         <!-- <input id="reservation_form_submit" type="submit" style="display: none"> -->
     </form>
@@ -58,19 +58,19 @@
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id='bk_st_select' required>
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                    <option value="L11" selected>中午：11:00</option>
-                    <option value="L11.5">中午：11:30</option>
-                    <option value="L12">中午：12:00</option>
-                    <option value="L12.5">中午：12:30</option>
-                    <option value="L13">中午：13:00</option>
-                    <option value="L13.5">中午：13:30</option>
+                    <option value="L11:00" selected>中午：11:00</option>
+                    <option value="L11:30">中午：11:30</option>
+                    <option value="L12:00">中午：12:00</option>
+                    <option value="L12:30">中午：12:30</option>
+                    <option value="L13:00">中午：13:00</option>
+                    <option value="L13:30">中午：13:30</option>
                     <option disabled>------------</option>
-                    <option value="D17">晚上：17:00</option>
-                    <option value="D17.5">晚上：17:30</option>
-                    <option value="D18">晚上：18:00</option>
-                    <option value="D18.5">晚上：18:30</option>
-                    <option value="D19">晚上：19:00</option>
-                    <option value="D19.5">晚上：19:30</option>
+                    <option value="D17:00">晚上：17:00</option>
+                    <option value="D17:30">晚上：17:30</option>
+                    <option value="D18:00">晚上：18:00</option>
+                    <option value="D18:30">晚上：18:30</option>
+                    <option value="D19:00">晚上：19:00</option>
+                    <option value="D19:30">晚上：19:30</option>
 
                 </select>
 
@@ -127,7 +127,7 @@
             <font size="4.5">
                 <label><i class="fa fa-male"></i> 成人</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    id="adult_select" disabled='disabled'>
+                    id="adult_select" >
                     <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
                     <option value="1">1 大</option>
                     <option value="2" selected>2 大</option>
@@ -156,7 +156,7 @@
             <font size="4.5">
                 <label><i class="fa fa-child"></i> 兒童</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    id="children_select" disabled='disabled'>
+                    id="children_select" >
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
                     <option value="0" selected>0 小</option>
                     <option value="1">1 小</option>
@@ -476,14 +476,15 @@
             $('#children').val($('#children_select').val())
             //Information of reservation date & time
             $('#bk_date').val($('#bk_date_select').text())
-            $('#time_session').val(('#bk_st_select').val().slice(0))
+            $('#time_session').val($('#bk_st_select').val().slice(0))
             $('#bk_st').val($('#bk_st_select').val().slice(1, -1))
-            $('#entire_time').val(false)
+            //$('#entire_time').val() //Default False
             $('#event_type').val('online-reservation')
             //Information of reservation ps & price
             $('#bk_ps').val($('#bk_ps_select').val())
             $('#price').val($('#price_select').val())
 
+            
             if (status) {
                 document.getElementById("reservation_form").action = "/booking/reservation/";
                 document.getElementById("reservation_form").submit();
@@ -523,7 +524,7 @@
         var num = parseInt($('#date_num').val())
         //do the fuction of ajax_post()
         ajax_post(num)
-
+        
     })
 </script>
 {% endblock %}
