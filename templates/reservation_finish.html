@@ -20,14 +20,15 @@
 
 <div class="w3-center">
     <font size='6'>
-        <h2>訂位資訊</h2>
+        <h2>訂位資訊 {{data.waiting_num}}</h2>
         <hr>
-        <h3><label><i class="fas fa-user-circle"></i> 訂位人： </label></h3>
+        <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{data.user_id}}</label></h3>
         <div class="w3-container" align="center">
-            <h4>人數： 2大 4小</h4>
-            <h4>用餐日期：2019-10-10</h4>
-            <h4>用餐時段： 中午：12:00</h4>
-            <h4>備註：不吃牛</h4>
+            <h4>人數： {{data.adult}} 大 {{data.children}} 小</h4>
+            <h4>用餐日期：{{data.bk_date}}</h4>
+            <h4>用餐時段： {{data.time_session}} - {{data.bk_st}}</h4>
+            <h4>價位：＄{{data.bk_price}}</h4>
+            <h4>備註：{{data.bk_ps}}</h4>
         </div>
     </font>
 
