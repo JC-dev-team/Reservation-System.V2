@@ -9,7 +9,10 @@ class check_bklist(serializers.ModelSerializer):
                   'bk_ed', 'adult', 'children', 'bk_ps', 'event_type', 
                   'time_session', 'entire_time', 'bk_price')
 
-# class
+class checkAuth(serializers.ModelSerializer):
+    class Meta:
+        model =Account
+        fields =('social_id','social_app')
 
 class Acc_Serializer(serializers.ModelSerializer):
 

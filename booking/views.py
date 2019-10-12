@@ -2,6 +2,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from .models import ActionLog, BkList, Account, Production, Staff, Store
 from .serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
+from .serializers import checkAuth, check_bklist
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -19,37 +20,11 @@ import sys
 import os 
 sys.path.append(os.path.join(settings.BASE_DIR,'utility'))
 from utility import recaptcha
+# import .
 
 # from django.contrib.auth import login, logout
 # from django.contrib.auth.decorators import login_required
 # ----- Class site ----------------------
-
-
-class ActionLogViewSet(viewsets.ModelViewSet):
-    queryset = ActionLog.objects.all()
-    serializer_class = Actlog_Serializer
-
-
-class BkListViewSet(viewsets.ModelViewSet):
-    queryset = BkList.objects.all()
-    serializer_class = Bklist_Serializer
-
-
-class ProductionViewSet(viewsets.ModelViewSet):
-    queryset = Production.objects.all()
-    serializer_class = Prod_Serializer
-
-
-class StoreViewSet(viewsets.ModelViewSet):
-    queryset = Store.objects.all()
-    serializer_class = Store_Serializer
-    permission_classes = (IsAuthenticated,)
-
-
-class StaffViewSet(viewsets.ModelViewSet):
-    queryset = Staff.objects.all()
-    serializer_class = Staff_Serializer
-
 
 class AccountViewSet(viewsets.ModelViewSet):  # api get account data
     queryset = Account.objects.all()
@@ -100,7 +75,22 @@ def InsertReservation(request):  # insert booking list
         # For validation
         social_id = request.POST.get('social_id',None)
         social_app = request.POST.get('social_app', None)
-
+        # Check data format
+        valid = checkAuth(data={
+            'social_id': social_id,
+            'social_app': social_app
+        })
+        if valid.is_valid() == False:
+            raise Exception('No valid')
+        result = auth.ClientAuthentication(
+            social_id, social_app)
+        if result == None or result == False:  # Using PC or No social login # Account Not Exist
+            return redirect('/booking/login/',)
+            # return redirect(reverse('member'),args=())
+        # error occurred the type of result is {'error' : error}
+        elif type(result) == dict:
+            return render(request, 'error/error.html', {'error': result['error']})
+        # Account Exist
         # insert data
         user_id = request.POST.get('user_id', None)
         store_id = request.POST.get('store_id', None)
@@ -119,6 +109,13 @@ def InsertReservation(request):  # insert booking list
         waiting_num = 0
         total = int(adult)+int(children)
         exact_seat = 0
+        # modify insert data
+        if time_session == 'D':
+            time_session='Dinner'
+        elif time_session == 'L':
+            time_session='Lunch'
+        else:
+            raise Exception('資料輸入時，發生錯誤')
 
         with transaction.atomic():  # transaction
             # get the store seat
@@ -188,14 +185,13 @@ def member(request):
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
 
-        valid = Acc_Serializer(data={
+        valid = checkAuth(data={
             'social_id': social_id,
             'social_app': social_app
         })
-        # if valid.is_valid():
-        #     raise Exception('valid')
-        # else:
-        #     raise Exception('no valid')
+        if valid.is_valid() == False:
+            raise Exception('No valid')
+
         result = auth.ClientAuthentication(
             social_id, social_app)  # queryset or something else
         if result == None:  # Using PC or No social login
