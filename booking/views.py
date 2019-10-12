@@ -222,13 +222,6 @@ def InsertReservation(request):  # insert booking list
                 store_serializer = Store_Serializer(get_store_name)
                 bklist_serializer = Bklist_Serializer(final_queryset)
 
-                # if bklist_serializer.data['waiting_num'] > 0:
-                #     bklist_serializer.data['waiting_num'] = '(候補 ' + \
-                #         str(bklist_serializer.data['waiting_num'])+')'
-                    
-                # else:
-                #     bklist_serializer.data['waiting_num'] = None
-
                 return render(request, 'reservation_finish.html', {
                     'data': bklist_serializer.data,
                     'store': store_serializer.data,
