@@ -168,64 +168,71 @@ def InsertReservation(request):  # insert booking list
                 number = int(i.adult)+int(i.children)
                 exact_seat += number
 
-            if (exact_seat+total) > store_query.seat:
-                return render(request, 'reservation.html', {'error': '人數過多'})
+            # get waiting_num
+            # if (exact_seat+total) > store_query.seat:  # need waiting
+            waiting_num = BkList.objects.only('waiting_num').select_for_update().filter(
+                store_id=store_id,
+                bk_date=bk_date,
+                time_session=time_session,
+                is_cancel=is_cancel,
+                waiting_num__gt=0,
+            ).count()
 
+            # else: # don't need to wait
+            #     waiting_num = BkList.objects.only('waiting_num').select_for_update().filter(
+            #         store_id=store_id,
+            #         bk_date=bk_date,
+            #         time_session=time_session,
+            #         is_cancel=is_cancel,
+
+            #     ).count()
+            # if waiting_num > 0:
+            #     waiting_num += 1
+
+            final_queryset = BkList.objects.create(  # insert data
+                user_id=user_id,
+                store_id=store_id,
+                bk_date=bk_date,
+                bk_st=bk_st,
+                bk_ed=bk_ed,
+                adult=adult,
+                children=children,
+                bk_ps=bk_ps,
+                event_type=event_type,
+                time_session=time_session,
+                entire_time=entire_time,
+                is_cancel=is_cancel,
+                waiting_num=waiting_num,
+                bk_price=bk_price,
+            )
+            get_user_info = Account.objects.only('username').get(
+                user_id=user_id,
+                social_id=social_id,
+                social_app=social_app,
+            )
+
+            get_store_name = Store.objects.only(
+                'store_name',
+                'store_address',
+                'store_phone',).get(
+                    store_id=store_id
+            )
+
+            if final_queryset.time_session == 'Dinner':
+                final_queryset.time_session = '晚餐'
             else:
-                # get waiting_num
-                waiting_num = BkList.objects.only('waiting_num').select_for_update().filter(
-                    store_id=store_id,
-                    bk_date=bk_date,
-                    time_session=time_session,
-                    is_cancel=is_cancel,
-                ).count()
-                if waiting_num > 0:
-                    waiting_num += 1
-                
-                final_queryset = BkList.objects.create(  # insert data
-                    user_id=user_id,
-                    store_id=store_id,
-                    bk_date=bk_date,
-                    bk_st=bk_st,
-                    bk_ed=bk_ed,
-                    adult=adult,
-                    children=children,
-                    bk_ps=bk_ps,
-                    event_type=event_type,
-                    time_session=time_session,
-                    entire_time=entire_time,
-                    is_cancel=is_cancel,
-                    waiting_num=waiting_num,
-                    bk_price=bk_price,
-                )
-                get_user_info = Account.objects.only('username').get(
-                    user_id=user_id,
-                    social_id=social_id,
-                    social_app=social_app,
-                )
+                final_queryset.time_session = '午餐'
 
-                get_store_name = Store.objects.only(
-                    'store_name',
-                    'store_address',
-                    'store_phone',).get(
-                        store_id=store_id
-                )
+            # request.session.flush()
 
-                if final_queryset.time_session == 'Dinner':
-                    final_queryset.time_session = '晚餐'
-                else:
-                    final_queryset.time_session = '午餐'
+            account_serializer = Acc_Serializer(get_user_info)
+            store_serializer = Store_Serializer(get_store_name)
+            bklist_serializer = Bklist_Serializer(final_queryset)
 
-                # request.session.flush()
-                
-                account_serializer = Acc_Serializer(get_user_info)
-                store_serializer = Store_Serializer(get_store_name)
-                bklist_serializer = Bklist_Serializer(final_queryset)
-
-                return render(request, 'reservation_finish.html', {
-                    'data': bklist_serializer.data,
-                    'store': store_serializer.data,
-                    'user_info': account_serializer.data, })
+            return render(request, 'reservation_finish.html', {
+                'data': bklist_serializer.data,
+                'store': store_serializer.data,
+                'user_info': account_serializer.data, })
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
@@ -264,9 +271,11 @@ def member(request):
         else:  # Account Exist
             serializer = Acc_Serializer(result)
             request.session['member_id'] = result.user_id
+
             return render(request, 'reservation.html', {
                 'data': serializer.data,
                 'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
+
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
@@ -303,7 +312,7 @@ def getWaitingList(request):  # get waiting list
         noon_count = 0  # Get number of noon total
         for i in bk_list_noon:
             if i.entire_time == True:
-                noon_count = 20
+                noon_count = store_query.seat
             noon_count += int(i.children)+int(i.adult)
 
         noon_count += int(children)+int(adult)
@@ -311,7 +320,7 @@ def getWaitingList(request):  # get waiting list
         night_count = 0  # Get number of dinner total
         for i in bk_list_night:
             if i.entire_time == True:
-                night_count = 20
+                night_count = store_query.seat
             night_count += int(i.children)+int(i.adult)
 
         night_count += int(children)+int(adult)
