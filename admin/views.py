@@ -25,7 +25,7 @@ def login_portal(request):
     return render(request, 'admin_login.html')
 
 @require_http_methods(['POST', 'GET'])
-def staff_login(request):  # authentication staff
+def auth(request):  # authentication staff
     try:
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
@@ -46,7 +46,7 @@ def staff_login(request):  # authentication staff
         elif list(result.keys())[0] == 'error':  # error occurred
             return render(request, 'error/error.html', {'error': result['error']})
         else:
-            return render(request, 'admin_checkreservation.html', {'data': result})
+            return render(request, 'admin_dashbroad.html', {'data': result})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 

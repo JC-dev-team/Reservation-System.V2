@@ -4,8 +4,8 @@ from rest_framework.routers import DefaultRouter
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('LoginPortal/', views.login_portal,),
-    path('StaffLogin/',views.staff_login,),
+    path('login/', views.login_portal,),
+    path('auth/',views.dashboard,),
 
 
     
