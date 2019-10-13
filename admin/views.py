@@ -53,7 +53,7 @@ def staff_auth(request):  # authentication staff
         result = auth.StaffAuthentication(social_id, social_app)
 
         if result == None or result == False:
-            return render(request, 'error/error404.html')
+            return render(request, 'error/error404.html',{'action':'/softwayliving/login/'})
 
         elif list(result.keys())[0] == 'error':  # error occurred
             return render(request, 'error/error.html', {'error': result['error'],'action':'/softwayliving/login/'})

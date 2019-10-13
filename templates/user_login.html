@@ -21,7 +21,7 @@
 <script>
     function send() {
         if (true) {
-            document.getElementById("checklogin_form").action = "/softwayliving/StaffAuth/";
+            document.getElementById("checklogin_form").action = "/userdashboard/member/";
             document.getElementById("checklogin_form").submit();
         }
     }
@@ -45,18 +45,16 @@
             initializeApp(data);
         });
         //remember to edit it to Line Liff
-        $('#social_id').val('9636ff56-e78b-11e9-a2b8-0ec425232520'); //data.context.userId
-        $('#social_app').val('Line');
-
+        $('#social_id').val('9636ff56-e78b-11e9-a2b8-0ec425232520'); //data.context.userId//
+        $('#social_app').val('Line');//Line
         //send data 
         // send()
         if($('#social_id').val() != '' && $('#social_app').val() != ''){
             send()
         }
         else{
-            window.location.replace('/softwayliving/error/');
+            window.location.replace('/userdashboard/error/');
         }
-        
     });
 
 

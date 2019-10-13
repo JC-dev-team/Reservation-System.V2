@@ -19,14 +19,43 @@ from datetime import datetime
 
 
 def error(request):
-    return render(request, 'error/error.html',{'action':'/userdashboard/user_login/'})
+    return render(request, 'error/error.html', {'action': '/userdashboard/user_login/'})
 
-@require_http_methods(['POST','GET'])
-def user_login(request):
-    return render(request, '')
 
 @require_http_methods(['POST', 'GET'])
-def check_reservation(request):
+def user_login(request):
+    return render(request, 'user_dashboard.html')
+
+
+@require_http_methods(['POST', 'GET'])
+def user_auth(request):  # authentication staff
+    try:
+        social_id = request.POST.get('social_id', None)
+        social_app = request.POST.get('social_app', None)
+
+        # Check data format
+        valid = checkAuth(data={
+            'social_id': social_id,
+            'social_app': social_app
+        })
+        if valid.is_valid() == False:
+            raise Exception('Not valid, 帳號資料錯誤')
+
+        result = auth.ClientAuthentication(social_id, social_app)
+
+        if result == None or result == False:
+            return render(request, 'error/error404.html',{'action':'/userdashboard/login/'})
+
+        elif list(result.keys())[0] == 'error':  # error occurred
+            return render(request, 'error/error.html', {'error': result['error'], 'action': '/userdashboard/user_login/'})
+        else:
+            return render(request, 'user_dashbroad.html', {'data': result})
+    except Exception as e:
+        return render(request, 'error/error.html', {'error': e, 'action': '/userdashboard/login/'})
+
+
+@require_http_methods(['POST', 'GET'])
+def user_check_reservation(request):
     try:
         store_id = request.POST.get('store_id', None)
         # bk_date = request.POST.get('bk_date',None)
@@ -46,7 +75,7 @@ def check_reservation(request):
             return redirect('/userdashboard/user_login/',)
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
-            return render(request, 'error/error_check.html', {'error': result['error'],'action':'/userdashboard/user_login/'})
+            return render(request, 'error/error_check.html', {'error': result['error'], 'action': '/userdashboard/user_login/'})
         # Account Exist
 
         acc_queryset = Account.objects.only('user_id').get(
@@ -64,18 +93,18 @@ def check_reservation(request):
         acc_serializer = Acc_Serializer(acc_queryset)
         bk_serializer = Bklist_Serializer(bk_queryset)
         store_serializer = Store_Serializer(store_queryset)
-        return render(request, 'check_reservation.html', {
+        return render(request, 'user_check_reservation.html', {
             'data': bk_serializer.data,
             'user_info': acc_serializer.data,
             'store': store_serializer.data,
         })
     except Exception as e:
-        return render(request, 'error/error.html', {'error': e,'action':'/userdashboard/user_login/'})
+        return render(request, 'error/error.html', {'error': e, 'action': '/userdashboard/user_login/'})
 
 
-# json API
+# Ajax API
 @require_http_methods(['POST'])
-def remove_reservation(request):
+def user_remove_reservation(request):
     try:
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)

@@ -173,25 +173,17 @@ def InsertReservation(request):  # insert booking list
                 exact_seat += number
 
             # get waiting_num
-            # if (exact_seat+total) > store_query.seat:  # need waiting
-            waiting_num = BkList.objects.only('waiting_num').select_for_update().filter(
-                store_id=store_id,
-                bk_date=bk_date,
-                time_session=time_session,
-                is_cancel=is_cancel,
-                waiting_num__gt=0,
-            ).count()
-            waiting_num += 1
-            # else: # don't need to wait
-            #     waiting_num = BkList.objects.only('waiting_num').select_for_update().filter(
-            #         store_id=store_id,
-            #         bk_date=bk_date,
-            #         time_session=time_session,
-            #         is_cancel=is_cancel,
-
-            #     ).count()
-            # if waiting_num > 0:
-            #     waiting_num += 1
+            if (exact_seat+total) > store_query.seat:  # need waiting
+                waiting_num = BkList.objects.only('waiting_num').select_for_update().filter(
+                    store_id=store_id,
+                    bk_date=bk_date,
+                    time_session=time_session,
+                    is_cancel=is_cancel,
+                    waiting_num__gt=0,
+                ).count()
+                waiting_num += 1
+            else: # don't need to wait
+                waiting_num = 0
 
             final_queryset = BkList.objects.create(  # insert data
                 user_id=user_id,

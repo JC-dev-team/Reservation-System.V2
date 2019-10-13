@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('error/',views.error),
     path('login/', views.login_portal,),
     path('StaffAuth/',views.staff_auth,),
     path('checkreservation/',views.check_reservation),
