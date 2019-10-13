@@ -10,10 +10,11 @@
 {% load static %}
 
 <!-- Calendar-->
-
 <div id='calendar'>
 </div>
 
+<!-- Date num calculated-->
+<input id="date_num" value="0" type="text" style="display: none">
 
 
 <script>
@@ -74,9 +75,9 @@
             admin_ajax_time(data, num)
 
             //spinner icon
-            // document.getElementById('calendar_container').style.display = 'inline'
-            // document.getElementById('calendar').innerHTML =
-            //     '<div class="w3-center"><font size="10"><img src=\'{% static "/images/Spinner01.svg" %}\' /></font></div>'
+            
+            document.getElementById('calendar').innerHTML =
+                 '<div class="w3-center"><font size="10"><img src=\'{% static "/images/Spinner01.svg" %}\' /></font></div>'
 
         }
 
@@ -85,8 +86,7 @@
 
     //calendar function
     function calendar_fun(result, num = 0) {
-        // document.getElementById('calendar').innerHTML = ''
-        // document.getElementById('calendar_container').style.display = 'inline'
+        document.getElementById('calendar').innerHTML = ''
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             //ColumnHeaderText
@@ -130,82 +130,79 @@
                 center: 'title,',
                 right: 'dayGridMonth,listMonth,next'
             },
+            //Header -  Title Text
+            buttonText: {
+                month: '月',
+                list: '列表'
+            },
             //Header - Title format
             titleFormat: 'YYYY  MM月',
+            //List - Title format
             listDayFormat: 'MM 月 DD',
             listDayAltFormat: 'dddd',
             //Show none current date (False)
             showNonCurrentDates: false,
-
+            //Event Limit
+            eventLimit: true,
+            views: { dayGrid: { eventLimit: 3 }},
             //Date selectable (true)
             selectable: true,
 
-            events:
-            // [{
-            //         id: '1',
-            //         title: '楊意義 0900123123 2大4小 \n #不吃牛 $1200',
-            //         start: new Date(),
-            //         backgroundColor: 'green',
-            //         textColor: 'white',
-            // }],
-             function (info, successCallback) {
+            events: function (info, successCallback) {
                 var event = [];
                 for (var i = 0; i < result.length; i++) {
+
                     var date = result[i].bk_date;
-                    var time = 'T'+result[i].bk_st;
+                    var time = 'T' + result[i].bk_st;
                     var session = result[i].time_session;
-                    var people = result[i].adult + '大' +  result[i].children + '小';
+                    var people = result[i].adult + '大' + result[i].children + '小';
                     var price = '$' + result[i].bk_price;
                     var ps = '#' + result[i].bk_ps + ' ';
+                    var waiting_num = result[i].waiting_num
 
                     if (session == 'Lunch') {
                         session = '午餐'
-                    }else {
+                    } else {
                         session = '晚餐'
                     }
-                    
+
                     if (ps == '#無 ') {
                         ps = ''
                     }
 
-                    
+                    if (waiting_num == 0) {
+                        color = 'green'
+                    } else {
+                        color = 'red'
+                    }
+
 
                     event.push({
-                        title: session + ' ' + people + ' ' + price + ' ' + ps ,
+                        title: session + ' ' + people + ' ' + price + ' ' + ps,
                         start: date + time,
-                        backgroundColor: 'red',
+                        backgroundColor: color,
                         textColor: 'white',
                     });
-                    
+
                     successCallback(event)
 
                 }
             },
-            
-            eventRender: function (info) {
-                
-                console.log(info)
-                console.log('---------')
-                console.log(info.el.outerText)
-                
-                var title = info.event.title.slice(0,2)
-                
-                
-                // info.el.innerText = title
-                // if (title == '午餐') {
-                //     info.el.innerText = title
-                // }else {
 
-                // }
-               
-                // if (info.el.style.backgroundColor == 'green') {
-                //     info.el.style.backgroundColor = 'red'
-                // }
+            eventRender: function (info) {
+
+                var month_text = info.el.text
+                if (month_text != undefined) {
+                    var text = month_text.split(' ')[1]
+                    info.el.text = text
+
+                }
+
 
                 //list of dot
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
-               
-                
+
+
                 // if (dotEl) {
                 //     dotEl.style.backgroundColor = 'white';
                 // }
@@ -220,7 +217,7 @@
                 var adult = $('#adult_select').val();
                 var child = $('#children_select').val();
 
-                console.log(info)
+                console.log('eventMouseEnter')
                 // var evMousEnter_st = info.event.start
                 // var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
                 // var title = info.event.title
@@ -257,8 +254,11 @@
 
     //ready
     $(function () {
+
         //do the current month to ajax 
-        ajax_post()
+        var num = parseInt($('#date_num').val())
+        //do the fuction of ajax_post()
+        ajax_post(num)
 
         //Date addDays() & addMonths()
         Date.prototype.addDays = function (days) {
@@ -271,6 +271,24 @@
             date.setMonth(date.getMonth() + months);
             return date;
         }
+    })
+
+    //next month of button
+    $('body').on('click', 'button.fc-next-button', function () {
+        var num_str = $('#date_num').val()
+        var num = parseInt(num_str) + 1
+        $('#date_num').val(num)
+        //do the fuction of ajax_post()
+        ajax_post(num)
+    })
+
+    //previous month of button
+    $('body').on('click', 'button.fc-prev-button', function () {
+        var num_str = $('#date_num').val()
+        var num = parseInt(num_str) - 1
+        $('#date_num').val(num)
+        //do the fuction of ajax_post()
+        ajax_post(num)
     })
 </script>
 

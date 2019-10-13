@@ -641,6 +641,7 @@
     //     $('#date').val((new Date().addMonths(1)).toISOString().slice(0, 10));
     // })
 
+    //next month of button
     $('body').on('click', 'button.fc-next-button', function () {
         var num_str = $('#date_num').val()
         var num = parseInt(num_str) + 1
@@ -649,6 +650,7 @@
         ajax_post(num)
     })
 
+    //previous month of button
     $('body').on('click', 'button.fc-prev-button', function () {
         var num_str = $('#date_num').val()
         var num = parseInt(num_str) - 1
@@ -656,7 +658,7 @@
         //do the fuction of ajax_post()
         ajax_post(num)
     })
-
+    
     $('#people_number_submit').click(function (e) {
         console.log('people_number_submit.click()')
         var num = parseInt($('#date_num').val())
