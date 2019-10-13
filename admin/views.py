@@ -90,7 +90,6 @@ def staff_approval_reservation(request):
             bk_queryset = BkList.objects.select_for_update().get(
                 bk_uuid=bk_uuid,
                 is_cancel=False,
-
             )
             bk_queryset.update(waiting_num=0)  
             return JsonResponse({'result': True})
@@ -111,7 +110,7 @@ def staff_add_reservation(request):  # Help client to add reservation
 
 
 @require_http_methods(['POST'])
-def staff_add_rest(request):
+def staff_add_rest(request): # add rest day as booking
     try:
         store_id = request.POST.get('store_id', None)
         bk_date = request.POST.get('bk_date', None)
@@ -119,8 +118,5 @@ def staff_add_rest(request):
 
 
 
-
-
-        pass
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})

@@ -122,3 +122,16 @@ class Store(models.Model):
     class Meta:
         app_label = 'booking'
         db_table = 'store___db'
+
+class StoreEventDb(models.Model):
+    event_id = models.CharField(primary_key=True, max_length=45)
+    store = models.ForeignKey(Store, models.DO_NOTHING)
+    event_type = models.CharField(max_length=45)
+    event_date = models.DateTimeField()
+    time_session = models.CharField(max_length=45)
+    event_created = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'store_event___db'
+
+
