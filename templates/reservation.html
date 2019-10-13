@@ -350,12 +350,18 @@
                 var start = (new Date(st).addDays(1)).toISOString().slice(0, 10)
                 var title = info.event.title
                 var color = info.event.backgroundColor
-                // console.log(info.event)
+                console.log(info)
                 // console.log(result[0].title)
                 for (var i = 0; i < result.length; i++) {
+                    //red : 人數額滿
                     if (result[i].start == start && result[i].title == title && result[i].backgroundColor ==
                         'red') {
                         info.el.style.backgroundColor = 'red'
+                    }
+                    //yellow : 店休
+                    if (result[i].start == start && result[i].title == title && result[i].backgroundColor == 'yellow') {
+                        info.el.style.backgroundColor = 'red';
+                        info.el.innerText = '店休'
                     }
                 }
             },
@@ -497,15 +503,129 @@
                 $('#cover-spin').show(0)
             }
 
-            liff.Messages([
-                {
-                    type:'text',
-                    text:'訂位處理中'
-                }
-            ])
-            .then(() => {
-                liff.closeWindow();
-            })
+            //Line Liff Data
+            var line_date = $('#bk_date').val();
+            var line_session = $('#time_session').val();
+            var line_time = $('#bk_st').val();
+            var line_number = $('#adult').val() + " 大 " + $('#children').val() + " 小"
+            var line_ps = $('#bk_ps').val();
+
+            if (line_session == 'L') {
+                line_session = '午餐'
+            }else {
+                line_session = '晚餐'
+            }
+            
+            // Line Liff Messages
+            liff.sendMessages([{
+            "type": "flex",
+            "altText": "Flex Message",
+            "contents": {
+              "type": "bubble",
+              "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [{
+                    "type": "text",
+                    "text": "❓ " + " 訂位處理中...",
+                    "size": "xl",
+                    "weight": "bold"
+                  },
+                  {
+                    "type": "box",
+                    "layout": "vertical",
+                    "spacing": "sm",
+                    "margin": "lg",
+                    "contents": [{
+                        "type": "box",
+                        "layout": "baseline",
+                        "spacing": "sm",
+                        "contents": [{
+                            "type": "text",
+                            "text": "用餐日期",
+                            "flex": 2,
+                            "size": "sm",
+                            "color": "#AAAAAA"
+                          },
+                          {
+                            "type": "text",
+                            "text": line_date + ' '+ line_session + ' ' + line_time,
+                            "flex": 5,
+                            "size": "sm",
+                            "color": "#666666",
+                            "wrap": true
+                          }
+                        ]
+                      },
+                      {
+                        "type": "box",
+                        "layout": "baseline",
+                        "spacing": "sm",
+                        "contents": [{
+                            "type": "text",
+                            "text": "用餐人數",
+                            "flex": 2,
+                            "size": "sm",
+                            "color": "#AAAAAA"
+                          },
+                          {
+                            "type": "text",
+                            "text": line_number,
+                            "flex": 5,
+                            "size": "sm",
+                            "color": "#666666",
+                            "wrap": true
+                          }
+                        ]
+                      },
+                      {
+                        "type": "box",
+                        "layout": "baseline",
+                        "spacing": "sm",
+                        "contents": [{
+                            "type": "text",
+                            "text": "備註",
+                            "flex": 1,
+                            "size": "sm",
+                            "color": "#AAAAAA"
+                          },
+                          {
+                            "type": "text",
+                            "text": line_ps,
+                            "flex": 5,
+                            "size": "sm",
+                            "color": "#666666",
+                            "wrap": true
+                          }
+                        ]
+                      }
+
+                    ]
+                  }
+                ]
+              },
+              "footer": {
+                "type": "box",
+                "layout": "vertical",
+                "flex": 0,
+                "spacing": "sm",
+                "contents": [{
+                  "type": "button",
+                  "action": {
+                    "type": "uri",
+                    "label": "查詢/取消訂位",
+                    "uri": "line://app/1577114898-D5d8edOv"
+                  },
+                  "color": "#2C9278",
+                  "height": "sm",
+                  "style": "primary"
+                }]
+              }
+            }
+          }])
+            // .then(() => {
+            //     liff.closeWindow();
+            // })
             .catch((err) => {
                 console.log('error : ',err)
             });
