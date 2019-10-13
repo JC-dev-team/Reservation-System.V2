@@ -18,3 +18,5 @@ __pycache__/manage.cpython-36.pyc
 utility/__pycache__
 common/utility/__pycache__
 common/__pycache__
+userdashboard/__pycache__
+userdashboard/migrations/__pycache__

@@ -27,7 +27,8 @@ import sys
 
 def ClientAuthentication(social_id, social_app):  # Account Check Auth
     try:
-        if (social_id == None) or (social_app == None):  # Using PC or No social login
+        # Using PC or No social login
+        if (social_id == None) or (social_app == None) or(social_id == '') or (social_app == ''):
             return None
         else:   # parameter not None
             with transaction.atomic():  # transaction

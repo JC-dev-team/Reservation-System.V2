@@ -8,7 +8,11 @@ urlpatterns = [
     path('StaffAuth/',views.staff_auth,),
     path('checkreservation/',views.check_reservation),
     path('reservation/',views.reservation),
-    path('staff_check/',views.staff_check_reservation)
+    # Ajax api
+    path('staff_check/',views.staff_check_reservation),
+    path('add_rest/',views.staff_add_rest),
+    path('approval/',views.staff_approval_reservation),
+
 ]
 
 

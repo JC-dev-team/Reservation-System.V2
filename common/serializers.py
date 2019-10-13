@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from booking.models import Account, ActionLog, BkList, Production, Staff, Store, StoreEventDb
+from booking.models import Account, ActionLog, BkList, Production, Staff, Store, StoreEvent
 
 
 class check_bklist(serializers.ModelSerializer):
@@ -65,5 +65,5 @@ class Store_Serializer(serializers.ModelSerializer):
 
 class StoreEvent_Serializer(serializers.ModelSerializer):
     class Meta:
-        model = StoreEventDb
+        model = StoreEvent
         fields = '__all__'

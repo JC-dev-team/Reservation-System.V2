@@ -1,7 +1,7 @@
 from common.utility.recaptcha import check_recaptcha
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
-from .models import ActionLog, BkList, Account, Production, Staff, Store
+from .models import ActionLog, BkList, Account, Production, Staff, Store, StoreEvent
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
 from common.serializers import checkAuth, check_bklist, applymember
 from rest_framework import viewsets, status
@@ -47,9 +47,11 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         username = request.POST.get('username', None)
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
-        if social_id == None or social_app == None:
+        if social_id == None or social_app == None or social_id == '' or social_app == '':
             raise Exception('Not Valid, 無法取得帳號資料')
         # Check data format
+        if len(phone) != 10:
+            raise Exception('Not Valid, 手機長度有誤')
         valid = applymember(data={
             'social_id': social_id,
             'social_app': social_app,
@@ -81,7 +83,8 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
             'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
 
     except Exception as e:
-        return render(request, 'error/error.html', {'error': e})  # render html
+        # render html
+        return render(request, 'error/error.html', {'error': e, 'action': '/booking/login/'})
 
 
 @require_http_methods(['POST'])
@@ -105,7 +108,7 @@ def InsertReservation(request):  # insert booking list
             # return redirect(reverse('member'),args=())
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
-            return render(request, 'error/error.html', {'error': result['error']})
+            return render(request, 'error/error.html', {'error': result['error'], 'action': '/booking/login/'})
         # Account Exist
         # insert data
         user_id = request.POST.get('user_id', None)
@@ -224,19 +227,17 @@ def InsertReservation(request):  # insert booking list
             else:
                 final_queryset.time_session = '午餐'
 
-            
-
             account_serializer = Acc_Serializer(get_user_info)
             store_serializer = Store_Serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
-            
+
             request.session.flush()
             return render(request, 'reservation_finish.html', {
                 'data': bklist_serializer.data,
                 'store': store_serializer.data,
                 'user_info': account_serializer.data, })
     except Exception as e:
-        return render(request, 'error/error.html', {'error': e})
+        return render(request, 'error/error.html', {'error': e,'action':'/booking/login/'})
 
 
 def login_portal(request):
@@ -244,7 +245,7 @@ def login_portal(request):
 
 
 def error(request):  # error page
-    return render(request, 'error/error.html')
+    return render(request, 'error/error.html',{'action':'/booking/login/'})
 
 
 @require_http_methods(['POST', 'GET'])
@@ -252,7 +253,6 @@ def member(request):
     try:  # Check Login
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
-
         valid = checkAuth(data={
             'social_id': social_id,
             'social_app': social_app
@@ -269,7 +269,7 @@ def member(request):
             # return redirect(reverse('member'),args=())
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
-            return render(request, 'error/error.html', {'error': result['error']})
+            return render(request, 'error/error.html', {'error': result['error'],'action':'/booking/login/'})
         else:  # Account Exist
             serializer = Acc_Serializer(result)
             request.session['member_id'] = result.user_id
@@ -279,7 +279,7 @@ def member(request):
                 'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
 
     except Exception as e:
-        return render(request, 'error/error.html', {'error': e})
+        return render(request, 'error/error.html', {'error': e,'action':'/booking/login/'})
 
 
 # Ajax api --------------------------------------------------------------
@@ -358,7 +358,7 @@ def getWaitingList(request):  # get waiting list
             dinner_waiting = '晚餐: 候補 ' + str(dinner_waiting)
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤','action':'/booking/login/'})
 
 
 @require_http_methods(['POST'])
@@ -390,8 +390,30 @@ def getCalendar(request):  # full calendar
         bookinglist = bk_queryset.filter(  # filter waiting_num != 0
             waiting_num=0,
         )
-        event_arr = []
+        # get all store events
+        st_event = StoreEvent.objects.filter(  # StoreEvent
+            store_id=store_id,
+            event_date__range=(start_month, end_month),
+        )
 
+        event_arr = []
+        for i in st_event:
+            event_sub_arr = {}  # event dictionary
+            if i.time_session == 'Lunch':
+                i.time_session = '午餐'
+            else:
+                i.time_session = '晚餐'
+
+            if i.event_type == 'rest':
+                event_sub_arr['title'] = i.time_session
+                event_sub_arr['start'] = i.event_date
+                event_sub_arr['backgroundColor'] = 'yellow'
+            elif i .event_type == 'rent':
+                event_sub_arr['title'] = i.time_session
+                event_sub_arr['start'] = i.event_date
+                event_sub_arr['backgroundColor'] = 'yellow'
+            event_arr.append(event_sub_arr)
+        print('1: ', event_arr)
         for i in bookinglist:
             event_sub_arr = {}  # event dictionary
             # Convert time_session to chiness
@@ -400,12 +422,7 @@ def getCalendar(request):  # full calendar
             else:
                 i.time_session = '晚餐'
 
-            if i.event_type == 'rest':
-                i.event_type = '店休'
-                event_sub_arr['title'] = i.event_type
-                event_sub_arr['start'] = i.bk_date
-                event_sub_arr['backgroundColor'] = 'yellow'
-            elif i.entire_time == True:
+            if i.entire_time == True:
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'red'
@@ -422,10 +439,10 @@ def getCalendar(request):  # full calendar
                 event_sub_arr['backgroundColor'] = 'green'
 
             event_arr.append(event_sub_arr)
-
+        print('2: ', event_arr)
         return JsonResponse({'result': event_arr})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤','action':'/booking/login/'})
 
 
 # Test function ------------------------

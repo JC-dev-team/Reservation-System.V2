@@ -19,7 +19,6 @@ class Account(models.Model):
     created_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        app_label = 'booking'
         db_table = 'acc___db'
 
 
@@ -30,7 +29,6 @@ class ActionLog(models.Model):
     act_ops = models.CharField(max_length=45)
 
     class Meta:
-        app_label = 'booking'
         db_table = 'action_log___db'
 
 
@@ -41,7 +39,6 @@ class AccountLog(models.Model):
     acc_oops = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
-        app_label = 'booking'
         db_table = 'acc_log___db'
 
 
@@ -64,7 +61,6 @@ class BkList(models.Model):
     bk_price = models.PositiveIntegerField()
 
     class Meta:
-        app_label = 'booking'
         db_table = 'bk_list___db'
 
 
@@ -78,7 +74,6 @@ class Production(models.Model):
     prod_created = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        app_label = 'booking'
         db_table = 'prod___db'
 
 
@@ -103,7 +98,6 @@ class Staff(models.Model):
     end_reason = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
-        app_label = 'booking'
         db_table = 'staff___db'
 
 
@@ -120,14 +114,13 @@ class Store(models.Model):
     store_created = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        app_label = 'booking'
         db_table = 'store___db'
 
-class StoreEventDb(models.Model):
+class StoreEvent(models.Model):
     event_id = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey(Store, models.DO_NOTHING)
     event_type = models.CharField(max_length=45)
-    event_date = models.DateTimeField()
+    event_date = models.DateField()
     time_session = models.CharField(max_length=45)
     event_created = models.DateTimeField(blank=True, null=True)
 

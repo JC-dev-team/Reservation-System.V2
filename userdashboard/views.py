@@ -19,13 +19,11 @@ from datetime import datetime
 
 
 def error(request):
-    return render(request, 'error/error_check.html')
+    return render(request, 'error/error.html',{'action':'/userdashboard/user_login/'})
 
-# @require_http_methods(['POST','GET'])
-# def reservation_login(request):
-#     social_id = request.POST.get('social_id', None)
-#     social_app = request.POST.get('social_app', None)
-
+@require_http_methods(['POST','GET'])
+def user_login(request):
+    return render(request, '')
 
 @require_http_methods(['POST', 'GET'])
 def check_reservation(request):
@@ -45,10 +43,10 @@ def check_reservation(request):
         result = auth.ClientAuthentication(
             social_id, social_app)
         if result == None or result == False:  # Using PC or No social login # Account Not Exist
-            return redirect('/booking/login/',)
+            return redirect('/userdashboard/user_login/',)
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
-            return render(request, 'error/error_check.html', {'error': result['error']})
+            return render(request, 'error/error_check.html', {'error': result['error'],'action':'/userdashboard/user_login/'})
         # Account Exist
 
         acc_queryset = Account.objects.only('user_id').get(
@@ -72,7 +70,7 @@ def check_reservation(request):
             'store': store_serializer.data,
         })
     except Exception as e:
-        return render(request, 'error/error_check.html', {'error': e})
+        return render(request, 'error/error.html', {'error': e,'action':'/userdashboard/user_login/'})
 
 
 # json API
@@ -95,7 +93,7 @@ def remove_reservation(request):
         result = auth.ClientAuthentication(
             social_id, social_app)
         if result == None or result == False:  # Using PC or No social login # Account Not Exist
-            return redirect('/booking/login/',)
+            return redirect('/userdashboard/user_login/',)
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
             raise Exception('error')

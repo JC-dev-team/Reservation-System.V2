@@ -1,7 +1,8 @@
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from booking.models import ActionLog, BkList, Account, Production, Staff, Store
-from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
+from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, \
+    Prod_Serializer, Staff_Serializer, Store_Serializer, StoreEvent_Serializer
 from common.serializers import checkStaffAuth
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
@@ -18,14 +19,18 @@ from django.views.decorators.http import require_http_methods
 
 
 def error(request):
-    return render(request, 'error/error.html')
+    return render(request, 'error/error.html',{'action':'/softwayliving/login/'})
 
 # admin dashboard ------------------- page
+
+
 def login_portal(request):
     return render(request, 'admin_login.html')
 
+
 def check_reservation(request):
     return render(request, 'admin_checkreservation.html')
+
 
 def reservation(request):
     return render(request, 'admin_reservation.html')
@@ -46,16 +51,16 @@ def staff_auth(request):  # authentication staff
             raise Exception('Not valid, 帳號資料錯誤')
 
         result = auth.StaffAuthentication(social_id, social_app)
-        
+
         if result == None or result == False:
             return render(request, 'error/error404.html')
 
         elif list(result.keys())[0] == 'error':  # error occurred
-            return render(request, 'error/error.html', {'error': result['error']})
+            return render(request, 'error/error.html', {'error': result['error'],'action':'/softwayliving/login/'})
         else:
             return render(request, 'admin_dashbroad.html', {'data': result})
     except Exception as e:
-        return render(request, 'error/error.html', {'error': e})
+        return render(request, 'error/error.html', {'error': e,'action':'/softwayliving/login/'})
 
 
 # Ajax API
@@ -91,11 +96,11 @@ def staff_approval_reservation(request):
                 bk_uuid=bk_uuid,
                 is_cancel=False,
             )
-            bk_queryset.update(waiting_num=0)  
-            return JsonResponse({'result': True})
-        
+            bk_queryset.update(waiting_num=0)
+            return JsonResponse({'result': 'success'})
+
     except BkList.DoesNotExist:
-        return JsonResponse({'error': '資料不存在'})            
+        return JsonResponse({'error': '資料不存在'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
@@ -103,20 +108,36 @@ def staff_approval_reservation(request):
 @require_http_methods(['POST'])
 def staff_add_reservation(request):  # Help client to add reservation
     try:
-        
+
         pass
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
 
 @require_http_methods(['POST'])
-def staff_add_rest(request): # add rest day as booking
+def staff_add_rest(request):  # add rest day as booking
     try:
         store_id = request.POST.get('store_id', None)
-        bk_date = request.POST.get('bk_date', None)
+        event_date = request.POST.get('bk_date', None)
         time_session = request.POST.get('time_session', None)
+        event_type = request.POST.get('event_type', None)
 
-
-
+        # check data format
+        valid = StoreEvent_Serializer(
+            store_id=store_id,
+            event_date=event_date,
+            time_session=time_session,
+            event_type=event_type
+        )
+        if valid.is_valid() == False:
+            return JsonResponse({'error': 'Not valid, 輸入資料格式錯誤'})
+        with transaction.atomic():  # transaction
+            queryset = Store.objects.create(
+                store_id=store_id,
+                event_date=event_date,
+                time_session=time_session,
+                event_type=event_type
+            )
+            return JsonResponse({'result': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
