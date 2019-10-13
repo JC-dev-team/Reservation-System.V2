@@ -62,7 +62,7 @@ def StaffAuthentication(social_id, social_app):  # staff account checking
             serializer = Acc_Serializer(queryset)
             return serializer.data
 
-    except Account.DoesNotExist:  # Account Not Exist
+    except Staff.DoesNotExist:  # Account Not Exist
         return False
     except Exception as e:
         return {'error': e}

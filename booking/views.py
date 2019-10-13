@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, reverse
 from .models import ActionLog, BkList, Account, Production, Staff, Store
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
 from common.serializers import checkAuth, check_bklist, applymember
-from rest_framework import viewsets, status 
+from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.renderers import JSONOpenAPIRenderer, BrowsableAPIRenderer, TemplateHTMLRenderer, JSONRenderer
@@ -35,7 +35,9 @@ from django.conf import settings
 #         return query_set
 
 # Definition site ------------------------------------------------
-
+# def error_404_view(request,exception):
+#     # data = {"name": "ThePythonDjango.com"}
+#     return render(request,'error/error404.html')
 
 @require_http_methods(['POST'])
 @check_recaptcha
@@ -45,6 +47,8 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         username = request.POST.get('username', None)
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
+        if social_id == None or social_app == None:
+            raise Exception('Not Valid, 無法取得帳號資料')
         # Check data format
         valid = applymember(data={
             'social_id': social_id,
@@ -52,6 +56,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
             'username': username,
             'phone': phone,
         })
+
         if valid.is_valid() == False:
             raise Exception('Not valid, 帳號資料錯誤')
         with transaction.atomic():  # transaction
@@ -173,7 +178,7 @@ def InsertReservation(request):  # insert booking list
                 is_cancel=is_cancel,
                 waiting_num__gt=0,
             ).count()
-            waiting_num+=1 
+            waiting_num += 1
             # else: # don't need to wait
             #     waiting_num = BkList.objects.only('waiting_num').select_for_update().filter(
             #         store_id=store_id,
@@ -219,12 +224,13 @@ def InsertReservation(request):  # insert booking list
             else:
                 final_queryset.time_session = '午餐'
 
-            # request.session.flush()
+            
 
             account_serializer = Acc_Serializer(get_user_info)
             store_serializer = Store_Serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
-
+            
+            request.session.flush()
             return render(request, 'reservation_finish.html', {
                 'data': bklist_serializer.data,
                 'store': store_serializer.data,
@@ -394,7 +400,12 @@ def getCalendar(request):  # full calendar
             else:
                 i.time_session = '晚餐'
 
-            if i.entire_time == True:
+            if i.event_type == 'rest':
+                i.event_type = '店休'
+                event_sub_arr['title'] = i.event_type
+                event_sub_arr['start'] = i.bk_date
+                event_sub_arr['backgroundColor'] = 'yellow'
+            elif i.entire_time == True:
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'red'
@@ -404,7 +415,7 @@ def getCalendar(request):  # full calendar
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'red'
-                # event_sub_arr['status'] = '候補'
+
             else:
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date

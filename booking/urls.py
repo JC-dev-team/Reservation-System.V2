@@ -2,7 +2,7 @@ from django.urls import path, include, re_path
 from . import views
 from rest_framework.routers import DefaultRouter
 from django.conf.urls.static import static
-
+from django.conf.urls import handler404
 # ## Maybe need to remove in future
 # router = DefaultRouter()
 # # The url will be booking/api/account
@@ -44,4 +44,5 @@ urlpatterns = [
     
 ]
 
+# handler404 = views.error_404_view
 

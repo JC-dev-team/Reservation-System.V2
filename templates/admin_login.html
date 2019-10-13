@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+<!-- include 'header.html'   => image-->
+<!-- content-->
+{% block content %}
+{% load static %}
+<div class="w3-center">
+    <font size="10">
+        <img src="{% static '/images/Spinner01.svg' %}" />
+    </font>
+    <h4>畫面載入中...<br>
+        <br>
+</div>
+
+<form id='checklogin_form' method="post">
+    {% csrf_token %}
+    <input id="social_id" style="display: none" name='social_id' value="">
+    <input id="social_app" style="display: none" name='social_app' value="">
+</form>
+
+<script>
+    function send() {
+        if (true) {
+            document.getElementById("checklogin_form").action = "/softwayliving/StaffLogin/";
+            document.getElementById("checklogin_form").submit();
+        }
+    }
+
+    function initializeApp(data) {
+        liff.getProfile().then(profile => {
+            // var disname = {
+            //   'name': profile.displayName
+            // };
+            // disname_json = JSON.parse(JSON.stringify(disname.name))
+            // $('#img').attr('src', profile.pictureUrl);
+            // $('#social_id').val(data.context.userId); //data.context.userId
+            // $('#social_app').val('Line');
+            
+        })
+    }
+    //ready
+    $(function () {
+        //init LIFF
+        liff.init(function (data) {
+            initializeApp(data);
+        });
+        //remember to edit it to Line Liff
+        $('#social_id').val('9636ff56-e78b-11e9-a2b8-0ec425232520'); //data.context.userId
+        $('#social_app').val('Line');
+
+        //send data 
+        send()
+        // if($('#social_id').val() != '' && $('#social_app').val() != ''){
+        //     send()
+            
+        // }
+        
+    });
+
+
+</script>
+{% endblock %}

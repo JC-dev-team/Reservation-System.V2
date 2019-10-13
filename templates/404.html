@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+<!-- include 'header.html'   => image-->
+<!-- Headmessage-->
+{% block headmessage %}
+    <div class="w3-center">
+        <font size="10">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+        </font>
+        <h4>真抱歉，找不到頁面 😵<br><br>
+            (oops ! Page Not Found)</h4>
+        <br>
+        <font size='4'>
+        <a id="error_button" href="{% url 'member' %}" class="w3-btn w3-round-large  w3-teal w3-padding">
+                    回首頁</a>
+        </font>
+    </div>
+ {% endblock %}
