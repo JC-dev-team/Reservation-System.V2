@@ -6,9 +6,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('login/', views.login_portal,),
     path('StaffAuth/',views.staff_auth,),
-
-
-    
+    path('checkreservation/',views.check_reservation),
+    path('reservation/',views.reservation),
 ]
 
 

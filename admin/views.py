@@ -20,10 +20,17 @@ from django.views.decorators.http import require_http_methods
 def error(request):
     return render(request, 'error/error.html')
 
-# admin dashboard -------------------
+# admin dashboard ------------------- page
 def login_portal(request):
     return render(request, 'admin_login.html')
 
+def check_reservation(request):
+    return render(request, 'admin_checkreservation.html')
+
+def reservation(request):
+    return render(request, 'admin_reservation.html')
+
+# function --------------------------
 @require_http_methods(['POST', 'GET'])
 def staff_auth(request):  # authentication staff
     try:
@@ -106,6 +113,14 @@ def staff_add_reservation(request):  # Help client to add reservation
 @require_http_methods(['POST'])
 def staff_add_rest(request):
     try:
+        store_id = request.POST.get('store_id', None)
+        bk_date = request.POST.get('bk_date', None)
+        time_session = request.POST.get('time_session', None)
+
+
+
+
+
         pass
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
