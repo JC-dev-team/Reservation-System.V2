@@ -53,7 +53,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
             'phone': phone,
         })
         if valid.is_valid() == False:
-            raise Exception('Not valid, 輸入資料格式錯誤')
+            raise Exception('Not valid, 帳號資料錯誤')
         with transaction.atomic():  # transaction
             queryset = Account.objects.create(
                 phone=phone,
@@ -92,7 +92,7 @@ def InsertReservation(request):  # insert booking list
             'social_app': social_app
         })
         if valid.is_valid() == False:
-            raise Exception('Not valid, 資料格式錯誤')
+            raise Exception('Not valid, 帳號資料錯誤')
         result = auth.ClientAuthentication(
             social_id, social_app)
         if result == None or result == False:  # Using PC or No social login # Account Not Exist
@@ -252,7 +252,7 @@ def member(request):
             'social_app': social_app
         })
         if valid.is_valid() == False:
-            raise Exception('Not valid, 輸入資料格式錯誤')
+            raise Exception('Not valid, 帳號資料錯誤')
 
         result = auth.ClientAuthentication(
             social_id, social_app)  # queryset or something else
