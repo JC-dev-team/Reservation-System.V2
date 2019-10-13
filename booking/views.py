@@ -1,10 +1,10 @@
-from utility.recaptcha import check_recaptcha
+from common.utility.recaptcha import check_recaptcha
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from .models import ActionLog, BkList, Account, Production, Staff, Store
-from .serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
-from .serializers import checkAuth, check_bklist, applymember
-from rest_framework import viewsets, status
+from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
+from common.serializers import checkAuth, check_bklist, applymember
+from rest_framework import viewsets, status 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.renderers import JSONOpenAPIRenderer, BrowsableAPIRenderer, TemplateHTMLRenderer, JSONRenderer
@@ -12,15 +12,11 @@ from rest_framework.permissions import IsAuthenticated, BasePermission
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
-from utility import auth
+from common.utility import auth
 from django.db import transaction, DatabaseError
 from django.views.decorators.http import require_http_methods, require_POST
-from django.conf import settings
 from django.db.models import Q  # complex lookup
-import sys
-import os
-sys.path.append(os.path.join(settings.BASE_DIR, 'utility'))
-
+from django.conf import settings
 # from django.contrib.auth import login, logout
 # from django.contrib.auth.decorators import login_required
 # ----- Class site ----------------------

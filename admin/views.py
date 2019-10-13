@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated, BasePermission
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
-from . import auth
+from common.utility import auth
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 

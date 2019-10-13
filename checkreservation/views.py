@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
-from .models import ActionLog, BkList, Account, Production, Staff, Store
-from .serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
+from booking.models import ActionLog, BkList, Account, Production, Staff, Store
+from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated, BasePermission
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
-# from . import auth
+from common.utility import auth
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 

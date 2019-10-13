@@ -2,13 +2,12 @@
 # from django.contrib.auth.backends import ModelBackend
 from django.shortcuts import render, redirect, reverse
 from booking.models import Account, Staff
-from booking.serializers import Acc_Serializer
+from common.serializers import Acc_Serializer
 from django.db import transaction, DatabaseError
 from functools import wraps
-from django.conf import settings
 import os
 import sys
-sys.path.append(os.path.join(settings.BASE_DIR, 'booking'))
+
 
 # def Clientlogin_required(fun):
 #     def wrapper(request):
