@@ -5,10 +5,30 @@
     <h3><b>舒微生活管理員系統</b></h3>
 </div>
 {% endblock %}
+
 {% block content %}
 {% load static %}
 
+<font size='4'>
+    <button id="admin_reservation" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
+        onclick="location.href='/softwayliving/' ">管理者 - 訂位</button>
+</font>
 
+<font size='4'>
+    <button id="admin_checkreservation" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
+        onclick="">管理者 - 查詢/確認/修改</button>
+</font>
+
+
+<script>
+    function admin_reservation() {
+
+    }
+
+    function admin_checkreservation() {
+
+}
+</script>
 
 
 {% endblock %}
