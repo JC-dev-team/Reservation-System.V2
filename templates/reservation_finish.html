@@ -8,11 +8,35 @@
 {% block content %}
 {% load static %}
 <!-- Finish title-->
+
+<!-- Under processing-->
+<div class="w3-center" style="display: none">
+    <font size="10">
+        <i class="far fa-question-circle"></i>
+    </font>
+    <h4>訂位處理中</h4>
+    <h5>請靜候通知，由專人為您確認訂位</h5>
+    <br><br>
+</div>
+
+<!-- Success-->
+<div class="w3-center" style="display: none">
+    <font size="10">
+        <i class="far fa-check-circle"></i>
+    </font>
+    <h4>訂位已成立</h4>
+    <h5>請準時到達，謝謝您的訂位</h5>
+    <br><br>
+</div>
+
+<!-- Cancer-->
 <div class="w3-center">
     <font size="10">
-        <i class="far fa-check-circle" aria-hidden="true"></i>
+        <i class="far fa-times-circle"></i>
     </font>
-    <h4>訂位完成，稍後向您確認訂位<br><br></h4>
+    <h4>訂位已取消</h4>
+
+    <br><br>
 </div>
 
 <!-- reservation information-->
@@ -29,7 +53,7 @@
             <h4>人數： {{data.adult}} 大 {{data.children}} 小</h4>
             <h4>用餐日期：{{data.bk_date}}</h4>
             <h4>用餐時段： {{data.time_session}} - {{data.bk_st}}</h4>
-            
+
             <h4>價位：＄{{data.bk_price}}</h4>
             <h4>備註：{{data.bk_ps}}</h4>
         </div>
@@ -53,14 +77,14 @@
 
     $(function () {
         console.log(document.getElementById('information').innerText)
-        if ('{{data.waiting_num}}'== '0'){
-            document.getElementById('information').innerText = "訂位資訊"
-        }
-        else{
+        if ('{{data.waiting_num}}' == '0') { //this is not correct
             document.getElementById('information').innerText = "訂位資訊 (候補 " + '{{data.waiting_num}}' + ")"
+        } else {
+            document.getElementById('information').innerText = "訂位資訊"
+
         }
-        
-        
+
+
 
     })
 </script>
