@@ -92,7 +92,7 @@ def InsertReservation(request):  # insert booking list
             'social_app': social_app
         })
         if valid.is_valid() == False:
-            raise Exception('Not valid, 輸入資料格式錯誤')
+            raise Exception('Not valid, 資料格式錯誤')
         result = auth.ClientAuthentication(
             social_id, social_app)
         if result == None or result == False:  # Using PC or No social login # Account Not Exist
@@ -173,7 +173,7 @@ def InsertReservation(request):  # insert booking list
                 is_cancel=is_cancel,
                 waiting_num__gt=0,
             ).count()
-
+            waiting_num+=1 
             # else: # don't need to wait
             #     waiting_num = BkList.objects.only('waiting_num').select_for_update().filter(
             #         store_id=store_id,
