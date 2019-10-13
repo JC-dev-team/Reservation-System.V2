@@ -47,7 +47,7 @@ def staff_login(request):  # authentication staff
         elif list(result.keys())[0] == 'error':  # error occurred
             return render(request, 'error/error.html', {'error': result['error']})
         else:
-            return render(request, 'admin_dashboard.html', {'data': result})
+            return render(request, 'admin_checkreservation.html', {'data': result})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e})
 
