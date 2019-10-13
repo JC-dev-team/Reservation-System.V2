@@ -318,7 +318,7 @@
                     id: '1',
                     title: '午餐',
                     start: new Date(),
-                    startRecur: new Date(),
+                    startRecur: new Date().addDays(3),
                     backgroundColor: 'green',
                     textColor: 'white',
                     daysOfWeek: [2, 3, 4, 5, 6, 0]
@@ -327,7 +327,7 @@
                     id: '2',
                     title: '晚餐',
                     start: new Date(),
-                    startRecur: new Date(),
+                    startRecur: new Date().addDays(3),
                     backgroundColor: 'green',
                     textColor: 'white',
                     daysOfWeek: [2, 3, 4, 5, 6, 0]
@@ -336,7 +336,7 @@
                     id: '3',
                     title: '店休',
                     start: new Date(),
-                    startRecur: new Date(),
+                    startRecur: new Date().addDays(3),
                     backgroundColor: 'red',
                     textColor: 'white',
                     daysOfWeek: [1],
@@ -496,6 +496,21 @@
                 //spinner
                 $('#cover-spin').show(0)
             }
+
+            liff.Messages([
+                {
+                    type:'text',
+                    text:'訂位處理中'
+                }
+            ])
+            .then(() => {
+                liff.closeWindow();
+            })
+            .catch((err) => {
+                console.log('error : ',err)
+            });
+
+
         });
 
 
