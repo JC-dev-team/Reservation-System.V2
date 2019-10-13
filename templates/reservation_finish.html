@@ -10,13 +10,17 @@
 <!-- Finish title-->
 
 <!-- Under processing-->
-<div class="w3-center" style="display: none">
+<div class="w3-center" >
     <font size="10">
         <i class="far fa-question-circle"></i>
     </font>
     <h4>訂位處理中</h4>
     <h5>請靜候通知，由專人為您確認訂位</h5>
-    <br><br>
+    <br>
+
+    <font size='4'>
+            <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
+        </font>
 </div>
 
 <!-- Success-->
@@ -30,7 +34,7 @@
 </div>
 
 <!-- Cancer-->
-<div class="w3-center">
+<div class="w3-center" style="display: none">
     <font size="10">
         <i class="far fa-times-circle"></i>
     </font>
@@ -59,30 +63,25 @@
         </div>
     </font>
 
-    <font size='4'>
-        <button id="close_button" onclick="windowClose();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
-    </font>
-
-
+    
 </div>
 
 
 
 
 <script type="text/javascript">
-    function windowClose() {
-        window.open('', '_parent', '');
-        window.close();
+    function closewindow() {
+        //if open on line base
+        liff.closewindow()
+        // window.open('', '_parent', '');
+        // window.close();
     }
 
     $(function () {
         console.log(document.getElementById('information').innerText)
-        if ('{{data.waiting_num}}' == '0') { //this is not correct
+        if ('{{data.waiting_num}}' != '0') { //this is not correct
             document.getElementById('information').innerText = "訂位資訊 (候補 " + '{{data.waiting_num}}' + ")"
-        } else {
-            document.getElementById('information').innerText = "訂位資訊"
-
-        }
+        } 
 
 
 
