@@ -14,7 +14,7 @@ from django.http import Http404, JsonResponse
 from common.utility import auth
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
-
+from django.views.decorators.http import require_http_methods
 def error(request):
     return render(request, 'error/error.html')
 

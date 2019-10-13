@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
 from common.utility import auth
 from django.db import transaction, DatabaseError
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import require_http_methods
 from django.db.models import Q  # complex lookup
 from django.conf import settings
 # from django.contrib.auth import login, logout
