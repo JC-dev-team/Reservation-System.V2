@@ -2,13 +2,242 @@
 
 {% block headmessage %}
 <div class="w3-center">
-    <h3><b>舒微生活管理員系統</b></h3>
+    <h3><b>管理者 - 查詢/確認/修改</b></h3>
 </div>
 {% endblock %}
+
 {% block content %}
 {% load static %}
 
+<!-- Calendar-->
 
+<div id='calendar'>
+</div>
+
+
+
+<script>
+
+    function admin_ajax_time(data, num, calendar) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/staff_check/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    // window.location.replace('/booking/error/');
+                } else {
+                    result = response.result
+                    // console.log(result)
+                    //Function of calendar (return calendar.render())
+                    calendar_fun(result, num)
+
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown)
+                // window.location.replace('/booking/error/');
+            }
+
+        });
+    }
+
+    //ajax function
+    function ajax_post(num = 0) {
+        //ajax data
+        var status = true;
+
+        var store_id = '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0';
+        var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
+        var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
+
+        console.log(start_month, end_month)
+
+        if (status) {
+            var data = {
+                'store_id': store_id,
+                'start_month': start_month,
+                'end_month': end_month,
+            }
+            //Clean the calendar
+            document.getElementById('calendar').innerHTML = ''
+
+            // do ajax fuction
+            admin_ajax_time(data, num)
+
+            //spinner icon
+            // document.getElementById('calendar_container').style.display = 'inline'
+            // document.getElementById('calendar').innerHTML =
+            //     '<div class="w3-center"><font size="10"><img src=\'{% static "/images/Spinner01.svg" %}\' /></font></div>'
+
+        }
+
+
+    }
+
+    //calendar function
+    function calendar_fun(result, num = 0) {
+        // document.getElementById('calendar').innerHTML = ''
+        // document.getElementById('calendar_container').style.display = 'inline'
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            //ColumnHeaderText
+            columnHeaderText: function (date) {
+                if (date.getDay() === 0) {
+                    return '日';
+                }
+                if (date.getDay() === 1) {
+                    return '一';
+                }
+                if (date.getDay() === 2) {
+                    return '二';
+                }
+                if (date.getDay() === 3) {
+                    return '三';
+                }
+                if (date.getDay() === 4) {
+                    return '四';
+                }
+                if (date.getDay() === 5) {
+                    return '五';
+                }
+                if (date.getDay() === 6) {
+                    return '六';
+                }
+
+            },
+            //Plugins - 'interaction','dayGrid'
+            plugins: ['interaction', 'dayGrid', 'moment', 'list'],
+            editable: true,
+            //Default View
+            defaultView: 'dayGridMonth',
+            //defaultDate
+            defaultDate: (new Date().addMonths(num)).toISOString().slice(0, 10),
+            //Height
+            height: 'auto',
+            contentHeight: 500,
+            //Header
+            header: {
+                left: 'prev',
+                center: 'title,',
+                right: 'dayGridMonth,listMonth,next'
+            },
+            //Header - Title format
+            titleFormat: 'YYYY  MM月',
+            listDayFormat: 'D',
+            //Show none current date (False)
+            showNonCurrentDates: false,
+
+            //Date selectable (true)
+            selectable: true,
+
+            events: [{
+                    id: '1',
+                    title: '楊意義 0900123123 2大4小',
+                    start: new Date(),
+                    backgroundColor: 'green',
+                    textColor: 'white',
+
+                },
+                // {
+                //     id: '2',
+                //     title: '晚餐',
+                //     start: new Date(),
+                //     startRecur: new Date(),
+                //     backgroundColor: 'green',
+                //     textColor: 'white',
+                //     daysOfWeek: [2, 3, 4, 5, 6, 0]
+                // },
+                // {
+                //     id: '3',
+                //     title: '店休',
+                //     start: new Date(),
+                //     startRecur: new Date(),
+                //     backgroundColor: 'red',
+                //     textColor: 'white',
+                //     daysOfWeek: [1],
+
+                // },
+
+            ],
+
+            eventRender: function (info) {
+                console.log(info)
+                if (info.el.style.backgroundColor == 'green') {
+                    info.el.style.backgroundColor = 'red'
+                }
+
+                //list of dot
+                var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
+                if (dotEl) {
+                    dotEl.style.backgroundColor = 'white';
+                }
+            },
+
+            //Function
+            dateClick: function (info) {
+                console.log('dateClick: ' + info)
+
+            },
+            eventMouseEnter: function (info) {
+                var adult = $('#adult_select').val();
+                var child = $('#children_select').val();
+
+                console.log(info)
+                // var evMousEnter_st = info.event.start
+                // var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
+                // var title = info.event.title
+                // var color = info.el.style.backgroundColor
+
+                // //Monday disable
+                // if (title == '店休') {
+                //     alert('週一店休喔！！')
+                //     return false
+                // }
+                // //insert Modal of date
+                // document.getElementById('modal_date').innerHTML =
+                //     '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' + '<p id="bk_date_select">' +
+                //     start + '</p>'
+
+                // //ajax eventClick_sendDate(data)
+                // var data = {
+                //     'adult': adult,
+                //     'children': child,
+                //     'event_date': start,
+                //     'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+
+                // }
+                // //spinner
+                // $('#cover-spin').show(0)
+                // eventClick_sendDate(data)
+
+
+            }
+        });
+        return calendar.render();
+
+    }
+
+    //ready
+    $(function () {
+        //do the current month to ajax 
+        ajax_post()
+
+        //Date addDays() & addMonths()
+        Date.prototype.addDays = function (days) {
+            var date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        }
+        Date.prototype.addMonths = function (months) {
+            var date = new Date(this.valueOf());
+            date.setMonth(date.getMonth() + months);
+            return date;
+        }
+    })
+</script>
 
 
 {% endblock %}
