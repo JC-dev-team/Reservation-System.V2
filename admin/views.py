@@ -25,7 +25,7 @@ def login_portal(request):
     return render(request, 'admin_login.html')
 
 @require_http_methods(['POST', 'GET'])
-def auth(request):  # authentication staff
+def staff_auth(request):  # authentication staff
     try:
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
