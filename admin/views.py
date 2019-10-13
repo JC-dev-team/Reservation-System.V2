@@ -2,7 +2,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from booking.models import ActionLog, BkList, Account, Production, Staff, Store
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
-from common.serializers import checkAuth
+from common.serializers import checkStaffAuth
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -21,7 +21,8 @@ def error(request):
     return render(request, 'error/error.html')
 
 # admin dashboard -------------------
-
+def login_portal(request):
+    return render(request, 'admin_login.html')
 
 @require_http_methods(['POST', 'GET'])
 def staff_login(request):  # authentication staff
@@ -29,10 +30,8 @@ def staff_login(request):  # authentication staff
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
 
-        print(social_id)
-        print(social_app)
         # Check data format
-        valid = checkAuth(data={
+        valid = checkStaffAuth(data={
             'social_id': social_id,
             'social_app': social_app
         })

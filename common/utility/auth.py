@@ -2,7 +2,7 @@
 # from django.contrib.auth.backends import ModelBackend
 from django.shortcuts import render, redirect, reverse
 from booking.models import Account, Staff
-from common.serializers import Acc_Serializer
+from common.serializers import Acc_Serializer, Staff_Serializer
 from django.db import transaction, DatabaseError
 from functools import wraps
 import os
@@ -59,7 +59,7 @@ def StaffAuthentication(social_id, social_app):  # staff account checking
                 social_id=social_id,
                 social_app=social_app,
             )
-            serializer = Acc_Serializer(queryset)
+            serializer = Staff_Serializer(queryset)
             return serializer.data
 
     except Staff.DoesNotExist:  # Account Not Exist

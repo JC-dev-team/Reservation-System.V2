@@ -14,6 +14,11 @@ class checkAuth(serializers.ModelSerializer):
         model =Account
         fields =('social_id','social_app')
 
+class checkStaffAuth(serializers.ModelSerializer):
+    class Meta:
+        model =Staff
+        fields =('social_id','social_app')
+
 class applymember(serializers.ModelSerializer):
     class Meta:
         model =Account
