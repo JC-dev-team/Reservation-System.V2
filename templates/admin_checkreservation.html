@@ -17,6 +17,12 @@
 
 
 <script>
+    //csrf_ajax
+    $.ajaxSetup({
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+    });
 
     function admin_ajax_time(data, num, calendar) {
         $.ajax({
@@ -29,7 +35,7 @@
                     // window.location.replace('/booking/error/');
                 } else {
                     result = response.result
-                    // console.log(result)
+                    console.log(result)
                     //Function of calendar (return calendar.render())
                     calendar_fun(result, num)
 
@@ -126,54 +132,83 @@
             },
             //Header - Title format
             titleFormat: 'YYYY  MM月',
-            listDayFormat: 'D',
+            listDayFormat: 'MM 月 DD',
+            listDayAltFormat: 'dddd',
             //Show none current date (False)
             showNonCurrentDates: false,
 
             //Date selectable (true)
             selectable: true,
 
-            events: [{
-                    id: '1',
-                    title: '楊意義 0900123123 2大4小',
-                    start: new Date(),
-                    backgroundColor: 'green',
-                    textColor: 'white',
+            events:
+            // [{
+            //         id: '1',
+            //         title: '楊意義 0900123123 2大4小 \n #不吃牛 $1200',
+            //         start: new Date(),
+            //         backgroundColor: 'green',
+            //         textColor: 'white',
+            // }],
+             function (info, successCallback) {
+                var event = [];
+                for (var i = 0; i < result.length; i++) {
+                    var date = result[i].bk_date;
+                    var time = 'T'+result[i].bk_st;
+                    var session = result[i].time_session;
+                    var people = result[i].adult + '大' +  result[i].children + '小';
+                    var price = '$' + result[i].bk_price;
+                    var ps = '#' + result[i].bk_ps + ' ';
 
-                },
-                // {
-                //     id: '2',
-                //     title: '晚餐',
-                //     start: new Date(),
-                //     startRecur: new Date(),
-                //     backgroundColor: 'green',
-                //     textColor: 'white',
-                //     daysOfWeek: [2, 3, 4, 5, 6, 0]
-                // },
-                // {
-                //     id: '3',
-                //     title: '店休',
-                //     start: new Date(),
-                //     startRecur: new Date(),
-                //     backgroundColor: 'red',
-                //     textColor: 'white',
-                //     daysOfWeek: [1],
+                    if (session == 'Lunch') {
+                        session = '午餐'
+                    }else {
+                        session = '晚餐'
+                    }
+                    
+                    if (ps == '#無 ') {
+                        ps = ''
+                    }
 
-                // },
+                    
 
-            ],
+                    event.push({
+                        title: session + ' ' + people + ' ' + price + ' ' + ps ,
+                        start: date + time,
+                        backgroundColor: 'red',
+                        textColor: 'white',
+                    });
+                    
+                    successCallback(event)
 
-            eventRender: function (info) {
-                console.log(info)
-                if (info.el.style.backgroundColor == 'green') {
-                    info.el.style.backgroundColor = 'red'
                 }
+            },
+            
+            eventRender: function (info) {
+                
+                console.log(info)
+                console.log('---------')
+                console.log(info.el.outerText)
+                
+                var title = info.event.title.slice(0,2)
+                
+                
+                // info.el.innerText = title
+                // if (title == '午餐') {
+                //     info.el.innerText = title
+                // }else {
+
+                // }
+               
+                // if (info.el.style.backgroundColor == 'green') {
+                //     info.el.style.backgroundColor = 'red'
+                // }
 
                 //list of dot
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
-                if (dotEl) {
-                    dotEl.style.backgroundColor = 'white';
-                }
+               
+                
+                // if (dotEl) {
+                //     dotEl.style.backgroundColor = 'white';
+                // }
             },
 
             //Function
