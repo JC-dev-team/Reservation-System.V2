@@ -78,7 +78,9 @@ def staff_check_reservation(request):
             store_id=store_id,
             bk_date__range=(start_month, end_month),
             is_cancel=False,
-        )
+        ).order_by('bk_date','waiting_num','time_session')
+        # order by will be slow, I think better way is regroup
+
         serializers = Bklist_Serializer(bk_queryset, many=True)
 
         return JsonResponse({'result': serializers.data})
