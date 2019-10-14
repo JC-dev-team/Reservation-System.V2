@@ -22,15 +22,16 @@
 
 <font size='4'>
     <button id="admin_checkreservation" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
-        onclick="location.href='/userdashboard/checkreservation/' ">查詢/取消</button>
+        onclick="send()">查詢/取消</button>
 </font>
 
 <script>
-    //ready
-    $(function() {
+
+    function send(){
         document.getElementById("userdashboard_form").action = "/userdashboard/checkreservation/";
         document.getElementById("userdashboard_form").submit();
-    })
+    }
+    
 </script>
 
 
