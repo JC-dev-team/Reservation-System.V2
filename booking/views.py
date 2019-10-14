@@ -157,8 +157,10 @@ def InsertReservation(request):  # insert booking list
             store_query = Store.objects.only('seat').select_for_update().get(
                 store_id=store_id
             )
+            # prevent modify people after search
             if store_query.seat < total:
-                raise Exception('超過總容納人數')
+                return redirect('/booking/login/')
+
             # get the booking event of that time session
             bk_queryset = BkList.objects.select_for_update().filter(
                 store_id=store_id,
@@ -255,7 +257,7 @@ def member(request):
         result = auth.ClientAuthentication(
             social_id, social_app)  # queryset or something else
         if result == None:  # Using PC or No social login
-            return redirect('/booking/login/',)
+            return redirect('/booking/login/')
         elif result == False:  # Account Not Exist
             return render(request, 'member.html', {'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
             # return redirect(reverse('member'),args=())
@@ -361,7 +363,7 @@ def getCalendar(request):  # full calendar
         end_month = request.POST.get('end_month', None)
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
-
+        total= int(adult)+int(children)
         # Convert string to time
         start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
         end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
@@ -371,6 +373,9 @@ def getCalendar(request):  # full calendar
         store_query = Store.objects.only('seat').get(
             store_id=store_id
         )
+        if total >store_query.seat:
+            msg = '超過總座位數量 : '+str(store_query.seat)+'個座位'
+            return JsonResponse({'alert': msg})
         # Get waiting list
         bk_queryset = BkList.objects.filter(  # get all available waiting_num
             store_id=store_id,
@@ -405,7 +410,6 @@ def getCalendar(request):  # full calendar
                 event_sub_arr['start'] = i.event_date
                 event_sub_arr['backgroundColor'] = 'yellow'
             event_arr.append(event_sub_arr)
-        print('1: ', event_arr)
         for i in bookinglist:
             event_sub_arr = {}  # event dictionary
             # Convert time_session to chiness
