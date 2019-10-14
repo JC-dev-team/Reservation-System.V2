@@ -66,17 +66,19 @@ def user_check_reservation(request):
         # Get now
         today = date.today()
         now = today.strftime('%Y-%m-%d')
-        bk_queryset = BkList.objects.select_related().filter(
+        bk_queryset = BkList.objects.filter(
             user_id=user_id,
             bk_date__gte=now,
         )
+        # for i in bk_queryset:
+            # Store.objects.
         # print(bk_queryset.store)
         acc_serializer = Acc_Serializer(acc_queryset)
         bk_serializer = Bklist_Serializer(bk_queryset, many=True)
-        # print(bk_serializer.data)
+
         # store_serializer = Store_Serializer(store_queryset)
         return render(request, 'user_checkreservation.html', {
-            'data': bk_serializer.data,
+            # 'data': bk_serializer.data,
             'user_info': acc_serializer.data,
             # 'store': store,
         })
