@@ -475,6 +475,10 @@
             initializeApp(data);
         });
 
+        $('#adult_select, #children_select').change(function (e){
+            document.getElementById('calendar').innerHTML = ''
+        })
+
         $('#button_submit').click(function (e) {
             var status = true;
             //Information of social 
@@ -496,6 +500,7 @@
             $('#bk_ps').val($('#bk_ps_select').val())
             $('#price').val($('#price_select').val())
 
+            
             
             if (status) {
                 document.getElementById("reservation_form").action = "/booking/reservation/";
@@ -658,7 +663,7 @@
         //do the fuction of ajax_post()
         ajax_post(num)
     })
-    
+
     $('#people_number_submit').click(function (e) {
         console.log('people_number_submit.click()')
         var num = parseInt($('#date_num').val())
