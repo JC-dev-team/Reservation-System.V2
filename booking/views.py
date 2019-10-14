@@ -351,7 +351,6 @@ def getWaitingList(request):  # get waiting list
         else:
             dinner_waiting = '晚餐: 候補第 ' + str((dinner_waiting+1))+' 順位'
 
-            
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤','action':'/booking/login/'})
