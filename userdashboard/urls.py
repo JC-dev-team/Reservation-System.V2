@@ -9,7 +9,7 @@ urlpatterns = [
     path('user_remove_reservation/',views.user_remove_reservation, name='user_remove_reservation'),
     path('user_login/',views.user_login, name='user_login'),
     path('user_auth',views.user_auth, name='user_auth'),
-    
+    path*()
 ]
 
 
