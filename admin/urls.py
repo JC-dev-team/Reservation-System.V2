@@ -5,10 +5,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('error/',views.error),
-    path('login/', views.login_portal,),
+    path('login/', views.staff_login_portal,),
     path('StaffAuth/',views.staff_auth,),
-    path('checkreservation/',views.check_reservation),
-    path('reservation/',views.reservation),
+    path('checkreservation/',views.staff_check_reservation_page),
+    path('reservation/',views.staff_reservation_page),
     # Ajax api
     path('staff_check/',views.staff_check_reservation),
     path('add_rest/',views.staff_add_rest),

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from django.shortcuts import render, redirect, reverse
 from booking.models import ActionLog, BkList, Account, Production, Staff, Store
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
@@ -24,7 +24,7 @@ def error(request):
 
 @require_http_methods(['POST', 'GET'])
 def user_login(request):
-    return render(request, 'user_dashboard.html')
+    return render(request, 'user_login.html')
 
 
 @require_http_methods(['POST', 'GET'])
@@ -44,7 +44,7 @@ def user_auth(request):  # authentication staff
         result = auth.ClientAuthentication(social_id, social_app)
 
         if result == None or result == False:
-            return render(request, 'error/error404.html',{'action':'/userdashboard/login/'})
+            return render(request, 'error/error404.html', {'action': '/userdashboard/login/'})
 
         elif list(result.keys())[0] == 'error':  # error occurred
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/userdashboard/user_login/'})
@@ -77,6 +77,9 @@ def user_check_reservation(request):
         elif type(result) == dict:
             return render(request, 'error/error_check.html', {'error': result['error'], 'action': '/userdashboard/user_login/'})
         # Account Exist
+        # Get now
+        today = date.today()
+        now = today.strftime('%Y-%m-%d')
 
         acc_queryset = Account.objects.only('user_id').get(
             social_id=social_id,
@@ -85,6 +88,7 @@ def user_check_reservation(request):
         bk_queryset = BkList.objects.filter(
             user_id=acc_queryset.user_id,
             store_id=store_id,
+            bk_date__gte=now,
         )
         store_queryset = Store.objects.get(
             store_id=store_id,
@@ -137,7 +141,8 @@ def user_remove_reservation(request):
                 bk_date_ = bk_date_.date()  # format datetime
                 bk_queryset = BkList.objects.select_for_update().get(
                     bk_uuid=bk_uuid,
-                    is_cancel=False)
+                    is_cancel=False,
+                )
 
                 bk_queryset.update(is_cancel=True)
                 return JsonResponse({'result': True})

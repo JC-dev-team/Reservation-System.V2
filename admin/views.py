@@ -24,15 +24,15 @@ def error(request):
 # admin dashboard ------------------- page
 
 
-def login_portal(request):
+def staff_login_portal(request):
     return render(request, 'admin_login.html')
 
 
-def check_reservation(request):
+def staff_check_reservation_page(request):
     return render(request, 'admin_checkreservation.html')
 
 
-def reservation(request):
+def staff_reservation_page(request):
     return render(request, 'admin_reservation.html')
 
 # function --------------------------
