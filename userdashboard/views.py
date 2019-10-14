@@ -71,15 +71,13 @@ def user_check_reservation(request):
 
         result = auth.ClientAuthentication(
             social_id, social_app)
-        print(result)
-        print('hello')
         if result == None or result == False:  # Using PC or No social login # Account Not Exist
             return redirect('/userdashboard/login/',)
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
             return render(request, 'error/error_check.html', {'error': result['error'], 'action': '/userdashboard/login/'})
         # Account Exist
-        print('hello1')
+
         # Get now
         today = date.today()
         now = today.strftime('%Y-%m-%d')

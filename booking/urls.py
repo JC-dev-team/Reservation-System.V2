@@ -26,12 +26,22 @@ from django.conf.urls import handler404
 
 
 urlpatterns = [
-    path('login/', views.login_portal, name='login'),
-    path('member/', views.member, name='member'),
-    path('reservation/', views.InsertReservation, name='InsertReservation'),
-    path('booking/',views.ToBookingView),
-    path('getCalendar/',views.getCalendar, name='getCalendar'),
+    ## Page
+    # /booking/error/ 
     path('error/',views.error, name='error'),
+    # /booking/login/
+    path('login/', views.login_portal, name='login'), 
+    # /booking/member/
+    path('member/', views.member, name='member'), 
+    # /booking/reservation/
+    path('reservation/', views.InsertReservation, name='InsertReservation'), 
+    # /booking/booking/
+    path('booking/',views.ToBookingView),
+
+    ## Ajax API
+    # /booking/getCalendar/ 
+    path('getCalendar/',views.getCalendar, name='getCalendar'), 
+    # /booking/getWaitingList/ 
     path('getWaitingList/',views.getWaitingList, name='getWaitingList'),
 
     # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
