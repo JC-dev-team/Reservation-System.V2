@@ -5,10 +5,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('error/',views.error,),
-    path('user_check_reservation/',views.user_check_reservation, name='user_check_reservation'),
-    path('user_remove_reservation/',views.user_remove_reservation, name='user_remove_reservation'),
-    path('user_login/',views.user_login, name='user_login'),
-    path('user_auth',views.user_auth, name='user_auth'),
+    path('checkreservation/',views.user_check_reservation, name='user_check_reservation'),
+    path('removereservation/',views.user_remove_reservation, name='user_remove_reservation'),
+    path('login/',views.user_login, name='user_login'),
+    path('auth/',views.user_auth, name='user_auth'),
     # path()
 ]
 

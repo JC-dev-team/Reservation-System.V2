@@ -19,7 +19,7 @@ from django.views.decorators.http import require_http_methods
 
 
 def error(request):
-    return render(request, 'error/error.html',{'action':'/softwayliving/login/'})
+    return render(request, 'error/error.html', {'action': '/softwayliving/login/'})
 
 # admin dashboard ------------------- page
 
@@ -53,14 +53,14 @@ def staff_auth(request):  # authentication staff
         result = auth.StaffAuthentication(social_id, social_app)
 
         if result == None or result == False:
-            return render(request, 'error/error404.html',{'action':'/softwayliving/login/'})
+            return render(request, 'error/error404.html', {'action': '/softwayliving/login/'})
 
-        elif list(result.keys())[0] == 'error':  # error occurred
-            return render(request, 'error/error.html', {'error': result['error'],'action':'/softwayliving/login/'})
+        elif type(result) == dict:  # error occurred
+            return render(request, 'error/error.html', {'error': result['error'], 'action': '/softwayliving/login/'})
         else:
             return render(request, 'admin_dashbroad.html', {'data': result})
     except Exception as e:
-        return render(request, 'error/error.html', {'error': e,'action':'/softwayliving/login/'})
+        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
 
 
 # Ajax API
@@ -78,7 +78,7 @@ def staff_check_reservation(request):
             store_id=store_id,
             bk_date__range=(start_month, end_month),
             is_cancel=False,
-        ).order_by('bk_date','waiting_num','time_session')
+        ).order_by('bk_date', 'waiting_num', 'time_session')
         # order by will be slow, I think better way is regroup
 
         serializers = Bklist_Serializer(bk_queryset, many=True)
@@ -117,7 +117,7 @@ def staff_add_reservation(request):  # Help client to add reservation
 
 
 @require_http_methods(['POST'])
-def staff_add_rest(request):  # add rest day as booking
+def staff_add_event(request):  # add rest day as booking
     try:
         store_id = request.POST.get('store_id', None)
         event_date = request.POST.get('bk_date', None)
