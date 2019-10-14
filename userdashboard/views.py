@@ -49,6 +49,7 @@ def user_auth(request):  # authentication staff
         elif type(result) == dict:  # error occurred
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/userdashboard/login/'})
         else:
+            
             return render(request, 'user_dashboard.html', {'data': result})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e, 'action': '/userdashboard/login/'})
@@ -57,53 +58,30 @@ def user_auth(request):  # authentication staff
 @require_http_methods(['POST', 'GET'])
 def user_check_reservation(request):
     try:
-        store_id = request.POST.get('store_id', None)
-        # bk_date = request.POST.get('bk_date',None)
-        social_id = request.POST.get('social_id', None)
-        social_app = request.POST.get('social_app', None)
-        # Check data format
-        valid = checkAuth(data={
-            'social_id': social_id,
-            'social_app': social_app
-        })
-        if valid.is_valid() == False:
-            raise Exception('Not valid, 帳號資料錯誤')
-
-        result = auth.ClientAuthentication(
-            social_id, social_app)
-        if result == None or result == False:  # Using PC or No social login # Account Not Exist
-            return redirect('/userdashboard/login/',)
-        # error occurred the type of result is {'error' : error}
-        elif type(result) == dict:
-            return render(request, 'error/error_check.html', {'error': result['error'], 'action': '/userdashboard/login/'})
-        # Account Exist
-
+        user_id = request.POST.get('user_id', None)
+        # Account Exist Check
+        acc_queryset = Account.objects.only('user_id').get(
+            user_id=user_id
+        )
         # Get now
         today = date.today()
         now = today.strftime('%Y-%m-%d')
-
-        acc_queryset = Account.objects.only('user_id').get(
-            social_id=social_id,
-            social_app=social_app,
-        )
-        bk_queryset = BkList.objects.filter(
-            user_id=acc_queryset.user_id,
-            store_id=store_id,
+        bk_queryset = BkList.objects.select_related().filter(
+            user_id=user_id,
             bk_date__gte=now,
         )
-        store_queryset = Store.objects.get(
-            store_id=store_id,
-        )
-
+        # print(bk_queryset.store)
         acc_serializer = Acc_Serializer(acc_queryset)
-        bk_serializer = Bklist_Serializer(bk_queryset)
-        store_serializer = Store_Serializer(store_queryset)
-
-        return render(request, 'user_check_reservation.html', {
+        bk_serializer = Bklist_Serializer(bk_queryset, many=True)
+        # print(bk_serializer.data)
+        # store_serializer = Store_Serializer(store_queryset)
+        return render(request, 'user_checkreservation.html', {
             'data': bk_serializer.data,
             'user_info': acc_serializer.data,
-            'store': store_serializer.data,
+            # 'store': store,
         })
+    except Account.DoesNotExist :  # Account Not Exist
+        return render(request, 'error/error.html', {'error': '帳號不存在', 'action': '/userdashboard/login/'})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e, 'action': '/userdashboard/login/'})
 

@@ -344,12 +344,14 @@ def getWaitingList(request):  # get waiting list
         if(lunch_waiting == 0 and status_noon == 'green'):
             lunch_waiting = '午餐: 可訂位'
         else:
-            lunch_waiting = '午餐: 候補 ' + str(lunch_waiting)
+            lunch_waiting = '午餐: 候補第 ' + str((lunch_waiting+1))+' 順位'
 
         if (dinner_waiting == 0 and status_night == 'green'):
             dinner_waiting = '晚餐: 可訂位'
         else:
-            dinner_waiting = '晚餐: 候補 ' + str(dinner_waiting)
+            dinner_waiting = '晚餐: 候補第 ' + str((dinner_waiting+1))+' 順位'
+
+            
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤','action':'/booking/login/'})
