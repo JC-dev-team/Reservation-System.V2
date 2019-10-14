@@ -2,7 +2,7 @@ from datetime import datetime, date
 from django.shortcuts import render, redirect, reverse
 from booking.models import ActionLog, BkList, Account, Production, Staff, Store
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
-from common.serializers import checkAuth
+from common.serializers import checkAuth, Store_form_serializer
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -60,7 +60,7 @@ def user_check_reservation(request):
     try:
         user_id = request.POST.get('user_id', None)
         # Account Exist Check
-        acc_queryset = Account.objects.only('user_id').get(
+        acc_queryset = Account.objects.get(
             user_id=user_id
         )
         # Get now
@@ -70,17 +70,21 @@ def user_check_reservation(request):
             user_id=user_id,
             bk_date__gte=now,
         )
-        # for i in bk_queryset:
-            # Store.objects.
-        # print(bk_queryset.store)
-        acc_serializer = Acc_Serializer(acc_queryset)
+        store_arr= [] # store data array
+        for i in bk_queryset:
+            store_queryset=Store.objects.only('store_id','store_name','store_address','store_phone').get(
+                store_id=i.store_id
+            )
+            store_serializer = Store_form_serializer(store_queryset)
+            store_arr.append(store_serializer.data)
+        
+        account_serializer = Acc_Serializer(acc_queryset)
         bk_serializer = Bklist_Serializer(bk_queryset, many=True)
-
-        # store_serializer = Store_Serializer(store_queryset)
+        
         return render(request, 'user_checkreservation.html', {
-            # 'data': bk_serializer.data,
-            'user_info': acc_serializer.data,
-            # 'store': store,
+            'data': bk_serializer.data,
+            'user_info': account_serializer.data,
+            'store': store_arr,
         })
     except Account.DoesNotExist :  # Account Not Exist
         return render(request, 'error/error.html', {'error': '帳號不存在', 'action': '/userdashboard/login/'})

@@ -9,7 +9,23 @@
 {% block content %}
 {% load static %}
 
-<!-- {% for i in %} -->
+<h1>account</h1>
+
+
+<li>{{user_info.user_id}}</li>
+
+
+
+<h1>booking</h1>
+{% for d in data%}
+<li>{{d.bk_uuid}}</li>
+{% endfor %}
+<h1>store</h1>
+{% for i in store%}
+<li>{{i}}</li>
+{% endfor %}
+
+
 <!-- 丟finish -->
 
 

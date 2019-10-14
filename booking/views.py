@@ -3,7 +3,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from .models import ActionLog, BkList, Account, Production, Staff, Store, StoreEvent
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
-from common.serializers import checkAuth, check_bklist, applymember
+from common.serializers import checkAuth, check_bklist, applymember, Store_form_serializer
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -203,13 +203,14 @@ def InsertReservation(request):  # insert booking list
                 waiting_num=waiting_num,
                 bk_price=bk_price,
             )
-            get_user_info = Account.objects.only('username').get(
+            get_user_info = Account.objects.only('user_id','username').get(
                 user_id=user_id,
                 social_id=social_id,
                 social_app=social_app,
             )
 
             get_store_name = Store.objects.only(
+                'store_id',
                 'store_name',
                 'store_address',
                 'store_phone',).get(
@@ -222,7 +223,7 @@ def InsertReservation(request):  # insert booking list
                 final_queryset.time_session = '午餐'
 
             account_serializer = Acc_Serializer(get_user_info)
-            store_serializer = Store_Serializer(get_store_name)
+            store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
 
             request.session.flush()
