@@ -75,9 +75,9 @@
             admin_ajax_time(data, num)
 
             //spinner icon
-            
+
             document.getElementById('calendar').innerHTML =
-                 '<div class="w3-center"><font size="10"><img src=\'{% static "/images/Spinner01.svg" %}\' /></font></div>'
+                '<div class="w3-center"><font size="10"><img src=\'{% static "/images/Spinner01.svg" %}\' /></font></div>'
 
         }
 
@@ -144,7 +144,11 @@
             showNonCurrentDates: false,
             //Event Limit
             eventLimit: true,
-            views: { dayGrid: { eventLimit: 3 }},
+            views: {
+                dayGrid: {
+                    eventLimit: 3
+                }
+            },
             //Date selectable (true)
             selectable: true,
 
@@ -183,7 +187,7 @@
                         backgroundColor: color,
                         textColor: 'white',
                     });
-                    
+
                     successCallback(event)
 
                 }
@@ -198,7 +202,6 @@
 
                 }
 
-                console.log(info)
                 //list of dot
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
 
@@ -214,10 +217,19 @@
 
             },
             eventMouseEnter: function (info) {
-                var adult = $('#adult_select').val();
-                var child = $('#children_select').val();
+                // var adult = $('#adult_select').val();
+                // var child = $('#children_select').val();
+                var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
 
-                console.log('eventMouseEnter')
+
+                
+                var r = confirm("Press a button!");
+                if (r == true) {
+                    dotEl.style.backgroundColor = 'white';
+                } else {
+                    console.log('cancel')
+                }
+                
                 // var evMousEnter_st = info.event.start
                 // var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
                 // var title = info.event.title
