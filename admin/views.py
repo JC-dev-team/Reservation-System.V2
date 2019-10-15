@@ -78,7 +78,7 @@ def staff_check_reservation(request):
             store_id=store_id,
             bk_date__range=(start_month, end_month),
             is_cancel=False,
-        ).order_by('bk_date', 'waiting_num', 'bk_st')
+        ).order_by('waiting_num','bk_date',  'bk_st')
         # order by will be slow, I think better way is regroup
 
         serializers = Bklist_Serializer(bk_queryset, many=True)
@@ -102,7 +102,7 @@ def staff_approval_reservation(request):
             return JsonResponse({'result': 'success'})
 
     except BkList.DoesNotExist:
-        return JsonResponse({'error': '資料不存在'})
+        return JsonResponse({'error': '資料不存在或是已被刪除'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 

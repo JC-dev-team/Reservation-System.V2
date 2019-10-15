@@ -62,6 +62,12 @@ class Store_Serializer(serializers.ModelSerializer):
         model = Store
         fields = '__all__'
 
+class Store_form_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ('store_id', 'store_name','store_address','store_phone')
+
+
 
 class StoreEvent_Serializer(serializers.ModelSerializer):
     class Meta:

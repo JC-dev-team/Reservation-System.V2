@@ -49,8 +49,8 @@ urlpatterns = [
     # path('api/', include(router.urls)),
     
     # Test Views deploy delete 
-    path('test001/',views.testView),
-    path('testtemplate/',views.testtemplate, name='testtemplate'),
+    # path('test001/',views.testView),
+    # path('testtemplate/',views.testtemplate, name='testtemplate'),
     
 ]
 

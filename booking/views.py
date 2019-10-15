@@ -3,7 +3,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from .models import ActionLog, BkList, Account, Production, Staff, Store, StoreEvent
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
-from common.serializers import checkAuth, check_bklist, applymember
+from common.serializers import checkAuth, check_bklist, applymember, Store_form_serializer
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -203,13 +203,14 @@ def InsertReservation(request):  # insert booking list
                 waiting_num=waiting_num,
                 bk_price=bk_price,
             )
-            get_user_info = Account.objects.only('username').get(
+            get_user_info = Account.objects.only('user_id','username').get(
                 user_id=user_id,
                 social_id=social_id,
                 social_app=social_app,
             )
 
             get_store_name = Store.objects.only(
+                'store_id',
                 'store_name',
                 'store_address',
                 'store_phone',).get(
@@ -222,7 +223,7 @@ def InsertReservation(request):  # insert booking list
                 final_queryset.time_session = '午餐'
 
             account_serializer = Acc_Serializer(get_user_info)
-            store_serializer = Store_Serializer(get_store_name)
+            store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
 
             request.session.flush()
@@ -285,6 +286,9 @@ def getWaitingList(request):  # get waiting list
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
 
+        if (int(adult)+int(children))<1:
+            return JsonResponse({'alert': '成人和小孩人數過少'})
+
         store_query = Store.objects.only('seat').get(
             store_id=store_id
         )
@@ -293,7 +297,6 @@ def getWaitingList(request):  # get waiting list
             store_id=store_id,
             bk_date=bk_date,
             is_cancel=False,
-            # waiting_num__gt=0,
         )
 
         bk_list_noon = bk_queryset.filter(  # get bookinglist of noon
@@ -443,25 +446,25 @@ def getCalendar(request):  # full calendar
 
 
 # Test function ------------------------
-def testtemplate(request):
-    return render(request, 'reservation_finish.html')
+# def testtemplate(request):
+#     return render(request, 'reservation_finish.html')
 
 
-class testView(APIView):  # render html
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = None
+# class testView(APIView):  # render html
+#     renderer_classes = [TemplateHTMLRenderer]
+#     template_name = None
 
-    def post(self, request, format=None):
-        try:
-            self.template_name = 'booking.html'
-            with transaction.atomic():  # transaction
-                serializer = Acc_Serializer(data=request.data)
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response({'data': request.data}, status=status.HTTP_201_CREATED)
-                else:
-                    self.template_name = 'error/error.html'
-                    return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            self.template_name = 'error/error.html'
-            return Response({'error': e})
+#     def post(self, request, format=None):
+#         try:
+#             self.template_name = 'booking.html'
+#             with transaction.atomic():  # transaction
+#                 serializer = Acc_Serializer(data=request.data)
+#                 if serializer.is_valid():
+#                     serializer.save()
+#                     return Response({'data': request.data}, status=status.HTTP_201_CREATED)
+#                 else:
+#                     self.template_name = 'error/error.html'
+#                     return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+#         except Exception as e:
+#             self.template_name = 'error/error.html'
+#             return Response({'error': e})
