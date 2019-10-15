@@ -8,42 +8,56 @@
 
 {% block content %}
 {% load static %}
-
+<center>
 <h1>Hello!! {{user_info.username}} 以下為您的訂位資訊</h1>
+</center>
 
+<!-- No reservation -->
+{% if data == False%}
+<div class="w3-center" style="display: none">
+    <font size="10">
+        <i class="far fa-question-circle"></i>
+    </font>
+    <h4>查無訂單</h4>
+    <br>
+
+    <font size='4'>
+        <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
+    </font>
+</div>
+{% else %}
+{% for element in data %}
+
+{% if element.waiting_num != 0 %}
 <!-- Under processing-->
-<div class="w3-center" >
+<div class="w3-center" style="display: show">
     <font size="10">
         <i class="far fa-question-circle"></i>
     </font>
     <h4>訂位處理中</h4>
     <h5>請靜候通知，由專人為您確認訂位</h5>
     <br>
-
-    <font size='4'>
-            <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
-        </font>
 </div>
-
+{% else  %}
 <!-- Success-->
-<div class="w3-center" style="display: none">
+<div class="w3-center" style="display: show">
     <font size="10">
         <i class="far fa-check-circle"></i>
     </font>
     <h4>訂位已成立</h4>
-    <h5>請準時到達，謝謝您的訂位</h5>
+    <h5>謝謝您的訂位</h5>
     <br><br>
 </div>
-
+{% endif %}
 <!-- Cancel-->
-<div class="w3-center" style="display: none">
+<!-- <div class="w3-center" style="display: none">
     <font size="10">
         <i class="far fa-times-circle"></i>
     </font>
     <h4>訂位已取消</h4>
 
     <br><br>
-</div>
+</div> -->
 
 <!-- reservation information-->
 
@@ -56,18 +70,22 @@
         <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3>
         <div class="w3-container" align="center">
             <h4>店家：{{store.store_name}}</h4>
-            <h4>人數： {{data.adult}} 大 {{data.children}} 小</h4>
-            <h4>用餐日期：{{data.bk_date}}</h4>
-            <h4>用餐時段： {{data.time_session}} - {{data.bk_st}}</h4>
+            <h4>人數： {{element.adult}} 大 {{element.children}} 小</h4>
+            <h4>用餐日期：{{element.bk_date}}</h4>
+            <h4>用餐時段： {{element.time_session}} - {{element.bk_st}}</h4>
 
-            <h4>價位：＄{{data.bk_price}}</h4>
-            <h4>備註：{{data.bk_ps}}</h4>
+            <h4>價位：＄{{element.bk_price}}</h4>
+            <h4>備註：{{element.bk_ps}}</h4>
         </div>
     </font>
 
-    
+    <font size='4'>
+        <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
+    </font>
 </div>
 
+{% endfor %}
+{% endif %}
 
 
 
@@ -78,28 +96,17 @@
         // window.open('', '_parent', '');
         // window.close();
     }
+    // ready 
+    // $(function () {
+    //     console.log(document.getElementById('information').innerText)
+    //     if ('{{data}}' == False) {
 
-    $(function () {
-        console.log(document.getElementById('information').innerText)
-        if ('{{data.waiting_num}}' != '0') { //this is not correct
-            document.getElementById('information').innerText = "訂位資訊 (候補 " + '{{data.waiting_num}}' + ")"
-        } 
+    //     } else if ('{{data.waiting_num}}' != '0') { //this is not correct
+    //         document.getElementById('information').innerText = "訂位資訊 (候補 " + '{{data.waiting_num}}' + ")"
+    //     }
 
-    })
+    // })
+
 </script>
-
-
-<h1>booking</h1>
-{% for d in data%}
-<li>{{d.bk_uuid}}</li>
-{% endfor %}
-<h1>store</h1>
-{% for i in store%}
-<li>{{i}}</li>
-{% endfor %}
-
-
-<!-- 丟finish -->
-
 
 {% endblock %}

@@ -286,6 +286,9 @@ def getWaitingList(request):  # get waiting list
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
 
+        if (int(adult)+int(children))<1:
+            return JsonResponse({'alert': '成人和小孩人數過少'})
+
         store_query = Store.objects.only('seat').get(
             store_id=store_id
         )
@@ -294,7 +297,6 @@ def getWaitingList(request):  # get waiting list
             store_id=store_id,
             bk_date=bk_date,
             is_cancel=False,
-            # waiting_num__gt=0,
         )
 
         bk_list_noon = bk_queryset.filter(  # get bookinglist of noon

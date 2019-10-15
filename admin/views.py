@@ -102,7 +102,7 @@ def staff_approval_reservation(request):
             return JsonResponse({'result': 'success'})
 
     except BkList.DoesNotExist:
-        return JsonResponse({'error': '資料不存在'})
+        return JsonResponse({'error': '資料不存在或是已被刪除'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 

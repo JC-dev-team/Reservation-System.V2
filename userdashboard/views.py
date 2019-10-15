@@ -49,7 +49,7 @@ def user_auth(request):  # authentication staff
         elif type(result) == dict:  # error occurred
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/userdashboard/login/'})
         else:
-            
+
             return render(request, 'user_dashboard.html', {'data': result})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e, 'action': '/userdashboard/login/'})
@@ -69,26 +69,38 @@ def user_check_reservation(request):
         bk_queryset = BkList.objects.filter(
             user_id=user_id,
             bk_date__gte=now,
-        )
-        store_arr= [] # store data array
+            is_cancel=False,
+        ).order_by('bk_date','time_session')
+        # If data not exists
+        if bk_queryset.exists() == False:
+            account_serializer = Acc_Serializer(acc_queryset)
+            return render(request, 'user_checkreservation.html', {
+                'data': False,
+                'user_info': account_serializer.data,
+            })
+
+        store_arr = []  # store data array
         for i in bk_queryset:
-            store_queryset=Store.objects.only('store_id','store_name','store_address','store_phone').get(
+            store_queryset = Store.objects.only('store_id', 'store_name', 'store_address', 'store_phone').get(
                 store_id=i.store_id
             )
+
             store_serializer = Store_form_serializer(store_queryset)
             store_arr.append(store_serializer.data)
-        
+
+        enu_store = enumerate(store_arr)
         account_serializer = Acc_Serializer(acc_queryset)
         bk_serializer = Bklist_Serializer(bk_queryset, many=True)
-        
+        print('finish')
         return render(request, 'user_checkreservation.html', {
             'data': bk_serializer.data,
             'user_info': account_serializer.data,
-            'store': store_arr,
+            'store': enu_store,
         })
-    except Account.DoesNotExist :  # Account Not Exist
+    except Account.DoesNotExist:  # Account Not Exist
         return render(request, 'error/error.html', {'error': '帳號不存在', 'action': '/userdashboard/login/'})
     except Exception as e:
+        print(e)
         return render(request, 'error/error.html', {'error': e, 'action': '/userdashboard/login/'})
 
 
@@ -108,17 +120,17 @@ def user_remove_reservation(request):
         })
         if valid.is_valid() == False:
             raise Exception('Not valid, 帳號資料錯誤')
-        
+
         result = auth.ClientAuthentication(
             social_id, social_app)
-  
+
         if result == None or result == False:  # Using PC or No social login # Account Not Exist
             return redirect('/userdashboard/login/',)
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
             raise Exception('error')
         # Account Exist
-       
+
         with transaction.atomic():  # transaction
             bk_date_ = datetime.strptime(bk_date, '%Y-%m-%d')
             bk_date_tmp = bk_date_ - datetime.timedelta(days=3)
