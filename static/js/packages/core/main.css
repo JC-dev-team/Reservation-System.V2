@@ -54,7 +54,8 @@ body .fc {
 }
 
 .fc-popover .fc-header .fc-title {
-  margin: 0 2px;
+  margin: 2 2px;
+  font-size: 14px;
 }
 
 .fc-popover .fc-header .fc-close {
