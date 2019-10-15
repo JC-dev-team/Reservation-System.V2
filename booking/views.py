@@ -446,25 +446,25 @@ def getCalendar(request):  # full calendar
 
 
 # Test function ------------------------
-def testtemplate(request):
-    return render(request, 'reservation_finish.html')
+# def testtemplate(request):
+#     return render(request, 'reservation_finish.html')
 
 
-class testView(APIView):  # render html
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = None
+# class testView(APIView):  # render html
+#     renderer_classes = [TemplateHTMLRenderer]
+#     template_name = None
 
-    def post(self, request, format=None):
-        try:
-            self.template_name = 'booking.html'
-            with transaction.atomic():  # transaction
-                serializer = Acc_Serializer(data=request.data)
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response({'data': request.data}, status=status.HTTP_201_CREATED)
-                else:
-                    self.template_name = 'error/error.html'
-                    return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            self.template_name = 'error/error.html'
-            return Response({'error': e})
+#     def post(self, request, format=None):
+#         try:
+#             self.template_name = 'booking.html'
+#             with transaction.atomic():  # transaction
+#                 serializer = Acc_Serializer(data=request.data)
+#                 if serializer.is_valid():
+#                     serializer.save()
+#                     return Response({'data': request.data}, status=status.HTTP_201_CREATED)
+#                 else:
+#                     self.template_name = 'error/error.html'
+#                     return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+#         except Exception as e:
+#             self.template_name = 'error/error.html'
+#             return Response({'error': e})

@@ -8,12 +8,14 @@
 
 {% block content %}
 {% load static %}
+{% load array_filter %}
 <center>
-<h1>Hello!! {{user_info.username}} 以下為您的訂位資訊</h1>
+    <h1>Hello!! {{user_info.username}}</h1>
+    <hr>
 </center>
-
 <!-- No reservation -->
 {% if data == False%}
+
 <div class="w3-center" style="display: none">
     <font size="10">
         <i class="far fa-question-circle"></i>
@@ -27,8 +29,8 @@
 </div>
 {% else %}
 {% for element in data %}
-
 {% if element.waiting_num != 0 %}
+
 <!-- Under processing-->
 <div class="w3-center" style="display: show">
     <font size="10">
@@ -60,16 +62,14 @@
 </div> -->
 
 <!-- reservation information-->
-
-
 <div class="w3-center">
     <font size='6'>
         <h2 id='information'>訂位資訊</h2>
-        <!-- <h2 id='data_waiting_num'>訂位資訊 {{data.waiting_num}}</h2> -->
         <hr>
+
         <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3>
         <div class="w3-container" align="center">
-            <h4>店家：{{store.store_name}}</h4>
+            <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
             <h4>人數： {{element.adult}} 大 {{element.children}} 小</h4>
             <h4>用餐日期：{{element.bk_date}}</h4>
             <h4>用餐時段： {{element.time_session}} - {{element.bk_st}}</h4>
@@ -80,32 +80,44 @@
     </font>
 
     <font size='4'>
-        <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
+        <button id="close_button" onclick="cancelreservation('{{element.bk_uuid}}');"
+            class="w3-btn w3-round-large  w3-teal w3-padding">取消訂位</button>
     </font>
+    <hr>
+
 </div>
 
 {% endfor %}
 {% endif %}
-
+<center>
+    <font size='4'>
+        <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
+    </font>
+</center>
+<!-- form to delete -->
+<form id='cancel_form' method="post">
+    {% csrf_token %}
+    <input name='bk_uuid' value='' type="hidden">
+</form>
 
 
 <script type="text/javascript">
+    $.ajaxSetup({
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+    });
+    function cancelreservation(bk_uuid) {
+        // run ajax
+
+    }
     function closewindow() {
         //if open on line base
         liff.closewindow()
         // window.open('', '_parent', '');
         // window.close();
     }
-    // ready 
-    // $(function () {
-    //     console.log(document.getElementById('information').innerText)
-    //     if ('{{data}}' == False) {
-
-    //     } else if ('{{data.waiting_num}}' != '0') { //this is not correct
-    //         document.getElementById('information').innerText = "訂位資訊 (候補 " + '{{data.waiting_num}}' + ")"
-    //     }
-
-    // })
+    // ready
 
 </script>
 

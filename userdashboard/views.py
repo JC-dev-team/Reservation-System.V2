@@ -70,7 +70,7 @@ def user_check_reservation(request):
             user_id=user_id,
             bk_date__gte=now,
             is_cancel=False,
-        ).order_by('bk_date','time_session')
+        ).order_by('-waiting_num','bk_date','bk_st')
         # If data not exists
         if bk_queryset.exists() == False:
             account_serializer = Acc_Serializer(acc_queryset)
@@ -88,14 +88,13 @@ def user_check_reservation(request):
             store_serializer = Store_form_serializer(store_queryset)
             store_arr.append(store_serializer.data)
 
-        enu_store = enumerate(store_arr)
+        # enu_store = enumerate(store_arr)
         account_serializer = Acc_Serializer(acc_queryset)
         bk_serializer = Bklist_Serializer(bk_queryset, many=True)
-        print('finish')
         return render(request, 'user_checkreservation.html', {
-            'data': bk_serializer.data,
+            'data': bk_queryset,
             'user_info': account_serializer.data,
-            'store': enu_store,
+            'store': store_arr,
         })
     except Account.DoesNotExist:  # Account Not Exist
         return render(request, 'error/error.html', {'error': '帳號不存在', 'action': '/userdashboard/login/'})
