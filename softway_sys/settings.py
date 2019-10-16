@@ -47,6 +47,7 @@ RECAPTCHA_PRIVATE_KEY = '6LftQr0UAAAAAJqjEwg2fiEzZXAd-NGgGWQwDulz'
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -99,20 +100,6 @@ DATABASES = {
         }
     }
 }
-# import mysql.connector
-# from mysql.connector import errorcode
-# try:
-#     mysql.connector.connect(host="database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com",
-#                         user="root", passwd="rootadmin",
-#                         database="softway", use_pure=True, sql_mode='STRICT_TRANS_TABLES')
-# except mysql.connector.Error as err:
-#   if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-#     print("Something is wrong with your user name or password")
-#   elif err.errno == errorcode.ER_BAD_DB_ERROR:
-#     print("Database does not exist")
-#   else:
-#     print(err)
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

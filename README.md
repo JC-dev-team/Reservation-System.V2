@@ -32,3 +32,7 @@
 
 ### Reset migrations
    https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html
+
+### Check list for django project before deployment
+   python manage.py check --deploy
+   https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
