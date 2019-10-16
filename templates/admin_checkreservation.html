@@ -3,6 +3,9 @@
 {% block headmessage %}
 <div class="w3-center">
     <h3><b>管理者 - 查詢/確認/修改</b></h3>
+    <p>
+        <font color="orange">橘色</font>：待確認 / <font color="green">綠色</font>：已確認 / <font color="red">紅色</font>：後補
+    </p>
 </div>
 {% endblock %}
 
@@ -16,6 +19,44 @@
 <!-- Date num calculated-->
 <input id="date_num" value="0" type="text" style="display: none">
 
+
+<!-- Modal -->
+<div id="information_Modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+        <header class="w3-container w3-teal w3-center w3-padding-32">
+            <span onclick="document.getElementById('information_Modal').style.display='none'"
+                class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
+            <h2 class="w3-wide"><i class="fa fa-bell"></i> 管理者權限</h2>
+        </header>
+        <div class="w3-container">
+            <br>
+            <font size="4">
+                <!-- Date-->
+                <p id='modal_date'></p>
+                <!-- State-->
+                <p id='modal_status'></p>
+                <!-- action-->
+                <label><i class="fa fa-bolt"></i> 動作： </label>
+                <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+                    id='action_select' required>
+                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                    <option value="confirm" selected>確認訂單</option>
+                    <option value="pass">遞補候位</option>
+                    <option value="cancel">刪除訂單</option>
+                    
+                </select>
+                
+                <br>
+                <button id='modal_button' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">OK <i
+                        class="fa fa-check"></i></button>
+                <button class="w3-button w3-red w3-section"
+                    onclick="document.getElementById('information_Modal').style.display='none'">關閉 <i
+                        class="fa fa-remove"></i></button>
+            </font>
+        </div>
+
+    </div>
+</div>
 
 <script>
     //Notiflix Confirm
@@ -57,7 +98,7 @@
         },
     });
 
-    function admin_cancel(data, num, calendar) {
+    function admin_cancel(data, num, event) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/cancel/',
@@ -66,11 +107,14 @@
                 if (response.error != null) {
                     console.log(response.error)
                     // window.location.replace('/booking/error/');
-                } else if(response.alert != null) {
+                } else if (response.alert != null) {
                     alert(response.alert)
-                }else{
+                } else {
                     result = response.result
                     console.log(result)
+                    event.setProp('backgroundColor', 'white')
+                    Notiflix.Loading.Remove();
+                    Notiflix.Notify.Failure('訂單已刪除！！');
                 }
 
             },
@@ -82,7 +126,7 @@
         });
     }
 
-    function admin_approval(data, num, calendar) {
+    function admin_approval(data, num, event) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/approval/',
@@ -91,11 +135,14 @@
                 if (response.error != null) {
                     console.log(response.error)
                     // window.location.replace('/booking/error/');
-                } else if(response.alert != null) {
+                } else if (response.alert != null) {
                     alert(response.alert)
-                }else{
+                } else {
                     result = response.result
                     console.log(result)
+                    event.setProp('backgroundColor', 'green')
+                    Notiflix.Loading.Remove();
+                    Notiflix.Notify.Success('訂單已確認！！');
                 }
 
             },
@@ -121,7 +168,7 @@
                     console.log(result)
                     //Function of calendar (return calendar.render())
                     calendar_fun(result, num)
-                    
+
                 }
 
             },
@@ -151,7 +198,7 @@
                 'end_month': end_month,
             }
             //Clean the calendar
-            document.getElementById('calendar').innerHTML = ''
+            // document.getElementById('calendar').innerHTML = ''
 
             // do ajax fuction
             admin_ajax_time(data, num)
@@ -261,14 +308,13 @@
                         color = 'red'
                     }
 
-
                     event.push({
-                        id :uuid,
+                        id: uuid,
                         title: session + ' ' + people + ' ' + price + ' ' + ps,
                         start: date + time,
                         backgroundColor: color,
                         textColor: 'white',
-                        
+
                     });
 
                     successCallback(event)
@@ -277,7 +323,6 @@
             },
 
             eventRender: function (info) {
-
                 var month_text = info.el.text
                 if (month_text != undefined) {
                     var text = month_text.split(' ')[1]
@@ -299,46 +344,89 @@
 
             },
             eventClick: function (info) {
-                // var adult = $('#adult_select').val();
-                // var child = $('#children_select').val();
-                var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
-                console.log(info.event.start.toISOString().slice(0, 10))
+                console.log(info)
                 var list_backgroundcolor = info.event.backgroundColor
-                
-                
                 if (list_backgroundcolor == 'orange') {
-                    Notiflix.Confirm.Show('管理者權限', '請選擇動作?', '確認訂單', '刪除訂單',
-                    function () {
-                        console.log('確認訂單')
-                        var data = {
-                            'bk_uuid': info.event.id,
-                            'bk_date': info.event.start.toISOString().slice(0, 10)
-                        }
-                        admin_approval(data)
-                        list_backgroundcolor = 'green'
-
-                    },
-                    function () {
-                        console.log('刪除訂單')
-                        var data = {
-                            'bk_uuid': info.event.id,
-                            'bk_date': info.event.start.toISOString().slice(0, 10)
-                        }
-                        admin_cancel(data)
-
-                    });
-                }else if(list_backgroundcolor == 'red'){
-                    Notiflix.Confirm.Show('管理者權限', '請選擇動作?', '候補遞位', '刪除訂單',
-                    function () {
-                        console.log('候補遞位')
-                        seat = true
-                    },
-                    function () {
-                        console.log('刪除訂單')
-                        
-
-                    });
+                    status = '待確認'
+                } else if (list_backgroundcolor == 'green') {
+                    status = '已確認'
+                } else if (list_backgroundcolor == 'red') {
+                    status = '候補'
                 }
+                //document modal
+                document.getElementById('information_Modal').style.display = 'inline';
+                document.getElementById('modal_date').innerHTML =
+                    '<p id="modal_date">' + '<label><i class="fa fa-calendar"></i></label>' +
+                    ' 日期： ' + info.event.start.toISOString().slice(0, 10) + '<br>' + info
+                    .event.title + '</p>'
+                document.getElementById('modal_status').innerHTML =
+                    '<p id="modal_status">' + '<label><i class="fa fa-info-circle"></i></label>' +
+                    ' 訂單狀態： ' + status + '</p>'
+
+
+                //modal button  click
+                $('#modal_button').click(function (e) {
+                    console.log($("#action_select").val())
+                    //確認訂單
+                    if ($("#action_select").val() == 'confirm') {
+                        Notiflix.Confirm.Show('管理者權限', '確定要確認此訂單嗎?', '是-確認訂單', '再看看',
+                            function () {
+                                console.log('確認訂單 Y')
+                                var data = {
+                                    'bk_uuid': info.event.id,
+                                    'bk_date': info.event.start.toISOString().slice(0, 10)
+                                }
+                                var event = calendar.getEventById(info.event.id)
+                                admin_approval(data, num, event)
+                                //spinner show
+                                Notiflix.Loading.Hourglass('確認中....');
+
+                            },
+                            function () {
+                                console.log('確認訂單 N')
+                                
+
+                            });
+
+                    }
+                    //刪除訂單
+                    else if ($("#action_select").val() == 'cancel') {
+                        Notiflix.Confirm.Show('管理者權限', '確定要刪除此訂單嗎?', '刪除訂單', '不要刪除',
+                            function () {
+                                console.log('刪除訂單 Y')
+                                var data = {
+                                    'bk_uuid': info.event.id,
+                                    'bk_date': info.event.start.toISOString().slice(0, 10)
+                                }
+                                var event = calendar.getEventById(info.event.id)
+                                admin_cancel(data, num, event)
+                                //spinner show
+                                Notiflix.Loading.Hourglass('刪除中....');
+                            },
+                            function () {
+                                console.log('刪除訂單 N')
+                            });
+                    }
+                    //遞補候位
+                    else if ($("#action_select").val() == 'pass') {
+                        Notiflix.Confirm.Show('管理者權限', '確定要遞補此訂單嗎?', '遞補候位', '取消遞補',
+                            function () {
+                                console.log('遞補候位 Y')
+                                // var data = {
+                                //     'bk_uuid': info.event.id,
+                                //     'bk_date': info.event.start.toISOString().slice(0, 10)
+                                // }
+                                // var event = calendar.getEventById(info.event.id)
+                                // admin_cancel(data, num, event)
+                                // //spinner show
+                                // Notiflix.Loading.Hourglass('刪除中....');
+                            },
+                            function () {
+                                console.log('遞補候位 N')
+                            });
+                    }
+                })
+
                 // Notiflix.Confirm.Show('管理者權限', '請選擇動作?', '候補遞位', '刪除訂單',
                 //     function () {
                 //         console.log('候補遞位')
@@ -346,10 +434,10 @@
                 //     },
                 //     function () {
                 //         console.log('刪除訂單')
-                        
+
 
                 //     });
-                
+
                 // Notiflix.Confirm.Show('管理者權限', '確定要將候補遞位?', '是', '否',
                 //     function () {
                 //         alert('候補遞位 Y');
@@ -404,6 +492,7 @@
             }
         });
         return calendar.render();
+
 
     }
 
