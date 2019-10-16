@@ -99,7 +99,7 @@ def user_check_reservation(request):
     except Account.DoesNotExist:  # Account Not Exist
         return render(request, 'error/error.html', {'error': '帳號不存在', 'action': '/userdashboard/login/'})
     except Exception as e:
-        print(e)
+
         return render(request, 'error/error.html', {'error': e, 'action': '/userdashboard/login/'})
 
 

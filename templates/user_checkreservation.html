@@ -108,14 +108,36 @@
         },
     });
     function cancelreservation(bk_uuid) {
-        // run ajax
+        $.ajax({
+            type: 'POST',
+            url: '/booking/getCalendar/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    // console.log(response.error)
+                    window.location.replace('/userdashboard/error/');
+                } else {
+                    result = response.result
+                    // console.log(result)
+                    //Function of calendar (return calendar.render())
+                    calendar_fun(result, num)
 
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest)
+                console.log(errorThrown)
+                window.location.replace('/booking/error/');
+            }
+
+        })
     }
+
+    
     function closewindow() {
         //if open on line base
         liff.closewindow()
-        // window.open('', '_parent', '');
-        // window.close();
     }
     // ready
 
