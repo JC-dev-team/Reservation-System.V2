@@ -71,7 +71,7 @@
                     console.log(result)
                     //Function of calendar (return calendar.render())
                     calendar_fun(result, num)
-
+                    
                 }
 
             },
@@ -249,10 +249,10 @@
                 // var adult = $('#adult_select').val();
                 // var child = $('#children_select').val();
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
-                console.log(info.event.backgroundColor)
+                console.log('{{data.bk_uuid}}')
                 var list_backgroundcolor = info.event.backgroundColor
                 var seat = false
-
+                
                 if (list_backgroundcolor == 'orange') {
                     Notiflix.Confirm.Show('管理者權限', '請選擇動作?', '確認訂單', '刪除訂單',
                     function () {
