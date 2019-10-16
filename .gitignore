@@ -20,6 +20,4 @@ common/utility/__pycache__
 common/__pycache__
 userdashboard/__pycache__
 userdashboard/migrations/__pycache__
-templates/templatetags/__pycache__/__init__.cpython-36.pyc
-templates/templatetags/__pycache__/array_filter.cpython-36.pyc
-templates/templatetags/__pycache__/list_filter.cpython-36.pyc
+templates/templatetags/__pycache__
