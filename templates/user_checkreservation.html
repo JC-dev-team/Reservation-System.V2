@@ -68,14 +68,20 @@
         <hr>
 
         <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3>
-        <div class="w3-container" align="center">
+        <div class="w3-container" align="left">
             <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
+            <h4>用餐日期：{{element.bk_date}} {{element.time_session}} - {{element.bk_st}}</h4>
+            <h4>訂位人： {{user_info.username}} 先生/小姐</h4>
+            <h4>用餐人數： {{element.adult}} 大 {{element.children}} 小</h4>
+            <h4>價位：＄{{element.bk_price}}</h4>
+            <h4>備註：{{element.bk_ps}}</h4>
+            <!-- <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
             <h4>人數： {{element.adult}} 大 {{element.children}} 小</h4>
             <h4>用餐日期：{{element.bk_date}}</h4>
             <h4>用餐時段： {{element.time_session}} - {{element.bk_st}}</h4>
 
             <h4>價位：＄{{element.bk_price}}</h4>
-            <h4>備註：{{element.bk_ps}}</h4>
+            <h4>備註：{{element.bk_ps}}</h4> -->
         </div>
     </font>
 
@@ -107,10 +113,12 @@
             csrfmiddlewaretoken: '{{ csrf_token }}'
         },
     });
+
     function cancelreservation(bk_uuid) {
         // run ajax
 
     }
+
     function closewindow() {
         //if open on line base
         liff.closewindow()
@@ -118,7 +126,6 @@
         // window.close();
     }
     // ready
-
 </script>
 
 {% endblock %}
