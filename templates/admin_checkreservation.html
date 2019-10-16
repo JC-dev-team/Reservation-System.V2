@@ -298,7 +298,7 @@
                 console.log('dateClick: ' + info)
 
             },
-            eventMouseEnter: function (info) {
+            eventClick: function (info) {
                 // var adult = $('#adult_select').val();
                 // var child = $('#children_select').val();
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
@@ -315,6 +315,7 @@
                             'bk_date': info.event.start.toISOString().slice(0, 10)
                         }
                         admin_approval(data)
+                        list_backgroundcolor = 'green'
 
                     },
                     function () {
