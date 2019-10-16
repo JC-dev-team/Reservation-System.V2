@@ -16,32 +16,31 @@
     </font>
     <h4>訂位處理中</h4>
     <h5>請靜候通知，由專人為您確認訂位</h5>
-    <br>
-
     <font size='4'>
-            <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
+            <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal">關閉</button>
         </font>
+    <br>
 </div>
 
 <!-- Success-->
-<div class="w3-center" style="display: none">
+<!-- <div class="w3-center" style="display: none">
     <font size="10">
         <i class="far fa-check-circle"></i>
     </font>
     <h4>訂位已成立</h4>
     <h5>請準時到達，謝謝您的訂位</h5>
     <br><br>
-</div>
+</div> -->
 
 <!-- Cancel-->
-<div class="w3-center" style="display: none">
+<!-- <div class="w3-center" style="display: none">
     <font size="10">
         <i class="far fa-times-circle"></i>
     </font>
     <h4>訂位已取消</h4>
 
     <br><br>
-</div>
+</div> -->
 
 <!-- reservation information-->
 
@@ -49,15 +48,13 @@
 <div class="w3-center">
     <font size='6'>
         <h2 id='information'>訂位資訊</h2>
-        <!-- <h2 id='data_waiting_num'>訂位資訊 {{data.waiting_num}}</h2> -->
         <hr>
-        <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3>
-        <div class="w3-container" align="center">
+        
+        <div class="w3-container" align="left">
             <h4>店家：{{store.store_name}}</h4>
-            <h4>人數： {{data.adult}} 大 {{data.children}} 小</h4>
-            <h4>用餐日期：{{data.bk_date}}</h4>
-            <h4>用餐時段： {{data.time_session}} - {{data.bk_st}}</h4>
-
+            <h4>用餐日期：{{data.bk_date}} {{data.time_session}} - {{data.bk_st}}</h4>
+            <h4>訂位人： {{user_info.username}} 先生/小姐</h4>
+            <h4>用餐人數： {{data.adult}} 大 {{data.children}} 小</h4>
             <h4>價位：＄{{data.bk_price}}</h4>
             <h4>備註：{{data.bk_ps}}</h4>
         </div>

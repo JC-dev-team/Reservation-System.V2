@@ -205,7 +205,7 @@
                     }
 
                     if (waiting_num == 0) {
-                        color = 'green'
+                        color = 'orange'
                     } else {
                         color = 'red'
                     }
@@ -235,7 +235,6 @@
                 //list of dot
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
 
-
                 // if (dotEl) {
                 //     dotEl.style.backgroundColor = 'white';
                 // }
@@ -250,34 +249,59 @@
                 // var adult = $('#adult_select').val();
                 // var child = $('#children_select').val();
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
-
+                console.log(info.event.backgroundColor)
+                var list_backgroundcolor = info.event.backgroundColor
                 var seat = false
 
-                Notiflix.Confirm.Show('管理者權限', '請選擇動作?', '候補遞位', '刪除訂單',
+                if (list_backgroundcolor == 'orange') {
+                    Notiflix.Confirm.Show('管理者權限', '請選擇動作?', '確認訂單', '刪除訂單',
                     function () {
-                        console.log('YY')
+                        console.log('確認訂單')
                         seat = true
                     },
                     function () {
-                        console.log('NN')
+                        console.log('刪除訂單')
+                        
 
                     });
-                console.log('llkk ')
-                Notiflix.Confirm.Show('管理者權限', '確定要將候補遞位?', '是', '否',
+                }else if(list_backgroundcolor == 'red'){
+                    Notiflix.Confirm.Show('管理者權限', '請選擇動作?', '候補遞位', '刪除訂單',
                     function () {
-                        alert('候補遞位 Y');
+                        console.log('候補遞位')
+                        seat = true
                     },
                     function () {
-                        alert('候補遞位 N');
-                    });
+                        console.log('刪除訂單')
+                        
 
-                Notiflix.Confirm.Show('管理者權限', '確定要將刪除訂單?', '是', '否',
-                    function () {
-                        alert('刪除訂單 Y');
-                    },
-                    function () {
-                        alert('刪除訂單 N');
                     });
+                }
+                // Notiflix.Confirm.Show('管理者權限', '請選擇動作?', '候補遞位', '刪除訂單',
+                //     function () {
+                //         console.log('候補遞位')
+                //         seat = true
+                //     },
+                //     function () {
+                //         console.log('刪除訂單')
+                        
+
+                //     });
+                
+                // Notiflix.Confirm.Show('管理者權限', '確定要將候補遞位?', '是', '否',
+                //     function () {
+                //         alert('候補遞位 Y');
+                //     },
+                //     function () {
+                //         alert('候補遞位 N');
+                //     });
+
+                // Notiflix.Confirm.Show('管理者權限', '確定要將刪除訂單?', '是', '否',
+                //     function () {
+                //         alert('刪除訂單 Y');
+                //     },
+                //     function () {
+                //         alert('刪除訂單 N');
+                //     });
 
                 // var r = confirm("Press a button!");
                 // if (r == true) {
