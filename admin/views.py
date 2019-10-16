@@ -106,7 +106,8 @@ def staff_approval_reservation(request):
     except BkList.DoesNotExist:
         return JsonResponse({'alert': '資料不存在或是已被刪除'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': e})
+        # return JsonResponse({'error': '發生未知錯誤'})
 
 
 @require_http_methods(['POST'])
@@ -135,7 +136,8 @@ def staff_cancel_reservation(request):
     except BkList.DoesNotExist:
         return JsonResponse({'alert': '資料不存在或是已被刪除'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': e})
+        # return JsonResponse({'error': '發生未知錯誤'})
 
 
 
