@@ -57,6 +57,56 @@
         },
     });
 
+    function admin_cancel(data, num, calendar) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/cancel/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    // window.location.replace('/booking/error/');
+                } else if(response.alert != null) {
+                    alert(response.alert)
+                }else{
+                    result = response.result
+                    console.log(result)
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown)
+                // window.location.replace('/booking/error/');
+            }
+
+        });
+    }
+
+    function admin_approval(data, num, calendar) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/approval/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    // window.location.replace('/booking/error/');
+                } else if(response.alert != null) {
+                    alert(response.alert)
+                }else{
+                    result = response.result
+                    console.log(result)
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown)
+                // window.location.replace('/booking/error/');
+            }
+
+        });
+    }
+
     function admin_ajax_time(data, num, calendar) {
         $.ajax({
             type: 'POST',
@@ -71,7 +121,7 @@
                     console.log(result)
                     //Function of calendar (return calendar.render())
                     calendar_fun(result, num)
-
+                    
                 }
 
             },
@@ -186,6 +236,7 @@
                 var event = [];
                 for (var i = 0; i < result.length; i++) {
 
+                    var uuid = result[i].bk_uuid
                     var date = result[i].bk_date;
                     var time = 'T' + result[i].bk_st;
                     var session = result[i].time_session;
@@ -212,10 +263,12 @@
 
 
                     event.push({
+                        id :uuid,
                         title: session + ' ' + people + ' ' + price + ' ' + ps,
                         start: date + time,
                         backgroundColor: color,
                         textColor: 'white',
+                        
                     });
 
                     successCallback(event)
@@ -249,19 +302,28 @@
                 // var adult = $('#adult_select').val();
                 // var child = $('#children_select').val();
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
-                console.log(info.event.backgroundColor)
+                console.log(info.event.start.toISOString().slice(0, 10))
                 var list_backgroundcolor = info.event.backgroundColor
-                var seat = false
-
+                
+                
                 if (list_backgroundcolor == 'orange') {
                     Notiflix.Confirm.Show('管理者權限', '請選擇動作?', '確認訂單', '刪除訂單',
                     function () {
                         console.log('確認訂單')
-                        seat = true
+                        var data = {
+                            'bk_uuid': info.event.id,
+                            'bk_date': info.event.start.toISOString().slice(0, 10)
+                        }
+                        admin_approval(data)
+
                     },
                     function () {
                         console.log('刪除訂單')
-                        
+                        var data = {
+                            'bk_uuid': info.event.id,
+                            'bk_date': info.event.start.toISOString().slice(0, 10)
+                        }
+                        admin_cancel(data)
 
                     });
                 }else if(list_backgroundcolor == 'red'){
