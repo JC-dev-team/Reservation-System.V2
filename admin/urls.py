@@ -23,7 +23,8 @@ urlpatterns = [
     path('add_event/',views.staff_add_event),
     # /softwayliving/approval/
     path('approval/',views.staff_approval_reservation),
-
+    # /softwayliving/delete/
+    path('cancel/',views.staff_cancel_reservation),
 ]
 
 

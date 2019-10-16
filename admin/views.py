@@ -93,16 +93,18 @@ def staff_check_reservation(request):
 def staff_approval_reservation(request):
     try:
         bk_uuid = request.POST.get('bk_uuid', None)
+        bk_date = request.POST.get('bk_date', None)
         with transaction.atomic():  # transaction
             bk_queryset = BkList.objects.select_for_update().get(
                 bk_uuid=bk_uuid,
+                bk_date=bk_date,
                 is_cancel=False,
             )
             bk_queryset.update(waiting_num=0)
             return JsonResponse({'result': 'success'})
 
     except BkList.DoesNotExist:
-        return JsonResponse({'error': '資料不存在或是已被刪除'})
+        return JsonResponse({'alert': '資料不存在或是已被刪除'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
@@ -114,6 +116,27 @@ def staff_add_reservation(request):  # Help client to add reservation
         pass
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
+
+@require_http_methods(['POST'])
+def staff_cancel_reservation(request): 
+    try:
+        bk_uuid = request.POST.get('bk_uuid', None)
+        bk_date = request.POST.get('bk_date', None)
+
+        with transaction.atomic():  # transaction
+            bk_queryset = BkList.objects.select_for_update().get(
+                bk_uuid=bk_uuid,
+                bk_date=bk_date,
+                is_cancel=False,
+            )
+            bk_queryset.update(is_cancel=True)
+            return JsonResponse({'result': 'success'})
+
+    except BkList.DoesNotExist:
+        return JsonResponse({'alert': '資料不存在或是已被刪除'})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
 
 
 @require_http_methods(['POST'])
@@ -143,3 +166,4 @@ def staff_add_event(request):  # add rest day as booking
             return JsonResponse({'result': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
+
