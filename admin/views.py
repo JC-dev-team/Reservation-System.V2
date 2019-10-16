@@ -95,7 +95,7 @@ def staff_approval_reservation(request):
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
         with transaction.atomic():  # transaction
-            bk_queryset = BkList.objects.select_for_update().get(
+            bk_queryset = BkList.objects.select_for_update().filter(
                 bk_uuid=bk_uuid,
                 bk_date=bk_date,
                 is_cancel=False,
@@ -106,8 +106,9 @@ def staff_approval_reservation(request):
     except BkList.DoesNotExist:
         return JsonResponse({'alert': '資料不存在或是已被刪除'})
     except Exception as e:
-        return JsonResponse({'error': e})
-        # return JsonResponse({'error': '發生未知錯誤'})
+        # return JsonResponse({'error': e})
+        print(e)
+        return JsonResponse({'error': '發生未知錯誤'})
 
 
 @require_http_methods(['POST'])
@@ -125,7 +126,7 @@ def staff_cancel_reservation(request):
         bk_date = request.POST.get('bk_date', None)
 
         with transaction.atomic():  # transaction
-            bk_queryset = BkList.objects.select_for_update().get(
+            bk_queryset = BkList.objects.select_for_update().filter(
                 bk_uuid=bk_uuid,
                 bk_date=bk_date,
                 is_cancel=False,
