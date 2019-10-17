@@ -78,7 +78,7 @@ def staff_check_reservation(request):
             store_id=store_id,
             bk_date__range=(start_month, end_month),
             is_cancel=False,
-        ).order_by('waiting_num','bk_date',  'bk_st')
+        ).order_by('waiting_num', 'bk_date',  'bk_st')
         # order by will be slow, I think better way is regroup
 
         serializers = Bklist_Serializer(bk_queryset, many=True)
@@ -106,8 +106,6 @@ def staff_approval_reservation(request):
     except BkList.DoesNotExist:
         return JsonResponse({'alert': '資料不存在或是已被刪除'})
     except Exception as e:
-        # return JsonResponse({'error': e})
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 
@@ -119,8 +117,9 @@ def staff_add_reservation(request):  # Help client to add reservation
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
+
 @require_http_methods(['POST'])
-def staff_cancel_reservation(request): 
+def staff_cancel_reservation(request):
     try:
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
@@ -137,9 +136,7 @@ def staff_cancel_reservation(request):
     except BkList.DoesNotExist:
         return JsonResponse({'alert': '資料不存在或是已被刪除'})
     except Exception as e:
-        return JsonResponse({'error': e})
-        # return JsonResponse({'error': '發生未知錯誤'})
-
+        return JsonResponse({'error': '發生未知錯誤'})
 
 
 @require_http_methods(['POST'])
@@ -169,4 +166,3 @@ def staff_add_event(request):  # add rest day as booking
             return JsonResponse({'result': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
-
