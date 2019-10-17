@@ -278,7 +278,7 @@
                     document.getElementById('information_Modal').style.display = 'none';
 
                     //send to user checkreservation
-                    
+
                 }
 
             },
@@ -439,9 +439,11 @@
                     }
 
                     if (waiting_num == 0) {
-                        color = 'orange'
-                    } else {
-                        color = 'red'
+                        color = 'orange' //待確認
+                    } else if(waiting_num == -1){
+                        color = 'green' //已確認
+                    }else {
+                        color = 'red'   //候補
                     }
 
                     event.push({
