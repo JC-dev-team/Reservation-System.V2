@@ -125,6 +125,7 @@ def InsertReservation(request):  # insert booking list
         bk_price = request.POST.get('price', None)
         is_cancel = False
         waiting_num = 0
+        is_confirm = False
         # Check data format
         Bklist_Serializer(data={
             'user_id': user_id,
@@ -140,6 +141,8 @@ def InsertReservation(request):  # insert booking list
             'bk_price': bk_price,
             'is_cancel': is_cancel,
             'waiting_num': waiting_num,
+            'is_confirm': is_confirm,
+
         })
         # ---------------------------------
         total = int(adult)+int(children)

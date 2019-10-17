@@ -7,7 +7,7 @@ class check_bklist(serializers.ModelSerializer):
         model = BkList
         fields = ('user_id', 'store_id', 'bk_date', 'bk_st',
                   'bk_ed', 'adult', 'children', 'bk_ps', 'event_type', 
-                  'time_session', 'entire_time', 'bk_price')
+                  'time_session', 'entire_time', 'bk_price','is_confirm')
 
 class checkAuth(serializers.ModelSerializer):
     class Meta:
