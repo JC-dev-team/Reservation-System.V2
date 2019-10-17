@@ -118,7 +118,7 @@ class Store(models.Model):
         db_table = 'store___db'
 
 class StoreEvent(models.Model):
-    event_id = models.CharField(primary_key=True, max_length=45)
+    event_id = models.CharField(primary_key=True, max_length=45,default=None)
     store = models.ForeignKey(Store, models.DO_NOTHING)
     event_type = models.CharField(max_length=45)
     event_date = models.DateField()

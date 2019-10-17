@@ -82,9 +82,28 @@ def staff_check_reservation(request):
         ).order_by('waiting_num', 'bk_date',  'bk_st')
         # order by will be slow, I think better way is regroup
 
-        serializers = Bklist_Serializer(bk_queryset, many=True)
+        # add day off data
+        event_queryset = StoreEvent.objects.filter(
+            store_id=store_id,
+            event_date__range=(start_month, end_month),
+        )
+        # get user phone number
+        acc_arr = []
+        for i in bk_queryset:
+            acc_queryset = Account.objects.get(
+                user_id=i.user_id,
+            )
+            acc_serializers = Acc_Serializer(acc_queryset)
+            acc_arr.append(acc_serializers.data)
 
-        return JsonResponse({'result': serializers.data})
+        event_serializers = StoreEvent_Serializer(event_queryset, many=True)
+        bk_serializers = Bklist_Serializer(bk_queryset, many=True)
+
+        return JsonResponse({
+            'result': bk_serializers.data,
+            'event': event_serializers.data,
+            'account': acc_arr,
+        })
 
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
@@ -111,13 +130,12 @@ def staff_approval_reservation(request):
         return JsonResponse({'error': '發生未知錯誤'})
 
 
-@require_http_methods(['POST'])
-def staff_add_reservation(request):  # Help client to add reservation
-    try:
-
-        pass
-    except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+# @require_http_methods(['POST'])
+# def staff_add_reservation(request):  # Help client to add reservation
+#     try:
+#         pass
+#     except Exception as e:
+#         return JsonResponse({'error': '發生未知錯誤'})
 
 
 @require_http_methods(['POST'])
@@ -145,26 +163,62 @@ def staff_cancel_reservation(request):
 def staff_add_event(request):  # add rest day as booking
     try:
         store_id = request.POST.get('store_id', None)
-        event_date = request.POST.get('bk_date', None)
+        event_date = request.POST.get('event_date', None)
         time_session = request.POST.get('time_session', None)
         event_type = request.POST.get('event_type', None)
-
+        print('time_session1 : ', time_session)
         # check data format
         valid = StoreEvent_Serializer(
-            store_id=store_id,
-            event_date=event_date,
-            time_session=time_session,
-            event_type=event_type
+            data={
+                'store': store_id,
+                'event_date': event_date,
+                'time_session': time_session,
+                'event_type': event_type
+            }
         )
         if valid.is_valid() == False:
             return JsonResponse({'error': 'Not valid, 輸入資料格式錯誤'})
+        print('time_session2 : ', time_session)
+        if time_session == 'Allday':
+            time_session_arr = ['Lunch', 'Dinner']
+        else:
+            time_session_arr = [time_session]
+
+        
         with transaction.atomic():  # transaction
-            queryset = StoreEvent.objects.create(
-                store_id=store_id,
-                event_date=event_date,
-                time_session=time_session,
-                event_type=event_type
-            )
-            return JsonResponse({'result': 'success'})
+            # Check is there same event
+            flag = 0
+            print('time_session_arr :',time_session_arr)
+            for i in time_session_arr:
+                event_check = StoreEvent.objects.select_for_update().filter(
+                    store_id=store_id,
+                    event_date=event_date,
+                    time_session=i,
+                    event_type=event_type
+                ).exists()
+                print('event_check : ',event_check)
+                print('time_session : ',time_session)
+                print('flag :',flag)
+                if event_check == False:
+                    print('1')
+                    queryset = StoreEvent.objects.create(
+                        store_id=store_id,
+                        event_date=event_date,
+                        time_session=i,
+                        event_type=event_type
+                    )
+
+                elif event_check and time_session == 'Allday' and flag == 0:
+                    print('2')
+                    flag += 1
+                elif event_check and flag == 1:
+                    print('3')
+                    return JsonResponse({'alert': '全天已經是店休了'})
+                else:
+                    print('4')
+                    return JsonResponse({'alert': '此時段已經是店休了'})
+                    
+        return JsonResponse({'result': 'success'})
     except Exception as e:
+        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
