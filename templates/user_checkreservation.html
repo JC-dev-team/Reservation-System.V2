@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block headmessage %}
+<div class="w3-center">
+    <h3><b>使用者 - 查詢/修改</b></h3>
+</div>
+{% endblock %}
+
+{% block content %}
+{% load static %}
+{% load tagfunctions %}
+<center>
+    <h1>Hello!! {{user_info.username}}</h1>
+    <hr>
+</center>
+<!-- No reservation -->
+{% if data == False%}
+
+<div class="w3-center" style="display: none">
+    <font size="10">
+        <i class="far fa-question-circle"></i>
+    </font>
+    <h4>查無訂單</h4>
+    <br>
+
+    <font size='4'>
+        <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
+    </font>
+</div>
+{% else %}
+
+
+{% for element in data %}
+{% if element.waiting_num == 0 %}
+
+<!-- Under processing-->
+<div class="w3-center" style="display: show">
+    <font size="10">
+        <i class="far fa-question-circle" style="color:orange;"></i>
+    </font>
+    <h4>訂位處理中</h4>
+    <h5>請靜候通知，由專人為您確認訂位</h5>
+    <br>
+</div>
+{% else  %}
+<!-- Success-->
+<div class="w3-center" style="display: show">
+    <font size="10">
+        <i class="far fa-check-circle" style="color:green;"></i>
+    </font>
+    <h4>訂位已成立</h4>
+    <h5>謝謝您的訂位，請準時到達</h5>
+    <br><br>
+</div>
+{% endif %}
+<!-- Cancel-->
+<!-- <div class="w3-center" style="display: none">
+    <font size="10">
+        <i class="far fa-times-circle"></i>
+    </font>
+    <h4>訂位已取消</h4>
+
+    <br><br>
+</div> -->
+
+<!-- reservation information-->
+<div class="w3-container w3-border">
+    <div class="w3-center">
+        <font size='6'>
+            <h2 id='information'>訂位資訊</h2>
+            <hr>
+
+            <!-- <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3> -->
+            <div class="w3-container" align="left">
+                <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
+                <h4>用餐日期：{{element.bk_date}} {{element.time_session}} - {{element.bk_st}}</h4>
+                <h4>訂位人： {{user_info.username}} 先生/小姐</h4>
+                <h4>用餐人數： {{element.adult}} 大 {{element.children}} 小</h4>
+                <h4>價位：＄{{element.bk_price}}</h4>
+                <h4>備註：{{element.bk_ps}}</h4>
+                
+            </div>
+        </font>
+
+        <font size='4'>
+            <button id="close_button" onclick="cancelreservation('{{element.bk_uuid}}');"
+                class="w3-btn w3-round-large  w3-teal w3-padding">取消訂位</button>
+        </font>
+
+    </div>
+</div>
+<hr>
+
+{% endfor %}
+{% endif %}
+<center>
+    <font size='4'>
+        <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
+    </font>
+</center>
+<!-- form to delete -->
+<form id='cancel_form' method="post">
+    {% csrf_token %}
+    <input name='bk_uuid' value='' type="hidden">
+</form>
+
+
+<script type="text/javascript">
+    $.ajaxSetup({
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+    });
+
+    function cancelreservation(bk_uuid) {
+        $.ajax({
+            type: 'POST',
+            url: '/booking/getCalendar/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    // console.log(response.error)
+                    window.location.replace('/userdashboard/error/');
+                } else {
+                    result = response.result
+                    // console.log(result)
+                    //Function of calendar (return calendar.render())
+                    calendar_fun(result, num)
+
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest)
+                console.log(errorThrown)
+                window.location.replace('/userdashboard/error/');
+            }
+
+        })
+    }
+
+
+    function closewindow() {
+        //if open on line base
+        liff.closewindow()
+    }
+    // ready
+</script>
+
+{% endblock %}

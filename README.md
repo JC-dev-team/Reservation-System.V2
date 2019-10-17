@@ -5,7 +5,7 @@
 ### When the project is going to online the settings.py DEBUG need to set to False ##
 
 ### Test the website
-    cd project_food 
+    cd softway_sys
     python manage.py runserver
 
 ### Create or upadate requirements
@@ -18,10 +18,21 @@
    pip install -r requirements.txt
 
 ### When you change any thing in the database
-    python3 manage.py makemigrations
-    python3 manage.py migrate
+    python manage.py makemigrations
+    python manage.py migrate
 
 
 ### Unit test ###
    #### Write unit test to avoid the big change of the Project, ex: fetch from github or merge ####
 
+### Remove migration
+   python manage.py migrate --fake <your_app>
+   find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+   find . -path "*/migrations/*.pyc"  -delete
+
+### Reset migrations
+   https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html
+
+### Check list for django project before deployment
+   python manage.py check --deploy
+   https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/

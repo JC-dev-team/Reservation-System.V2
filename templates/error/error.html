@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+<!-- include 'header.html'   => image-->
+<!-- Headmessage-->
+{% block headmessage %}
+    <div class="w3-center">
+        <font size="10">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+        </font>
+        <h4>真抱歉，發生錯誤 😵<br><br>
+            {{error}}</h4>
+        <br>
+        <font size='4'>
+        <a id="error_button" href={{action}} class="w3-btn w3-round-large  w3-teal w3-padding">
+                    回首頁</a>
+        </font>
+    </div>
+
+    </script>
+ {% endblock %}

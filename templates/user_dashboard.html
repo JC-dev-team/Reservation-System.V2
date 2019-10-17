@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block headmessage %}
+<div class="w3-center">
+    <h3><b>舒微生活 - {{data.username}}</b></h3>
+</div>
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<form id='userdashboard_form' method="post" style="display: none">
+    {% csrf_token %}
+    <input id="user_id" style="display: none" name='user_id' value="{{data.user_id}}">
+</form>
+
+
+<font size='4'>
+    <button id="admin_reservation" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
+        onclick="location.href='/booking/login/' ">訂位</button>
+</font>
+
+<font size='4'>
+    <button id="admin_checkreservation" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
+        onclick="send()">查詢/取消</button>
+</font>
+
+<script>
+
+    function send(){
+        document.getElementById("userdashboard_form").action = "/userdashboard/checkreservation/";
+        document.getElementById("userdashboard_form").submit();
+    }
+    
+</script>
+
+
+{% endblock %}
+<!-- auth give u social id & social app 前一頁(login(userdashboard) -> auth(驗證) -> 到這裡)給你個人資料 -->
+<!-- need submit social app social id -->

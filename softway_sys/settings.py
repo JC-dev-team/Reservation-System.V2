@@ -27,29 +27,35 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+ADMIN_ENABLED = False
 # Application definition
 
 INSTALLED_APPS = [
+    'booking',
+    'userdashboard', 
+    'admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'booking',
-    'checkbooking',
 ]
+# Invisible reCaptcha
+RECAPTCHA_PUBLIC_KEY = '6LftQr0UAAAAAJ8Pkllthz85Wzj7gaAmsPLISMcu'
+RECAPTCHA_PRIVATE_KEY = '6LftQr0UAAAAAJqjEwg2fiEzZXAd-NGgGWQwDulz'
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ROOT_URLCONF = 'softway_sys.urls'
 
@@ -65,6 +71,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries':{
+                'tagfunctions':'templates.templatetags.tagfunctions',
+            }
         },
     },
 ]
@@ -74,14 +83,23 @@ WSGI_APPLICATION = 'softway_sys.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+# You need to downgrade openssl by conda install openssl=1.0.2r
+# when you are using macOS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'softway',
+        'USER': 'root',
+        'PASSWORD': 'rootadmin',
+        'HOST': 'database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+
+        }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -118,5 +136,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'staticfiles'),
+)
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')

@@ -1,0 +1,817 @@
+{% extends 'base.html' %}
+
+{% block headmessage %}
+<div class="w3-center">
+    <h3><b>管理者 - 查詢/確認/修改</b></h3>
+    <p>
+        <font color="orange">橘色</font>：待確認 / <font color="green">綠色</font>：已確認 / <font color="red">紅色</font>：後補
+    </p>
+</div>
+{% endblock %}
+
+{% block content %}
+{% load static %}
+
+<!-- Calendar-->
+<div id='calendar'>
+</div>
+
+<!-- Date num calculated-->
+<input id="date_num" value="0" type="text" style="display: none">
+
+
+<!-- information Modal -->
+<div id="information_Modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+        <header class="w3-container w3-teal w3-center w3-padding-32">
+            <span onclick="document.getElementById('information_Modal').style.display='none'"
+                class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
+            <h2 class="w3-wide"><i class="fa fa-bell"></i> 管理者權限</h2>
+        </header>
+        <div class="w3-container">
+            <br>
+            <font size="4">
+                <!-- Date-->
+                <p id='modal_date'></p>
+                <!-- info-->
+                <p id='modal_info'></p>
+                <!-- User-->
+                <p id='modal_user'></p>
+                <!-- State-->
+                <p id='modal_status'></p>
+                <!-- action-->
+                <label><i class="fa fa-bolt"></i> 動作： </label>
+                <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+                    id='action_select' required>
+                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                    <option value="confirm" selected>確認訂單</option>
+                    <option value="pass">遞補候位</option>
+                    <option value="cancel">刪除訂單</option>
+
+                </select>
+
+                <br>
+                <button id='modal_button' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">OK <i
+                        class="fa fa-check"></i></button>
+                <button class="w3-button w3-red w3-section"
+                    onclick="document.getElementById('information_Modal').style.display='none'">關閉 <i
+                        class="fa fa-remove"></i></button>
+            </font>
+        </div>
+
+    </div>
+</div>
+
+<!-- dayoff Modal -->
+<div id="dayoff_Modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+        <header class="w3-container w3-teal w3-center w3-padding-32">
+            <span onclick="document.getElementById('dayoff_Modal').style.display='none'"
+                class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
+            <h2 class="w3-wide"><i class="fa fa-bell"></i> 管理者權限</h2>
+        </header>
+        <div class="w3-container">
+            <br>
+            <font size="4">
+                <!-- Date-->
+                <p id='modal_date_dayoff'></p>
+                <!-- action-->
+                <label><i class="fa fa-bolt"></i> 動作： </label>
+                <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+                    id='dayoff_select' required>
+                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                    <option value="Lunch" selected>（店休）午餐</option>
+                    <option value="Dinner">（店休）晚餐</option>
+                    <option value="Allday">（店休）全天</option>
+
+                </select>
+
+                <br>
+                <button id='modal_button_dayoff' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">OK
+                    <i class="fa fa-check"></i></button>
+                <button class="w3-button w3-red w3-section"
+                    onclick="document.getElementById('dayoff_Modal').style.display='none'">關閉 <i
+                        class="fa fa-remove"></i></button>
+            </font>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    //Notiflix Loading
+    Notiflix.Loading.Init({
+        className: 'notiflix-loading',
+        zindex: 4000,
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        rtl: false,
+        useGoogleFont: true,
+        fontFamily: 'Quicksand',
+        cssAnimation: true,
+        cssAnimationDuration: 400,
+        clickToClose: false,
+        customSvgUrl: null,
+        svgSize: '80px',
+        svgColor: '#00b462',
+        messageID: 'NotiflixLoadingMessage',
+        messageFontSize: '15px',
+        messageMaxLength: 34,
+        messageColor: '#dcdcdc',
+    });
+
+    //Notiflix Confirm
+    Notiflix.Confirm.Init({
+        className: 'notiflix-confirm',
+        width: '280px',
+        zindex: 4003,
+        position: 'center',
+        distance: '10px',
+        backgroundColor: '#f8f8f8',
+        borderRadius: '25px',
+        backOverlay: true,
+        backOverlayColor: 'rgba(0,0,0,0.5)',
+        rtl: false,
+        useGoogleFont: true,
+        fontFamily: 'Quicksand',
+        cssAnimation: true,
+        cssAnimationStyle: 'fade',
+        cssAnimationDuration: 300,
+        titleColor: '#00b462',
+        titleFontSize: '16px',
+        titleMaxLength: 34,
+        messageColor: '#1e1e1e',
+        messageFontSize: '14px',
+        messageMaxLength: 110,
+        buttonsFontSize: '15px',
+        buttonsMaxLength: 34,
+        okButtonColor: '#f8f8f8',
+        okButtonBackground: '#00b462',
+        cancelButtonColor: '#f8f8f8',
+        cancelButtonBackground: '#FF0000',
+        plainText: true,
+    });
+
+    //Notiflix Notify
+    Notiflix.Notify.Init({
+        width: '280px',
+        position: 'right-top',
+        distance: '10px',
+        opacity: 1,
+        borderRadius: '5px',
+        rtl: false,
+        timeout: 3000,
+        messageMaxLength: 110,
+        backOverlay: false,
+        backOverlayColor: 'rgba(0,0,0,0.5)',
+        ID: 'NotiflixNotify',
+        className: 'notiflix-notify',
+        zindex: 4001,
+        useGoogleFont: true,
+        fontFamily: 'Quicksand',
+        fontSize: '13px',
+        cssAnimation: true,
+        cssAnimationDuration: 400,
+        cssAnimationStyle: 'fade',
+        closeButton: false,
+        useIcon: true,
+        useFontAwesome: false,
+        fontAwesomeIconStyle: 'basic',
+        fontAwesomeIconSize: '34px',
+        plainText: true,
+        showOnlyTheLastOne: false,
+        ssuccess: {
+            background: '#00b462',
+            textColor: '#fff',
+            childClassName: 'success',
+            notiflixIconColor: 'rgba(0,0,0,0.2)',
+            fontAwesomeClassName: 'fas fa-check-circle',
+            fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
+        },
+        failure: {
+            background: '#f44336',
+            textColor: '#fff',
+            childClassName: 'failure',
+            notiflixIconColor: 'rgba(0,0,0,0.2)',
+            fontAwesomeClassName: 'fas fa-times-circle',
+            fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
+        },
+        warning: {
+            background: '#f2bd1d',
+            textColor: '#fff',
+            childClassName: 'warning',
+            notiflixIconColor: 'rgba(0,0,0,0.2)',
+            fontAwesomeClassName: 'fas fa-exclamation-circle',
+            fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
+        },
+        info: {
+            background: '#00bcd4',
+            textColor: '#fff',
+            childClassName: 'info',
+            notiflixIconColor: 'rgba(0,0,0,0.2)',
+            fontAwesomeClassName: 'fas fa-info-circle',
+            fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
+        },
+    });
+
+
+    //csrf_ajax
+    $.ajaxSetup({
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+    });
+
+    function admin_dayoff(data, num, event) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/add_event/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    // window.location.replace('/softwayliving/error/');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                } else {
+                    result = response.result
+                    console.log(result)
+                    Notiflix.Notify.Success('已設為店休！！');
+
+                }
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+                //Reload
+                window.location.reload();
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+            }
+
+        });
+    }
+
+
+    function admin_cancel(data, num, event) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/cancel/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    // window.location.replace('/booking/error/');
+                } else if (response.alert != null) {
+                    Notiflix.Notify.Warning(response.alert);
+                } else {
+                    result = response.result
+                    console.log(result)
+                    event.setProp('backgroundColor', 'white')
+                    Notiflix.Notify.Success('訂單已刪除！！');
+                    calendar_fun(account, result, num, 'refetch')
+                }
+                document.getElementById('information_Modal').style.display = 'none';
+                Notiflix.Loading.Remove();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+                // window.location.replace('/booking/error/');
+            }
+
+        });
+    }
+
+    function admin_approval(data, num, event) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/approval/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
+
+                    // window.location.replace('/booking/error/');
+                } else if (response.alert != null) {
+                    alert(response.alert)
+                } else {
+                    result = response.result
+                    console.log(result)
+                    event.setProp('backgroundColor', 'green')
+                    Notiflix.Notify.Success('訂單已確認！！');
+                    //send to user checkreservation
+
+                }
+                document.getElementById('information_Modal').style.display = 'none';
+                Notiflix.Loading.Remove();
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+                console.log(errorThrown)
+                // window.location.replace('/booking/error/');
+            }
+
+        });
+    }
+
+    function admin_ajax_time(data, num, calendar) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/staff_check/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    console.log(response.error)
+                    // window.location.replace('/booking/error/');
+                } else {
+                    result = response.result
+                    account = response.account
+                    event = response.event
+                    console.log(event)
+                    //Function of calendar (return calendar.render())
+                    calendar_fun(event, account, result, num)
+
+                }
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+                console.log(errorThrown)
+                // window.location.replace('/booking/error/');
+            }
+
+        });
+    }
+
+    //ajax function
+    function ajax_post(num = 0) {
+        //ajax data
+        var status = true;
+
+        var store_id = '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0';
+        var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
+        var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
+
+        console.log(start_month, end_month)
+
+        if (status) {
+            var data = {
+                'store_id': store_id,
+                'start_month': start_month,
+                'end_month': end_month,
+            }
+            //Clean the calendar
+            document.getElementById('calendar').innerHTML = ''
+
+            // do ajax fuction
+            admin_ajax_time(data, num)
+
+            //spinner show
+            Notiflix.Loading.Hourglass('讀取中....');
+        }
+
+
+    }
+
+    //calendar function
+    function calendar_fun(event, account, result, num = 0, action = 'render') {
+        //spinner hide
+        Notiflix.Loading.Remove();
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            //ColumnHeaderText
+            columnHeaderText: function (date) {
+                if (date.getDay() === 0) {
+                    return '日';
+                }
+                if (date.getDay() === 1) {
+                    return '一';
+                }
+                if (date.getDay() === 2) {
+                    return '二';
+                }
+                if (date.getDay() === 3) {
+                    return '三';
+                }
+                if (date.getDay() === 4) {
+                    return '四';
+                }
+                if (date.getDay() === 5) {
+                    return '五';
+                }
+                if (date.getDay() === 6) {
+                    return '六';
+                }
+
+            },
+            //Plugins - 'interaction','dayGrid'
+            plugins: ['interaction', 'dayGrid', 'moment', 'list'],
+            editable: true,
+            //Default View
+            defaultView: 'dayGridMonth',
+            //defaultDate
+            defaultDate: (new Date().addMonths(num)).toISOString().slice(0, 10),
+            //Height
+            height: 'auto',
+            contentHeight: 500,
+            //Header
+            header: {
+                left: 'prev',
+                center: 'title,',
+                right: 'dayGridMonth,listMonth,next'
+            },
+            //Header -  Title Text
+            buttonText: {
+                month: '月',
+                list: '列表'
+            },
+            //Header - Title format
+            titleFormat: 'YYYY  MM月',
+            //List - Title format
+            listDayFormat: 'MM 月 DD',
+            listDayAltFormat: 'dddd',
+            //Show none current date (False)
+            showNonCurrentDates: false,
+            //Event Limit
+            eventLimit: true,
+            views: {
+                dayGrid: {
+                    eventLimit: 3
+                }
+            },
+            //Date selectable (true)
+            selectable: true,
+
+            events: function (info, successCallback) {
+
+                var Event = [{
+                    id: '3',
+                    title: '店休',
+                    start: new Date(),
+                    startRecur: new Date().addDays(3),
+                    backgroundColor: 'red',
+                    textColor: 'white',
+                    daysOfWeek: [1],
+
+                }, ];
+                successCallback(Event)
+
+
+                //reservation event
+                for (var i = 0; i < result.length; i++) {
+
+                    var uuid = result[i].bk_uuid
+                    var date = result[i].bk_date;
+                    var time = 'T' + result[i].bk_st;
+                    var session = result[i].time_session;
+                    var people = result[i].adult + '大' + result[i].children + '小';
+                    var price = '$' + result[i].bk_price;
+                    var ps = '#' + result[i].bk_ps + ' ';
+                    var waiting_num = result[i].waiting_num
+                    var phone = account[i].phone
+                    var name = account[i].username
+
+                    if (session == 'Lunch') {
+                        session = '午餐'
+                    } else {
+                        session = '晚餐'
+                    }
+
+                    if (ps == '#無 ') {
+                        ps = ''
+                    }
+
+                    if (waiting_num == 0) {
+                        color = 'orange' //待確認
+                    } else if (waiting_num == -1) {
+                        color = 'green' //已確認
+                    } else {
+                        color = 'red' //候補
+                    }
+
+                    Event.push({
+                        id: uuid,
+                        title: session + ' ' + people + ' ' + price + ' ' + ps + '\n' + name +
+                            '  ' + phone,
+                        start: date + time,
+                        backgroundColor: color,
+                        textColor: 'white',
+                    });
+
+                    successCallback(Event)
+                    console.log(Event)
+                }
+
+                //day off event
+                for (var i = 0; i < event.length; i++) {
+                    var date = event[i].event_date
+                    var time_session = event[i].time_session
+                    var event_type = event[i].event_type
+
+                    if (time_session == 'Lunch') {
+                        var session = '午餐'
+                    } else {
+                        var session = '晚餐'
+                    }
+                    if (event_type == 'Day off') {
+                        var type = '店休'
+                    }
+
+                    Event.push({
+                        title: session + type,
+                        start: date,
+                        backgroundColor: 'red',
+                        textColor: 'white',
+                    });
+                    successCallback(Event)
+
+
+                }
+            },
+
+            eventRender: function (info) {
+                console.log(info)
+                var month_text = info.el.text
+
+                if (month_text != undefined) {
+                    var text = month_text.split(' ')[1]
+
+                    info.el.text = text
+
+                }
+                var phone = '0900123456'
+
+                //list of dot
+                var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
+                var f = info.el.getElementsByClassName('fc-list-item-title fc-widget-content')[0]
+
+                //"<a href='tel:" + phone +" '> " + phone + "</a>"
+                // if (dotEl) {
+                //     dotEl.style.backgroundColor = 'white';
+                // }
+            },
+
+            //Function
+            dateClick: function (info) {
+                console.log(info)
+                var date = info.dateStr
+
+                // var time_session ='Allday'
+                console.log(date)
+
+
+                //document modal
+                document.getElementById('dayoff_Modal').style.display = 'inline';
+                document.getElementById('modal_date_dayoff').innerHTML =
+                    '<p id="modal_date_dayoff">' + '<label><i class="fa fa-calendar"></i></label>' +
+                    ' 日期： ' + date + '</p>'
+
+                $('#modal_button_dayoff').click(function (e) {
+                    var time_session = $('#dayoff_select').val()
+                    console.log('time_session: ' + time_session)
+                    var data = {
+                        store_id: '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+                        event_date: date,
+                        time_session: time_session,
+                        event_type: 'Day off'
+                    }
+                    admin_dayoff(data, num, event)
+                    //spinner show
+                    Notiflix.Loading.Hourglass('處理中....');
+                })
+
+
+
+            },
+            eventClick: function (info) {
+                console.log(info)
+                var list_backgroundcolor = info.event.backgroundColor
+                if (list_backgroundcolor == 'orange') {
+                    status = '待確認'
+                } else if (list_backgroundcolor == 'green') {
+                    status = '已確認'
+                } else if (list_backgroundcolor == 'red') {
+                    status = '候補'
+                }
+                var date = info.event.start.toISOString().slice(0, 10)
+                var time = info.el.textContent.split(' ')[0].slice(0, -2)
+                var information = info.event.title.split('\n')[0]
+                var user_name = info.event.title.split('\n')[1].split('  ')[0]
+                var user_phone = info.event.title.split('\n')[1].split('  ')[1]
+
+
+                //document modal
+                document.getElementById('information_Modal').style.display = 'inline';
+                document.getElementById('modal_date').innerHTML =
+                    '<p id="modal_date">' + '<label><i class="fa fa-calendar"></i></label>' +
+                    ' 日期： ' + date + '(' + time + ')' + '</p>'
+
+                document.getElementById('modal_info').innerHTML =
+                    '<p id="modal_info">' + '<label><i class="fa fa-bell"></i></label>' + ' 訂位資訊： ' +
+                    '<br>' + information + '</p>'
+
+                document.getElementById('modal_user').innerHTML =
+                    '<p id="modal_user">' + '<label><i class="fa fa-user-circle"></i></label>' + ' 訂位人： ' +
+                    user_name + "<a href='tel:" + user_phone + " ' style='color:blue'> " + user_phone +
+                    "</a>" + '</p>'
+
+                document.getElementById('modal_status').innerHTML =
+                    '<p id="modal_status">' + '<label><i class="fa fa-info-circle"></i></label>' +
+                    ' 訂單狀態： ' + status + '</p>'
+
+
+                //modal button  click
+                $('#modal_button').click(function (e) {
+                    console.log($("#action_select").val())
+                    //確認訂單
+                    if ($("#action_select").val() == 'confirm') {
+                        Notiflix.Confirm.Show('管理者權限', '確定要確認此訂單嗎?', '是-確認訂單', '再看看',
+                            function () {
+                                console.log('確認訂單 Y')
+                                var data = {
+                                    'bk_uuid': info.event.id,
+                                    'bk_date': info.event.start.toISOString()
+                                        .slice(0, 10)
+                                }
+                                var event = calendar.getEventById(info.event.id)
+                                admin_approval(data, num, event)
+                                //spinner show
+                                Notiflix.Loading.Hourglass('確認中....');
+
+                            },
+                            function () {
+                                console.log('確認訂單 N')
+
+
+                            });
+
+                    }
+                    //刪除訂單
+                    else if ($("#action_select").val() == 'cancel') {
+                        Notiflix.Confirm.Show('管理者權限', '確定要刪除此訂單嗎?', '刪除訂單', '不要刪除',
+                            function () {
+                                console.log('刪除訂單 Y')
+                                var data = {
+                                    'bk_uuid': info.event.id,
+                                    'bk_date': info.event.start.toISOString()
+                                        .slice(0, 10)
+                                }
+                                var event = calendar.getEventById(info.event.id)
+                                admin_cancel(data, num, event)
+                                //spinner show
+                                Notiflix.Loading.Hourglass('刪除中....');
+                            },
+                            function () {
+                                console.log('刪除訂單 N')
+                            });
+                    }
+                    //遞補候位
+                    else if ($("#action_select").val() == 'pass') {
+                        Notiflix.Confirm.Show('管理者權限', '確定要遞補此訂單嗎?', '遞補候位', '取消遞補',
+                            function () {
+                                console.log('遞補候位 Y')
+                                // var data = {
+                                //     'bk_uuid': info.event.id,
+                                //     'bk_date': info.event.start.toISOString().slice(0, 10)
+                                // }
+                                // var event = calendar.getEventById(info.event.id)
+                                // admin_cancel(data, num, event)
+                                // //spinner show
+                                // Notiflix.Loading.Hourglass('刪除中....');
+                            },
+                            function () {
+                                console.log('遞補候位 N')
+                            });
+                    }
+                })
+
+                // Notiflix.Confirm.Show('管理者權限', '請選擇動作?', '候補遞位', '刪除訂單',
+                //     function () {
+                //         console.log('候補遞位')
+                //         seat = true
+                //     },
+                //     function () {
+                //         console.log('刪除訂單')
+
+
+                //     });
+
+                // Notiflix.Confirm.Show('管理者權限', '確定要將候補遞位?', '是', '否',
+                //     function () {
+                //         alert('候補遞位 Y');
+                //     },
+                //     function () {
+                //         alert('候補遞位 N');
+                //     });
+
+                // Notiflix.Confirm.Show('管理者權限', '確定要將刪除訂單?', '是', '否',
+                //     function () {
+                //         alert('刪除訂單 Y');
+                //     },
+                //     function () {
+                //         alert('刪除訂單 N');
+                //     });
+
+                // var r = confirm("Press a button!");
+                // if (r == true) {
+                //     dotEl.style.backgroundColor = 'white';
+                // } else {
+                //     console.log('cancel')
+                // }
+
+                // var evMousEnter_st = info.event.start
+                // var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
+                // var title = info.event.title
+                // var color = info.el.style.backgroundColor
+
+                // //Monday disable
+                // if (title == '店休') {
+                //     alert('週一店休喔！！')
+                //     return false
+                // }
+                // //insert Modal of date
+                // document.getElementById('modal_date').innerHTML =
+                //     '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' + '<p id="bk_date_select">' +
+                //     start + '</p>'
+
+                // //ajax eventClick_sendDate(data)
+                // var data = {
+                //     'adult': adult,
+                //     'children': child,
+                //     'event_date': start,
+                //     'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+
+                // }
+                // //spinner
+                // $('#cover-spin').show(0)
+                // eventClick_sendDate(data)
+
+
+            }
+        });
+        if (action == 'render') {
+            return calendar.render();
+        } else if (action == 'refetch') {
+            console.log('refetch')
+            return calendar.refetchEvents()
+        }
+
+
+
+    }
+
+    //ready
+    $(function () {
+
+        //do the current month to ajax 
+        var num = parseInt($('#date_num').val())
+        //do the fuction of ajax_post()
+        ajax_post(num)
+
+        //Date addDays() & addMonths()
+        Date.prototype.addDays = function (days) {
+            var date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        }
+        Date.prototype.addMonths = function (months) {
+            var date = new Date(this.valueOf());
+            date.setMonth(date.getMonth() + months);
+            return date;
+        }
+    })
+
+    //next month of button
+    $('body').on('click', 'button.fc-next-button', function () {
+        var num_str = $('#date_num').val()
+        var num = parseInt(num_str) + 1
+        $('#date_num').val(num)
+        //do the fuction of ajax_post()
+        ajax_post(num)
+    })
+
+    //previous month of button
+    $('body').on('click', 'button.fc-prev-button', function () {
+        var num_str = $('#date_num').val()
+        var num = parseInt(num_str) - 1
+        $('#date_num').val(num)
+        //do the fuction of ajax_post()
+        ajax_post(num)
+    })
+</script>
+
+
+{% endblock %}
