@@ -288,12 +288,14 @@ def getWaitingList(request):  # get waiting list
         time_session = request.POST.get('time_session', None)
         event_type = request.POST.get('event_type', None)
 
-        event_queryset = StoreEvent.objects.get(
+        event_queryset = StoreEvent.objects.filter(
             store_id=store_id,
             time_session=time_session,
             event_date=bk_date,
-        )
-        
+            event_type=event_type,
+        ).exists()
+        if event_queryset :
+            return JsonResponse({'alert':'這天店休'})
 
         if (int(adult)+int(children)) < 1:
             return JsonResponse({'alert': '成人和小孩人數過少'})
