@@ -99,6 +99,26 @@
 </div>
 
 <script>
+    //Notiflix Loading
+    Notiflix.Loading.Init({
+        className: 'notiflix-loading',
+        zindex: 4000,
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        rtl: false,
+        useGoogleFont: true,
+        fontFamily: 'Quicksand',
+        cssAnimation: true,
+        cssAnimationDuration: 400,
+        clickToClose: false,
+        customSvgUrl: null,
+        svgSize: '80px',
+        svgColor: '#00b462',
+        messageID: 'NotiflixLoadingMessage',
+        messageFontSize: '15px',
+        messageMaxLength: 34,
+        messageColor: '#dcdcdc',
+    });
+
     //Notiflix Confirm
     Notiflix.Confirm.Init({
         className: 'notiflix-confirm',
@@ -201,7 +221,7 @@
         },
     });
 
-    function admin_dayoff(data , num, event) {
+    function admin_dayoff(data, num, event) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/add_event/',
@@ -276,7 +296,7 @@
                 if (response.error != null) {
                     console.log(response.error)
                     Notiflix.Notify.Failure('發生錯誤！！');
-                    
+
                     // window.location.replace('/booking/error/');
                 } else if (response.alert != null) {
                     alert(response.alert)
@@ -436,20 +456,20 @@
             selectable: true,
 
             events: function (info, successCallback) {
-                
+
                 var Event = [{
-                        id: '3',
-                        title: '店休',
-                        start: new Date(),
-                        startRecur: new Date().addDays(3),
-                        backgroundColor: 'red',
-                        textColor: 'white',
-                        daysOfWeek: [1],
+                    id: '3',
+                    title: '店休',
+                    start: new Date(),
+                    startRecur: new Date().addDays(3),
+                    backgroundColor: 'red',
+                    textColor: 'white',
+                    daysOfWeek: [1],
 
-                    },];
-                    successCallback(Event)
+                }, ];
+                successCallback(Event)
 
-                
+
                 //reservation event
                 for (var i = 0; i < result.length; i++) {
 
@@ -484,7 +504,8 @@
 
                     Event.push({
                         id: uuid,
-                        title: session + ' ' + people + ' ' + price + ' ' + ps + '\n' + name +'  '+ phone,
+                        title: session + ' ' + people + ' ' + price + ' ' + ps + '\n' + name +
+                            '  ' + phone,
                         start: date + time,
                         backgroundColor: color,
                         textColor: 'white',
@@ -499,14 +520,14 @@
                     var date = event[i].event_date
                     var time_session = event[i].time_session
                     var event_type = event[i].event_type
-                    
+
                     if (time_session == 'Lunch') {
                         var session = '午餐'
-                    }else {
+                    } else {
                         var session = '晚餐'
                     }
                     if (event_type == 'Day off') {
-                        var type = '店休' 
+                        var type = '店休'
                     }
 
                     Event.push({
@@ -516,7 +537,7 @@
                         textColor: 'white',
                     });
                     successCallback(Event)
-                    
+
 
                 }
             },
@@ -524,19 +545,19 @@
             eventRender: function (info) {
                 console.log(info)
                 var month_text = info.el.text
-                
+
                 if (month_text != undefined) {
                     var text = month_text.split(' ')[1]
-                    
+
                     info.el.text = text
 
                 }
                 var phone = '0900123456'
-                
+
                 //list of dot
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
                 var f = info.el.getElementsByClassName('fc-list-item-title fc-widget-content')[0]
-                
+
                 //"<a href='tel:" + phone +" '> " + phone + "</a>"
                 // if (dotEl) {
                 //     dotEl.style.backgroundColor = 'white';
@@ -567,7 +588,7 @@
                         time_session: time_session,
                         event_type: 'Day off'
                     }
-                    admin_dayoff(data,num,event)
+                    admin_dayoff(data, num, event)
                     //spinner show
                     Notiflix.Loading.Hourglass('處理中....');
                 })
@@ -586,23 +607,26 @@
                     status = '候補'
                 }
                 var date = info.event.start.toISOString().slice(0, 10)
-                var time = info.el.textContent.split(' ')[0].slice(0,-2)
+                var time = info.el.textContent.split(' ')[0].slice(0, -2)
                 var information = info.event.title.split('\n')[0]
                 var user_name = info.event.title.split('\n')[1].split('  ')[0]
                 var user_phone = info.event.title.split('\n')[1].split('  ')[1]
-                
-                
+
+
                 //document modal
                 document.getElementById('information_Modal').style.display = 'inline';
                 document.getElementById('modal_date').innerHTML =
                     '<p id="modal_date">' + '<label><i class="fa fa-calendar"></i></label>' +
-                    ' 日期： ' + date +'('+ time + ')' + '</p>'
+                    ' 日期： ' + date + '(' + time + ')' + '</p>'
 
                 document.getElementById('modal_info').innerHTML =
-                     '<p id="modal_info">' + '<label><i class="fa fa-bell"></i></label>' + ' 訂位資訊： '+ '<br>' + information +  '</p>'
-                
+                    '<p id="modal_info">' + '<label><i class="fa fa-bell"></i></label>' + ' 訂位資訊： ' +
+                    '<br>' + information + '</p>'
+
                 document.getElementById('modal_user').innerHTML =
-                    '<p id="modal_user">' + '<label><i class="fa fa-user-circle"></i></label>' + ' 訂位人： ' + user_name +"<a href='tel:" + user_phone +" ' style='color:blue'> " + user_phone + "</a>"+  '</p>'
+                    '<p id="modal_user">' + '<label><i class="fa fa-user-circle"></i></label>' + ' 訂位人： ' +
+                    user_name + "<a href='tel:" + user_phone + " ' style='color:blue'> " + user_phone +
+                    "</a>" + '</p>'
 
                 document.getElementById('modal_status').innerHTML =
                     '<p id="modal_status">' + '<label><i class="fa fa-info-circle"></i></label>' +
@@ -787,7 +811,6 @@
         //do the fuction of ajax_post()
         ajax_post(num)
     })
-
 </script>
 
 
