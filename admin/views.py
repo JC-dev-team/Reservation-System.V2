@@ -35,6 +35,7 @@ def staff_check_reservation_page(request):
 def staff_reservation_page(request):
     return render(request, 'admin_reservation.html')
 
+
 # function --------------------------
 @require_http_methods(['POST', 'GET'])
 def staff_auth(request):  # authentication staff

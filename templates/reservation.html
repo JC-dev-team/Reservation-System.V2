@@ -263,7 +263,7 @@
                     window.location.replace('/booking/error/');
                 } else {
                     result = response.result
-                    // console.log(result)
+                    console.log(result)
                     //Function of calendar (return calendar.render())
                     calendar_fun(result, num)
 
@@ -405,9 +405,10 @@
                     var start = (new Date(st).addDays(1)).toISOString().slice(0, 10)
                     var title = info.event.title
                     var color = info.event.backgroundColor
-                    console.log(info)
+                    
                     // console.log(result[0].title)
                     for (var i = 0; i < result.length; i++) {
+                        
                         //red : 人數額滿
                         if (result[i].start == start && result[i].title == title && result[i]
                             .backgroundColor ==
@@ -418,9 +419,16 @@
                         if (result[i].start == start && result[i].title == title && result[i]
                             .backgroundColor ==
                             'yellow') {
+                            console.log(info.event.id)
+                            var event = calendar.getEventById(info.event.id)
+                            event.setProp('title','店休')
                             info.el.style.backgroundColor = 'red';
-                            info.el.innerText = '店休'
+                            console.log(event)
+                            //
+                            //info.el.innerText = '店休'
+                            
                         }
+                        
                     }
                 },
 
@@ -438,7 +446,13 @@
                     var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
                     var title = info.event.title
                     var color = info.el.style.backgroundColor
-
+                    
+                    if (title == '午餐') {
+                        var time_session = 'Lunch'
+                    }else {
+                        var time_session = 'Dinner'
+                    }
+                    console.log(time_session)
                     //Monday disable
                     if (title == '店休') {
                         //Notiflix  Report
