@@ -206,9 +206,7 @@
                 if (response.error != null) {
                     console.log(response.error)
                     Notiflix.Notify.Failure('發生錯誤！！');
-                    Notiflix.Loading.Remove();
-                    document.getElementById('dayoff_Modal').style.display = 'none';
-                    window.location.replace('/softwayliving/error/');
+                    // window.location.replace('/softwayliving/error/');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else {
@@ -239,19 +237,19 @@
             success: function (response) {
                 if (response.error != null) {
                     console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
                     // window.location.replace('/booking/error/');
                 } else if (response.alert != null) {
-                    alert(response.alert)
+                    Notiflix.Notify.Warning(response.alert);
                 } else {
                     result = response.result
                     console.log(result)
                     event.setProp('backgroundColor', 'white')
-                    Notiflix.Loading.Remove();
-                    Notiflix.Notify.Failure('訂單已刪除！！');
-                    document.getElementById('information_Modal').style.display = 'none';
+                    Notiflix.Notify.Success('訂單已刪除！！');
                     calendar_fun(account, result, num, 'refetch')
                 }
-
+                document.getElementById('information_Modal').style.display = 'none';
+                Notiflix.Loading.Remove();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 Notiflix.Notify.Failure('發生錯誤！！');
@@ -271,6 +269,8 @@
             success: function (response) {
                 if (response.error != null) {
                     console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    
                     // window.location.replace('/booking/error/');
                 } else if (response.alert != null) {
                     alert(response.alert)
@@ -278,13 +278,12 @@
                     result = response.result
                     console.log(result)
                     event.setProp('backgroundColor', 'green')
-                    Notiflix.Loading.Remove();
                     Notiflix.Notify.Success('訂單已確認！！');
-                    document.getElementById('information_Modal').style.display = 'none';
-
                     //send to user checkreservation
 
                 }
+                document.getElementById('information_Modal').style.display = 'none';
+                Notiflix.Loading.Remove();
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -305,6 +304,7 @@
             data: data,
             success: function (response) {
                 if (response.error != null) {
+                    Notiflix.Notify.Failure('發生錯誤！！');
                     console.log(response.error)
                     // window.location.replace('/booking/error/');
                 } else {
@@ -316,7 +316,8 @@
                     calendar_fun(account, result, num)
 
                 }
-
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 Notiflix.Notify.Failure('發生錯誤！！');

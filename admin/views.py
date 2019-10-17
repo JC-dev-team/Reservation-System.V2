@@ -167,7 +167,7 @@ def staff_add_event(request):  # add rest day as booking
         time_session = request.POST.get('time_session', None)
         event_type = request.POST.get('event_type', None)
         print('time_session1 : ', time_session)
-        check data format
+        # check data format
         valid = StoreEvent_Serializer(
             data={
                 'store': store_id,
@@ -178,7 +178,6 @@ def staff_add_event(request):  # add rest day as booking
         )
         if valid.is_valid() == False:
             return JsonResponse({'error': 'Not valid, 輸入資料格式錯誤'})
-        print('time_session2 : ', time_session)
         if time_session == 'Allday':
             time_session_arr = ['Lunch', 'Dinner']
         else:
@@ -188,7 +187,6 @@ def staff_add_event(request):  # add rest day as booking
         with transaction.atomic():  # transaction
             # Check is there same event
             flag = 0
-            print('time_session_arr :',time_session_arr)
             for i in time_session_arr:
                 event_check = StoreEvent.objects.select_for_update().filter(
                     store_id=store_id,
@@ -196,11 +194,7 @@ def staff_add_event(request):  # add rest day as booking
                     time_session=i,
                     event_type=event_type
                 ).exists()
-                print('event_check : ',event_check)
-                print('time_session : ',time_session)
-                print('flag :',flag)
                 if event_check == False:
-                    print('1')
                     queryset = StoreEvent.objects.create(
                         store_id=store_id,
                         event_date=event_date,
@@ -217,7 +211,7 @@ def staff_add_event(request):  # add rest day as booking
                 else:
                     print('4')
                     return JsonResponse({'alert': '此時段已經是店休了'})
-
+        
         return JsonResponse({'result': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
