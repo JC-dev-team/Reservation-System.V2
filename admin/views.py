@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
-from booking.models import ActionLog, BkList, Account, Production, Staff, Store
+from booking.models import ActionLog, BkList, Account, Production, Staff, Store, StoreEvent
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, \
     Prod_Serializer, Staff_Serializer, Store_Serializer, StoreEvent_Serializer
 from common.serializers import checkStaffAuth
@@ -102,7 +102,7 @@ def staff_approval_reservation(request):
                 is_cancel=False,
                 is_confirm=False,
             )
-            bk_queryset.update(waiting_num=0,is_confirm=True)
+            bk_queryset.update(waiting_num=0, is_confirm=True)
             return JsonResponse({'result': 'success'})
 
     except BkList.DoesNotExist:
@@ -141,7 +141,7 @@ def staff_cancel_reservation(request):
         return JsonResponse({'error': '發生未知錯誤'})
 
 
-@require_http_methods(['POST']) # when there are two time sessions
+@require_http_methods(['POST'])  # when there are two time sessions
 def staff_add_event(request):  # add rest day as booking
     try:
         store_id = request.POST.get('store_id', None)
@@ -159,7 +159,7 @@ def staff_add_event(request):  # add rest day as booking
         if valid.is_valid() == False:
             return JsonResponse({'error': 'Not valid, 輸入資料格式錯誤'})
         with transaction.atomic():  # transaction
-            queryset = Store.objects.create(
+            queryset = StoreEvent.objects.create(
                 store_id=store_id,
                 event_date=event_date,
                 time_session=time_session,
