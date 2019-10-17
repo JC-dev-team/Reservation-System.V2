@@ -248,7 +248,7 @@
                     Notiflix.Loading.Remove();
                     Notiflix.Notify.Failure('訂單已刪除！！');
                     document.getElementById('information_Modal').style.display = 'none';
-                    calendar_fun(result, num, 'refetch')
+                    calendar_fun(account, result, num, 'refetch')
                 }
 
             },
@@ -303,10 +303,11 @@
                     // window.location.replace('/booking/error/');
                 } else {
                     result = response.result
+                    account = response.account
                     console.log('------------')
                     console.log(result)
                     //Function of calendar (return calendar.render())
-                    calendar_fun(result, num)
+                    calendar_fun(account, result, num)
 
                 }
 
@@ -350,7 +351,7 @@
     }
 
     //calendar function
-    function calendar_fun(result, num = 0, action = 'render') {
+    function calendar_fun(account, result, num = 0, action = 'render') {
         //spinner hide
         Notiflix.Loading.Remove();
         var calendarEl = document.getElementById('calendar');
@@ -441,7 +442,7 @@
                     var price = '$' + result[i].bk_price;
                     var ps = '#' + result[i].bk_ps + ' ';
                     var waiting_num = result[i].waiting_num
-                    var phone = '0900123456'
+                    var phone = account[i].phone
 
                     if (session == 'Lunch') {
                         session = '午餐'
@@ -498,10 +499,10 @@
             dateClick: function (info) {
                 console.log(info)
                 var date = info.dateStr
-                var time_session = $('#dayoff_select').val()
+                
                 // var time_session ='Allday'
                 console.log(date)
-                console.log('time_session: '+time_session)
+                
 
                 //document modal
                 document.getElementById('dayoff_Modal').style.display = 'inline';
@@ -510,6 +511,8 @@
                     ' 日期： ' + date + '</p>'
 
                 $('#modal_button_dayoff').click(function (e) {
+                    var time_session = $('#dayoff_select').val()
+                    console.log('time_session: '+time_session)
                     var data = {
                         store_id: '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
                         event_date: date,
