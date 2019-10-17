@@ -33,6 +33,10 @@
             <font size="4">
                 <!-- Date-->
                 <p id='modal_date'></p>
+                <!-- info-->
+                <p id='modal_info'></p>
+                <!-- User-->
+                <p id='modal_user'></p>
                 <!-- State-->
                 <p id='modal_status'></p>
                 <!-- action-->
@@ -197,7 +201,7 @@
         },
     });
 
-    function admin_dayoff(data) {
+    function admin_dayoff(data , num, event) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/add_event/',
@@ -310,10 +314,10 @@
                 } else {
                     result = response.result
                     account = response.account
-                    console.log('------------')
-                    console.log(result)
+                    event = response.event
+                    console.log(event)
                     //Function of calendar (return calendar.render())
-                    calendar_fun(account, result, num)
+                    calendar_fun(event, account, result, num)
 
                 }
                 Notiflix.Loading.Remove();
@@ -361,7 +365,7 @@
     }
 
     //calendar function
-    function calendar_fun(account, result, num = 0, action = 'render') {
+    function calendar_fun(event, account, result, num = 0, action = 'render') {
         //spinner hide
         Notiflix.Loading.Remove();
         var calendarEl = document.getElementById('calendar');
@@ -430,18 +434,21 @@
             selectable: true,
 
             events: function (info, successCallback) {
+                
+                var Event = [{
+                        id: '3',
+                        title: '店休',
+                        start: new Date(),
+                        startRecur: new Date().addDays(3),
+                        backgroundColor: 'red',
+                        textColor: 'white',
+                        daysOfWeek: [1],
 
-                var event = [{
-                    id: '3',
-                    title: '店休',
-                    start: new Date(),
-                    startRecur: new Date().addDays(3),
-                    backgroundColor: 'red',
-                    textColor: 'white',
-                    daysOfWeek: [1],
+                    },];
+                    successCallback(Event)
 
-                }, ];
-                successCallback(event)
+                
+                //reservation event
                 for (var i = 0; i < result.length; i++) {
 
                     var uuid = result[i].bk_uuid
@@ -453,6 +460,7 @@
                     var ps = '#' + result[i].bk_ps + ' ';
                     var waiting_num = result[i].waiting_num
                     var phone = account[i].phone
+                    var name = account[i].username
 
                     if (session == 'Lunch') {
                         session = '午餐'
@@ -472,33 +480,61 @@
                         color = 'red' //候補
                     }
 
-                    event.push({
+                    Event.push({
                         id: uuid,
-                        title: session + ' ' + people + ' ' + price + ' ' + ps + phone,
+                        title: session + ' ' + people + ' ' + price + ' ' + ps + '\n' + name +'  '+ phone,
                         start: date + time,
                         backgroundColor: color,
                         textColor: 'white',
                     });
 
-                    successCallback(event)
-                    console.log(event)
+                    successCallback(Event)
+                    console.log(Event)
+                }
+
+                //day off event
+                for (var i = 0; i < event.length; i++) {
+                    var date = event[i].event_date
+                    var time_session = event[i].time_session
+                    var event_type = event[i].event_type
+                    
+                    if (time_session == 'Lunch') {
+                        var session = '午餐'
+                    }else {
+                        var session = '晚餐'
+                    }
+                    if (event_type == 'Day off') {
+                        var type = '店休' 
+                    }
+
+                    Event.push({
+                        title: session + type,
+                        start: date,
+                        backgroundColor: 'red',
+                        textColor: 'white',
+                    });
+                    successCallback(Event)
+                    
+
                 }
             },
 
             eventRender: function (info) {
+                console.log(info)
                 var month_text = info.el.text
+                
                 if (month_text != undefined) {
                     var text = month_text.split(' ')[1]
+                    
                     info.el.text = text
 
                 }
                 var phone = '0900123456'
-                console.log(info)
+                
                 //list of dot
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
                 var f = info.el.getElementsByClassName('fc-list-item-title fc-widget-content')[0]
-
-                console.log(f)
+                
                 //"<a href='tel:" + phone +" '> " + phone + "</a>"
                 // if (dotEl) {
                 //     dotEl.style.backgroundColor = 'white';
@@ -529,7 +565,7 @@
                         time_session: time_session,
                         event_type: 'Day off'
                     }
-                    admin_dayoff(data)
+                    admin_dayoff(data,num,event)
                     //spinner show
                     Notiflix.Loading.Hourglass('處理中....');
                 })
@@ -547,15 +583,27 @@
                 } else if (list_backgroundcolor == 'red') {
                     status = '候補'
                 }
+                var date = info.event.start.toISOString().slice(0, 10)
+                var time = info.el.textContent.split(' ')[0].slice(0,-2)
+                var information = info.event.title.split('\n')[0]
+                var user_name = info.event.title.split('\n')[1].split('  ')[0]
+                var user_phone = info.event.title.split('\n')[1].split('  ')[1]
+                
+                
                 //document modal
                 document.getElementById('information_Modal').style.display = 'inline';
                 document.getElementById('modal_date').innerHTML =
                     '<p id="modal_date">' + '<label><i class="fa fa-calendar"></i></label>' +
-                    ' 日期： ' + info.event.start.toISOString().slice(0, 10) + '<br>' + info
-                    .event.title + '</p>'
+                    ' 日期： ' + date +'('+ time + ')' + '</p>'
+
+                document.getElementById('modal_info').innerHTML =
+                     '<p id="modal_info">' + '<label><i class="fa fa-bell"></i></label>' + ' 訂位資訊： '+ '<br>' + information +  '</p>'
+                
+                document.getElementById('modal_user').innerHTML =
+                    '<p id="modal_user">' + '<label><i class="fa fa-user-circle"></i></label>' + ' 訂位人： ' + user_name +"<a href='tel:" + user_phone +" ' style='color:blue'> " + user_phone + "</a>"+  '</p>'
+
                 document.getElementById('modal_status').innerHTML =
-                    '<p id="modal_status">' +
-                    '<label><i class="fa fa-info-circle"></i></label>' +
+                    '<p id="modal_status">' + '<label><i class="fa fa-info-circle"></i></label>' +
                     ' 訂單狀態： ' + status + '</p>'
 
 
@@ -692,7 +740,7 @@
             return calendar.render();
         } else if (action == 'refetch') {
             console.log('refetch')
-            return calendar.rerenderEvents()
+            return calendar.refetchEvents()
         }
 
 
