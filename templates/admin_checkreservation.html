@@ -20,7 +20,7 @@
 <input id="date_num" value="0" type="text" style="display: none">
 
 
-<!-- Modal -->
+<!-- information Modal -->
 <div id="information_Modal" class="w3-modal">
     <div class="w3-modal-content w3-animate-top w3-card-4">
         <header class="w3-container w3-teal w3-center w3-padding-32">
@@ -33,8 +33,6 @@
             <font size="4">
                 <!-- Date-->
                 <p id='modal_date'></p>
-                <!-- State-->
-                <p id='modal_status'></p>
                 <!-- action-->
                 <label><i class="fa fa-bolt"></i> 動作： </label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
@@ -43,14 +41,52 @@
                     <option value="confirm" selected>確認訂單</option>
                     <option value="pass">遞補候位</option>
                     <option value="cancel">刪除訂單</option>
-                    
+
                 </select>
-                
+
                 <br>
                 <button id='modal_button' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">OK <i
                         class="fa fa-check"></i></button>
                 <button class="w3-button w3-red w3-section"
                     onclick="document.getElementById('information_Modal').style.display='none'">關閉 <i
+                        class="fa fa-remove"></i></button>
+            </font>
+        </div>
+
+    </div>
+</div>
+
+<!-- dayoff Modal -->
+<div id="dayoff_Modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+        <header class="w3-container w3-teal w3-center w3-padding-32">
+            <span onclick="document.getElementById('dayoff_Modal').style.display='none'"
+                class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
+            <h2 class="w3-wide"><i class="fa fa-bell"></i> 管理者權限</h2>
+        </header>
+        <div class="w3-container">
+            <br>
+            <font size="4">
+                <!-- Date-->
+                <p id='modal_date_dayoff'></p>
+                <!-- State-->
+                <p id='modal_status'></p>
+                <!-- action-->
+                <label><i class="fa fa-bolt"></i> 動作： </label>
+                <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+                    id='dayoff_select' required>
+                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                    <option value="Lunch" selected>（店休）午餐</option>
+                    <option value="Dinner">（店休）晚餐</option>
+                    <option value="Allday">（店休）全天</option>
+
+                </select>
+
+                <br>
+                <button id='modal_button_dayoff' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">OK
+                    <i class="fa fa-check"></i></button>
+                <button class="w3-button w3-red w3-section"
+                    onclick="document.getElementById('dayoff_Modal').style.display='none'">關閉 <i
                         class="fa fa-remove"></i></button>
             </font>
         </div>
@@ -91,12 +127,106 @@
         plainText: true,
     });
 
+    //Notiflix Notify
+    Notiflix.Notify.Init({
+        width: '280px',
+        position: 'right-top',
+        distance: '10px',
+        opacity: 1,
+        borderRadius: '5px',
+        rtl: false,
+        timeout: 3000,
+        messageMaxLength: 110,
+        backOverlay: false,
+        backOverlayColor: 'rgba(0,0,0,0.5)',
+        ID: 'NotiflixNotify',
+        className: 'notiflix-notify',
+        zindex: 4001,
+        useGoogleFont: true,
+        fontFamily: 'Quicksand',
+        fontSize: '13px',
+        cssAnimation: true,
+        cssAnimationDuration: 400,
+        cssAnimationStyle: 'fade',
+        closeButton: false,
+        useIcon: true,
+        useFontAwesome: false,
+        fontAwesomeIconStyle: 'basic',
+        fontAwesomeIconSize: '34px',
+        plainText: true,
+        showOnlyTheLastOne: false,
+        ssuccess: {
+            background: '#00b462',
+            textColor: '#fff',
+            childClassName: 'success',
+            notiflixIconColor: 'rgba(0,0,0,0.2)',
+            fontAwesomeClassName: 'fas fa-check-circle',
+            fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
+        },
+        failure: {
+            background: '#f44336',
+            textColor: '#fff',
+            childClassName: 'failure',
+            notiflixIconColor: 'rgba(0,0,0,0.2)',
+            fontAwesomeClassName: 'fas fa-times-circle',
+            fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
+        },
+        warning: {
+            background: '#f2bd1d',
+            textColor: '#fff',
+            childClassName: 'warning',
+            notiflixIconColor: 'rgba(0,0,0,0.2)',
+            fontAwesomeClassName: 'fas fa-exclamation-circle',
+            fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
+        },
+        info: {
+            background: '#00bcd4',
+            textColor: '#fff',
+            childClassName: 'info',
+            notiflixIconColor: 'rgba(0,0,0,0.2)',
+            fontAwesomeClassName: 'fas fa-info-circle',
+            fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
+        },
+    });
+
+
     //csrf_ajax
     $.ajaxSetup({
         data: {
             csrfmiddlewaretoken: '{{ csrf_token }}'
         },
     });
+
+    function admin_dayoff(data) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/add_event/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    // window.location.replace('/booking/error/');
+                } else if (response.alert != null) {
+                    alert(response.alert)
+                } else {
+                    result = response.result
+                    console.log(result)
+
+                    Notiflix.Loading.Remove();
+                    Notiflix.Notify.Success('已設為店休！！');
+                    document.getElementById('dayoff_Modal').style.display = 'none';
+
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown)
+                // window.location.replace('/booking/error/');
+            }
+
+        });
+    }
+
 
     function admin_cancel(data, num, event) {
         $.ajax({
@@ -115,6 +245,8 @@
                     event.setProp('backgroundColor', 'white')
                     Notiflix.Loading.Remove();
                     Notiflix.Notify.Failure('訂單已刪除！！');
+                    document.getElementById('information_Modal').style.display = 'none';
+                    calendar_fun(result, num, 'refetch')
                 }
 
             },
@@ -143,6 +275,7 @@
                     event.setProp('backgroundColor', 'green')
                     Notiflix.Loading.Remove();
                     Notiflix.Notify.Success('訂單已確認！！');
+                    document.getElementById('information_Modal').style.display = 'none';
                 }
 
             },
@@ -211,7 +344,7 @@
     }
 
     //calendar function
-    function calendar_fun(result, num = 0) {
+    function calendar_fun(result, num = 0, action = 'render') {
         //spinner hide
         Notiflix.Loading.Remove();
         var calendarEl = document.getElementById('calendar');
@@ -340,7 +473,30 @@
 
             //Function
             dateClick: function (info) {
-                console.log('dateClick: ' + info)
+                console.log(info)
+                var date = info.dateStr
+                var time_session = $('#dayoff_select').val()
+                console.log(date)
+
+                //document modal
+                document.getElementById('dayoff_Modal').style.display = 'inline';
+                document.getElementById('modal_date_dayoff').innerHTML =
+                    '<p id="modal_date_dayoff">' + '<label><i class="fa fa-calendar"></i></label>' +
+                    ' 日期： ' + date + '</p>'
+
+                $('#modal_button_dayoff').click(function (e) {
+                    var data = {
+                        store_id: '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+                        event_date: date,
+                        time_session: time_session,
+                        event_type: 'Day off'
+                    }
+                    admin_dayoff(data)
+                    //spinner show
+                    Notiflix.Loading.Hourglass('處理中....');
+                })
+
+
 
             },
             eventClick: function (info) {
@@ -360,7 +516,8 @@
                     ' 日期： ' + info.event.start.toISOString().slice(0, 10) + '<br>' + info
                     .event.title + '</p>'
                 document.getElementById('modal_status').innerHTML =
-                    '<p id="modal_status">' + '<label><i class="fa fa-info-circle"></i></label>' +
+                    '<p id="modal_status">' +
+                    '<label><i class="fa fa-info-circle"></i></label>' +
                     ' 訂單狀態： ' + status + '</p>'
 
 
@@ -374,7 +531,8 @@
                                 console.log('確認訂單 Y')
                                 var data = {
                                     'bk_uuid': info.event.id,
-                                    'bk_date': info.event.start.toISOString().slice(0, 10)
+                                    'bk_date': info.event.start.toISOString()
+                                        .slice(0, 10)
                                 }
                                 var event = calendar.getEventById(info.event.id)
                                 admin_approval(data, num, event)
@@ -384,7 +542,7 @@
                             },
                             function () {
                                 console.log('確認訂單 N')
-                                
+
 
                             });
 
@@ -396,7 +554,8 @@
                                 console.log('刪除訂單 Y')
                                 var data = {
                                     'bk_uuid': info.event.id,
-                                    'bk_date': info.event.start.toISOString().slice(0, 10)
+                                    'bk_date': info.event.start.toISOString()
+                                        .slice(0, 10)
                                 }
                                 var event = calendar.getEventById(info.event.id)
                                 admin_cancel(data, num, event)
@@ -491,7 +650,13 @@
 
             }
         });
-        return calendar.render();
+        if (action == 'render') {
+            return calendar.render();
+        } else if (action == 'refetch') {
+            console.log('refetch')
+            return calendar.rerenderEvents()
+        }
+
 
 
     }
