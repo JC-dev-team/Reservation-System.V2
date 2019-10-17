@@ -139,7 +139,7 @@ def staff_cancel_reservation(request):
         return JsonResponse({'error': '發生未知錯誤'})
 
 
-@require_http_methods(['POST'])
+@require_http_methods(['POST']) # when there are two time sessions
 def staff_add_event(request):  # add rest day as booking
     try:
         store_id = request.POST.get('store_id', None)

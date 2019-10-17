@@ -285,17 +285,6 @@ def getWaitingList(request):  # get waiting list
         store_id = request.POST.get('store_id', None)
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
-        time_session = request.POST.get('time_session', None)
-        event_type = request.POST.get('event_type', None)
-
-        event_queryset = StoreEvent.objects.filter(
-            store_id=store_id,
-            time_session=time_session,
-            event_date=bk_date,
-            event_type=event_type,
-        ).exists()
-        if event_queryset :
-            return JsonResponse({'alert':'這天店休'})
 
         if (int(adult)+int(children)) < 1:
             return JsonResponse({'alert': '成人和小孩人數過少'})
@@ -303,67 +292,92 @@ def getWaitingList(request):  # get waiting list
         store_query = Store.objects.only('seat').get(
             store_id=store_id
         )
+        #  filter store events ex: store is day off
+        event_queryset = StoreEvent.objects.only('time_session', 'event_type', 'event_date').filter(
+            store_id=store_id,
+            event_date=bk_date,
+            # event_type='Day off',
+        ).distinct('time_session')
 
+        # We will get 2 kinds of time_sessions Ex: Lunch & Dinner
         bk_queryset = BkList.objects.filter(  # get all data
             store_id=store_id,
             bk_date=bk_date,
             is_cancel=False,
         )
+        if event_queryset.count() == 2:
+            for i in event_queryset:
+                if i.time_session == 'Lunch':
+                    lunch_waiting = i.event_type
 
-        bk_list_noon = bk_queryset.filter(  # get bookinglist of noon
-            waiting_num=0,
-            time_session='Lunch'
-        )
-        bk_list_night = bk_queryset.filter(  # get bookinglist of night
-            waiting_num=0,
-            time_session='Dinner'
-        )
+                elif i.time_session == 'Dinner':
+                    dinner_waiting = i.event_type
+                else:  # database has bug, plz fix it
+                    raise Exception('Unknown error, please call IT to fix it')
 
-        noon_count = 0  # Get number of noon total
-        for i in bk_list_noon:
-            if i.entire_time == True:
-                noon_count = store_query.seat
-            noon_count += int(i.children)+int(i.adult)
+        elif event_queryset.count() == 1:
+            # elif event_queryset.count() == 0 :
+            for i in event_queryset:
+                if i.time_session == 'Lunch':
+                    lunch_waiting == i.event_type
+                elif i.time_session == 'Dinner':
+                    dinner_waiting == i.event_type
+                else:  # database has bug, plz fix it
+                    raise Exception('Unknown error, please call IT to fix it')
 
-        noon_count += int(children)+int(adult)
+        if lunch_waiting == None: # Lunch is available for reservation
+            bk_list_noon = bk_queryset.filter(  # get bookinglist of noon
+                waiting_num=0,
+                time_session='Lunch'
+            )
+            noon_count = 0  # Get number of noon total
+            for i in bk_list_noon:
+                if i.entire_time == True:
+                    noon_count = store_query.seat
+                noon_count += int(i.children)+int(i.adult)
 
-        night_count = 0  # Get number of dinner total
-        for i in bk_list_night:
-            if i.entire_time == True:
-                night_count = store_query.seat
-            night_count += int(i.children)+int(i.adult)
+            noon_count += int(children)+int(adult)
+            # judge if red or green
+            # green = booking available, red = waiting line
+            if noon_count > store_query.seat:
+                status_noon = 'red'
+            else:
+                status_noon = 'green'
+            lunch_waiting = bk_queryset.filter(  # Get waiting numbers lunch
+                time_session='Lunch',
+                waiting_num__gt=0,
+            ).count()
+            if(lunch_waiting == 0 and status_noon == 'green'):
+                lunch_waiting = '午餐: 可訂位'
+            else:
+                lunch_waiting = '午餐: 候補第 ' + str((lunch_waiting+1))+' 順位'
 
-        night_count += int(children)+int(adult)
-    # judge if red or green
-    # green = booking available, red = waiting line
-        if noon_count > store_query.seat:
-            status_noon = 'red'
-        else:
-            status_noon = 'green'
+        if dinner_waiting == None: # dinner is available for reservation
+            bk_list_night = bk_queryset.filter(  # get bookinglist of night
+                waiting_num=0,
+                time_session='Dinner'
+            )
+            night_count = 0  # Get number of dinner total
+            for i in bk_list_night:
+                if i.entire_time == True:
+                    night_count = store_query.seat
+                night_count += int(i.children)+int(i.adult)
 
-        if night_count > store_query.seat:
-            status_night = 'red'
-        else:
-            status_night = 'green'
-
-        lunch_waiting = bk_queryset.filter(  # Get waiting numbers lunch
-            time_session='Lunch',
-            waiting_num__gt=0,
-        ).count()
-        dinner_waiting = bk_queryset.filter(  # Get waiting numbers dinner
-            time_session='Dinner',
-            waiting_num__gt=0,
-        ).count()
-
-        if(lunch_waiting == 0 and status_noon == 'green'):
-            lunch_waiting = '午餐: 可訂位'
-        else:
-            lunch_waiting = '午餐: 候補第 ' + str((lunch_waiting+1))+' 順位'
-
-        if (dinner_waiting == 0 and status_night == 'green'):
-            dinner_waiting = '晚餐: 可訂位'
-        else:
-            dinner_waiting = '晚餐: 候補第 ' + str((dinner_waiting+1))+' 順位'
+            night_count += int(children)+int(adult)
+            # judge if red or green
+            # green = booking available, red = waiting line
+            if night_count > store_query.seat:
+                status_night = 'red'
+            else:
+                status_night = 'green'
+            dinner_waiting = bk_queryset.filter(  # Get waiting numbers dinner
+                time_session='Dinner',
+                waiting_num__gt=0,
+            ).count()
+            if (dinner_waiting == 0 and status_night == 'green'):
+                dinner_waiting = '晚餐: 可訂位'
+            else:
+                dinner_waiting = '晚餐: 候補第 ' + str((dinner_waiting+1))+' 順位'
 
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
@@ -416,7 +430,7 @@ def getCalendar(request):  # full calendar
             else:
                 i.time_session = '晚餐'
 
-            if i.event_type == 'rest':
+            if i.event_type == 'Day off':
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.event_date
                 event_sub_arr['backgroundColor'] = 'yellow'
@@ -450,7 +464,6 @@ def getCalendar(request):  # full calendar
                 event_sub_arr['backgroundColor'] = 'green'
 
             event_arr.append(event_sub_arr)
-        print('2: ', event_arr)
         return JsonResponse({'result': event_arr})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
