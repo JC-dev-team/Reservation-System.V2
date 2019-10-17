@@ -184,7 +184,7 @@ def InsertReservation(request):  # insert booking list
                     waiting_num__gt=0,
                 ).count()
                 waiting_num += 1
-            else: # don't need to wait
+            else:  # don't need to wait
                 waiting_num = 0
 
             final_queryset = BkList.objects.create(  # insert data
@@ -203,7 +203,7 @@ def InsertReservation(request):  # insert booking list
                 waiting_num=waiting_num,
                 bk_price=bk_price,
             )
-            get_user_info = Account.objects.only('user_id','username').get(
+            get_user_info = Account.objects.only('user_id', 'username').get(
                 user_id=user_id,
                 social_id=social_id,
                 social_app=social_app,
@@ -232,7 +232,7 @@ def InsertReservation(request):  # insert booking list
                 'store': store_serializer.data,
                 'user_info': account_serializer.data, })
     except Exception as e:
-        return render(request, 'error/error.html', {'error': e,'action':'/booking/login/'})
+        return render(request, 'error/error.html', {'error': e, 'action': '/booking/login/'})
 
 
 def login_portal(request):
@@ -240,7 +240,7 @@ def login_portal(request):
 
 
 def error(request):  # error page
-    return render(request, 'error/error.html',{'action':'/booking/login/'})
+    return render(request, 'error/error.html', {'action': '/booking/login/'})
 
 
 @require_http_methods(['POST', 'GET'])
@@ -264,7 +264,7 @@ def member(request):
             # return redirect(reverse('member'),args=())
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
-            return render(request, 'error/error.html', {'error': result['error'],'action':'/booking/login/'})
+            return render(request, 'error/error.html', {'error': result['error'], 'action': '/booking/login/'})
         else:  # Account Exist
             serializer = Acc_Serializer(result)
             request.session['member_id'] = result.user_id
@@ -274,7 +274,7 @@ def member(request):
                 'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
 
     except Exception as e:
-        return render(request, 'error/error.html', {'error': e,'action':'/booking/login/'})
+        return render(request, 'error/error.html', {'error': e, 'action': '/booking/login/'})
 
 
 # Ajax api --------------------------------------------------------------
@@ -285,8 +285,17 @@ def getWaitingList(request):  # get waiting list
         store_id = request.POST.get('store_id', None)
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
+        time_session = request.POST.get('time_session', None)
+        event_type = request.POST.get('event_type', None)
 
-        if (int(adult)+int(children))<1:
+        event_queryset = StoreEvent.objects.get(
+            store_id=store_id,
+            time_session=time_session,
+            event_date=bk_date,
+        )
+        
+
+        if (int(adult)+int(children)) < 1:
             return JsonResponse({'alert': '成人和小孩人數過少'})
 
         store_query = Store.objects.only('seat').get(
@@ -356,7 +365,7 @@ def getWaitingList(request):  # get waiting list
 
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤','action':'/booking/login/'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
 
 
 @require_http_methods(['POST'])
@@ -367,7 +376,7 @@ def getCalendar(request):  # full calendar
         end_month = request.POST.get('end_month', None)
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
-        total= int(adult)+int(children)
+        total = int(adult)+int(children)
         # Convert string to time
         start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
         end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
@@ -377,7 +386,7 @@ def getCalendar(request):  # full calendar
         store_query = Store.objects.only('seat').get(
             store_id=store_id
         )
-        if total >store_query.seat:
+        if total > store_query.seat:
             msg = '超過總座位數量 : '+str(store_query.seat)+'個座位'
             return JsonResponse({'alert': msg})
         # Get waiting list
@@ -442,7 +451,7 @@ def getCalendar(request):  # full calendar
         print('2: ', event_arr)
         return JsonResponse({'result': event_arr})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤','action':'/booking/login/'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
 
 
 # Test function ------------------------
