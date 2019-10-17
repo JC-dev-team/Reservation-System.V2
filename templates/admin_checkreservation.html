@@ -221,6 +221,8 @@
                 }
                 Notiflix.Loading.Remove();
                 document.getElementById('dayoff_Modal').style.display = 'none';
+                //Reload
+                window.location.reload();
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
