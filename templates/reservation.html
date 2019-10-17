@@ -263,7 +263,7 @@
                     window.location.replace('/booking/error/');
                 } else {
                     result = response.result
-                    console.log(result)
+                    console.log('result : ' + result)
                     //Function of calendar (return calendar.render())
                     calendar_fun(result, num)
 
@@ -288,7 +288,7 @@
                 console.log(response)
                 var lunch_status = response.lunch_status
                 var dinner_status = response.dinner_status
-                console.log(lunch_status)
+                console.log('lunch status : '+lunch_status)
                 //insert Modal of state
                 document.getElementById('modal_status').innerHTML =
                     '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + '<br>' +
@@ -423,9 +423,7 @@
                             var event = calendar.getEventById(info.event.id)
                             event.setProp('title','店休')
                             info.el.style.backgroundColor = 'red';
-                            console.log(event)
-                            //
-                            //info.el.innerText = '店休'
+                            info.el.innerText = '店休'
                             
                         }
                         
