@@ -28,13 +28,15 @@
     </font>
 </div>
 {% else %}
+
+
 {% for element in data %}
-{% if element.waiting_num != 0 %}
+{% if element.waiting_num == 0 %}
 
 <!-- Under processing-->
 <div class="w3-center" style="display: show">
     <font size="10">
-        <i class="far fa-question-circle"></i>
+        <i class="far fa-question-circle" style="color:red;"></i>
     </font>
     <h4>訂位處理中</h4>
     <h5>請靜候通知，由專人為您確認訂位</h5>
@@ -44,13 +46,13 @@
 <!-- Success-->
 <div class="w3-center" style="display: show">
     <font size="10">
-        <i class="far fa-check-circle"></i>
+        <i class="far fa-check-circle" style="color:green;"></i>
     </font>
     <h4>訂位已成立</h4>
-    <h5>謝謝您的訂位</h5>
+    <h5>謝謝您的訂位，請準時到達</h5>
     <br><br>
 </div>
-{% endif %}
+<!-- {% endif %} -->
 <!-- Cancel-->
 <!-- <div class="w3-center" style="display: none">
     <font size="10">
@@ -62,36 +64,32 @@
 </div> -->
 
 <!-- reservation information-->
-<div class="w3-center">
-    <font size='6'>
-        <h2 id='information'>訂位資訊</h2>
-        <hr>
+<div class="w3-container w3-border">
+    <div class="w3-center">
+        <font size='6'>
+            <h2 id='information'>訂位資訊</h2>
+            <hr>
 
-        <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3>
-        <div class="w3-container" align="left">
-            <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
-            <h4>用餐日期：{{element.bk_date}} {{element.time_session}} - {{element.bk_st}}</h4>
-            <h4>訂位人： {{user_info.username}} 先生/小姐</h4>
-            <h4>用餐人數： {{element.adult}} 大 {{element.children}} 小</h4>
-            <h4>價位：＄{{element.bk_price}}</h4>
-            <h4>備註：{{element.bk_ps}}</h4>
-            <!-- <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
-            <h4>人數： {{element.adult}} 大 {{element.children}} 小</h4>
-            <h4>用餐日期：{{element.bk_date}}</h4>
-            <h4>用餐時段： {{element.time_session}} - {{element.bk_st}}</h4>
+            <!-- <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3> -->
+            <div class="w3-container" align="left">
+                <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
+                <h4>用餐日期：{{element.bk_date}} {{element.time_session}} - {{element.bk_st}}</h4>
+                <h4>訂位人： {{user_info.username}} 先生/小姐</h4>
+                <h4>用餐人數： {{element.adult}} 大 {{element.children}} 小</h4>
+                <h4>價位：＄{{element.bk_price}}</h4>
+                <h4>備註：{{element.bk_ps}}</h4>
+                
+            </div>
+        </font>
 
-            <h4>價位：＄{{element.bk_price}}</h4>
-            <h4>備註：{{element.bk_ps}}</h4> -->
-        </div>
-    </font>
+        <font size='4'>
+            <button id="close_button" onclick="cancelreservation('{{element.bk_uuid}}');"
+                class="w3-btn w3-round-large  w3-teal w3-padding">取消訂位</button>
+        </font>
 
-    <font size='4'>
-        <button id="close_button" onclick="cancelreservation('{{element.bk_uuid}}');"
-            class="w3-btn w3-round-large  w3-teal w3-padding">取消訂位</button>
-    </font>
-    <hr>
-
+    </div>
 </div>
+<hr>
 
 {% endfor %}
 {% endif %}
@@ -141,7 +139,7 @@
         })
     }
 
-    
+
     function closewindow() {
         //if open on line base
         liff.closewindow()
