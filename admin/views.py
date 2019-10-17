@@ -100,8 +100,9 @@ def staff_approval_reservation(request):
                 bk_uuid=bk_uuid,
                 bk_date=bk_date,
                 is_cancel=False,
+                is_confirm=False,
             )
-            bk_queryset.update(waiting_num=0)
+            bk_queryset.update(waiting_num=0,is_confirm=True)
             return JsonResponse({'result': 'success'})
 
     except BkList.DoesNotExist:

@@ -170,6 +170,7 @@ def InsertReservation(request):  # insert booking list
                 bk_date=bk_date,
                 time_session=time_session,
                 is_cancel=is_cancel,
+                waiting_num = 0,
             )
 
             # count is that enough for seat values
@@ -205,6 +206,7 @@ def InsertReservation(request):  # insert booking list
                 is_cancel=is_cancel,
                 waiting_num=waiting_num,
                 bk_price=bk_price,
+                is_confirm = is_confirm,
             )
             get_user_info = Account.objects.only('user_id', 'username').get(
                 user_id=user_id,
@@ -288,7 +290,8 @@ def getWaitingList(request):  # get waiting list
         store_id = request.POST.get('store_id', None)
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
-
+        lunch_waiting = None
+        dinner_waiting = None
         if (int(adult)+int(children)) < 1:
             return JsonResponse({'alert': '成人和小孩人數過少'})
 
@@ -300,7 +303,7 @@ def getWaitingList(request):  # get waiting list
             store_id=store_id,
             event_date=bk_date,
             # event_type='Day off',
-        ).distinct('time_session')
+        ).distinct()
 
         # We will get 2 kinds of time_sessions Ex: Lunch & Dinner
         bk_queryset = BkList.objects.filter(  # get all data
@@ -334,7 +337,7 @@ def getWaitingList(request):  # get waiting list
         if lunch_waiting == None: # Lunch is available for reservation
             bk_list_noon = bk_queryset.filter(  # get bookinglist of noon
                 waiting_num=0,
-                time_session='Lunch'
+                time_session='Lunch',
             )
             noon_count = 0  # Get number of noon total
             for i in bk_list_noon:
@@ -384,9 +387,11 @@ def getWaitingList(request):  # get waiting list
                 dinner_waiting = '晚餐: 可訂位'
             else:
                 dinner_waiting = '晚餐: 候補第 ' + str((dinner_waiting+1))+' 順位'
-
+            print('lunch_waiting : ',lunch_waiting)
+            print('dinner_waiting :',dinner_waiting)
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
+        print(e)
         return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
 
 
