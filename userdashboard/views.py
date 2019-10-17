@@ -70,6 +70,7 @@ def user_check_reservation(request):
             user_id=user_id,
             bk_date__gte=now,
             is_cancel=False,
+            
         ).order_by('-waiting_num','bk_date','bk_st')
         # If data not exists
         if bk_queryset.exists() == False:

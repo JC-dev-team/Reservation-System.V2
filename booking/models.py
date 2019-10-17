@@ -59,6 +59,7 @@ class BkList(models.Model):
     waiting_num = models.PositiveIntegerField()
     entire_time = models.IntegerField()
     bk_price = models.PositiveIntegerField()
+    is_comfirm = models.IntegerField()
 
     class Meta:
         db_table = 'bk_list___db'

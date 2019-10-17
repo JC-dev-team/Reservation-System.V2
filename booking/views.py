@@ -139,7 +139,7 @@ def InsertReservation(request):  # insert booking list
             'entire_time': entire_time,
             'bk_price': bk_price,
             'is_cancel': is_cancel,
-            'is_cancel': is_cancel,
+            'waiting_num': waiting_num,
         })
         # ---------------------------------
         total = int(adult)+int(children)
@@ -308,10 +308,13 @@ def getWaitingList(request):  # get waiting list
         if event_queryset.count() == 2:
             for i in event_queryset:
                 if i.time_session == 'Lunch':
-                    lunch_waiting = i.event_type
+                    if i.event_type == 'Day off':
+                        lunch_waiting = '中午店休'
 
                 elif i.time_session == 'Dinner':
-                    dinner_waiting = i.event_type
+                    if i.event_type == 'Day off':
+                        dinner_waiting = '晚上店休'
+
                 else:  # database has bug, plz fix it
                     raise Exception('Unknown error, please call IT to fix it')
 
