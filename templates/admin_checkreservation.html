@@ -303,6 +303,7 @@
                     // window.location.replace('/booking/error/');
                 } else {
                     result = response.result
+                    console.log('------------')
                     console.log(result)
                     //Function of calendar (return calendar.render())
                     calendar_fun(result, num)
@@ -336,7 +337,7 @@
                 'end_month': end_month,
             }
             //Clean the calendar
-            // document.getElementById('calendar').innerHTML = ''
+            document.getElementById('calendar').innerHTML = ''
 
             // do ajax fuction
             admin_ajax_time(data, num)
@@ -418,7 +419,18 @@
             selectable: true,
 
             events: function (info, successCallback) {
-                var event = [];
+                
+                var event = [{
+                        id: '3',
+                        title: '店休',
+                        start: new Date(),
+                        startRecur: new Date().addDays(3),
+                        backgroundColor: 'red',
+                        textColor: 'white',
+                        daysOfWeek: [1],
+
+                    },];
+                    successCallback(event)
                 for (var i = 0; i < result.length; i++) {
 
                     var uuid = result[i].bk_uuid
@@ -429,6 +441,7 @@
                     var price = '$' + result[i].bk_price;
                     var ps = '#' + result[i].bk_ps + ' ';
                     var waiting_num = result[i].waiting_num
+                    var phone = '0900123456'
 
                     if (session == 'Lunch') {
                         session = '午餐'
@@ -450,15 +463,14 @@
 
                     event.push({
                         id: uuid,
-                        title: session + ' ' + people + ' ' + price + ' ' + ps,
+                        title: session + ' ' + people + ' ' + price + ' ' + ps + phone,
                         start: date + time,
                         backgroundColor: color,
                         textColor: 'white',
-
                     });
 
                     successCallback(event)
-
+                    console.log(event)
                 }
             },
 
@@ -469,10 +481,14 @@
                     info.el.text = text
 
                 }
-
+                var phone = '0900123456'
+                console.log(info)
                 //list of dot
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
-
+                var f = info.el.getElementsByClassName('fc-list-item-title fc-widget-content')[0]
+                
+                console.log(f)
+                //"<a href='tel:" + phone +" '> " + phone + "</a>"
                 // if (dotEl) {
                 //     dotEl.style.backgroundColor = 'white';
                 // }
