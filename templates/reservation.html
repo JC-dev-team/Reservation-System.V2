@@ -12,6 +12,7 @@
 <!-- content-->
 {% block content %}
 {% load static %}
+{% load tagfunctions %}
 <div id="cover-spin"></div>
 <div class="container" style='display: none'>
     <form id="reservation_form" method="post">
@@ -292,8 +293,8 @@
                 //insert Modal of state
                 document.getElementById('modal_status').innerHTML =
                     '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + '<br>' +
-                    lunch_status +
-                    ' / ' + dinner_status
+                    "{{lunch_status|waitingList_Status:'Lunch'}}" +
+                    ' / ' + "{{dinner_status|waitingList_Status:'Dinner'}}"
                 //Show the Modal
                 document.getElementById('information_Modal').style.display = 'inline';
                 //Hidden spinner

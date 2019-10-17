@@ -72,7 +72,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries':{
-                'array_filter':'templates.templatetags.array_filter',
+                'tagfunctions':'templates.templatetags.tagfunctions',
             }
         },
     },
