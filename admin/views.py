@@ -217,7 +217,7 @@ def staff_add_event(request):  # add rest day as booking
                 else:
                     print('4')
                     return JsonResponse({'alert': '此時段已經是店休了'})
-                    
+
         return JsonResponse({'result': 'success'})
     except Exception as e:
         print(e)

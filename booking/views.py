@@ -84,6 +84,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 
     except Exception as e:
         # render html
+        request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/booking/login/'})
 
 
@@ -231,12 +232,13 @@ def InsertReservation(request):  # insert booking list
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
 
-            request.session.flush()
+            request.session['member_id'] = get_user_info.user_id
             return render(request, 'reservation_finish.html', {
                 'data': bklist_serializer.data,
                 'store': store_serializer.data,
                 'user_info': account_serializer.data, })
     except Exception as e:
+        request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/booking/login/'})
 
 
