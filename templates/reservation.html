@@ -59,19 +59,18 @@
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id='bk_st_select' required>
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                    <option value="L11:00" selected>中午：11:00</option>
-                    <option value="L11:30">中午：11:30</option>
-                    <option value="L12:00">中午：12:00</option>
-                    <option value="L12:30">中午：12:30</option>
-                    <option value="L13:00">中午：13:00</option>
-                    <option value="L13:30">中午：13:30</option>
+                    <option name='noon' value="L11:00" selected disable='disabled'>中午：11:00</option>
+                    <option name='noon' value="L11:30" disable='disabled'>中午：11:30</option>
+                    <option name='noon' value="L12:30" disable='disabled'>中午：12:30</option>
+                    <option name='noon' value="L13:00" disable='disabled'>中午：13:00</option>
+                    <option name='noon' value="L13:30" disable='disabled'>中午：13:30</option>
                     <option disabled>------------</option>
-                    <option value="D17:00">晚上：17:00</option>
-                    <option value="D17:30">晚上：17:30</option>
-                    <option value="D18:00">晚上：18:00</option>
-                    <option value="D18:30">晚上：18:30</option>
-                    <option value="D19:00">晚上：19:00</option>
-                    <option value="D19:30">晚上：19:30</option>
+                    <option name='night' value="D17:00" disable='disabled'>晚上：17:00</option>
+                    <option name='night' value="D17:30" disable='disabled'>晚上：17:30</option>
+                    <option name='night' value="D18:00" disable='disabled'>晚上：18:00</option>
+                    <option name='night' value="D18:30" disable='disabled'>晚上：18:30</option>
+                    <option name='night' value="D19:00" disable='disabled'>晚上：19:00</option>
+                    <option name='night' value="D19:30" disable='disabled'>晚上：19:30</option>
 
                 </select>
 
@@ -107,7 +106,7 @@
                 <div class="g-recaptcha" data-sitekey={{google_keys}} data-callback="onSubmit" data-size="invisible">
                 </div>
                 <br>
-                <button id='button_submit' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">確定送出 <i
+                <button id='button_submit' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right" disabled="disabled">確定送出 <i
                         class="fa fa-check"></i></button>
                 <button class="w3-button w3-red w3-section"
                     onclick="document.getElementById('information_Modal').style.display='none'">關閉 <i
@@ -263,7 +262,7 @@
                     window.location.replace('/booking/error/');
                 } else {
                     result = response.result
-                    console.log('result : ' + result)
+                    //console.log('result : ' + result)
                     //Function of calendar (return calendar.render())
                     calendar_fun(result, num)
 
@@ -289,11 +288,28 @@
                 var lunch_status = response.lunch_status
                 var dinner_status = response.dinner_status
                 console.log('lunch status : '+lunch_status)
+                console.log('dinner status : '+dinner_status)
                 //insert Modal of state
                 document.getElementById('modal_status').innerHTML =
                     '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + '<br>' +
                     lunch_status +
                     ' / ' + dinner_status
+
+                //disable
+                if (lunch_status == '中午店休' && dinner_status == '晚上店休') {
+                    console.log('disable')
+                    $('#button_submit').attr('disabled', true)
+                    $("option[name='noon']").attr('disabled', true)
+                    $("option[name='night']").attr('disabled', true)
+                    
+                }else if (lunch_status == '中午店休'){
+                    $("option[name='noon']").attr('disabled', true)
+                    $("option[name='night']").attr('selected', 'selected');
+                }else if (dinner_status == '晚上店休'){
+                    $("option[name='night']").attr('disabled', true)
+                    $("option[name='noon']").attr('selected', 'selected');
+                }
+                
                 //Show the Modal
                 document.getElementById('information_Modal').style.display = 'inline';
                 //Hidden spinner
@@ -419,7 +435,7 @@
                         if (result[i].start == start && result[i].title == title && result[i]
                             .backgroundColor ==
                             'yellow') {
-                            console.log(info.event.id)
+                            //console.log(info.event.id)
                             var event = calendar.getEventById(info.event.id)
                             event.setProp('title','店休')
                             info.el.style.backgroundColor = 'red';
@@ -438,8 +454,10 @@
                 eventMouseEnter: function (info) {
                     var adult = $('#adult_select').val();
                     var child = $('#children_select').val();
+                    //undisable 
+                    $('#button_submit').attr('disabled', false)
 
-                    console.log(info)
+                    //console.log(info)
                     var evMousEnter_st = info.event.start
                     var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
                     var title = info.event.title
@@ -450,7 +468,7 @@
                     }else {
                         var time_session = 'Dinner'
                     }
-                    console.log(time_session)
+                    //console.log(time_session)
                     //Monday disable
                     if (title == '店休') {
                         //Notiflix  Report
