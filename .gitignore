@@ -1,2 +1,11 @@
 .vscode
 softway_sys/__pycache__
+admin/__pycache__
+admin/migrations/__pycache__
+booking/__pycache__
+booking/migrations/__pycache__
+common/__pycache__
+common/utility/__pycache__
+templates/templatetags/__pycache__
+userdashboard/__pycache__
+userdashboard/migrations/__pycache__
