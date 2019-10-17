@@ -76,7 +76,7 @@
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id='dayoff_select' required>
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                    <option value="Lunch" >（店休）午餐</option>
+                    <option value="Lunch" selected>（店休）午餐</option>
                     <option value="Dinner">（店休）晚餐</option>
                     <option value="Allday">（店休）全天</option>
 
@@ -205,15 +205,16 @@
             success: function (response) {
                 if (response.error != null) {
                     console.log(response.error)
-                    // window.location.replace('/booking/error/');
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    Notiflix.Loading.Remove();
+                    document.getElementById('dayoff_Modal').style.display = 'none';
+                    window.location.replace('/softwayliving/error/');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else {
                     result = response.result
                     console.log(result)
-                    if (response.alert != null) {
-                        Notiflix.Report.Warning('警告', response.alert, 'ok');
-                    } else {
-                        Notiflix.Notify.Success('已設為店休！！');
-                    }
+                    Notiflix.Notify.Success('已設為店休！！');
 
                 }
                 Notiflix.Loading.Remove();
@@ -253,7 +254,9 @@
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log(errorThrown)
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
                 // window.location.replace('/booking/error/');
             }
 
@@ -285,6 +288,9 @@
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
                 console.log(errorThrown)
                 // window.location.replace('/booking/error/');
             }
@@ -313,6 +319,9 @@
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
                 console.log(errorThrown)
                 // window.location.replace('/booking/error/');
             }
@@ -420,18 +429,18 @@
             selectable: true,
 
             events: function (info, successCallback) {
-                
-                var event = [{
-                        id: '3',
-                        title: '店休',
-                        start: new Date(),
-                        startRecur: new Date().addDays(3),
-                        backgroundColor: 'red',
-                        textColor: 'white',
-                        daysOfWeek: [1],
 
-                    },];
-                    successCallback(event)
+                var event = [{
+                    id: '3',
+                    title: '店休',
+                    start: new Date(),
+                    startRecur: new Date().addDays(3),
+                    backgroundColor: 'red',
+                    textColor: 'white',
+                    daysOfWeek: [1],
+
+                }, ];
+                successCallback(event)
                 for (var i = 0; i < result.length; i++) {
 
                     var uuid = result[i].bk_uuid
@@ -487,7 +496,7 @@
                 //list of dot
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
                 var f = info.el.getElementsByClassName('fc-list-item-title fc-widget-content')[0]
-                
+
                 console.log(f)
                 //"<a href='tel:" + phone +" '> " + phone + "</a>"
                 // if (dotEl) {
@@ -499,10 +508,10 @@
             dateClick: function (info) {
                 console.log(info)
                 var date = info.dateStr
-                
+
                 // var time_session ='Allday'
                 console.log(date)
-                
+
 
                 //document modal
                 document.getElementById('dayoff_Modal').style.display = 'inline';
@@ -512,7 +521,7 @@
 
                 $('#modal_button_dayoff').click(function (e) {
                     var time_session = $('#dayoff_select').val()
-                    console.log('time_session: '+time_session)
+                    console.log('time_session: ' + time_session)
                     var data = {
                         store_id: '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
                         event_date: date,

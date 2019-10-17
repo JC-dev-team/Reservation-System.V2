@@ -168,16 +168,16 @@ def staff_add_event(request):  # add rest day as booking
         event_type = request.POST.get('event_type', None)
         print('time_session1 : ', time_session)
         # check data format
-        valid = StoreEvent_Serializer(
-            data={
-                'store': store_id,
-                'event_date': event_date,
-                'time_session': time_session,
-                'event_type': event_type
-            }
-        )
-        if valid.is_valid() == False:
-            return JsonResponse({'error': 'Not valid, 輸入資料格式錯誤'})
+        # valid = StoreEvent_Serializer(
+        #     data={
+        #         'store': store_id,
+        #         'event_date': event_date,
+        #         'time_session': time_session,
+        #         'event_type': event_type
+        #     }
+        # )
+        # if valid.is_valid() == False:
+        #     return JsonResponse({'error': 'Not valid, 輸入資料格式錯誤'})
         print('time_session2 : ', time_session)
         if time_session == 'Allday':
             time_session_arr = ['Lunch', 'Dinner']
@@ -217,8 +217,7 @@ def staff_add_event(request):  # add rest day as booking
                 else:
                     print('4')
                     return JsonResponse({'alert': '此時段已經是店休了'})
-
+        
         return JsonResponse({'result': 'success'})
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})

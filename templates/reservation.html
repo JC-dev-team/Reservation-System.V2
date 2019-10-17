@@ -106,8 +106,8 @@
                 <div class="g-recaptcha" data-sitekey={{google_keys}} data-callback="onSubmit" data-size="invisible">
                 </div>
                 <br>
-                <button id='button_submit' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right" disabled="disabled">確定送出 <i
-                        class="fa fa-check"></i></button>
+                <button id='button_submit' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right"
+                    disabled="disabled">確定送出 <i class="fa fa-check"></i></button>
                 <button class="w3-button w3-red w3-section"
                     onclick="document.getElementById('information_Modal').style.display='none'">關閉 <i
                         class="fa fa-remove"></i></button>
@@ -287,8 +287,8 @@
                 console.log(response)
                 var lunch_status = response.lunch_status
                 var dinner_status = response.dinner_status
-                console.log('lunch status : '+lunch_status)
-                console.log('dinner status : '+dinner_status)
+                console.log('lunch status : ' + lunch_status)
+                console.log('dinner status : ' + dinner_status)
                 //insert Modal of state
                 document.getElementById('modal_status').innerHTML =
                     '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + '<br>' +
@@ -301,15 +301,15 @@
                     $('#button_submit').attr('disabled', true)
                     $("option[name='noon']").attr('disabled', true)
                     $("option[name='night']").attr('disabled', true)
-                    
-                }else if (lunch_status == '中午店休'){
+
+                } else if (lunch_status == '中午店休') {
                     $("option[name='noon']").attr('disabled', true)
                     $("option[name='night']").attr('selected', 'selected');
-                }else if (dinner_status == '晚上店休'){
+                } else if (dinner_status == '晚上店休') {
                     $("option[name='night']").attr('disabled', true)
                     $("option[name='noon']").attr('selected', 'selected');
                 }
-                
+
                 //Show the Modal
                 document.getElementById('information_Modal').style.display = 'inline';
                 //Hidden spinner
@@ -336,447 +336,436 @@
         document.getElementById('calendar_container').style.display = 'inline'
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
-                //ColumnHeaderText
-                columnHeaderText: function (date) {
-                    if (date.getDay() === 0) {
-                        return '日';
-                    }
-                    if (date.getDay() === 1) {
-                        return '一';
-                    }
-                    if (date.getDay() === 2) {
-                        return '二';
-                    }
-                    if (date.getDay() === 3) {
-                        return '三';
-                    }
-                    if (date.getDay() === 4) {
-                        return '四';
-                    }
-                    if (date.getDay() === 5) {
-                        return '五';
-                    }
-                    if (date.getDay() === 6) {
-                        return '六';
-                    }
+            //ColumnHeaderText
+            columnHeaderText: function (date) {
+                if (date.getDay() === 0) {
+                    return '日';
+                }
+                if (date.getDay() === 1) {
+                    return '一';
+                }
+                if (date.getDay() === 2) {
+                    return '二';
+                }
+                if (date.getDay() === 3) {
+                    return '三';
+                }
+                if (date.getDay() === 4) {
+                    return '四';
+                }
+                if (date.getDay() === 5) {
+                    return '五';
+                }
+                if (date.getDay() === 6) {
+                    return '六';
+                }
+
+            },
+            //Plugins - 'interaction','dayGrid'
+            plugins: ['interaction', 'dayGrid', 'moment'],
+            editable: true,
+            //Default View
+            defaultView: 'dayGridMonth',
+            //defaultDate
+            defaultDate: (new Date().addMonths(num)).toISOString().slice(0, 10),
+            //Height
+            height: 'auto',
+            contentHeight: 500,
+            //Header
+            header: {
+                left: 'prev',
+                center: 'title',
+                right: 'next'
+            },
+            //Header - Title format
+            titleFormat: 'YYYY  MM月',
+            //Show none current date (False)
+            showNonCurrentDates: false,
+
+            //Date selectable (true)
+            selectable: true,
+
+            events: [{
+                    id: '1',
+                    title: '午餐',
+                    start: new Date(),
+                    startRecur: new Date().addDays(3),
+                    backgroundColor: 'green',
+                    textColor: 'white',
+                    daysOfWeek: [2, 3, 4, 5, 6, 0]
+                },
+                {
+                    id: '2',
+                    title: '晚餐',
+                    start: new Date(),
+                    startRecur: new Date().addDays(3),
+                    backgroundColor: 'green',
+                    textColor: 'white',
+                    daysOfWeek: [2, 3, 4, 5, 6, 0]
+                },
+                {
+                    id: '3',
+                    title: '店休',
+                    start: new Date(),
+                    startRecur: new Date().addDays(3),
+                    backgroundColor: 'red',
+                    textColor: 'white',
+                    daysOfWeek: [1],
 
                 },
-                //Plugins - 'interaction','dayGrid'
-                plugins: ['interaction', 'dayGrid', 'moment'],
-                editable: true,
-                //Default View
-                defaultView: 'dayGridMonth',
-                //defaultDate
-                defaultDate: (new Date().addMonths(num)).toISOString().slice(0, 10),
-                //Height
-                height: 'auto',
-                contentHeight: 500,
-                //Header
-                header: {
-                    left: 'prev',
-                    center: 'title',
-                    right: 'next'
-                },
-                //Header - Title format
-                titleFormat: 'YYYY  MM月',
-                //Show none current date (False)
-                showNonCurrentDates: false,
 
-                //Date selectable (true)
-                selectable: true,
+            ],
 
-                events: [{
-                        id: '1',
-                        title: '午餐',
-                        start: new Date(),
-                        startRecur: new Date().addDays(3),
-                        backgroundColor: 'green',
-                        textColor: 'white',
-                        daysOfWeek: [2, 3, 4, 5, 6, 0]
-                    },
-                    {
-                        id: '2',
-                        title: '晚餐',
-                        start: new Date(),
-                        startRecur: new Date().addDays(3),
-                        backgroundColor: 'green',
-                        textColor: 'white',
-                        daysOfWeek: [2, 3, 4, 5, 6, 0]
-                    },
-                    {
-                        id: '3',
-                        title: '店休',
-                        start: new Date(),
-                        startRecur: new Date().addDays(3),
-                        backgroundColor: 'red',
-                        textColor: 'white',
-                        daysOfWeek: [1],
+            eventRender: function (info) {
+                var st = info.event.start
+                var start = (new Date(st).addDays(1)).toISOString().slice(0, 10)
+                var title = info.event.title
+                var color = info.event.backgroundColor
 
-                    },
+                // console.log(result[0].title)
+                for (var i = 0; i < result.length; i++) {
 
-                ],
-
-                eventRender: function (info) {
-                    var st = info.event.start
-                    var start = (new Date(st).addDays(1)).toISOString().slice(0, 10)
-                    var title = info.event.title
-                    var color = info.event.backgroundColor
-                    
-                    // console.log(result[0].title)
-                    for (var i = 0; i < result.length; i++) {
-                        
-                        //red : 人數額滿
-                        if (result[i].start == start && result[i].title == title && result[i]
-                            .backgroundColor ==
-                            'red') {
-                            info.el.style.backgroundColor = 'red'
-                        }
-                        //yellow : 店休
-                        if (result[i].start == start && result[i].title == title && result[i]
-                            .backgroundColor ==
-                            'yellow') {
-                            //console.log(info.event.id)
-                            var event = calendar.getEventById(info.event.id)
-                            event.setProp('title','店休')
-                            info.el.style.backgroundColor = 'red';
-                            info.el.innerText = '店休'
-                            
-                        }
-                        
+                    //red : 人數額滿
+                    if (result[i].start == start && result[i].title == title && result[i]
+                        .backgroundColor ==
+                        'red') {
+                        info.el.style.backgroundColor = 'red'
                     }
-                },
-
-                //Function
-                dateClick: function (info) {
-                    console.log('dateClick: ' + info)
-
-                },
-                eventMouseEnter: function (info) {
-                    var adult = $('#adult_select').val();
-                    var child = $('#children_select').val();
-                    //undisable 
-                    $('#button_submit').attr('disabled', false)
-
-                    //console.log(info)
-                    var evMousEnter_st = info.event.start
-                    var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
-                    var title = info.event.title
-                    var color = info.el.style.backgroundColor
-                    
-                    if (title == '午餐') {
-                        var time_session = 'Lunch'
-                    }else {
-                        var time_session = 'Dinner'
-                    }
-                    //console.log(time_session)
-                    //Monday disable
-                    if (title == '店休') {
-                        //Notiflix  Report
-                        Notiflix.Report.Warning('店休 ','＃每週一為公休日 ','ok ');
-                        return false
-                        }
-
-                        //insert Modal of date
-                        document.getElementById('modal_date').innerHTML =
-                            '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' +
-                            '<p id="bk_date_select">' +
-                            start + '</p>'
-
-                        //ajax eventClick_sendDate(data)
-                        var data = {
-                            'adult': adult,
-                            'children': child,
-                            'event_date': start,
-                            'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
-
-                        }
-
-                        //spinner show
-                        Notiflix.Loading.Hourglass();
-                        eventClick_sendDate(data)
-
+                    //yellow : 店休
+                    if (result[i].start == start && result[i].title == title && result[i]
+                        .backgroundColor ==
+                        'yellow') {
+                        //console.log(info.event.id)
+                        var event = calendar.getEventById(info.event.id)
+                        event.setProp('title', '店休')
+                        info.el.style.backgroundColor = 'red';
+                        info.el.innerText = '店休'
 
                     }
-                });
-            return calendar.render();
-            
 
-        }
+                }
+            },
 
-        function ajax_post(num = 0) {
-            //ajax data
-            var status = true;
-            var adult = $('#adult_select').val();
-            var child = $('#children_select').val();
-            // var Date = moment().add(1,'M')
-            var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
-            var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
+            //Function
+            dateClick: function (info) {
+                console.log('dateClick: ' + info)
 
-            console.log(start_month, end_month)
+            },
+            eventMouseEnter: function (info) {
+                var adult = $('#adult_select').val();
+                var child = $('#children_select').val();
+                //undisable 
+                $('#button_submit').attr('disabled', false)
 
-            if (status) {
+                //console.log(info)
+                var evMousEnter_st = info.event.start
+                var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
+                var title = info.event.title
+                var color = info.el.style.backgroundColor
+
+                if (title == '午餐') {
+                    var time_session = 'Lunch'
+                } else {
+                    var time_session = 'Dinner'
+                }
+                //console.log(time_session)
+                //Monday disable
+                if (title == '店休') {
+                    //Notiflix  Report
+                    Notiflix.Report.Warning('店休 ', '＃每週一為公休日 ', 'ok ');
+                    return false
+                }
+
+                //insert Modal of date
+                document.getElementById('modal_date').innerHTML =
+                    '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' +
+                    '<p id="bk_date_select">' +
+                    start + '</p>'
+
+                //ajax eventClick_sendDate(data)
                 var data = {
                     'adult': adult,
                     'children': child,
+                    'event_date': start,
                     'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
-                    'start_month': start_month,
-                    'end_month': end_month,
-                }
-                //Clean the calendar
-                document.getElementById('calendar').innerHTML = ''
 
-                // do ajax fuction
-                people_number(data, num)
+                }
 
                 //spinner show
-                document.getElementById('calendar_container').style.display = 'inline'
                 Notiflix.Loading.Hourglass();
-
+                eventClick_sendDate(data)
             }
+        });
+        return calendar.render();
+    }
 
+    function ajax_post(num = 0) {
+        //ajax data
+        var status = true;
+        var adult = $('#adult_select').val();
+        var child = $('#children_select').val();
+        // var Date = moment().add(1,'M')
+        var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
+        var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
+
+        console.log(start_month, end_month)
+        if (status) {
+            var data = {
+                'adult': adult,
+                'children': child,
+                'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+                'start_month': start_month,
+                'end_month': end_month,
+            }
+            //Clean the calendar
+            document.getElementById('calendar').innerHTML = ''
+
+            // do ajax fuction
+            people_number(data, num)
+
+            //spinner show
+            document.getElementById('calendar_container').style.display = 'inline'
+            Notiflix.Loading.Hourglass();
 
         }
 
-        //ready
-        $(function () {
-            //Date addDays() & addMonths()
-            Date.prototype.addDays = function (days) {
-                var date = new Date(this.valueOf());
-                date.setDate(date.getDate() + days);
-                return date;
+
+    }
+
+    //ready
+    $(function () {
+        //Date addDays() & addMonths()
+        Date.prototype.addDays = function (days) {
+            var date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        }
+        Date.prototype.addMonths = function (months) {
+            var date = new Date(this.valueOf());
+            date.setMonth(date.getMonth() + months);
+            return date;
+        }
+
+        //Initial User of displayName & displayPhone
+        $('#displayName').html('{{ data.username }}');
+        $('#displayPhone').html('{{ data.phone }}');
+
+        //Init LIFF
+        liff.init(function (data) {
+            initializeApp(data);
+        });
+
+        $('#adult_select, #children_select').change(function (e) {
+            document.getElementById('calendar').innerHTML = ''
+        })
+
+        $('#button_submit').click(function (e) {
+            var status = true;
+
+            //Information of social 
+            $('#social_id').val('{{data.social_id}}');
+            $('#social_app').val('{{data.social_app}}');
+            //Information of user & store
+            $('#user_id').val('{{data.user_id}}');
+            $('#store_id').val('6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'); //###
+            //Information of people number
+            $('#adult').val($('#adult_select').val())
+            $('#children').val($('#children_select').val())
+            //Information of reservation date & time
+            $('#bk_date').val($('#bk_date_select').text())
+            $('#time_session').val($('#bk_st_select').val().slice(0, 1))
+            $('#bk_st').val($('#bk_st_select').val().slice(1, ))
+            $('#entire_time').val(0) //Default False
+            $('#event_type').val('online-reservation')
+            //Information of reservation ps & price
+            $('#bk_ps').val($('#bk_ps_select').val())
+            $('#price').val($('#price_select').val())
+
+
+            //Line Liff Data
+            var line_date = $('#bk_date').val();
+            var line_session = $('#time_session').val();
+            var line_time = $('#bk_st').val();
+            var line_number = $('#adult').val() + " 大 " + $('#children').val() + " 小"
+            var line_ps = $('#bk_ps').val();
+
+            if (line_session == 'L') {
+                line_session = '午餐'
+            } else {
+                line_session = '晚餐'
             }
-            Date.prototype.addMonths = function (months) {
-                var date = new Date(this.valueOf());
-                date.setMonth(date.getMonth() + months);
-                return date;
-            }
-
-            //Initial User of displayName & displayPhone
-            $('#displayName').html('{{ data.username }}');
-            $('#displayPhone').html('{{ data.phone }}');
-
-            //Init LIFF
-            liff.init(function (data) {
-                initializeApp(data);
-            });
-
-            $('#adult_select, #children_select').change(function (e) {
-                document.getElementById('calendar').innerHTML = ''
-            })
-
-            $('#button_submit').click(function (e) {
-                var status = true;
-
-                //Information of social 
-                $('#social_id').val('{{data.social_id}}');
-                $('#social_app').val('{{data.social_app}}');
-                //Information of user & store
-                $('#user_id').val('{{data.user_id}}');
-                $('#store_id').val('6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'); //###
-                //Information of people number
-                $('#adult').val($('#adult_select').val())
-                $('#children').val($('#children_select').val())
-                //Information of reservation date & time
-                $('#bk_date').val($('#bk_date_select').text())
-                $('#time_session').val($('#bk_st_select').val().slice(0, 1))
-                $('#bk_st').val($('#bk_st_select').val().slice(1, ))
-                $('#entire_time').val(0) //Default False
-                $('#event_type').val('online-reservation')
-                //Information of reservation ps & price
-                $('#bk_ps').val($('#bk_ps_select').val())
-                $('#price').val($('#price_select').val())
 
 
-                //Line Liff Data
-                var line_date = $('#bk_date').val();
-                var line_session = $('#time_session').val();
-                var line_time = $('#bk_st').val();
-                var line_number = $('#adult').val() + " 大 " + $('#children').val() + " 小"
-                var line_ps = $('#bk_ps').val();
+            Notiflix.Confirm.Show('訂位資訊', '確定送出訂單', '是', '否',
+                function () {
+                    alert('YES');
+                    if (status) {
+                        document.getElementById("reservation_form").action =
+                            "/booking/reservation/";
+                        document.getElementById("reservation_form").submit();
+                        //spinner
+                        Notiflix.Loading.Hourglass();
+                        // Line Liff Messages
+                        liff.sendMessages([{
+                                "type": "flex",
+                                "altText": "Flex Message",
+                                "contents": {
+                                    "type": "bubble",
+                                    "body": {
+                                        "type": "box",
+                                        "layout": "vertical",
+                                        "contents": [{
+                                                "type": "text",
+                                                "text": "❓ " + " 訂位處理中...",
+                                                "size": "xl",
+                                                "weight": "bold"
+                                            },
+                                            {
+                                                "type": "box",
+                                                "layout": "vertical",
+                                                "spacing": "sm",
+                                                "margin": "lg",
+                                                "contents": [{
+                                                        "type": "box",
+                                                        "layout": "baseline",
+                                                        "spacing": "sm",
+                                                        "contents": [{
+                                                                "type": "text",
+                                                                "text": "用餐日期",
+                                                                "flex": 2,
+                                                                "size": "sm",
+                                                                "color": "#AAAAAA"
+                                                            },
+                                                            {
+                                                                "type": "text",
+                                                                "text": line_date +
+                                                                    ' ' +
+                                                                    line_session +
+                                                                    ' ' +
+                                                                    line_time,
+                                                                "flex": 5,
+                                                                "size": "sm",
+                                                                "color": "#666666",
+                                                                "wrap": true
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "box",
+                                                        "layout": "baseline",
+                                                        "spacing": "sm",
+                                                        "contents": [{
+                                                                "type": "text",
+                                                                "text": "用餐人數",
+                                                                "flex": 2,
+                                                                "size": "sm",
+                                                                "color": "#AAAAAA"
+                                                            },
+                                                            {
+                                                                "type": "text",
+                                                                "text": line_number,
+                                                                "flex": 5,
+                                                                "size": "sm",
+                                                                "color": "#666666",
+                                                                "wrap": true
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "box",
+                                                        "layout": "baseline",
+                                                        "spacing": "sm",
+                                                        "contents": [{
+                                                                "type": "text",
+                                                                "text": "備註",
+                                                                "flex": 1,
+                                                                "size": "sm",
+                                                                "color": "#AAAAAA"
+                                                            },
+                                                            {
+                                                                "type": "text",
+                                                                "text": line_ps,
+                                                                "flex": 5,
+                                                                "size": "sm",
+                                                                "color": "#666666",
+                                                                "wrap": true
+                                                            }
+                                                        ]
+                                                    }
 
-                if (line_session == 'L') {
-                    line_session = '午餐'
-                } else {
-                    line_session = '晚餐'
-                }
-
-
-                Notiflix.Confirm.Show('訂位資訊', '確定送出訂單', '是', '否',
-                    function () {
-                        alert('YES');
-                        if (status) {
-                            document.getElementById("reservation_form").action =
-                                "/booking/reservation/";
-                            document.getElementById("reservation_form").submit();
-                            //spinner
-                            Notiflix.Loading.Hourglass();
-                            // Line Liff Messages
-                            liff.sendMessages([{
-                                    "type": "flex",
-                                    "altText": "Flex Message",
-                                    "contents": {
-                                        "type": "bubble",
-                                        "body": {
-                                            "type": "box",
-                                            "layout": "vertical",
-                                            "contents": [{
-                                                    "type": "text",
-                                                    "text": "❓ " + " 訂位處理中...",
-                                                    "size": "xl",
-                                                    "weight": "bold"
-                                                },
-                                                {
-                                                    "type": "box",
-                                                    "layout": "vertical",
-                                                    "spacing": "sm",
-                                                    "margin": "lg",
-                                                    "contents": [{
-                                                            "type": "box",
-                                                            "layout": "baseline",
-                                                            "spacing": "sm",
-                                                            "contents": [{
-                                                                    "type": "text",
-                                                                    "text": "用餐日期",
-                                                                    "flex": 2,
-                                                                    "size": "sm",
-                                                                    "color": "#AAAAAA"
-                                                                },
-                                                                {
-                                                                    "type": "text",
-                                                                    "text": line_date +
-                                                                        ' ' +
-                                                                        line_session +
-                                                                        ' ' +
-                                                                        line_time,
-                                                                    "flex": 5,
-                                                                    "size": "sm",
-                                                                    "color": "#666666",
-                                                                    "wrap": true
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "type": "box",
-                                                            "layout": "baseline",
-                                                            "spacing": "sm",
-                                                            "contents": [{
-                                                                    "type": "text",
-                                                                    "text": "用餐人數",
-                                                                    "flex": 2,
-                                                                    "size": "sm",
-                                                                    "color": "#AAAAAA"
-                                                                },
-                                                                {
-                                                                    "type": "text",
-                                                                    "text": line_number,
-                                                                    "flex": 5,
-                                                                    "size": "sm",
-                                                                    "color": "#666666",
-                                                                    "wrap": true
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "type": "box",
-                                                            "layout": "baseline",
-                                                            "spacing": "sm",
-                                                            "contents": [{
-                                                                    "type": "text",
-                                                                    "text": "備註",
-                                                                    "flex": 1,
-                                                                    "size": "sm",
-                                                                    "color": "#AAAAAA"
-                                                                },
-                                                                {
-                                                                    "type": "text",
-                                                                    "text": line_ps,
-                                                                    "flex": 5,
-                                                                    "size": "sm",
-                                                                    "color": "#666666",
-                                                                    "wrap": true
-                                                                }
-                                                            ]
-                                                        }
-
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        "footer": {
-                                            "type": "box",
-                                            "layout": "vertical",
-                                            "flex": 0,
-                                            "spacing": "sm",
-                                            "contents": [{
-                                                "type": "button",
-                                                "action": {
-                                                    "type": "uri",
-                                                    "label": "查詢/取消訂位",
-                                                    "uri": "line://app/1577114898-D5d8edOv"
-                                                },
-                                                "color": "#2C9278",
-                                                "height": "sm",
-                                                "style": "primary"
-                                            }]
-                                        }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "footer": {
+                                        "type": "box",
+                                        "layout": "vertical",
+                                        "flex": 0,
+                                        "spacing": "sm",
+                                        "contents": [{
+                                            "type": "button",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "查詢/取消訂位",
+                                                "uri": "line://app/1577114898-D5d8edOv"
+                                            },
+                                            "color": "#2C9278",
+                                            "height": "sm",
+                                            "style": "primary"
+                                        }]
                                     }
-                                }])
-                                // .then(() => {
-                                //     liff.closeWindow();
-                                // })
-                                .catch((err) => {
-                                    console.log('error : ', err)
-                                });
+                                }
+                            }])
+                            // .then(() => {
+                            //     liff.closeWindow();
+                            // })
+                            .catch((err) => {
+                                console.log('error : ', err)
+                            });
 
-                        }
+                    }
 
-                    },
-                    function () {
-                        alert('NO');
-                        status = false;
-                    });
-
-
-
-
-
-
-
-
-            });
+                },
+                function () {
+                    alert('NO');
+                    status = false;
+                });
 
         });
 
-
-        // $('.fc-button-primary span').click(function (e) {
-        //     $('#date').val((new Date().addMonths(1)).toISOString().slice(0, 10));
-        // })
-
-        //next month of button
-        $('body').on('click', 'button.fc-next-button', function () {
-            var num_str = $('#date_num').val()
-            var num = parseInt(num_str) + 1
-            $('#date_num').val(num)
-            //do the fuction of ajax_post()
-            ajax_post(num)
-        })
-
-        //previous month of button
-        $('body').on('click', 'button.fc-prev-button', function () {
-            var num_str = $('#date_num').val()
-            var num = parseInt(num_str) - 1
-            $('#date_num').val(num)
-            //do the fuction of ajax_post()
-            ajax_post(num)
-        })
-
-        $('#people_number_submit').click(function (e) {
-            console.log('people_number_submit.click()')
-            var num = parseInt($('#date_num').val())
-            //do the fuction of ajax_post()
-            ajax_post(num)
+    });
 
 
-        })
+    // $('.fc-button-primary span').click(function (e) {
+    //     $('#date').val((new Date().addMonths(1)).toISOString().slice(0, 10));
+    // })
+
+    //next month of button
+    $('body').on('click', 'button.fc-next-button', function () {
+        var num_str = $('#date_num').val()
+        var num = parseInt(num_str) + 1
+        $('#date_num').val(num)
+        //do the fuction of ajax_post()
+        ajax_post(num)
+    })
+
+    //previous month of button
+    $('body').on('click', 'button.fc-prev-button', function () {
+        var num_str = $('#date_num').val()
+        var num = parseInt(num_str) - 1
+        $('#date_num').val(num)
+        //do the fuction of ajax_post()
+        ajax_post(num)
+    })
+
+    $('#people_number_submit').click(function (e) {
+        console.log('people_number_submit.click()')
+        var num = parseInt($('#date_num').val())
+        //do the fuction of ajax_post()
+        ajax_post(num)
+
+
+    })
+
 </script>
 {% endblock %}
