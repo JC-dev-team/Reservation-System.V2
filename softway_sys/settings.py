@@ -25,7 +25,7 @@ SECRET_KEY = 'd91v90b$q&w!9x6wn5_iaej@a%^wj#v!!b(*%+h@$pj8e6=gz='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 ADMIN_ENABLED = False
 # Application definition
@@ -47,14 +47,20 @@ RECAPTCHA_PRIVATE_KEY = '6LftQr0UAAAAAJqjEwg2fiEzZXAd-NGgGWQwDulz'
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # 'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+## Security settings
+SECURE_CONTENT_TYPE_NOSNIFF =True
+CSRF_COOKIE_SECURE =True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_SSL_REDIRECT=True
+X_FRAME_OPTIONS = 'DENY' # default = 'SAMEORIGIN'
+SESSION_COOKIE_SECURE =True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ROOT_URLCONF = 'softway_sys.urls'
