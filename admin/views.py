@@ -116,17 +116,17 @@ def staff_approval_reservation(request):
         bk_date = request.POST.get('bk_date', None)
         bk_ps = request.POST.get('bk_ps', None)
         with transaction.atomic():  # transaction
-            bk_queryset = BkList.objects.select_for_update().get(
+            bk_queryset = BkList.objects.select_for_update().filter(
                 bk_uuid=bk_uuid,
                 bk_date=bk_date,
                 is_cancel=False,
                 is_confirm=False,
             )
+            if bk_queryset.exists() == False:
+                return JsonResponse({'alert': '資料不存在或是已被刪除'})
             bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
             return JsonResponse({'result': 'success'})
 
-    except BkList.DoesNotExist:
-        return JsonResponse({'alert': '資料不存在或是已被刪除'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
@@ -151,11 +151,11 @@ def staff_cancel_reservation(request):
                 bk_date=bk_date,
                 is_cancel=False,
             )
+            if bk_queryset.exists() == False:
+                return JsonResponse({'alert': '資料不存在或是已被刪除'})
             bk_queryset.update(is_cancel=True)
             return JsonResponse({'result': 'success'})
 
-    except BkList.DoesNotExist:
-        return JsonResponse({'alert': '資料不存在或是已被刪除'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
