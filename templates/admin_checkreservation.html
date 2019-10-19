@@ -481,8 +481,9 @@
                     var price = '$' + result[i].bk_price;
                     var ps = '#' + result[i].bk_ps + ' ';
                     var waiting_num = result[i].waiting_num
-                    var phone = account[i].phone
-                    var name = account[i].username
+                    var user_phone = account[i].phone
+                    var user_name = account[i].username
+                    var social_name = account[i].social_name
 
                     if (session == 'Lunch') {
                         session = '午餐'
@@ -504,8 +505,8 @@
 
                     Event.push({
                         id: uuid,
-                        title: session + ' ' + people + ' ' + price + ' ' + ps + '\n' + name +
-                            '  ' + phone,
+                        title: session + ' ' + people + ' ' + price + ' ' + ps + '\n' + user_name +
+                            '(' +social_name+')'+' '+ user_phone,
                         start: date + time,
                         backgroundColor: color,
                         textColor: 'white',
@@ -609,9 +610,9 @@
                 var date = info.event.start.toISOString().slice(0, 10)
                 var time = info.el.textContent.split(' ')[0].slice(0, -2)
                 var information = info.event.title.split('\n')[0]
-                var user_name = info.event.title.split('\n')[1].split('  ')[0]
-                var user_phone = info.event.title.split('\n')[1].split('  ')[1]
-
+                var user_name = info.event.title.split('\n')[1].split(' ')[0]
+                var user_phone = info.event.title.split('\n')[1].split(' ')[1]
+                var user_social_name = ''
 
                 //document modal
                 document.getElementById('information_Modal').style.display = 'inline';
