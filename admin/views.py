@@ -116,7 +116,7 @@ def staff_approval_reservation(request):
         bk_date = request.POST.get('bk_date', None)
         bk_ps = request.POST.get('bk_ps', None)
         with transaction.atomic():  # transaction
-            bk_queryset = BkList.objects.select_for_update().filter(
+            bk_queryset = BkList.objects.select_for_update().get(
                 bk_uuid=bk_uuid,
                 bk_date=bk_date,
                 is_cancel=False,
