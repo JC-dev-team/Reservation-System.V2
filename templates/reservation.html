@@ -31,7 +31,7 @@
         <input id='entire_time' name='entire_time' type="text" value="" style="display: none">
         <input id='event_type' name='event_type' type="text" value="" style="display: none">
 
-        <input id='bk_ps' name='bk_ps' type="text" value="" style="display: none">
+        <input id='bk_habit' name='bk_habit' type="text" value="" style="display: none">
         <input id='price' name='price' type="number" value="" style="display: none">
 
         <!-- <input id="reservation_form_submit" type="submit" style="display: none"> -->
@@ -94,7 +94,7 @@
                 <!-- Ps-->
                 <label><i class="fa fa-bell"></i> 飲食習慣：</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    id='bk_ps_select' required>
+                    id='bk_habit_select' required>
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
                     <option value="無" selected>無</option>
                     <option value="不吃牛">不吃牛</option>
@@ -580,7 +580,7 @@
             $('#entire_time').val(0) //Default False
             $('#event_type').val('online-reservation')
             //Information of reservation ps & price
-            $('#bk_ps').val($('#bk_ps_select').val())
+            $('#bk_habit').val($('#bk_habit_select').val())
             $('#price').val($('#price_select').val())
 
 
@@ -589,7 +589,7 @@
             var line_session = $('#time_session').val();
             var line_time = $('#bk_st').val();
             var line_number = $('#adult').val() + " 大 " + $('#children').val() + " 小"
-            var line_ps = $('#bk_ps').val();
+            var line_ps = $('#bk_habit').val();
 
             if (line_session == 'L') {
                 line_session = '午餐'
