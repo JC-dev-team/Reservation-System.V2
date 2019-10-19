@@ -119,7 +119,7 @@ def InsertReservation(request):  # insert booking list
         bk_ed = request.POST.get('bk_ed', None)
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
-        bk_ps = request.POST.get('bk_ps', None)
+        bk_habit = request.POST.get('bk_habit', None)
         event_type = request.POST.get('event_type', None)
         time_session = request.POST.get('time_session', None)
         entire_time = request.POST.get('entire_time', False)
@@ -135,7 +135,7 @@ def InsertReservation(request):  # insert booking list
             'bk_ed': bk_ed,
             'adult': adult,
             'children': children,
-            'bk_ps': bk_ps,
+            'bk_habit': bk_habit,
             'event_type': event_type,
             'time_session': time_session,
             'entire_time': entire_time,
@@ -200,7 +200,7 @@ def InsertReservation(request):  # insert booking list
                 bk_ed=bk_ed,
                 adult=adult,
                 children=children,
-                bk_ps=bk_ps,
+                bk_habit=bk_habit,
                 event_type=event_type,
                 time_session=time_session,
                 entire_time=entire_time,
