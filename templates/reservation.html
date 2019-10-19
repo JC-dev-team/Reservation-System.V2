@@ -61,6 +61,7 @@
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
                     <option name='noon' value="L11:00" selected disable='disabled'>中午：11:00</option>
                     <option name='noon' value="L11:30" disable='disabled'>中午：11:30</option>
+                    <option name='noon' value="L12:00" disable='disabled'>中午：12:00</option>
                     <option name='noon' value="L12:30" disable='disabled'>中午：12:30</option>
                     <option name='noon' value="L13:00" disable='disabled'>中午：13:00</option>
                     <option name='noon' value="L13:30" disable='disabled'>中午：13:30</option>
@@ -491,9 +492,10 @@
 
                 }
 
+                
+                eventClick_sendDate(data)
                 //spinner show
                 Notiflix.Loading.Hourglass();
-                eventClick_sendDate(data)
             }
         });
         return calendar.render();
