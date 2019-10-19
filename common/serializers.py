@@ -6,7 +6,7 @@ class check_bklist(serializers.ModelSerializer):
     class Meta:
         model = BkList
         fields = ('user_id', 'store_id', 'bk_date', 'bk_st',
-                  'bk_ed', 'adult', 'children', 'bk_ps', 'event_type', 
+                  'bk_ed', 'adult', 'children', 'bk_ps', 'bk_habit','event_type', 
                   'time_session', 'entire_time', 'bk_price','is_confirm')
 
 class checkAuth(serializers.ModelSerializer):
@@ -22,7 +22,7 @@ class checkStaffAuth(serializers.ModelSerializer):
 class applymember(serializers.ModelSerializer):
     class Meta:
         model =Account
-        fields =('social_id','social_app','phone','username')
+        fields =('social_id','social_app','social_name','phone','username')
 
 
 class Acc_Serializer(serializers.ModelSerializer):

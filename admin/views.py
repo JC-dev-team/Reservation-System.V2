@@ -114,14 +114,16 @@ def staff_approval_reservation(request):
     try:
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
+        bk_ps = request.POST.get('bk_ps', None)
         with transaction.atomic():  # transaction
             bk_queryset = BkList.objects.select_for_update().filter(
                 bk_uuid=bk_uuid,
                 bk_date=bk_date,
+                bk_ps=bk_ps,
                 is_cancel=False,
                 is_confirm=False,
             )
-            bk_queryset.update(waiting_num=0, is_confirm=True)
+            bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
             return JsonResponse({'result': 'success'})
 
     except BkList.DoesNotExist:
@@ -183,7 +185,6 @@ def staff_add_event(request):  # add rest day as booking
         else:
             time_session_arr = [time_session]
 
-        
         with transaction.atomic():  # transaction
             # Check is there same event
             flag = 0
@@ -211,7 +212,7 @@ def staff_add_event(request):  # add rest day as booking
                 else:
                     print('4')
                     return JsonResponse({'alert': '此時段已經是店休了'})
-        
+
         return JsonResponse({'result': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
