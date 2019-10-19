@@ -47,6 +47,8 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         username = request.POST.get('username', None)
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
+        social_name = request.POST.get('social_name', None)
+
         if social_id == None or social_app == None or social_id == '' or social_app == '':
             raise Exception('Not Valid, 無法取得帳號資料')
         # Check data format
@@ -55,6 +57,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         valid = applymember(data={
             'social_id': social_id,
             'social_app': social_app,
+            'social_name': social_name,
             'username': username,
             'phone': phone,
         })
@@ -67,12 +70,14 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                 username=username,
                 social_id=social_id,
                 social_app=social_app,
+                social_name=social_name,
             )
             queryset = Account.objects.select_for_update().get(
                 phone=phone,
                 username=username,
                 social_id=social_id,
-                social_app=social_app
+                social_app=social_app,
+                social_name=social_name,
             )
 
         serializer_class = Acc_Serializer(queryset)
@@ -171,7 +176,7 @@ def InsertReservation(request):  # insert booking list
                 bk_date=bk_date,
                 time_session=time_session,
                 is_cancel=is_cancel,
-                waiting_num = 0,
+                waiting_num=0,
             )
 
             # count is that enough for seat values
@@ -207,7 +212,7 @@ def InsertReservation(request):  # insert booking list
                 is_cancel=is_cancel,
                 waiting_num=waiting_num,
                 bk_price=bk_price,
-                is_confirm = is_confirm,
+                is_confirm=is_confirm,
             )
             get_user_info = Account.objects.only('user_id', 'username').get(
                 user_id=user_id,
@@ -255,6 +260,7 @@ def member(request):
     try:  # Check Login
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
+        social_name = request.POST.get('social_name', None)
         valid = checkAuth(data={
             'social_id': social_id,
             'social_app': social_app
@@ -273,8 +279,13 @@ def member(request):
         elif type(result) == dict:
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/booking/login/'})
         else:  # Account Exist
+            if result.social_name != social_name:
+                result.social_name = social_name
+                result.save()
+
             serializer = Acc_Serializer(result)
-            request.session['member_id'] = result.user_id
+
+            request.session['user_id'] = result.user_id
 
             return render(request, 'reservation.html', {
                 'data': serializer.data,
@@ -336,7 +347,7 @@ def getWaitingList(request):  # get waiting list
                 else:  # database has bug, plz fix it
                     raise Exception('Unknown error, please call IT to fix it')
 
-        if lunch_waiting == None: # Lunch is available for reservation
+        if lunch_waiting == None:  # Lunch is available for reservation
             bk_list_noon = bk_queryset.filter(  # get bookinglist of noon
                 waiting_num=0,
                 time_session='Lunch',
@@ -363,7 +374,7 @@ def getWaitingList(request):  # get waiting list
             else:
                 lunch_waiting = '午餐: 候補第 ' + str((lunch_waiting+1))+' 順位'
 
-        if dinner_waiting == None: # dinner is available for reservation
+        if dinner_waiting == None:  # dinner is available for reservation
             bk_list_night = bk_queryset.filter(  # get bookinglist of night
                 waiting_num=0,
                 time_session='Dinner'

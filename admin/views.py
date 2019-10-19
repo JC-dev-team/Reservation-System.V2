@@ -110,7 +110,7 @@ def staff_check_reservation(request):
 
 
 @require_http_methods(['POST'])
-def staff_approval_reservation(request):
+def staff_confirm_reservation(request):
     try:
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
@@ -128,10 +128,48 @@ def staff_approval_reservation(request):
             return JsonResponse({'result': 'success'})
 
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 
+@require_http_methods(['POST'])
+def staff_pass_reservation(request):
+    try:
+        bk_uuid = request.POST.get('bk_uuid', None)
+        time_session = request.POST.get('time_session', None)
+        bk_date = request.POST.get('bk_date', None)
+        bk_ps = request.POST.get('bk_ps', None)
+        store_id = request.POST.get('store_id', None)
+
+        with transaction.atomic():  # transaction
+            store_queryset = Store.objects.only('seat').get(store_id=store_id,)
+            queryset = BkList.objects.select_for_update().filter(
+                bk_date=bk_date,
+                is_cancel=False,
+                time_session=time_session,
+            )
+            # Must be only one data
+            bk_queryset = queryset.filter(
+                bk_uuid=bk_uuid, is_confirm=False,)
+            # Get total number of guests
+            total = int(bk_queryset[0].adult) + int(bk_queryset[0].children)
+            if bk_queryset.exists() == False:
+                return JsonResponse({'alert': '資料已經被刪除或是訂位完成'})
+            # Get the list before the bk_queryset waiting_num=0
+            beforelist = queryset.filter(
+                waiting_num=0,
+            )
+            for i in beforelist:
+                total += int(i.adult)+int(i.children)
+
+            if total > store_queryset:
+                return JsonResponse({'alert': '請先刪除前面非候補訂位'})
+
+            bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
+            return JsonResponse({'result': 'success'})
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': '發生未知錯誤'})
 # @require_http_methods(['POST'])
 # def staff_add_reservation(request):  # Help client to add reservation
 #     try:

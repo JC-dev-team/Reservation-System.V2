@@ -21,10 +21,12 @@ urlpatterns = [
     path('staff_check/',views.staff_check_reservation),
     # /softwayliving/add_event/
     path('add_event/',views.staff_add_event),
-    # /softwayliving/approval/
-    path('approval/',views.staff_approval_reservation),
+    # /softwayliving/confirm/
+    path('confirm/',views.staff_confirm_reservation),
     # /softwayliving/delete/
     path('cancel/',views.staff_cancel_reservation),
+    # /softwayliving/pass/ 
+    path('pass/',views.staff_pass_reservation),
 ]
 
 
