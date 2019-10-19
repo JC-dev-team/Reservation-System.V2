@@ -8,7 +8,7 @@
     <font size="10">
         <img src="{% static '/images/Spinner01.svg' %}" />
     </font>
-    <h4>畫面載入中...<br>
+    <h4>畫面讀取中...<br>
         <br>
 </div>
 
@@ -16,6 +16,7 @@
     {% csrf_token %}
     <input id="social_id" style="display: none" name='social_id' value="">
     <input id="social_app" style="display: none" name='social_app' value="">
+    <input id="social_name" style="display: none" name='social_name' value="">
 </form>
 
 <script>
@@ -35,6 +36,7 @@
             // $('#img').attr('src', profile.pictureUrl);
             // $('#social_id').val(data.context.userId); //data.context.userId
             // $('#social_app').val('Line');
+            // $('#social_name').val(disname.json)
             
         })
     }
@@ -44,9 +46,13 @@
         liff.init(function (data) {
             initializeApp(data);
         });
-        //remember to edit it to Line Liff
+
+        //xxxxxx remember to edit it to Line Liff  xxxxxxxx
         $('#social_id').val('9636ff56-e78b-11e9-a2b8-0ec425232520'); //data.context.userId//
         $('#social_app').val('Line');//Line
+        $('#social_name').val('James')
+        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
         //send data 
         // send()
         if($('#social_id').val() != '' && $('#social_app').val() != ''){

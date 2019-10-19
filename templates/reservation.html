@@ -549,7 +549,7 @@
         }
 
         //Initial User of displayName & displayPhone
-        $('#displayName').html('{{ data.username }}');
+        $('#displayName').html('{{ data.username }}' +'('+ '{{data.social_name}}' + ')');
         $('#displayPhone').html('{{ data.phone }}');
 
         //Init LIFF
