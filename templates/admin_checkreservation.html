@@ -49,6 +49,10 @@
                     <option value="cancel">刪除訂單</option>
 
                 </select>
+                <br>
+                <!--Ps -->
+                <label><i class="fa fa-comment"></i> 備註： </label>
+                <input id='bk_ps' class="w3-input w3-border" name="ps" type="text"  placeholder="請輸入備註事項" value="">
 
                 <br>
                 <button id='modal_button' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">OK <i
@@ -479,7 +483,7 @@
                     var session = result[i].time_session;
                     var people = result[i].adult + '大' + result[i].children + '小';
                     var price = '$' + result[i].bk_price;
-                    var ps = '#' + result[i].bk_ps + ' ';
+                    var habit = '#' + result[i].bk_habit + ' ';
                     var waiting_num = result[i].waiting_num
                     var user_phone = account[i].phone
                     var user_name = account[i].username
@@ -491,8 +495,8 @@
                         session = '晚餐'
                     }
 
-                    if (ps == '#無 ') {
-                        ps = ''
+                    if (habit == '#無 ') {
+                        habit = ''
                     }
 
                     if (waiting_num == 0) {
@@ -505,7 +509,7 @@
 
                     Event.push({
                         id: uuid,
-                        title: session + ' ' + people + ' ' + price + ' ' + ps + '\n' + user_name +
+                        title: session + ' ' + people + ' ' + price + ' ' + habit + '\n' + user_name +
                             '(' +social_name+')'+' '+ user_phone,
                         start: date + time,
                         backgroundColor: color,
@@ -601,11 +605,11 @@
                 console.log(info)
                 var list_backgroundcolor = info.event.backgroundColor
                 if (list_backgroundcolor == 'orange') {
-                    status = '待確認'
+                    status = "<font color='orange'>待確認</font>"
                 } else if (list_backgroundcolor == 'green') {
-                    status = '已確認'
+                    status = "<font color='green'>已確認</font>"
                 } else if (list_backgroundcolor == 'red') {
-                    status = '候補'
+                    status = "<font color='red'>候補</font>"
                 }
                 var date = info.event.start.toISOString().slice(0, 10)
                 var time = info.el.textContent.split(' ')[0].slice(0, -2)
@@ -644,8 +648,8 @@
                                 console.log('確認訂單 Y')
                                 var data = {
                                     'bk_uuid': info.event.id,
-                                    'bk_date': info.event.start.toISOString()
-                                        .slice(0, 10)
+                                    'bk_date': info.event.start.toISOString().slice(0, 10),
+                                    'bk_ps': $('#bk_ps').val()
                                 }
                                 var event = calendar.getEventById(info.event.id)
                                 admin_approval(data, num, event)
