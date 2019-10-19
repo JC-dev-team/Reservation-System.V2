@@ -79,7 +79,7 @@ def staff_check_reservation(request):
             store_id=store_id,
             bk_date__range=(start_month, end_month),
             is_cancel=False,
-        ).order_by('waiting_num', 'bk_date',  'bk_st')
+        ).order_by('-is_confirm','waiting_num', 'bk_date',  'bk_st')
         # order by will be slow, I think better way is regroup
 
         # add day off data
@@ -90,15 +90,15 @@ def staff_check_reservation(request):
         # get user phone number
         acc_arr = []
         for i in bk_queryset:
+            
             acc_queryset = Account.objects.get(
                 user_id=i.user_id,
             )
             acc_serializers = Acc_Serializer(acc_queryset)
             acc_arr.append(acc_serializers.data)
-
+        
         event_serializers = StoreEvent_Serializer(event_queryset, many=True)
         bk_serializers = Bklist_Serializer(bk_queryset, many=True)
-
         return JsonResponse({
             'result': bk_serializers.data,
             'event': event_serializers.data,
