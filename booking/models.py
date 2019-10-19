@@ -16,7 +16,9 @@ class Account(models.Model):
     username = models.CharField(max_length=45)
     phone = models.CharField(max_length=10)
     birth = models.DateField(blank=True, null=True)
+    social_name = models.CharField(max_length=45)
     created_date = models.DateTimeField(blank=True, null=True)
+    
 
     class Meta:
         db_table = 'acc___db'
@@ -54,6 +56,7 @@ class BkList(models.Model):
     adult = models.PositiveIntegerField()
     children = models.PositiveIntegerField()
     bk_ps = models.CharField(max_length=200, blank=True, null=True)
+    bk_habit = models.CharField(max_length=200, blank=True, null=True)
     event_type = models.CharField(max_length=20, blank=True, null=True)
     is_cancel = models.IntegerField()
     waiting_num = models.PositiveIntegerField()
