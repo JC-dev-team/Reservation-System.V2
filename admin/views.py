@@ -141,6 +141,7 @@ def staff_pass_reservation(request):
         store_id = request.POST.get('store_id', None)
 
         with transaction.atomic():  # transaction
+            print(1)
             store_queryset = Store.objects.only('seat').get(store_id=store_id,)
             queryset = BkList.objects.select_for_update().filter(
                 bk_date=bk_date,
@@ -150,20 +151,23 @@ def staff_pass_reservation(request):
             # Must be only one data
             bk_queryset = queryset.filter(
                 bk_uuid=bk_uuid, is_confirm=False,)
-            # Get total number of guests
-            total = int(bk_queryset[0].adult) + int(bk_queryset[0].children)
             if bk_queryset.exists() == False:
                 return JsonResponse({'alert': '資料已經被刪除或是訂位完成'})
+            # Get total number of guests
+            print(1.5)
+            total = int(bk_queryset[0].adult) + int(bk_queryset[0].children)
+            print(1.6)
             # Get the list before the bk_queryset waiting_num=0
             beforelist = queryset.filter(
                 waiting_num=0,
             )
+            print(2)
             for i in beforelist:
                 total += int(i.adult)+int(i.children)
-
-            if total > store_queryset:
+            print(3)
+            if total > store_queryset.seat:
                 return JsonResponse({'alert': '請先刪除前面非候補訂位'})
-
+            print(4)
             bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
             return JsonResponse({'result': 'success'})
 
