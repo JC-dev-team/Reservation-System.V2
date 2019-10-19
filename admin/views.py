@@ -123,11 +123,12 @@ def staff_approval_reservation(request):
                 is_confirm=False,
             )
             if bk_queryset.exists() == False:
-                return JsonResponse({'alert': '資料不存在或是已被刪除'})
+                return JsonResponse({'alert': '資料已經被刪除或是訂位完成'})
             bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
             return JsonResponse({'result': 'success'})
 
     except Exception as e:
+        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 
