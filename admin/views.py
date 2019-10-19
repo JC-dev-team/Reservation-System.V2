@@ -119,7 +119,6 @@ def staff_approval_reservation(request):
             bk_queryset = BkList.objects.select_for_update().filter(
                 bk_uuid=bk_uuid,
                 bk_date=bk_date,
-                bk_ps=bk_ps,
                 is_cancel=False,
                 is_confirm=False,
             )
