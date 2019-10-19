@@ -44,9 +44,9 @@
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id='action_select' required>
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                    <option value="confirm" selected>確認訂單</option>
-                    <option value="pass">遞補候位</option>
-                    <option value="cancel">刪除訂單</option>
+                    <option name='confirm' value="confirm" selected>確認訂單</option>
+                    <option name='pass' value="pass">遞補候位</option>
+                    <option name='cancel' value="cancel">刪除訂單</option>
 
                 </select>
                 <br>
@@ -274,7 +274,7 @@
                 } else {
                     result = response.result
                     console.log(result)
-                    event.setProp('backgroundColor', 'white')
+                    event.setProp('backgroundColor', 'grey')
                     Notiflix.Notify.Success('訂單已刪除！！');
                     calendar_fun(account, result, num, 'refetch')
                 }
@@ -291,10 +291,45 @@
         });
     }
 
-    function admin_approval(data, num, event) {
+    function admin_pass(data, num, event) {
         $.ajax({
             type: 'POST',
-            url: '/softwayliving/approval/',
+            url: '/softwayliving/pass/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
+
+                    // window.location.replace('/booking/error/');
+                } else if (response.alert != null) {
+                    alert(response.alert)
+                } else {
+                    result = response.result
+                    console.log(result)
+                    event.setProp('backgroundColor', 'green')
+                    Notiflix.Notify.Success('訂單已確認(候補)！！');
+                }
+                document.getElementById('information_Modal').style.display = 'none';
+                Notiflix.Loading.Remove();
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('information_Modal').style.display = 'none';
+                console.log(errorThrown)
+                // window.location.replace('/booking/error/');
+            }
+
+        });
+    }
+
+
+    function admin_confirm(data, num, event) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/confirm/',
             data: data,
             success: function (response) {
                 if (response.error != null) {
@@ -319,7 +354,7 @@
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 Notiflix.Notify.Failure('發生錯誤！！');
                 Notiflix.Loading.Remove();
-                document.getElementById('dayoff_Modal').style.display = 'none';
+                document.getElementById('information_Modal').style.display = 'none';
                 console.log(errorThrown)
                 // window.location.replace('/booking/error/');
             }
@@ -485,6 +520,8 @@
                     var price = '$' + result[i].bk_price;
                     var habit = '#' + result[i].bk_habit + ' ';
                     var waiting_num = result[i].waiting_num
+                    var confirm = result[i].is_confirm
+
                     var user_phone = account[i].phone
                     var user_name = account[i].username
                     var social_name = account[i].social_name
@@ -499,9 +536,9 @@
                         habit = ''
                     }
 
-                    if (waiting_num == 0) {
+                    if (waiting_num == 0 && confirm == false) {
                         color = 'orange' //待確認
-                    } else if (waiting_num == -1) {
+                    } else if (waiting_num == 0 && confirm == true) {
                         color = 'green' //已確認
                     } else {
                         color = 'red' //候補
@@ -603,21 +640,50 @@
             },
             eventClick: function (info) {
                 console.log(info)
+                //clean ps data
+                $('#bk_ps').val('')
                 var list_backgroundcolor = info.event.backgroundColor
                 if (list_backgroundcolor == 'orange') {
                     status = "<font color='orange'>待確認</font>"
+                    //hide
+                    $("option[name='pass']").hide()
+                    //show
+                    $("option[name='confirm']").show()
+                    $("option[name='cancel']").show()
+                    //selected
+                    $("option[name='confirm']").attr("selected",true)
                 } else if (list_backgroundcolor == 'green') {
                     status = "<font color='green'>已確認</font>"
+                    //hide
+                    $("option[name='confirm']").hide()
+                    $("option[name='pass']").hide()
+                    //show
+                    $("option[name='cancel']").show()
+                    //selected
+                    $("option[name='cancel']").attr("selected",true)
                 } else if (list_backgroundcolor == 'red') {
                     status = "<font color='red'>候補</font>"
+                    //hide
+                    $("option[name='confirm']").hide()
+                    //show
+                    $("option[name='pass']").show()
+                    $("option[name='cancel']").show()
+                    //selected
+                    $("option[name='pass']").attr("selected",true)
                 }
                 var date = info.event.start.toISOString().slice(0, 10)
                 var time = info.el.textContent.split(' ')[0].slice(0, -2)
+                var time_session = info.event.title.slice(0,2)
                 var information = info.event.title.split('\n')[0]
                 var user_name = info.event.title.split('\n')[1].split(' ')[0]
                 var user_phone = info.event.title.split('\n')[1].split(' ')[1]
-               
-
+                
+                if (time_session == '午餐') {
+                    time_session = 'Lunch'
+                }else {
+                    time_session = 'Dinner'
+                }
+                
                 //document modal
                 document.getElementById('information_Modal').style.display = 'inline';
                 document.getElementById('modal_date').innerHTML =
@@ -636,7 +702,7 @@
                 document.getElementById('modal_status').innerHTML =
                     '<p id="modal_status">' + '<label><i class="fa fa-info-circle"></i></label>' +
                     ' 訂單狀態： ' + status + '</p>'
-
+                
 
                 //modal button  click
                 $('#modal_button').click(function (e) {
@@ -652,7 +718,7 @@
                                     'bk_ps': $('#bk_ps').val()
                                 }
                                 var event = calendar.getEventById(info.event.id)
-                                admin_approval(data, num, event)
+                                admin_confirm(data, num, event)
                                 //spinner show
                                 Notiflix.Loading.Hourglass('確認中....');
 
@@ -688,14 +754,17 @@
                         Notiflix.Confirm.Show('管理者權限', '確定要遞補此訂單嗎?', '遞補候位', '取消遞補',
                             function () {
                                 console.log('遞補候位 Y')
-                                // var data = {
-                                //     'bk_uuid': info.event.id,
-                                //     'bk_date': info.event.start.toISOString().slice(0, 10)
-                                // }
-                                // var event = calendar.getEventById(info.event.id)
-                                // admin_cancel(data, num, event)
-                                // //spinner show
-                                // Notiflix.Loading.Hourglass('刪除中....');
+                                var data = {
+                                    'bk_uuid': info.event.id,
+                                    'bk_date': info.event.start.toISOString().slice(0, 10),
+                                    'bk_ps': $('#bk_ps').val(),
+                                    'time_session': time_session,
+                                    'store_id':'6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'
+                                }
+                                var event = calendar.getEventById(info.event.id)
+                                admin_pass(data, num, event)
+                                //spinner show
+                                Notiflix.Loading.Hourglass('刪除中....');
                             },
                             function () {
                                 console.log('遞補候位 N')
