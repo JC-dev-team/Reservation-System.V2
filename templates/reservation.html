@@ -603,13 +603,15 @@
 
             Notiflix.Confirm.Show('訂位資訊', '確定送出訂單', '是', '否',
                 function () {
-                    alert('YES');
+                    //alert('YES');
                     if (status) {
+                        //spinner
+                        Notiflix.Loading.Hourglass();
+                        //submit data
                         document.getElementById("reservation_form").action =
                             "/booking/reservation/";
                         document.getElementById("reservation_form").submit();
-                        //spinner
-                        Notiflix.Loading.Hourglass();
+                        
                         // Line Liff Messages
                         liff.sendMessages([{
                                 "type": "flex",
@@ -732,7 +734,7 @@
 
                 },
                 function () {
-                    alert('NO');
+                    //alert('NO');
                     status = false;
                 });
 
