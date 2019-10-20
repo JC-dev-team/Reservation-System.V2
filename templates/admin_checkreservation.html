@@ -20,6 +20,7 @@
 <input id="date_num" value="0" type="text" style="display: none">
 
 
+
 <!-- information Modal -->
 <div id="information_Modal" class="w3-modal">
     <div class="w3-modal-content w3-animate-top w3-card-4">
@@ -52,7 +53,7 @@
                 <br>
                 <!--Ps -->
                 <label><i class="fa fa-comment"></i> 備註： </label>
-                <input id='bk_ps' class="w3-input w3-border" name="ps" type="text"  placeholder="請輸入備註事項" value="">
+                <input id='bk_ps' class="w3-input w3-border" name="ps" type="text" placeholder="請輸入備註事項" value="">
 
                 <br>
                 <button id='modal_button' class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">OK <i
@@ -77,12 +78,14 @@
         <div class="w3-container">
             <br>
             <font size="4">
+                <!--dayoff date-->
+                <input id="dayoff_date" value="" type="text" style="display: none">
                 <!-- Date-->
                 <p id='modal_date_dayoff'></p>
                 <!-- action-->
                 <label><i class="fa fa-bolt"></i> 動作： </label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    id='dayoff_select' required>
+                    id='dayoff_timesession_select' required>
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
                     <option value="Lunch" selected>（店休）午餐</option>
                     <option value="Dinner">（店休）晚餐</option>
@@ -225,7 +228,7 @@
         },
     });
 
-    function admin_dayoff(data, num, event) {
+    function admin_dayoff(data) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/add_event/',
@@ -276,7 +279,7 @@
                     console.log(result)
                     event.setProp('backgroundColor', 'grey')
                     Notiflix.Notify.Success('訂單已刪除！！');
-                    calendar_fun(account, result, num, 'refetch')
+                    
                 }
                 document.getElementById('information_Modal').style.display = 'none';
                 Notiflix.Loading.Remove();
@@ -425,6 +428,7 @@
 
     }
 
+   
     //calendar function
     function calendar_fun(event, account, result, num = 0, action = 'render') {
         //spinner hide
@@ -546,8 +550,9 @@
 
                     Event.push({
                         id: uuid,
-                        title: session + ' ' + people + ' ' + price + ' ' + habit + '\n' + user_name +
-                            '(' +social_name+')'+' '+ user_phone,
+                        title: session + ' ' + people + ' ' + price + ' ' + habit + '\n' +
+                            user_name +
+                            '(' + social_name + ')' + ' ' + user_phone,
                         start: date + time,
                         backgroundColor: color,
                         textColor: 'white',
@@ -557,7 +562,7 @@
                     console.log(Event)
                 }
 
-                //day off event
+                //dayoff event
                 for (var i = 0; i < event.length; i++) {
                     var date = event[i].event_date
                     var time_session = event[i].time_session
@@ -575,7 +580,7 @@
                     Event.push({
                         title: session + type,
                         start: date,
-                        backgroundColor: 'red',
+                        backgroundColor: 'grey',
                         textColor: 'white',
                     });
                     successCallback(Event)
@@ -594,7 +599,7 @@
                     info.el.text = text
 
                 }
-                var phone = '0900123456'
+
 
                 //list of dot
                 var dotEl = info.el.getElementsByClassName('fc-event-dot')[0];
@@ -610,8 +615,8 @@
             dateClick: function (info) {
                 console.log(info)
                 var date = info.dateStr
+                $("#dayoff_date").val(date)
 
-                // var time_session ='Allday'
                 console.log(date)
 
 
@@ -620,20 +625,6 @@
                 document.getElementById('modal_date_dayoff').innerHTML =
                     '<p id="modal_date_dayoff">' + '<label><i class="fa fa-calendar"></i></label>' +
                     ' 日期： ' + date + '</p>'
-
-                $('#modal_button_dayoff').click(function (e) {
-                    var time_session = $('#dayoff_select').val()
-                    console.log('time_session: ' + time_session)
-                    var data = {
-                        store_id: '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
-                        event_date: date,
-                        time_session: time_session,
-                        event_type: 'Day off'
-                    }
-                    admin_dayoff(data, num, event)
-                    //spinner show
-                    Notiflix.Loading.Hourglass('處理中....');
-                })
 
 
 
@@ -651,7 +642,7 @@
                     $("option[name='confirm']").show()
                     $("option[name='cancel']").show()
                     //selected
-                    $("option[name='confirm']").attr("selected",true)
+                    $("option[name='confirm']").attr("selected", true)
                 } else if (list_backgroundcolor == 'green') {
                     status = "<font color='green'>已確認</font>"
                     //hide
@@ -660,7 +651,7 @@
                     //show
                     $("option[name='cancel']").show()
                     //selected
-                    $("option[name='cancel']").attr("selected",true)
+                    $("option[name='cancel']").attr("selected", true)
                 } else if (list_backgroundcolor == 'red') {
                     status = "<font color='red'>候補</font>"
                     //hide
@@ -669,21 +660,21 @@
                     $("option[name='pass']").show()
                     $("option[name='cancel']").show()
                     //selected
-                    $("option[name='pass']").attr("selected",true)
+                    $("option[name='pass']").attr("selected", true)
                 }
                 var date = info.event.start.toISOString().slice(0, 10)
                 var time = info.el.textContent.split(' ')[0].slice(0, -2)
-                var time_session = info.event.title.slice(0,2)
+                var time_session = info.event.title.slice(0, 2)
                 var information = info.event.title.split('\n')[0]
                 var user_name = info.event.title.split('\n')[1].split(' ')[0]
                 var user_phone = info.event.title.split('\n')[1].split(' ')[1]
-                
+
                 if (time_session == '午餐') {
                     time_session = 'Lunch'
-                }else {
+                } else {
                     time_session = 'Dinner'
                 }
-                
+
                 //document modal
                 document.getElementById('information_Modal').style.display = 'inline';
                 document.getElementById('modal_date').innerHTML =
@@ -702,7 +693,7 @@
                 document.getElementById('modal_status').innerHTML =
                     '<p id="modal_status">' + '<label><i class="fa fa-info-circle"></i></label>' +
                     ' 訂單狀態： ' + status + '</p>'
-                
+
 
                 //modal button  click
                 $('#modal_button').click(function (e) {
@@ -718,10 +709,10 @@
                                     'bk_ps': $('#bk_ps').val()
                                 }
                                 var event = calendar.getEventById(info.event.id)
-                                admin_confirm(data, num, event)
                                 //spinner show
                                 Notiflix.Loading.Hourglass('確認中....');
-
+                                admin_confirm(data, num, event)
+                                
                             },
                             function () {
                                 console.log('確認訂單 N')
@@ -759,7 +750,7 @@
                                     'bk_date': info.event.start.toISOString().slice(0, 10),
                                     'bk_ps': $('#bk_ps').val(),
                                     'time_session': time_session,
-                                    'store_id':'6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'
+                                    'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'
                                 }
                                 var event = calendar.getEventById(info.event.id)
                                 admin_pass(data, num, event)
@@ -866,6 +857,22 @@
             date.setMonth(date.getMonth() + months);
             return date;
         }
+    })
+
+    //dateClick -> Modal -> buttonClick
+    $('#modal_button_dayoff').click(function (e) {
+        var date = $("#dayoff_date").val()
+        var time_session = $('#dayoff_timesession_select').val()
+        console.log('time_session: ' + time_session)
+        var data = {
+            store_id: '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+            event_date: date,
+            time_session: time_session,
+            event_type: 'Day off'
+        }
+        admin_dayoff(data)
+        //spinner show
+        Notiflix.Loading.Hourglass('處理中....');
     })
 
     //next month of button
