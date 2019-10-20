@@ -93,7 +93,7 @@ def user_check_reservation(request):
         account_serializer = Acc_Serializer(acc_queryset)
         bk_serializer = Bklist_Serializer(bk_queryset, many=True)
         return render(request, 'user_checkreservation.html', {
-            'data': bk_queryset,
+            'data': bk_serializer.data,
             'user_info': account_serializer.data,
             'store': store_arr,
         })
