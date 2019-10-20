@@ -62,7 +62,10 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT=False # need to be True when production
 X_FRAME_OPTIONS = 'DENY' # default = 'SAMEORIGIN'
 SESSION_COOKIE_SECURE =True
+
+# session options
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SESSION_COOKIE_AGE = 60*5
 
 ROOT_URLCONF = 'softway_sys.urls'
 

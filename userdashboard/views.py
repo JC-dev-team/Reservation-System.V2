@@ -125,7 +125,7 @@ def user_remove_reservation(request):
             social_id, social_app)
 
         if result == None or result == False:  # Using PC or No social login # Account Not Exist
-            return redirect('/userdashboard/login/',)
+            return JsonResponse({'error': 'Not valid, 帳號驗證失敗'})
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
             raise Exception('error')
@@ -136,18 +136,18 @@ def user_remove_reservation(request):
             bk_date_tmp = bk_date_ - datetime.timedelta(days=3)
 
             if bk_date_tmp > datetime.datetime.now():
-                return JsonResponse({'error': '超過三天取消訂位期限'})
+                return JsonResponse({'alert': '超過三天取消訂位期限'})
             else:
                 bk_date_ = bk_date_.date()  # format datetime
-                bk_queryset = BkList.objects.select_for_update().get(
+                bk_queryset = BkList.objects.select_for_update().filter(
                     bk_uuid=bk_uuid,
+                    bk_date=bk_date,
                     is_cancel=False,
                 )
-
+                if bk_queryset.exists() == False:
+                    return JsonResponse({'error': '資料已經刪除或是不存在'})
                 bk_queryset.update(is_cancel=True)
                 return JsonResponse({'result': True})
-
-    except BkList.DoesNotExist:
-        return JsonResponse({'error': '資料已經刪除'})
+        
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})

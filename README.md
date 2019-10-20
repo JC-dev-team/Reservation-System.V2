@@ -36,3 +36,4 @@
 ### Check list for django project before deployment
    python manage.py check --deploy
    https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+   https://docs.djangoproject.com/en/2.2/howto/deployment/wsgi/

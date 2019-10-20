@@ -187,7 +187,7 @@ def staff_cancel_reservation(request):
     try:
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
-
+        
         with transaction.atomic():  # transaction
             bk_queryset = BkList.objects.select_for_update().filter(
                 bk_uuid=bk_uuid,
