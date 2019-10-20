@@ -29,7 +29,7 @@ ALLOWED_HOSTS = ['*']
 
 HOST_SCHEME= "http://" # remove before production
 ADMIN_ENABLED = False
-# Application definition
+## Application definition
 
 INSTALLED_APPS = [
     'booking',
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
 ]
-# Invisible reCaptcha
+## Invisible reCaptcha
 RECAPTCHA_PUBLIC_KEY = '6LftQr0UAAAAAJ8Pkllthz85Wzj7gaAmsPLISMcu'
 RECAPTCHA_PRIVATE_KEY = '6LftQr0UAAAAAJqjEwg2fiEzZXAd-NGgGWQwDulz'
 
@@ -63,9 +63,13 @@ SECURE_SSL_REDIRECT=False # need to be True when production
 X_FRAME_OPTIONS = 'DENY' # default = 'SAMEORIGIN'
 SESSION_COOKIE_SECURE =True
 
-# session options
+## session options
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # SESSION_COOKIE_AGE = 60*5
+
+## linebot keys
+LINE_CHANNEL_ACCESS_TOKEN = ""
+LINE_CHANNEL_SECRET = ""
 
 ROOT_URLCONF = 'softway_sys.urls'
 
@@ -96,7 +100,20 @@ WSGI_APPLICATION = 'softway_sys.wsgi.application'
 # You need to downgrade openssl by conda install openssl=1.0.2r
 # when you are using macOS
 
-DATABASES = {
+## Deploy on aws elastic beanstalk
+if 'RDS_HOSTNAME' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ['RDS_DB_NAME'],
+            'USER': os.environ['RDS_USERNAME'],
+            'PASSWORD': os.environ['RDS_PASSWORD'],
+            'HOST': os.environ['RDS_HOSTNAME'],
+            'PORT': os.environ['RDS_PORT'],
+        }
+    }
+else:
+    DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'softway',
@@ -110,18 +127,8 @@ DATABASES = {
         }
     }
 }
-## Deploy on aws elastic beanstalk
-# if 'RDS_HOSTNAME' in os.environ:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.mysql',
-#             'NAME': os.environ['RDS_DB_NAME'],
-#             'USER': os.environ['RDS_USERNAME'],
-#             'PASSWORD': os.environ['RDS_PASSWORD'],
-#             'HOST': os.environ['RDS_HOSTNAME'],
-#             'PORT': os.environ['RDS_PORT'],
-#         }
-#     }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
