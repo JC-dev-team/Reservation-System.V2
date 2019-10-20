@@ -261,6 +261,8 @@
                 if (response.error != null) {
                     // console.log(response.error)
                     window.location.replace('/booking/error/');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else {
                     result = response.result
                     //console.log('result : ' + result)
@@ -333,6 +335,136 @@
             $('#img').attr('src', profile.pictureUrl);
         })
     }
+
+
+
+    function reservation_submit() {
+        Notiflix.Loading.Hourglass();
+        //submit data
+        document.getElementById("reservation_form").action =
+            "/booking/reservation/";
+        document.getElementById("reservation_form").submit();
+
+        // Line Liff Messages
+        liff.sendMessages([{
+                "type": "flex",
+                "altText": "Flex Message",
+                "contents": {
+                    "type": "bubble",
+                    "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [{
+                                "type": "text",
+                                "text": "❓ " + " 訂位處理中...",
+                                "size": "xl",
+                                "weight": "bold"
+                            },
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "spacing": "sm",
+                                "margin": "lg",
+                                "contents": [{
+                                        "type": "box",
+                                        "layout": "baseline",
+                                        "spacing": "sm",
+                                        "contents": [{
+                                                "type": "text",
+                                                "text": "用餐日期",
+                                                "flex": 2,
+                                                "size": "sm",
+                                                "color": "#AAAAAA"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": line_date +
+                                                    ' ' +
+                                                    line_session +
+                                                    ' ' +
+                                                    line_time,
+                                                "flex": 5,
+                                                "size": "sm",
+                                                "color": "#666666",
+                                                "wrap": true
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "baseline",
+                                        "spacing": "sm",
+                                        "contents": [{
+                                                "type": "text",
+                                                "text": "用餐人數",
+                                                "flex": 2,
+                                                "size": "sm",
+                                                "color": "#AAAAAA"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": line_number,
+                                                "flex": 5,
+                                                "size": "sm",
+                                                "color": "#666666",
+                                                "wrap": true
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "baseline",
+                                        "spacing": "sm",
+                                        "contents": [{
+                                                "type": "text",
+                                                "text": "備註",
+                                                "flex": 1,
+                                                "size": "sm",
+                                                "color": "#AAAAAA"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": line_ps,
+                                                "flex": 5,
+                                                "size": "sm",
+                                                "color": "#666666",
+                                                "wrap": true
+                                            }
+                                        ]
+                                    }
+
+                                ]
+                            }
+                        ]
+                    },
+                    "footer": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "flex": 0,
+                        "spacing": "sm",
+                        "contents": [{
+                            "type": "button",
+                            "action": {
+                                "type": "uri",
+                                "label": "查詢/取消訂位",
+                                "uri": "line://app/1577114898-D5d8edOv"
+                            },
+                            "color": "#2C9278",
+                            "height": "sm",
+                            "style": "primary"
+                        }]
+                    }
+                }
+            }])
+            // .then(() => {
+            //     liff.closeWindow();
+            // })
+            .catch((err) => {
+                console.log('error : ', err)
+            });
+
+    }
+
 
     function calendar_fun(result, num = 0) {
         //spinner hide
@@ -495,7 +627,7 @@
 
                 }
 
-                
+
                 eventClick_sendDate(data)
                 //spinner show
                 Notiflix.Loading.Hourglass();
@@ -552,7 +684,7 @@
         }
 
         //Initial User of displayName & displayPhone
-        $('#displayName').html('{{ data.username }}' +'('+ '{{data.social_name}}' + ')');
+        $('#displayName').html('{{ data.username }}' + '(' + '{{data.social_name}}' + ')');
         $('#displayPhone').html('{{ data.phone }}');
 
         //Init LIFF
@@ -606,129 +738,13 @@
                     //alert('YES');
                     if (status) {
                         //spinner
-                        Notiflix.Loading.Hourglass();
-                        //submit data
-                        document.getElementById("reservation_form").action =
-                            "/booking/reservation/";
-                        document.getElementById("reservation_form").submit();
-                        
-                        // Line Liff Messages
-                        liff.sendMessages([{
-                                "type": "flex",
-                                "altText": "Flex Message",
-                                "contents": {
-                                    "type": "bubble",
-                                    "body": {
-                                        "type": "box",
-                                        "layout": "vertical",
-                                        "contents": [{
-                                                "type": "text",
-                                                "text": "❓ " + " 訂位處理中...",
-                                                "size": "xl",
-                                                "weight": "bold"
-                                            },
-                                            {
-                                                "type": "box",
-                                                "layout": "vertical",
-                                                "spacing": "sm",
-                                                "margin": "lg",
-                                                "contents": [{
-                                                        "type": "box",
-                                                        "layout": "baseline",
-                                                        "spacing": "sm",
-                                                        "contents": [{
-                                                                "type": "text",
-                                                                "text": "用餐日期",
-                                                                "flex": 2,
-                                                                "size": "sm",
-                                                                "color": "#AAAAAA"
-                                                            },
-                                                            {
-                                                                "type": "text",
-                                                                "text": line_date +
-                                                                    ' ' +
-                                                                    line_session +
-                                                                    ' ' +
-                                                                    line_time,
-                                                                "flex": 5,
-                                                                "size": "sm",
-                                                                "color": "#666666",
-                                                                "wrap": true
-                                                            }
-                                                        ]
-                                                    },
-                                                    {
-                                                        "type": "box",
-                                                        "layout": "baseline",
-                                                        "spacing": "sm",
-                                                        "contents": [{
-                                                                "type": "text",
-                                                                "text": "用餐人數",
-                                                                "flex": 2,
-                                                                "size": "sm",
-                                                                "color": "#AAAAAA"
-                                                            },
-                                                            {
-                                                                "type": "text",
-                                                                "text": line_number,
-                                                                "flex": 5,
-                                                                "size": "sm",
-                                                                "color": "#666666",
-                                                                "wrap": true
-                                                            }
-                                                        ]
-                                                    },
-                                                    {
-                                                        "type": "box",
-                                                        "layout": "baseline",
-                                                        "spacing": "sm",
-                                                        "contents": [{
-                                                                "type": "text",
-                                                                "text": "備註",
-                                                                "flex": 1,
-                                                                "size": "sm",
-                                                                "color": "#AAAAAA"
-                                                            },
-                                                            {
-                                                                "type": "text",
-                                                                "text": line_ps,
-                                                                "flex": 5,
-                                                                "size": "sm",
-                                                                "color": "#666666",
-                                                                "wrap": true
-                                                            }
-                                                        ]
-                                                    }
+                        //Notiflix.Loading.Hourglass();
+                        //submit function
+                        reservation_submit()
 
-                                                ]
-                                            }
-                                        ]
-                                    },
-                                    "footer": {
-                                        "type": "box",
-                                        "layout": "vertical",
-                                        "flex": 0,
-                                        "spacing": "sm",
-                                        "contents": [{
-                                            "type": "button",
-                                            "action": {
-                                                "type": "uri",
-                                                "label": "查詢/取消訂位",
-                                                "uri": "line://app/1577114898-D5d8edOv"
-                                            },
-                                            "color": "#2C9278",
-                                            "height": "sm",
-                                            "style": "primary"
-                                        }]
-                                    }
-                                }
-                            }])
-                            // .then(() => {
-                            //     liff.closeWindow();
-                            // })
-                            .catch((err) => {
-                                console.log('error : ', err)
-                            });
+
+
+
 
                     }
 
@@ -773,6 +789,5 @@
 
 
     })
-
 </script>
 {% endblock %}

@@ -32,6 +32,9 @@
         <div class="w3-container">
             <br>
             <font size="4">
+                <input type="text" id='info_event_id' value="" style="display: none">
+                <input type="text" id='info_event_start' value="" style="display: none">
+                <input type="text" id='info_event_timesession' value="" style="display: none">
                 <!-- Date-->
                 <p id='modal_date'></p>
                 <!-- info-->
@@ -262,7 +265,7 @@
     }
 
 
-    function admin_cancel(data, num, event) {
+    function admin_cancel(data, event) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/cancel/',
@@ -279,7 +282,7 @@
                     console.log(result)
                     event.setProp('backgroundColor', 'grey')
                     Notiflix.Notify.Success('訂單已刪除！！');
-                    
+
                 }
                 document.getElementById('information_Modal').style.display = 'none';
                 Notiflix.Loading.Remove();
@@ -294,7 +297,7 @@
         });
     }
 
-    function admin_pass(data, num, event) {
+    function admin_pass(data, event) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/pass/',
@@ -329,7 +332,7 @@
     }
 
 
-    function admin_confirm(data, num, event) {
+    function admin_confirm(data, event) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/confirm/',
@@ -428,13 +431,13 @@
 
     }
 
-   
+
     //calendar function
     function calendar_fun(event, account, result, num = 0, action = 'render') {
         //spinner hide
         Notiflix.Loading.Remove();
         var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
+        window.calendar = new FullCalendar.Calendar(calendarEl, {
             //ColumnHeaderText
             columnHeaderText: function (date) {
                 if (date.getDay() === 0) {
@@ -495,6 +498,11 @@
                     eventLimit: 3
                 }
             },
+            eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            },
             //Date selectable (true)
             selectable: true,
 
@@ -505,7 +513,7 @@
                     title: '店休',
                     start: new Date(),
                     startRecur: new Date().addDays(3),
-                    backgroundColor: 'red',
+                    backgroundColor: 'grey',
                     textColor: 'white',
                     daysOfWeek: [1],
 
@@ -661,9 +669,13 @@
                     $("option[name='cancel']").show()
                     //selected
                     $("option[name='pass']").attr("selected", true)
+                } else {
+                    Notiflix.Report.Warning('警告', '這天/時段店休喔！！', 'ok');
                 }
+                var id = info.event.id
                 var date = info.event.start.toISOString().slice(0, 10)
-                var time = info.el.textContent.split(' ')[0].slice(0, -2)
+                var time = info.event.start.toTimeString().slice(0,5)
+                
                 var time_session = info.event.title.slice(0, 2)
                 var information = info.event.title.split('\n')[0]
                 var user_name = info.event.title.split('\n')[1].split(' ')[0]
@@ -674,6 +686,10 @@
                 } else {
                     time_session = 'Dinner'
                 }
+                
+                $('#info_event_id').val(id)
+                $('#info_event_start').val(date)
+                $('#info_event_timesession').val(time_session)
 
                 //document modal
                 document.getElementById('information_Modal').style.display = 'inline';
@@ -693,136 +709,6 @@
                 document.getElementById('modal_status').innerHTML =
                     '<p id="modal_status">' + '<label><i class="fa fa-info-circle"></i></label>' +
                     ' 訂單狀態： ' + status + '</p>'
-
-
-                //modal button  click
-                $('#modal_button').click(function (e) {
-                    console.log($("#action_select").val())
-                    //確認訂單
-                    if ($("#action_select").val() == 'confirm') {
-                        Notiflix.Confirm.Show('管理者權限', '確定要確認此訂單嗎?', '是-確認訂單', '再看看',
-                            function () {
-                                console.log('確認訂單 Y')
-                                var data = {
-                                    'bk_uuid': info.event.id,
-                                    'bk_date': info.event.start.toISOString().slice(0, 10),
-                                    'bk_ps': $('#bk_ps').val()
-                                }
-                                var event = calendar.getEventById(info.event.id)
-                                //spinner show
-                                Notiflix.Loading.Hourglass('確認中....');
-                                admin_confirm(data, num, event)
-                                
-                            },
-                            function () {
-                                console.log('確認訂單 N')
-
-
-                            });
-
-                    }
-                    //刪除訂單
-                    else if ($("#action_select").val() == 'cancel') {
-                        Notiflix.Confirm.Show('管理者權限', '確定要刪除此訂單嗎?', '刪除訂單', '不要刪除',
-                            function () {
-                                console.log('刪除訂單 Y')
-                                var data = {
-                                    'bk_uuid': info.event.id,
-                                    'bk_date': info.event.start.toISOString()
-                                        .slice(0, 10)
-                                }
-                                var event = calendar.getEventById(info.event.id)
-                                admin_cancel(data, num, event)
-                                //spinner show
-                                Notiflix.Loading.Hourglass('刪除中....');
-                            },
-                            function () {
-                                console.log('刪除訂單 N')
-                            });
-                    }
-                    //遞補候位
-                    else if ($("#action_select").val() == 'pass') {
-                        Notiflix.Confirm.Show('管理者權限', '確定要遞補此訂單嗎?', '遞補候位', '取消遞補',
-                            function () {
-                                console.log('遞補候位 Y')
-                                var data = {
-                                    'bk_uuid': info.event.id,
-                                    'bk_date': info.event.start.toISOString().slice(0, 10),
-                                    'bk_ps': $('#bk_ps').val(),
-                                    'time_session': time_session,
-                                    'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'
-                                }
-                                var event = calendar.getEventById(info.event.id)
-                                admin_pass(data, num, event)
-                                //spinner show
-                                Notiflix.Loading.Hourglass('遞補中....');
-                            },
-                            function () {
-                                console.log('遞補候位 N')
-                            });
-                    }
-                })
-
-                // Notiflix.Confirm.Show('管理者權限', '請選擇動作?', '候補遞位', '刪除訂單',
-                //     function () {
-                //         console.log('候補遞位')
-                //         seat = true
-                //     },
-                //     function () {
-                //         console.log('刪除訂單')
-
-
-                //     });
-
-                // Notiflix.Confirm.Show('管理者權限', '確定要將候補遞位?', '是', '否',
-                //     function () {
-                //         alert('候補遞位 Y');
-                //     },
-                //     function () {
-                //         alert('候補遞位 N');
-                //     });
-
-                // Notiflix.Confirm.Show('管理者權限', '確定要將刪除訂單?', '是', '否',
-                //     function () {
-                //         alert('刪除訂單 Y');
-                //     },
-                //     function () {
-                //         alert('刪除訂單 N');
-                //     });
-
-                // var r = confirm("Press a button!");
-                // if (r == true) {
-                //     dotEl.style.backgroundColor = 'white';
-                // } else {
-                //     console.log('cancel')
-                // }
-
-                // var evMousEnter_st = info.event.start
-                // var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
-                // var title = info.event.title
-                // var color = info.el.style.backgroundColor
-
-                // //Monday disable
-                // if (title == '店休') {
-                //     alert('週一店休喔！！')
-                //     return false
-                // }
-                // //insert Modal of date
-                // document.getElementById('modal_date').innerHTML =
-                //     '<label><i class="fa fa-calendar"></i></label>' + ' 日期： ' + '<p id="bk_date_select">' +
-                //     start + '</p>'
-
-                // //ajax eventClick_sendDate(data)
-                // var data = {
-                //     'adult': adult,
-                //     'children': child,
-                //     'event_date': start,
-                //     'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
-
-                // }
-                // //spinner
-                // $('#cover-spin').show(0)
-                // eventClick_sendDate(data)
 
 
             }
@@ -858,6 +744,81 @@
             return date;
         }
     })
+
+
+    //eventClick -> information Modal -> modal button
+    $('#modal_button').click(function (e) {
+        console.log($("#action_select").val())
+        var id = $('#info_event_id').val()
+        var date = $('#info_event_start').val()
+        var time_session = $('#info_event_timesession').val()
+        //確認訂單
+        if ($("#action_select").val() == 'confirm') {
+
+            Notiflix.Confirm.Show('管理者權限', '確定要確認此訂單嗎?', '是-確認訂單', '再看看',
+                function () {
+                    console.log('確認訂單 Y')
+
+                    var data = {
+                        'bk_uuid': id,
+                        'bk_date': date,
+                        'bk_ps': $('#bk_ps').val()
+                    }
+                    console.log(id)
+                    var event = calendar.getEventById(id)
+                    //spinner show
+                    Notiflix.Loading.Hourglass('確認中....');
+                    admin_confirm(data, event)
+
+                },
+                function () {
+                    console.log('確認訂單 N')
+
+
+                });
+
+        }
+        //刪除訂單
+        else if ($("#action_select").val() == 'cancel') {
+            Notiflix.Confirm.Show('管理者權限', '確定要刪除此訂單嗎?', '刪除訂單', '不要刪除',
+                function () {
+                    console.log('刪除訂單 Y')
+                    var data = {
+                        'bk_uuid': id,
+                        'bk_date': date
+                    }
+                    var event = calendar.getEventById(id)
+                    admin_cancel(data, event)
+                    //spinner show
+                    Notiflix.Loading.Hourglass('刪除中....');
+                },
+                function () {
+                    console.log('刪除訂單 N')
+                });
+        }
+        //遞補候位
+        else if ($("#action_select").val() == 'pass') {
+            Notiflix.Confirm.Show('管理者權限', '確定要遞補此訂單嗎?', '遞補候位', '取消遞補',
+                function () {
+                    console.log('遞補候位 Y')
+                    var data = {
+                        'bk_uuid': id,
+                        'bk_date': date,
+                        'bk_ps': $('#bk_ps').val(),
+                        'time_session': time_session,
+                        'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'
+                    }
+                    var event = calendar.getEventById(id)
+                    admin_pass(data, event)
+                    //spinner show
+                    Notiflix.Loading.Hourglass('遞補中....');
+                },
+                function () {
+                    console.log('遞補候位 N')
+                });
+        }
+    })
+
 
     //dateClick -> Modal -> buttonClick
     $('#modal_button_dayoff').click(function (e) {
