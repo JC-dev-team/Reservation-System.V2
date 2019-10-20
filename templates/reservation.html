@@ -345,6 +345,18 @@
             "/booking/reservation/";
         document.getElementById("reservation_form").submit();
 
+        //Line Liff Data
+        var line_date = $('#bk_date').val();
+        var line_session = $('#time_session').val();
+        var line_time = $('#bk_st').val();
+        var line_number = $('#adult').val() + " 大 " + $('#children').val() + " 小"
+        var line_habit = $('#bk_habit').val();
+
+        if (line_session == 'L') {
+            line_session = '午餐'
+        } else {
+            line_session = '晚餐'
+        }
         // Line Liff Messages
         liff.sendMessages([{
                 "type": "flex",
@@ -417,14 +429,14 @@
                                         "spacing": "sm",
                                         "contents": [{
                                                 "type": "text",
-                                                "text": "備註",
+                                                "text": "飲食習慣",
                                                 "flex": 1,
                                                 "size": "sm",
                                                 "color": "#AAAAAA"
                                             },
                                             {
                                                 "type": "text",
-                                                "text": line_ps,
+                                                "text": line_habit,
                                                 "flex": 5,
                                                 "size": "sm",
                                                 "color": "#666666",
@@ -719,18 +731,7 @@
             $('#price').val($('#price_select').val())
 
 
-            //Line Liff Data
-            var line_date = $('#bk_date').val();
-            var line_session = $('#time_session').val();
-            var line_time = $('#bk_st').val();
-            var line_number = $('#adult').val() + " 大 " + $('#children').val() + " 小"
-            var line_ps = $('#bk_habit').val();
 
-            if (line_session == 'L') {
-                line_session = '午餐'
-            } else {
-                line_session = '晚餐'
-            }
 
 
             Notiflix.Confirm.Show('訂位資訊', '確定送出訂單', '是', '否',
@@ -741,10 +742,6 @@
                         //Notiflix.Loading.Hourglass();
                         //submit function
                         reservation_submit()
-
-
-
-
 
                     }
 

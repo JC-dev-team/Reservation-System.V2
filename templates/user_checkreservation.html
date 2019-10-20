@@ -10,11 +10,11 @@
 {% block content %}
 {% load static %}
 {% load tagfunctions %}
-<center>
-    <h1>Hello!! {{element.is_confirm}}</h1>
+<!-- <center>
+    <h1>Hello!! {{user_info.username}}</h1>
     <hr>
 </center> -->
-<!-- No reservation
+<!-- No reservation -->
 {% if data == False%}
 
 <div class="w3-center" style="display: none">
@@ -32,7 +32,7 @@
 
 
 {% for element in data %}
-{% if element.waiting_num == 0 and element.is_confirm == false%}
+{% if element.waiting_num == 0 and element.is_confirm == False %}
 
 <!-- Under processing-->
 <div class="w3-center" style="display: show">
@@ -43,7 +43,7 @@
     <h5>請靜候通知，由專人為您確認訂位</h5>
     <br>
 </div>
-{% else  %}
+{% elif element.waiting_num == 0 and element.is_confirm == True  %}
 <!-- Success-->
 <div class="w3-center" style="display: show">
     <font size="10">
