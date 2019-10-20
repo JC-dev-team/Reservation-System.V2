@@ -31,7 +31,7 @@
 
 
 {% for element in data %}
-{% if element.waiting_num == 0 %}
+{% if element.waiting_num == 0 and element.is_confirm == false%}
 
 <!-- Under processing-->
 <div class="w3-center" style="display: show">
