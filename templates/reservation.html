@@ -65,7 +65,7 @@
                     <option name='noon' value="L12:30" disable='disabled'>中午：12:30</option>
                     <option name='noon' value="L13:00" disable='disabled'>中午：13:00</option>
                     <option name='noon' value="L13:30" disable='disabled'>中午：13:30</option>
-                    <option disabled>------------</option>
+                    <option name='none' disabled>------------</option>
                     <option name='night' value="D17:00" disable='disabled'>晚上：17:00</option>
                     <option name='night' value="D17:30" disable='disabled'>晚上：17:30</option>
                     <option name='night' value="D18:00" disable='disabled'>晚上：18:00</option>
@@ -302,12 +302,14 @@
                     $('#button_submit').attr('disabled', true)
                     $("option[name='noon']").attr('disabled', true)
                     $("option[name='night']").attr('disabled', true)
-
+                    $("option[name='none']").attr('selected', true)
                 } else if (lunch_status == '午餐：店休') {
                     $("option[name='noon']").attr('disabled', true)
+                    $("option[name='night']").attr('disabled', false);
                     $("option[name='night']").attr('selected', 'selected');
                 } else if (dinner_status == '晚餐：店休') {
                     $("option[name='night']").attr('disabled', true)
+                    $("option[name='noon']").attr('disabled', false);
                     $("option[name='noon']").attr('selected', 'selected');
                 }
 
@@ -318,6 +320,7 @@
                 // $('#cover-spin').hide();
             },
             error: function (response) {
+                Notiflix.Report.Warning('警告', '發生錯誤！！請重新開啟', 'ok');
                 console.log(errorThrown)
             }
 
