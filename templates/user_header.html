@@ -1,0 +1,35 @@
+{% load static %}
+
+<!-- Sidebar (hidden by default) -->
+<nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left"
+  style="display:none;z-index:2;width:40%;min-width:230px" id="mySidebar">
+  <i onclick="document.getElementById('mySidebar').style.display = 'none'" class="fa fa-remove  w3-button w3-display-topright"></i>
+  
+  <img id="img" src="{% static '/images/Logo1.jpg' %}" class="w3-circle w3-display-topmiddle" style="width:115px">
+  <br><br><br>
+  <p style="align-items: center;"> 使用者</p><hr>
+  <a href="#food" onclick="" class="w3-bar-item w3-button"><i class="fa fa-calendar" style="color:green;"></i> 預約訂位</a>
+  <a href="#about" onclick="" class="w3-bar-item w3-button"><i class="fa fa-search" style="color:green;"></i> 查詢訂位</a>
+  <a href="#about" onclick="" class="w3-bar-item w3-button"><i class="fa fa-user-circle" style="color:green;"></i> 會員資料</a>
+</nav>
+
+<!-- Top menu -->
+<div class="w3-top">
+  <div class="w3-white w3-xlarge" style="max-width:1200px;margin:auto">
+    <div class="w3-button w3-padding-16 w3-left"
+      onclick="document.getElementById('mySidebar').style.display = 'block' ">☰</div>
+  </div>
+</div>
+
+
+
+<header class="w3-center w3-animate-top w3-padding-small">
+  <img id="img" src="{% static '/images/Logo1.jpg' %}" class="w3-circle" style="width:115px">
+
+  <br>
+  <b style="font-size:130%;" id="displayName">Softway 舒微生活</b>
+  <br>
+  <b style="font-size:110%;" id="displayPhone"></b>
+  <hr>
+
+</header>
