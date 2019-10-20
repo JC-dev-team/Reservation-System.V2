@@ -317,7 +317,7 @@ def getWaitingList(request):  # get waiting list
             event_date=bk_date,
             # event_type='Day off',
         ).distinct()
-
+        print(event_queryset.count())
         # We will get 2 kinds of time_sessions Ex: Lunch & Dinner
         bk_queryset = BkList.objects.filter(  # get all data
             store_id=store_id,
@@ -328,11 +328,11 @@ def getWaitingList(request):  # get waiting list
             for i in event_queryset:
                 if i.time_session == 'Lunch':
                     if i.event_type == 'Day off':
-                        lunch_waiting = '中午店休'
+                        lunch_waiting = '午餐：店休'
 
                 elif i.time_session == 'Dinner':
                     if i.event_type == 'Day off':
-                        dinner_waiting = '晚上店休'
+                        dinner_waiting = '晚餐：店休'
 
                 else:  # database has bug, plz fix it
                     raise Exception('Unknown error, please call IT to fix it')
@@ -341,9 +341,11 @@ def getWaitingList(request):  # get waiting list
             # elif event_queryset.count() == 0 :
             for i in event_queryset:
                 if i.time_session == 'Lunch':
-                    lunch_waiting == i.event_type
+                    if i.event_type == 'Day off':
+                        lunch_waiting = '午餐：店休'
                 elif i.time_session == 'Dinner':
-                    dinner_waiting == i.event_type
+                    if i.event_type == 'Day off':
+                        dinner_waiting = '晚餐：店休'
                 else:  # database has bug, plz fix it
                     raise Exception('Unknown error, please call IT to fix it')
 
@@ -370,9 +372,9 @@ def getWaitingList(request):  # get waiting list
                 waiting_num__gt=0,
             ).count()
             if(lunch_waiting == 0 and status_noon == 'green'):
-                lunch_waiting = '午餐: 可訂位'
+                lunch_waiting = '午餐：可訂位'
             else:
-                lunch_waiting = '午餐: 候補第 ' + str((lunch_waiting+1))+' 順位'
+                lunch_waiting = '午餐：候補第 ' + str((lunch_waiting+1))+' 順位'
 
         if dinner_waiting == None:  # dinner is available for reservation
             bk_list_night = bk_queryset.filter(  # get bookinglist of night
@@ -397,9 +399,9 @@ def getWaitingList(request):  # get waiting list
                 waiting_num__gt=0,
             ).count()
             if (dinner_waiting == 0 and status_night == 'green'):
-                dinner_waiting = '晚餐: 可訂位'
+                dinner_waiting = '晚餐：可訂位'
             else:
-                dinner_waiting = '晚餐: 候補第 ' + str((dinner_waiting+1))+' 順位'
+                dinner_waiting = '晚餐：候補第' + str((dinner_waiting+1))+'順位'
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
