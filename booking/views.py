@@ -374,7 +374,7 @@ def getWaitingList(request):  # get waiting list
             if(lunch_waiting == 0 and status_noon == 'green'):
                 lunch_waiting = '午餐：可訂位'
             else:
-                lunch_waiting = '午餐：候補第 ' + str((lunch_waiting+1))+' 順位'
+                lunch_waiting = '午餐：候補第' + str((lunch_waiting+1))+'順位'
 
         if dinner_waiting == None:  # dinner is available for reservation
             bk_list_night = bk_queryset.filter(  # get bookinglist of night
@@ -426,7 +426,7 @@ def getCalendar(request):  # full calendar
             store_id=store_id
         )
         if total > store_query.seat:
-            msg = '超過總座位數量 : '+str(store_query.seat)+'個座位'
+            msg = '超過總座位數量：'+str(store_query.seat)+'個座位'
             return JsonResponse({'alert': msg})
         # Get waiting list
         bk_queryset = BkList.objects.filter(  # get all available waiting_num
