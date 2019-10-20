@@ -12,16 +12,17 @@
 <!-- Under processing-->
 <div class="w3-center" >
     <font size="10">
-        <i class="far fa-question-circle"></i>
+            <i class="far fa-question-circle" style="color:orange;"></i>
     </font>
     <h4>訂位處理中</h4>
     <h5>請靜候通知，由專人為您確認訂位</h5>
+    <h5>有任何訂位問題，請聯絡我們：<a href='tel:0936336233' class="w3-text-blue">0936336233</a></h5>
     <font size='4'>
             <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal">關閉</button>
         </font>
-    <br>
+    
 </div>
-
+<br>
 <!-- Success-->
 <!-- <div class="w3-center" style="display: none">
     <font size="10">
@@ -44,7 +45,7 @@
 
 <!-- reservation information-->
 
-
+<div class="w3-container w3-border w3-round-xxlarge">
 <div class="w3-center">
     <font size='6'>
         <h2 id='information'>訂位資訊</h2>
@@ -52,14 +53,14 @@
         
         <div class="w3-container" align="left">
             <h4>店家：{{store.store_name}}</h4>
-            <h4>用餐日期：{{data.bk_date}} {{data.time_session}} - {{data.bk_st}}</h4>
+            <h4>用餐日期：{{data.bk_date}} <br>{{data.time_session}} - {{data.bk_st}}</h4>
             <h4>訂位人： {{user_info.username}} 先生/小姐</h4>
             <h4>用餐人數： {{data.adult}} 大 {{data.children}} 小</h4>
             <h4>價位：＄{{data.bk_price}}</h4>
             <h4>飲食習慣：{{data.bk_habit}}</h4>
         </div>
     </font>
-
+</div>
     
 </div>
 
