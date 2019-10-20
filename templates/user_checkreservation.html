@@ -3,17 +3,18 @@
 {% block headmessage %}
 <div class="w3-center">
     <h3><b>使用者 - 查詢/修改</b></h3>
+    <h5>有任何訂位問題，請聯絡我們：<a href='tel:0936336233' class="w3-text-blue">0936336233</a></h5>
 </div>
 {% endblock %}
 
 {% block content %}
 {% load static %}
 {% load tagfunctions %}
-<!-- <center>
-    <h1>Hello!! {{user_info.username}}</h1>
+<center>
+    <h1>Hello!! {{element.is_confirm}}</h1>
     <hr>
 </center> -->
-<!-- No reservation -->
+<!-- No reservation
 {% if data == False%}
 
 <div class="w3-center" style="display: none">
