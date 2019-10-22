@@ -4,7 +4,7 @@
 <div class="w3-center">
     <h3><b>使用者 - 查詢/修改</b></h3>
     <h5>有任何訂位問題，請聯絡我們：<a href='tel:0936336233' class="w3-text-blue">0936336233</a></h5>
-    <h5>取消訂位：<b> 用餐日3天以前取消 不收取消費用 </b></h5>
+    <h5><i class="fas fa-exclamation-triangle"></i><b> 限用餐日3天以前取消</b></h5>
 </div>
 {% endblock %}
 
@@ -163,8 +163,8 @@ console.log($('#bk_date').text())
             function () {
                 //alert('YES');
                 var data = {
-                    'bk_uuid': date,
-                    'bk_date': uuid
+                    'bk_uuid': uuid,
+                    'bk_date': date
                 }
                 console.log(data)
                 cancelreservation(data)
