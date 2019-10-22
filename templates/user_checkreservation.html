@@ -85,7 +85,7 @@
         </font>
 
         <font size='4'>
-            <button id="close_button" class="w3-btn w3-round-large  w3-teal w3-padding">取消訂位</button>
+            <button id="cancel_button" class="w3-btn w3-round-large  w3-teal w3-padding">取消訂位</button>
         </font>
 
     </div>
@@ -126,7 +126,7 @@
                     Notiflix.Report.Warning('警告', response.alert, 'ok ');
                 } else {
                     result = response.result
-                    Notiflix.Report.Succrss('提醒', '已取消此訂位！！', 'ok ');
+                    Notiflix.Report.Success('提醒', '已取消此訂位！！', 'ok ');
                     // console.log(result)
                     //Function of calendar (return calendar.render())
 
@@ -152,7 +152,7 @@
     // ready
     $('#displayName').html('{{user_info.username}}' + '(' + '{{user_info.social_name}}' + ')')
 
-    $('#close_button').click(function (e) {
+    $('#cancel_button').click(function (e) {
         Notiflix.Confirm.Show('取消訂位', '確定取消訂位', '是', '否',
             function () {
                 //alert('YES');
