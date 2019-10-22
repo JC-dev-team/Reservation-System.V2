@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date,timedelta
 from django.shortcuts import render, redirect, reverse
 from booking.models import ActionLog, BkList, Account, Production, Staff, Store
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
@@ -15,7 +15,6 @@ from common.utility import auth
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
-from datetime import datetime
 
 
 def error(request):
@@ -134,7 +133,7 @@ def user_cancel_reservation(request):
         ## Account Exist
         with transaction.atomic():  # transaction
             bk_date_ = datetime.strptime(bk_date, '%Y-%m-%d')
-            bk_date_tmp = bk_date_ - datetime.timedelta(days=3)
+            bk_date_tmp = bk_date_ - timedelta(days=3)
 
             if bk_date_tmp > datetime.datetime.now():
                 return JsonResponse({'alert': '超過三天取消訂位期限'})
