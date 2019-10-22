@@ -3,21 +3,24 @@
 <!-- Sidebar (hidden by default) -->
 <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left"
   style="display:none;z-index:2;width:40%;min-width:230px" id="mySidebar">
-  <i onclick="document.getElementById('mySidebar').style.display = 'none'" class="fa fa-remove  w3-button w3-display-topright"></i>
-  
+  <i onclick="document.getElementById('mySidebar').style.display = 'none'"
+    class="fa fa-remove  w3-button w3-display-topright"></i>
+
   <img id="img" src="{% static '/images/Logo1.jpg' %}" class="w3-circle w3-display-topmiddle" style="width:115px">
   <br><br><br>
-  <p style="text-align: center"> 管理者</p><hr>
-  
+  <p style="text-align: center"> 管理者</p>
+  <hr>
+
   <a href="" onclick="" class="w3-bar-item w3-button"><i class="fas fa-calendar-alt"></i> 訂位</a>
   <hr>
   <h3 style="text-align: center">查詢</h3>
   <hr>
-  <a href="" onclick="" class="w3-bar-item w3-button"><i class="fas fa-star" style="color:rgb(255, 217, 0);"></i></i> 總表</a>
-  <a href="" onclick="" class="w3-bar-item w3-button"><i class="fa fa-spinner" style="color:orange;"></i> 待確認</a>
-  <a href="" onclick="" class="w3-bar-item w3-button"><i class="fa fa-check" style="color:green;"></i> 已確認</a>
-  <a href="" onclick="" class="w3-bar-item w3-button"><i class="fa fa-circle-o" style="color:red;"></i>  候補名單</a>
-  <a href="" onclick="" class="w3-bar-item w3-button"><i class="fas fa-trash-alt"></i> 已刪除</a>
+  <a onclick="send('all')" class="w3-bar-item w3-button"><i class="fas fa-star" style="color:rgb(255, 217, 0);"></i></i>
+    總表</a>
+  <a onclick="send('not_confirmed')" class="w3-bar-item w3-button"><i class="fa fa-spinner" style="color:orange;"></i> 待確認</a>
+  <a onclick="send('confirm')" class="w3-bar-item w3-button"><i class="fa fa-check" style="color:green;"></i> 已確認</a>
+  <a onclick="send('waiting')" class="w3-bar-item w3-button"><i class="fa fa-circle-o" style="color:red;"></i> 候補名單</a>
+  <a onclick="send('canceled')" class="w3-bar-item w3-button"><i class="fas fa-trash-alt"></i> 已刪除</a>
 </nav>
 
 <!-- Top menu -->
@@ -40,3 +43,20 @@
   <hr>
 
 </header>
+
+<script>
+  function send(action) {
+    if (action == 'not_confirmed') {
+      window.location.href = '/softwayliving/not_confirmed/'
+    } else if (action == 'confirm'){
+      window.location.href = '/softwayliving/confirm/'
+    } else if (action == 'waiting'){
+      window.location.href = '/softwayliving/waiting/'
+    }else if (action == 'canceled'){
+      window.location.href = '/softwayliving/canceled/'
+    }else{
+      window.location.href = '/softwayliving/checkreservation/'
+    }
+    
+  }
+</script>

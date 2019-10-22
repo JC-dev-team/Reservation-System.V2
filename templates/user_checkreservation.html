@@ -16,18 +16,16 @@
     <hr>
 </center> -->
 <!-- No reservation -->
-{% if data == False%}
+{% if data == False %}
 
-<div class="w3-center" style="display: none">
+<div class="w3-center" >
     <font size="10">
-        <i class="far fa-question-circle"></i>
+        <i class="fas fa-ban" style="color:grey;"></i></i>
     </font>
     <h4>查無訂單</h4>
     <br>
 
-    <font size='4'>
-        <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal w3-padding">關閉</button>
-    </font>
+    
 </div>
 {% else %}
 
@@ -133,9 +131,9 @@ console.log($('#bk_date').text())
                     Notiflix.Report.Warning('警告', response.alert, 'ok ');
                 } else {
                     result = response.result
-                    window.location.reload();
-                    Notiflix.Loading.remove();
                     Notiflix.Report.Success('提醒', '已取消此訂位！！', 'ok ');
+                    window.location.reload()
+                    
                     // console.log(result)
                     //Function of calendar (return calendar.render())
 
@@ -169,7 +167,7 @@ console.log($('#bk_date').text())
                     'bk_date': date
                 }
                 console.log(data)
-                Notiflix.Loading.Hourglass();
+                Notiflix.Loading.Hourglass('刪除訂位中....');
                 cancelreservation(data)
                 
             },
