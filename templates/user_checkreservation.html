@@ -133,6 +133,8 @@ console.log($('#bk_date').text())
                     Notiflix.Report.Warning('警告', response.alert, 'ok ');
                 } else {
                     result = response.result
+                    window.location.reload();
+                    Notiflix.Loading.remove();
                     Notiflix.Report.Success('提醒', '已取消此訂位！！', 'ok ');
                     // console.log(result)
                     //Function of calendar (return calendar.render())
@@ -167,8 +169,9 @@ console.log($('#bk_date').text())
                     'bk_date': date
                 }
                 console.log(data)
+                Notiflix.Loading.Hourglass();
                 cancelreservation(data)
-
+                
             },
             function () {
                 //alert('NO');
