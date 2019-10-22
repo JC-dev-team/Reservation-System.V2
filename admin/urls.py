@@ -16,6 +16,15 @@ urlpatterns = [
     # /softwayliving/reservation/
     path('reservation/',views.staff_reservation_page),
 
+    # /softwayliving/waiting/
+    path('waiting/',views.staff_is_waiting), # 候補
+    # /softwayliving/confirm/
+    path('confirm/',views.staff_is_confirmed), # 已確認
+    # /softwayliving/not_confirmed/
+    path('not_confirmed/',views.staff_not_confirmed), # 待確認
+    # /softwayliving/canceled/
+    path('canceled/',views.staff_is_cancel), # 已刪除
+
     ## Ajax api
     # /softwayliving/staff_check/
     path('staff_check/',views.staff_check_reservation),
@@ -26,8 +35,10 @@ urlpatterns = [
     # /softwayliving/delete/
     path('cancel/',views.staff_cancel_reservation),
     # /softwayliving/pass/ 
-    path('pass/',views.staff_pass_reservation),\
-    # /softwayliving//
+    path('pass/',views.staff_pass_reservation),
+    
+
+
 ]
 
 

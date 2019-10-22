@@ -76,7 +76,7 @@ def staff_not_confirmed(request):
             bk_date__gte=now
         )
         serializers = Bklist_Serializer(queryset, many=True)
-        return render(request, '', {'data': serializers.data})
+        return render(request, 'admin_checklist.html', {'data': serializers.data,})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
 
@@ -89,25 +89,25 @@ def staff_is_confirmed(request):
         queryset = BkList.objects.filter(
             is_confirm=True,
             is_cancel=False,
-            bk_date__gte=now
+            bk_date__gte=now,
         )
         serializers = Bklist_Serializer(queryset, many=True)
-        return render(request, '', {'data': serializers.data})
+        return render(request, 'admin_checklist.html', {'data': serializers.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
 
 @require_http_methods(['GET'])
-def staff_is_confirmed(request):
+def staff_is_cancel(request):
     try:
         # Get now
         today = date.today()
         now = today.strftime('%Y-%m-%d')
         queryset = BkList.objects.filter(
             is_cancel=True,
-            bk_date__gte=now
+            bk_date__gte=now,
         )
         serializers = Bklist_Serializer(queryset, many=True)
-        return render(request, '', {'data': serializers.data})
+        return render(request, 'admin_checklist.html', {'data': serializers.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
 
@@ -118,12 +118,14 @@ def staff_is_waiting(request):
         today = date.today()
         now = today.strftime('%Y-%m-%d')
         queryset = BkList.objects.filter(
-            is_cancel=True,
+            is_cancel=False,
             bk_date__gte=now,
+            waiting_num__gt=0,
+            is_confirm = False,
             
         )
         serializers = Bklist_Serializer(queryset, many=True)
-        return render(request, '', {'data': serializers.data})
+        return render(request, 'admin_checklist.html', {'data': serializers.data})
     except Exception as e:
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
 
