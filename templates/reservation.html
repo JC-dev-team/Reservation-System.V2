@@ -306,13 +306,20 @@
                     $("option[name='night']").attr('disabled', true)
                     $("option[name='none']").attr('selected', true)
                 } else if (lunch_status == '午餐：店休') {
+                    $('#button_submit').attr('disabled', false)
                     $("option[name='noon']").attr('disabled', true)
                     $("option[name='night']").attr('disabled', false);
                     $("option[name='night']").attr('selected', 'selected');
                 } else if (dinner_status == '晚餐：店休') {
+                    $('#button_submit').attr('disabled', false)
                     $("option[name='night']").attr('disabled', true)
                     $("option[name='noon']").attr('disabled', false);
                     $("option[name='noon']").attr('selected', 'selected');
+                } else {
+                    $('#button_submit').attr('disabled', false)
+                    $("option[name='noon']").attr('disabled', false)
+                    $("option[name='night']").attr('disabled', false)
+                    $("option[name='noon']").attr('selected', true)
                 }
 
                 //Show the Modal
@@ -602,8 +609,6 @@
             eventClick: function (info) {
                 var adult = $('#adult_select').val();
                 var child = $('#children_select').val();
-                //undisable 
-                $('#button_submit').attr('disabled', false)
 
                 console.log(info)
                 var evMousEnter_st = info.event.start
