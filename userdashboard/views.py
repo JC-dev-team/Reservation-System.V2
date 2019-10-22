@@ -134,8 +134,7 @@ def user_cancel_reservation(request):
         with transaction.atomic():  # transaction
             bk_date_ = datetime.strptime(bk_date, '%Y-%m-%d')
             bk_date_tmp = bk_date_ - timedelta(days=3)
-
-            if bk_date_tmp > datetime.datetime.now():
+            if bk_date_tmp < datetime.now():
                 return JsonResponse({'alert': '超過三天取消訂位期限'})
             else:
                 bk_date_ = bk_date_.date()  # format datetime
@@ -150,5 +149,4 @@ def user_cancel_reservation(request):
                 return JsonResponse({'result': 'success'})
         
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})

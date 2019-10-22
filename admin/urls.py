@@ -26,7 +26,8 @@ urlpatterns = [
     # /softwayliving/delete/
     path('cancel/',views.staff_cancel_reservation),
     # /softwayliving/pass/ 
-    path('pass/',views.staff_pass_reservation),
+    path('pass/',views.staff_pass_reservation),\
+    # /softwayliving//
 ]
 
 
