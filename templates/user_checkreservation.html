@@ -80,13 +80,12 @@
                 <h4>用餐人數： {{element.adult}} 大 {{element.children}} 小</h4>
                 <h4>價位：＄{{element.bk_price}}</h4>
                 <h4>飲食習慣：{{element.bk_habit}}</h4>
-                
+
             </div>
         </font>
 
         <font size='4'>
-            <button id="close_button" onclick="cancelreservation('{{element.bk_uuid}}');"
-                class="w3-btn w3-round-large  w3-teal w3-padding">取消訂位</button>
+            <button id="close_button" class="w3-btn w3-round-large  w3-teal w3-padding">取消訂位</button>
         </font>
 
     </div>
@@ -114,20 +113,23 @@
         },
     });
 
-    function cancelreservation(bk_uuid) {
+    function cancelreservation(data) {
         $.ajax({
             type: 'POST',
-            url: '/booking/getCalendar/',
+            url: '/userdashboard/cancel/',
             data: data,
             success: function (response) {
                 if (response.error != null) {
                     // console.log(response.error)
                     window.location.replace('/userdashboard/error/');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok ');
                 } else {
                     result = response.result
+                    Notiflix.Report.Succrss('提醒', '已取消此訂位！！', 'ok ');
                     // console.log(result)
                     //Function of calendar (return calendar.render())
-                    calendar_fun(result, num)
+
 
                 }
 
@@ -135,7 +137,8 @@
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.log(XMLHttpRequest)
                 console.log(errorThrown)
-                window.location.replace('/userdashboard/error/');
+                Notiflix.Report.Warning('警告', '無法取消訂位，請聯絡店家', 'ok ');
+                //window.location.replace('/userdashboard/error/');
             }
 
         })
@@ -147,7 +150,24 @@
         liff.closewindow()
     }
     // ready
-    $('#displayName').html('{{user_info.username}}' +'('+ '{{user_info.social_name}}'+')')
+    $('#displayName').html('{{user_info.username}}' + '(' + '{{user_info.social_name}}' + ')')
+
+    $('#close_button').click(function (e) {
+        Notiflix.Confirm.Show('取消訂位', '確定取消訂位', '是', '否',
+            function () {
+                //alert('YES');
+                var data = {
+                    'bk_uuid': '{{element.bk_uuid}}',
+                    'bk_date': '{{element.bk_date}}'
+                }
+                cancelreservation(data)
+
+            },
+            function () {
+                //alert('NO');
+            });
+
+    })
 </script>
 
 {% endblock %}
