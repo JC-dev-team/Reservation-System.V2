@@ -151,4 +151,5 @@ def user_cancel_reservation(request):
                 return JsonResponse({'result': 'success'})
         
     except Exception as e:
+        print(e)
         return JsonResponse({'error': '發生未知錯誤'})

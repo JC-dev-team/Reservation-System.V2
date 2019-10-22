@@ -22,4 +22,3 @@ def time_session_name(text):
     elif text=='Dinner':
         return '晚餐'
 
-
