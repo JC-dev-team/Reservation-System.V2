@@ -17,7 +17,7 @@ urlpatterns = [
     # /userdashboard/auth/
     path('auth/', views.user_auth, name='user_auth'),
 
-    # Ajax API
+    ## Ajax API
     # /userdashboard/cancel/
     path('cancel/', views.user_cancel_reservation,),
 ]

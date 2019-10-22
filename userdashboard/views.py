@@ -108,29 +108,30 @@ def user_check_reservation(request):
 @require_http_methods(['POST'])
 def user_cancel_reservation(request):
     try:
-        social_id = request.POST.get('social_id', None)
-        social_app = request.POST.get('social_app', None)
+        # use session catch
+        # social_id = request.POST.get('social_id', None)
+        # social_app = request.POST.get('social_app', None)
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
 
-        # Check data format
-        valid = checkAuth(data={
-            'social_id': social_id,
-            'social_app': social_app
-        })
-        if valid.is_valid() == False:
-            raise Exception('Not valid, 帳號資料錯誤')
+        # # Check data format
+        # valid = checkAuth(data={
+        #     'social_id': social_id,
+        #     'social_app': social_app
+        # })
+        # if valid.is_valid() == False:
+        #     raise Exception('Not valid, 帳號資料錯誤')
 
-        result = auth.ClientAuthentication(
-            social_id, social_app)
+        # result = auth.ClientAuthentication(
+        #     social_id, social_app)
 
-        if result == None or result == False:  # Using PC or No social login # Account Not Exist
-            return JsonResponse({'error': 'Not valid, 帳號驗證失敗'})
-        # error occurred the type of result is {'error' : error}
-        elif type(result) == dict:
-            raise Exception('error')
-        # Account Exist
+        # if result == None or result == False:  # Using PC or No social login # Account Not Exist
+        #     return JsonResponse({'error': 'Not valid, 帳號驗證失敗'})
+        # # error occurred the type of result is {'error' : error}
+        # elif type(result) == dict:
+        #     raise Exception('error')
 
+        ## Account Exist
         with transaction.atomic():  # transaction
             bk_date_ = datetime.strptime(bk_date, '%Y-%m-%d')
             bk_date_tmp = bk_date_ - datetime.timedelta(days=3)

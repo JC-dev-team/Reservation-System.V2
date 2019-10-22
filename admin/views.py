@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from django.shortcuts import render, redirect, reverse
 from booking.models import ActionLog, BkList, Account, Production, Staff, Store, StoreEvent
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, \
@@ -64,7 +64,71 @@ def staff_auth(request):  # authentication staff
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
 
 
-# Ajax API
+@require_http_methods(['GET'])
+def staff_not_confirmed(request):
+    try:
+        # Get now
+        today = date.today()
+        now = today.strftime('%Y-%m-%d')
+        queryset = BkList.objects.filter(
+            is_confirm=False,
+            is_cancel=False,
+            bk_date__gte=now
+        )
+        serializers = Bklist_Serializer(queryset, many=True)
+        return render(request, '', {'data': serializers.data})
+    except Exception as e:
+        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
+@require_http_methods(['GET'])
+def staff_is_confirmed(request):
+    try:
+        # Get now
+        today = date.today()
+        now = today.strftime('%Y-%m-%d')
+        queryset = BkList.objects.filter(
+            is_confirm=True,
+            is_cancel=False,
+            bk_date__gte=now
+        )
+        serializers = Bklist_Serializer(queryset, many=True)
+        return render(request, '', {'data': serializers.data})
+    except Exception as e:
+        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
+@require_http_methods(['GET'])
+def staff_is_confirmed(request):
+    try:
+        # Get now
+        today = date.today()
+        now = today.strftime('%Y-%m-%d')
+        queryset = BkList.objects.filter(
+            is_cancel=True,
+            bk_date__gte=now
+        )
+        serializers = Bklist_Serializer(queryset, many=True)
+        return render(request, '', {'data': serializers.data})
+    except Exception as e:
+        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
+@require_http_methods(['GET'])
+def staff_is_waiting(request):
+    try:
+        # Get now
+        today = date.today()
+        now = today.strftime('%Y-%m-%d')
+        queryset = BkList.objects.filter(
+            is_cancel=True,
+            bk_date__gte=now,
+            
+        )
+        serializers = Bklist_Serializer(queryset, many=True)
+        return render(request, '', {'data': serializers.data})
+    except Exception as e:
+        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
+
+## Ajax API
 @require_http_methods(['POST'])
 def staff_check_reservation(request):
     try:
@@ -79,7 +143,7 @@ def staff_check_reservation(request):
             store_id=store_id,
             bk_date__range=(start_month, end_month),
             is_cancel=False,
-        ).order_by('-is_confirm','waiting_num', 'bk_date',  'bk_st')
+        ).order_by('-is_confirm', 'waiting_num', 'bk_date',  'bk_st')
         # order by will be slow, I think better way is regroup
 
         # add day off data
@@ -90,13 +154,13 @@ def staff_check_reservation(request):
         # get user phone number
         acc_arr = []
         for i in bk_queryset:
-            
+
             acc_queryset = Account.objects.get(
                 user_id=i.user_id,
             )
             acc_serializers = Acc_Serializer(acc_queryset)
             acc_arr.append(acc_serializers.data)
-        
+
         event_serializers = StoreEvent_Serializer(event_queryset, many=True)
         bk_serializers = Bklist_Serializer(bk_queryset, many=True)
         return JsonResponse({
@@ -141,7 +205,6 @@ def staff_pass_reservation(request):
         store_id = request.POST.get('store_id', None)
 
         with transaction.atomic():  # transaction
-            print(1)
             store_queryset = Store.objects.only('seat').get(store_id=store_id,)
             queryset = BkList.objects.select_for_update().filter(
                 bk_date=bk_date,
@@ -154,32 +217,31 @@ def staff_pass_reservation(request):
             if bk_queryset.exists() == False:
                 return JsonResponse({'alert': '資料已經被刪除或是訂位完成'})
             # Get total number of guests
-            print(1.5)
             total = int(bk_queryset[0].adult) + int(bk_queryset[0].children)
-            print(1.6)
+
             # Get the list before the bk_queryset waiting_num=0
             beforelist = queryset.filter(
                 waiting_num=0,
             )
-            print(2)
             for i in beforelist:
                 total += int(i.adult)+int(i.children)
-            print(3)
             if total > store_queryset.seat:
                 return JsonResponse({'alert': '請先刪除前面非候補訂位'})
-            print(4)
             bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
             return JsonResponse({'result': 'success'})
 
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
-# @require_http_methods(['POST'])
-# def staff_add_reservation(request):  # Help client to add reservation
-#     try:
-#         pass
-#     except Exception as e:
-#         return JsonResponse({'error': '發生未知錯誤'})
+
+
+@require_http_methods(['POST'])
+def staff_add_reservation(request):  # Help client to add reservation
+    try:
+        phone = request.POST.get('phone', None)
+        username = request.POST.get('username', None)
+
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
 
 
 @require_http_methods(['POST'])
@@ -187,7 +249,7 @@ def staff_cancel_reservation(request):
     try:
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
-        
+
         with transaction.atomic():  # transaction
             bk_queryset = BkList.objects.select_for_update().filter(
                 bk_uuid=bk_uuid,
@@ -210,7 +272,6 @@ def staff_add_event(request):  # add rest day as booking
         event_date = request.POST.get('event_date', None)
         time_session = request.POST.get('time_session', None)
         event_type = request.POST.get('event_type', None)
-        print('time_session1 : ', time_session)
         # check data format
         valid = StoreEvent_Serializer(
             data={
@@ -246,13 +307,10 @@ def staff_add_event(request):  # add rest day as booking
                     )
 
                 elif event_check and time_session == 'Allday' and flag == 0:
-                    print('2')
                     flag += 1
                 elif event_check and flag == 1:
-                    print('3')
                     return JsonResponse({'alert': '全天已經是店休了'})
                 else:
-                    print('4')
                     return JsonResponse({'alert': '此時段已經是店休了'})
 
         return JsonResponse({'result': 'success'})
