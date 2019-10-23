@@ -276,10 +276,36 @@ def staff_not_confirmed(request):
             bk_date__gte=now,
             store_id=store_id,
         )
+        bk_queryset = BkList.objects.filter(
+            is_confirm=False,
+            is_cancel=False,
+            bk_date__gte=now,
+            store_id=store_id,
+        ).order_by('-is_confirm', 'waiting_num', 'bk_date',  'bk_st')
+        # order by will be slow, I think better way is regroup
 
-        serializers = Bklist_Serializer(queryset, many=True)
-        
-        return JsonResponse({'result': serializers.data,})
+        # add day off data
+        event_queryset = StoreEvent.objects.filter(
+            store_id=store_id,
+            bk_date__gte=now,
+        )
+        # get user phone number
+        acc_arr = []
+        for i in bk_queryset:
+
+            acc_queryset = Account.objects.get(
+                user_id=i.user_id,
+            )
+            acc_serializers = Acc_Serializer(acc_queryset)
+            acc_arr.append(acc_serializers.data)
+
+        event_serializers = StoreEvent_Serializer(event_queryset, many=True)
+        bk_serializers = Bklist_Serializer(bk_queryset, many=True)
+        return JsonResponse({
+            'result': bk_serializers.data,
+            'event': event_serializers.data,
+            'account': acc_arr,
+        })
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
