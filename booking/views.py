@@ -66,7 +66,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
             raise Exception('Not valid, 帳號資料錯誤')
         
         with transaction.atomic():  # transaction
-            
+
             queryset = Account.objects.create(
                 phone=phone,
                 username=username,
@@ -319,7 +319,6 @@ def getWaitingList(request):  # get waiting list
             event_date=bk_date,
             # event_type='Day off',
         ).distinct()
-        print(event_queryset.count())
         # We will get 2 kinds of time_sessions Ex: Lunch & Dinner
         bk_queryset = BkList.objects.filter(  # get all data
             store_id=store_id,

@@ -8,7 +8,7 @@
 
 {% block content %}
 {% load static %}
-
+{{request.session.store_id}}
 <font size='4'>
     <button id="admin_reservation" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
         onclick="location.href='/softwayliving/reservation/' ">管理者 - 訂位</button>

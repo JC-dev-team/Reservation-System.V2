@@ -61,12 +61,14 @@ def staff_auth(request):  # authentication staff
             request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/softwayliving/login/'})
         else:
-            if request.session['is_Login']==True:
+            if 'is_Login' in request.session:
                 request.session.flush()
-            
             request.session['is_Login']=True
-            request.session['store_id'] = result.store_id
-            request.session['staff_id'] =result.staff_id
+            request.session['store_id'] = result['store']
+            request.session['staff_id'] = result['staff_id']
+
+            if 'store_id'in request.session:
+                print(request.session['store_id'])
 
             return render(request, 'admin_dashbroad.html', {'data': result})
     except Exception as e:
@@ -77,12 +79,16 @@ def staff_auth(request):  # authentication staff
 @require_http_methods(['POST'])
 def staff_check_reservation(request):
     try:
+        if 'store_id'in request.session:
+            print('True')
+        print(False)
         store_id = request.session['store_id']
         start_month = request.POST.get('start_month', None)
         end_month = request.POST.get('end_month', None)
 
         start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
         end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
+        print('store_id',store_id)
 
         bk_queryset = BkList.objects.filter(  # get all available reservation
             store_id=store_id,
@@ -115,6 +121,7 @@ def staff_check_reservation(request):
         })
 
     except Exception as e:
+        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 
@@ -270,12 +277,12 @@ def staff_not_confirmed(request):
         store_id = request.session['store_id']
         today = date.today()
         now = today.strftime('%Y-%m-%d')
-        queryset = BkList.objects.filter(
-            is_confirm=False,
-            is_cancel=False,
-            bk_date__gte=now,
-            store_id=store_id,
-        )
+        # queryset = BkList.objects.filter(
+        #     is_confirm=False,
+        #     is_cancel=False,
+        #     bk_date__gte=now,
+        #     store_id=store_id,
+        # )
         bk_queryset = BkList.objects.filter(
             is_confirm=False,
             is_cancel=False,
@@ -283,12 +290,13 @@ def staff_not_confirmed(request):
             store_id=store_id,
         ).order_by('-is_confirm', 'waiting_num', 'bk_date',  'bk_st')
         # order by will be slow, I think better way is regroup
-
+        print('1`',bk_queryset)
         # add day off data
         event_queryset = StoreEvent.objects.filter(
             store_id=store_id,
             bk_date__gte=now,
         )
+        print('2',event_queryset)
         # get user phone number
         acc_arr = []
         for i in bk_queryset:
@@ -299,6 +307,7 @@ def staff_not_confirmed(request):
             acc_serializers = Acc_Serializer(acc_queryset)
             acc_arr.append(acc_serializers.data)
 
+        print('2',acc_arr)
         event_serializers = StoreEvent_Serializer(event_queryset, many=True)
         bk_serializers = Bklist_Serializer(bk_queryset, many=True)
         return JsonResponse({
