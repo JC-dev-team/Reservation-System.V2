@@ -63,73 +63,6 @@ def staff_auth(request):  # authentication staff
     except Exception as e:
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
 
-
-@require_http_methods(['GET'])
-def staff_not_confirmed(request):
-    try:
-        # Get now
-        today = date.today()
-        now = today.strftime('%Y-%m-%d')
-        queryset = BkList.objects.filter(
-            is_confirm=False,
-            is_cancel=False,
-            bk_date__gte=now
-        )
-        serializers = Bklist_Serializer(queryset, many=True)
-        return render(request, 'admin_checklist.html', {'data': serializers.data,})
-    except Exception as e:
-        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
-
-@require_http_methods(['GET'])
-def staff_is_confirmed(request):
-    try:
-        # Get now
-        today = date.today()
-        now = today.strftime('%Y-%m-%d')
-        queryset = BkList.objects.filter(
-            is_confirm=True,
-            is_cancel=False,
-            bk_date__gte=now,
-        )
-        serializers = Bklist_Serializer(queryset, many=True)
-        return render(request, 'admin_checklist.html', {'data': serializers.data})
-    except Exception as e:
-        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
-
-@require_http_methods(['GET'])
-def staff_is_cancel(request):
-    try:
-        # Get now
-        today = date.today()
-        now = today.strftime('%Y-%m-%d')
-        queryset = BkList.objects.filter(
-            is_cancel=True,
-            bk_date__gte=now,
-        )
-        serializers = Bklist_Serializer(queryset, many=True)
-        return render(request, 'admin_checklist.html', {'data': serializers.data})
-    except Exception as e:
-        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
-
-@require_http_methods(['GET'])
-def staff_is_waiting(request):
-    try:
-        # Get now
-        today = date.today()
-        now = today.strftime('%Y-%m-%d')
-        queryset = BkList.objects.filter(
-            is_cancel=False,
-            bk_date__gte=now,
-            waiting_num__gt=0,
-            is_confirm = False,
-            
-        )
-        serializers = Bklist_Serializer(queryset, many=True)
-        return render(request, 'admin_checklist.html', {'data': serializers.data})
-    except Exception as e:
-        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
-
-
 ## Ajax API
 @require_http_methods(['POST'])
 def staff_check_reservation(request):
@@ -318,3 +251,78 @@ def staff_add_event(request):  # add rest day as booking
         return JsonResponse({'result': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
+
+## AJAX checklist
+@require_http_methods(['GET'])
+def staff_not_confirmed(request):
+    try:
+        # Get now
+        store_id = request.GET.get('store_id', None)
+        today = date.today()
+        now = today.strftime('%Y-%m-%d')
+        queryset = BkList.objects.filter(
+            is_confirm=False,
+            is_cancel=False,
+            bk_date__gte=now,
+            store_id=store_id,
+        )
+        serializers = Bklist_Serializer(queryset, many=True)
+        return JsonResponse({'result': serializers.data,})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
+@require_http_methods(['GET'])
+def staff_is_confirmed(request):
+    try:
+        store_id = request.GET.get('store_id', None)
+        # Get now
+        today = date.today()
+        now = today.strftime('%Y-%m-%d')
+        queryset = BkList.objects.filter(
+            is_confirm=True,
+            is_cancel=False,
+            bk_date__gte=now,
+            store_id=store_id,
+        )
+        serializers = Bklist_Serializer(queryset, many=True)
+        return JsonResponse({'result': serializers.data,})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
+@require_http_methods(['GET'])
+def staff_is_cancel(request):
+    try:
+        store_id = request.GET.get('store_id', None)
+        # Get now
+        today = date.today()
+        now = today.strftime('%Y-%m-%d')
+        queryset = BkList.objects.filter(
+            is_cancel=True,
+            bk_date__gte=now,
+            store_id=store_id,
+        )
+        serializers = Bklist_Serializer(queryset, many=True)
+        return JsonResponse({'result': serializers.data,})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
+@require_http_methods(['GET'])
+def staff_is_waiting(request):
+    try:
+        store_id = request.GET.get('store_id', None)
+        # Get now
+        today = date.today()
+        now = today.strftime('%Y-%m-%d')
+        queryset = BkList.objects.filter(
+            is_cancel=False,
+            bk_date__gte=now,
+            waiting_num__gt=0,
+            is_confirm = False,
+            store_id=store_id,
+            
+        )
+        serializers = Bklist_Serializer(queryset, many=True)
+        return JsonResponse({'result': serializers.data,})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
