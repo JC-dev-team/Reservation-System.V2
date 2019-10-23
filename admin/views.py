@@ -258,6 +258,7 @@ def staff_not_confirmed(request):
     try:
         # Get now
         store_id = request.GET.get('store_id', None)
+        print('store_id',store_id)
         today = date.today()
         now = today.strftime('%Y-%m-%d')
         queryset = BkList.objects.filter(
@@ -266,7 +267,9 @@ def staff_not_confirmed(request):
             bk_date__gte=now,
             store_id=store_id,
         )
+
         serializers = Bklist_Serializer(queryset, many=True)
+        print(serializers.data)
         return JsonResponse({'result': serializers.data,})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})

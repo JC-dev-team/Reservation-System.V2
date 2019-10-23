@@ -370,13 +370,41 @@
 
     //List ajax function 
     //待確認
-    function ajax_not_confirm(data) {
+    function ajax_not_confirm(num) {
         $.ajax({
             type: 'GET',
-            url: '/softwayliving/not_confirmed?store_id=' + data.store_id,
+            url: '/softwayliving/not_confirmed/',
+            data: {
+                'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'
+            },
             success: function (response) {
+                if (response.error != null) {
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    console.log(response.error)
+                    // window.location.replace('/booking/error/');
+                } else {
+                    
+                    result = response.result
+                    account = response.account
+                    event = response.event
+                    console.log(result)
+                    console.log(account)
+                    console.log(event)
+                    //Function of calendar (return calendar.render())
+                    calendar_fun(event, account, result, num)
 
+                }
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+                console.log(errorThrown)
+                // window.location.replace('/booking/error/');
             }
+
         })
     }
     //已確認
@@ -384,8 +412,12 @@
         $.ajax({
             type: 'GET',
             url: '/softwayliving/confirm/?store_id=' + data.store_id,
+            data: {
+                'store_id': '{{data.store_id}}'
+            },
             success: function (response) {
-
+                result = response.result
+                console.log(result)
             }
         })
     }
@@ -394,8 +426,12 @@
         $.ajax({
             type: 'GET',
             url: '/softwayliving/waiting/?store_id=' + data.store_id,
+            data: {
+                'store_id': '{{data.store_id}}'
+            },
             success: function (response) {
-
+                result = response.result
+                console.log(result)
             }
         })
     }
@@ -404,8 +440,12 @@
         $.ajax({
             type: 'GET',
             url: '/softwayliving/canceled/?store_id=' + data.store_id,
+            data: {
+                'store_id': '{{data.store_id}}'
+            },
             success: function (response) {
-
+                result = response.result
+                console.log(result)
             }
         })
     }
@@ -901,18 +941,34 @@
     //Click 待確認
     $('#sidebar_not_confirm').click(function (e) {
         console.log('sidebar_not_confirm')
+        var num = parseInt($('#date_num').val())
+        //Clean the calendar
+        document.getElementById('calendar').innerHTML = ''
+        ajax_not_confirm(num)
     })
     //Click 已確認
     $('#sidebar_confirm').click(function (e) {
         console.log('sidebar_confirm')
+        var num = parseInt($('#date_num').val())
+        //Clean the calendar
+        document.getElementById('calendar').innerHTML = ''
+        ajax_is_confirm(num)
     })
     //Click 候補名單
     $('#sidebar_waiting').click(function (e) {
         console.log('sidebar_waiting')
+        var num = parseInt($('#date_num').val())
+        //Clean the calendar
+        document.getElementById('calendar').innerHTML = ''
+        ajax_waiting(num)
     })
     //Click 已刪除
     $('#sidebar_cancel').click(function (e) {
         console.log('sidebar_cancel')
+        var num = parseInt($('#date_num').val())
+        //Clean the calendar
+        document.getElementById('calendar').innerHTML = ''
+        ajax_canceled(num)
     })
 </script>
 
