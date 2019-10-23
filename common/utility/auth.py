@@ -51,6 +51,7 @@ def StaffAuthentication(social_id, social_app):  # staff account checking
         else:   # parameter not None
             queryset = Staff.objects.only(
                 'staff_id',
+                'store_id',
                 'staff_name',
                 'staff_level',
                 'staff_ended',

@@ -54,20 +54,30 @@ def staff_auth(request):  # authentication staff
         result = auth.StaffAuthentication(social_id, social_app)
 
         if result == None or result == False:
+            request.session.flush()
             return render(request, 'error/error404.html', {'action': '/softwayliving/login/'})
 
         elif type(result) == dict:  # error occurred
+            request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/softwayliving/login/'})
         else:
+            if request.session['is_Login']==True:
+                request.session.flush()
+            
+            request.session['is_Login']=True
+            request.session['store_id'] = result.store_id
+            request.session['staff_id'] =result.staff_id
+
             return render(request, 'admin_dashbroad.html', {'data': result})
     except Exception as e:
+        request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
 
 ## Ajax API
 @require_http_methods(['POST'])
 def staff_check_reservation(request):
     try:
-        store_id = request.POST.get('store_id', None)
+        store_id = request.session['store_id']
         start_month = request.POST.get('start_month', None)
         end_month = request.POST.get('end_month', None)
 
@@ -137,7 +147,7 @@ def staff_pass_reservation(request):
         time_session = request.POST.get('time_session', None)
         bk_date = request.POST.get('bk_date', None)
         bk_ps = request.POST.get('bk_ps', None)
-        store_id = request.POST.get('store_id', None)
+        store_id = request.session['store_id']
 
         with transaction.atomic():  # transaction
             store_queryset = Store.objects.only('seat').get(store_id=store_id,)
@@ -203,7 +213,7 @@ def staff_cancel_reservation(request):
 @require_http_methods(['POST'])  # when there are two time sessions
 def staff_add_event(request):  # add rest day as booking
     try:
-        store_id = request.POST.get('store_id', None)
+        store_id = request.session['store_id']
         event_date = request.POST.get('event_date', None)
         time_session = request.POST.get('time_session', None)
         event_type = request.POST.get('event_type', None)
@@ -257,7 +267,7 @@ def staff_add_event(request):  # add rest day as booking
 def staff_not_confirmed(request):
     try:
         # Get now
-        store_id = request.GET.get('store_id', None)
+        store_id = request.session['store_id']
         today = date.today()
         now = today.strftime('%Y-%m-%d')
         queryset = BkList.objects.filter(
@@ -266,7 +276,9 @@ def staff_not_confirmed(request):
             bk_date__gte=now,
             store_id=store_id,
         )
+
         serializers = Bklist_Serializer(queryset, many=True)
+        
         return JsonResponse({'result': serializers.data,})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
@@ -274,7 +286,7 @@ def staff_not_confirmed(request):
 @require_http_methods(['GET'])
 def staff_is_confirmed(request):
     try:
-        store_id = request.GET.get('store_id', None)
+        store_id = request.session['store_id']
         # Get now
         today = date.today()
         now = today.strftime('%Y-%m-%d')
@@ -292,7 +304,7 @@ def staff_is_confirmed(request):
 @require_http_methods(['GET'])
 def staff_is_cancel(request):
     try:
-        store_id = request.GET.get('store_id', None)
+        store_id = request.session['store_id']
         # Get now
         today = date.today()
         now = today.strftime('%Y-%m-%d')
@@ -309,7 +321,7 @@ def staff_is_cancel(request):
 @require_http_methods(['GET'])
 def staff_is_waiting(request):
     try:
-        store_id = request.GET.get('store_id', None)
+        store_id = request.session['store_id']
         # Get now
         today = date.today()
         now = today.strftime('%Y-%m-%d')

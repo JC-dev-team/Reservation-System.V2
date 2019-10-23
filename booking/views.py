@@ -64,7 +64,9 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 
         if valid.is_valid() == False:
             raise Exception('Not valid, 帳號資料錯誤')
+        
         with transaction.atomic():  # transaction
+            
             queryset = Account.objects.create(
                 phone=phone,
                 username=username,
