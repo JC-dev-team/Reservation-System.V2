@@ -372,7 +372,7 @@
     //待確認
     function ajax_not_confirm(data) {
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url:'/softwayliving/not_confirmed?store_id='+data.store_id,
             success: function(response) {
 
@@ -382,7 +382,7 @@
     //已確認
     function ajax_is_confirm() {
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url:'/softwayliving/confirm/?store_id='+data.store_id,
             success: function(response) {
 
@@ -392,7 +392,7 @@
     //候補
     function ajax_waiting() {
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url:'/softwayliving/waiting/?store_id='+data.store_id,
             success: function(response) {
 
@@ -402,7 +402,7 @@
     //已刪除
     function ajax_canceled() {
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url:'/softwayliving/canceled/?store_id='+data.store_id,
             success: function(response) {
 
