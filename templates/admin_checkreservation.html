@@ -373,7 +373,7 @@
     function ajax_not_confirm(num) {
         $.ajax({
             type: 'GET',
-            url: '/softwayliving/not_confirmed/',
+            url: '/softwayliving/not_confirmed?store_id={{request.session.store_id}}' ,
             success: function (response) {
                 if (response.error != null) {
                     Notiflix.Notify.Failure('發生錯誤！！');
