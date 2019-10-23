@@ -18,20 +18,20 @@
 <!-- No reservation -->
 {% if data == False %}
 
-<div class="w3-center" >
+<div class="w3-center">
     <font size="10">
         <i class="fas fa-ban" style="color:grey;"></i></i>
     </font>
     <h4>查無訂單</h4>
     <br>
 
-    
+
 </div>
 {% else %}
 
 
 {% for element in data %}
-{% if element.waiting_num == 0 and element.is_confirm == False %}
+{% if  element.is_confirm == False %}
 
 <!-- Under processing-->
 <div class="w3-center" style="display: show">
@@ -42,7 +42,7 @@
     <h5>請靜候通知，由專人為您確認訂位</h5>
     <br>
 </div>
-{% elif element.waiting_num == 0 and element.is_confirm == True  %}
+{% elif element.is_confirm == True  %}
 <!-- Success-->
 <div class="w3-center" style="display: show">
     <font size="10">
@@ -64,17 +64,21 @@
 </div> -->
 
 <!-- reservation information-->
-<div class="w3-container w3-border w3-round-xxlarge">
+<font size='4'>
+    <button id='hidden_list' class="w3-btn w3-round-large w3-block w3-teal">
+        隱藏列表 <i class="fas fa-angle-up"></i></button>
+</font>
+<div name='information' class="w3-container w3-border w3-round-xxlarge">
     <div class="w3-center">
         <font size='6'>
-            <h2 id='information'>訂位資訊</h2>
+            <h2>訂位資訊</h2>
             <hr>
 
             <!-- <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3> -->
             <div class="w3-container" align="left">
                 <!-- <input type="text" id='bk_uuid' value="" style="display: none">
                 <input type="text" id='bk_date' value="" style="display: none"> -->
-                
+
                 <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
                 <h4>用餐日期：{{element.bk_date}} </h4>
                 <h4>{{element.time_session|time_session_name}} - {{element.bk_st}}</h4>
@@ -87,7 +91,8 @@
         </font>
 
         <font size='4'>
-            <button name="cancel_button" onclick="cancel_click('{{element.bk_date}}','{{element.bk_uuid}}')" class="w3-btn w3-round-large  w3-teal w3-padding">取消訂位</button>
+            <button name="cancel_button" onclick="cancel_click('{{element.bk_date}}','{{element.bk_uuid}}')"
+                class="w3-btn w3-round-large  w3-teal w3-padding">取消訂位</button>
         </font>
 
     </div>
@@ -118,6 +123,10 @@ console.log($('#bk_date').text())
         },
     });
 
+    // $('#hidden_list').click(function(e){
+    //     document.getElementsByName('information').style.display = 'none'
+    // })
+
     function cancelreservation(data) {
         $.ajax({
             type: 'POST',
@@ -133,7 +142,7 @@ console.log($('#bk_date').text())
                     result = response.result
                     Notiflix.Report.Success('提醒', '已取消此訂位！！', 'ok ');
                     window.location.reload()
-                    
+
                     // console.log(result)
                     //Function of calendar (return calendar.render())
 
@@ -157,8 +166,8 @@ console.log($('#bk_date').text())
         liff.closewindow()
     }
 
-    function cancel_click(date,uuid){
-        console.log(date,uuid)
+    function cancel_click(date, uuid) {
+        console.log(date, uuid)
         Notiflix.Confirm.Show('取消訂位', '確定取消訂位', '是', '否',
             function () {
                 //alert('YES');
@@ -169,7 +178,7 @@ console.log($('#bk_date').text())
                 console.log(data)
                 Notiflix.Loading.Hourglass('刪除訂位中....');
                 cancelreservation(data)
-                
+
             },
             function () {
                 //alert('NO');
@@ -177,7 +186,6 @@ console.log($('#bk_date').text())
     }
     // ready
     $('#displayName').html('{{user_info.username}}' + '(' + '{{user_info.social_name}}' + ')')
-
 </script>
 
 {% endblock %}
