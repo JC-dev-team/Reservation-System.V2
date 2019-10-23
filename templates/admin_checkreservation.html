@@ -374,9 +374,6 @@
         $.ajax({
             type: 'GET',
             url: '/softwayliving/not_confirmed/',
-            data: {
-                'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'
-            },
             success: function (response) {
                 if (response.error != null) {
                     Notiflix.Notify.Failure('發生錯誤！！');
