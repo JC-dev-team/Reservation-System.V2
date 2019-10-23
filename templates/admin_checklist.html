@@ -467,7 +467,7 @@
             plugins: ['interaction', 'dayGrid', 'moment', 'list'],
             editable: true,
             //Default View
-            defaultView: 'dayGridMonth',
+            defaultView: 'listMonth',
             //defaultDate
             defaultDate: (new Date().addMonths(num)).toISOString().slice(0, 10),
             //Height
@@ -477,7 +477,7 @@
             header: {
                 left: 'prev',
                 center: 'title,',
-                right: 'dayGridMonth,listMonth,next'
+                right: 'listMonth,next'
             },
             //Header -  Title Text
             buttonText: {
@@ -508,19 +508,8 @@
 
             events: function (info, successCallback) {
 
-                var Event = [{
-                    id: '3',
-                    title: '店休',
-                    start: new Date(),
-                    startRecur: new Date().addDays(3),
-                    backgroundColor: 'grey',
-                    textColor: 'white',
-                    daysOfWeek: [1],
-
-                }, ];
-                successCallback(Event)
-
-
+                var Event = [];
+                
                 //reservation event
                 for (var i = 0; i < result.length; i++) {
 

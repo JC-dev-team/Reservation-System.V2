@@ -11,7 +11,7 @@
   <p style="text-align: center"> 管理者</p>
   <hr>
 
-  <a href="" onclick="" class="w3-bar-item w3-button"><i class="fas fa-calendar-alt"></i> 訂位</a>
+  <a onclick="" class="w3-bar-item w3-button"><i class="fas fa-calendar-alt"></i> 訂位</a>
   <hr>
   <h3 style="text-align: center">查詢</h3>
   <hr>
@@ -47,14 +47,19 @@
 <script>
   function send(action) {
     if (action == 'not_confirmed') {
+      //待確認
       window.location.href = '/softwayliving/not_confirmed/'
     } else if (action == 'confirm'){
+      //已確認
       window.location.href = '/softwayliving/confirm/'
     } else if (action == 'waiting'){
+      //候補
       window.location.href = '/softwayliving/waiting/'
     }else if (action == 'canceled'){
+      //已刪除
       window.location.href = '/softwayliving/canceled/'
     }else{
+      //總表
       window.location.href = '/softwayliving/checkreservation/'
     }
     
