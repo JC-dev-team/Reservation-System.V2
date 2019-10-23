@@ -368,6 +368,50 @@
         });
     }
 
+    //List ajax function 
+    //待確認
+    function ajax_not_confirm(data) {
+        $.ajax({
+            type: 'GET',
+            url: '/softwayliving/not_confirmed?store_id=' + data.store_id,
+            success: function (response) {
+
+            }
+        })
+    }
+    //已確認
+    function ajax_is_confirm() {
+        $.ajax({
+            type: 'GET',
+            url: '/softwayliving/confirm/?store_id=' + data.store_id,
+            success: function (response) {
+
+            }
+        })
+    }
+    //候補
+    function ajax_waiting() {
+        $.ajax({
+            type: 'GET',
+            url: '/softwayliving/waiting/?store_id=' + data.store_id,
+            success: function (response) {
+
+            }
+        })
+    }
+    //已刪除
+    function ajax_canceled() {
+        $.ajax({
+            type: 'GET',
+            url: '/softwayliving/canceled/?store_id=' + data.store_id,
+            success: function (response) {
+
+            }
+        })
+    }
+
+
+
     function admin_ajax_time(data, num, calendar) {
         $.ajax({
             type: 'POST',
@@ -674,8 +718,8 @@
                 }
                 var id = info.event.id
                 var date = info.event.start.toISOString().slice(0, 10)
-                var time = info.event.start.toTimeString().slice(0,5)
-                
+                var time = info.event.start.toTimeString().slice(0, 5)
+
                 var time_session = info.event.title.slice(0, 2)
                 var information = info.event.title.split('\n')[0]
                 var user_name = info.event.title.split('\n')[1].split(' ')[0]
@@ -686,7 +730,7 @@
                 } else {
                     time_session = 'Dinner'
                 }
-                
+
                 $('#info_event_id').val(id)
                 $('#info_event_start').val(date)
                 $('#info_event_timesession').val(time_session)
@@ -852,6 +896,23 @@
         $('#date_num').val(num)
         //do the fuction of ajax_post()
         ajax_post(num)
+    })
+
+    //Click 待確認
+    $('#sidebar_not_confirm').click(function (e) {
+        console.log('sidebar_not_confirm')
+    })
+    //Click 已確認
+    $('#sidebar_confirm').click(function (e) {
+        console.log('sidebar_confirm')
+    })
+    //Click 候補名單
+    $('#sidebar_waiting').click(function (e) {
+        console.log('sidebar_waiting')
+    })
+    //Click 已刪除
+    $('#sidebar_cancel').click(function (e) {
+        console.log('sidebar_cancel')
     })
 </script>
 

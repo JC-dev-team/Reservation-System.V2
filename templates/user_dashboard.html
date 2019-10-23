@@ -14,6 +14,11 @@
     <input id="user_id" style="display: none" name='user_id' value="{{data.user_id}}">
 </form>
 
+<div class="tenor-gif-embed" data-postid="5543472" data-share-method="host" data-width="100%"
+    data-aspect-ratio="1.322314049586777"><a
+        href="https://tenor.com/view/hungry-bear-food-hunny-honey-gif-5543472">Hungry Bear GIF</a> from <a
+        href="https://tenor.com/search/hungry-gifs">Hungry GIFs</a></div>
+
 
 <font size='4'>
     <button id="admin_reservation" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
@@ -27,15 +32,13 @@
 
 
 <script>
-
-    function send(){
+    function send() {
         document.getElementById("userdashboard_form").action = "/userdashboard/checkreservation/";
         document.getElementById("userdashboard_form").submit();
     }
-    
 </script>
 
-
+<script type="text/javascript" async src="https://tenor.com/embed.js"></script>
 {% endblock %}
 <!-- auth give u social id & social app 前一頁(login(userdashboard) -> auth(驗證) -> 到這裡)給你個人資料 -->
 <!-- need submit social app social id -->
