@@ -30,12 +30,10 @@ def staff_login_portal(request):
 
 
 def staff_check_reservation_page(request):
-
     return render(request, 'admin_checkreservation.html')
 
 
 def staff_reservation_page(request):
-    
     return render(request, 'admin_reservation.html')
 
 
@@ -181,7 +179,7 @@ def staff_add_reservation(request):  # Help client to add reservation
     try:
         phone = request.POST.get('phone', None)
         username = request.POST.get('username', None)
-
+        
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
@@ -234,7 +232,7 @@ def staff_add_event(request):  # add rest day as booking
             time_session_arr = [time_session]
 
         with transaction.atomic():  # transaction
-            # Check is there same event
+            # Check is there same time session
             flag = 0
             for i in time_session_arr:
                 event_check = StoreEvent.objects.select_for_update().filter(
@@ -314,6 +312,14 @@ def staff_is_confirmed(request):
             bk_date__gte=now,
             store_id=store_id,
         )
+        acc_arr = []
+        for i in queryset:
+
+            acc_queryset = Account.objects.get(
+                user_id=i.user_id,
+            )
+            acc_serializers = Acc_Serializer(acc_queryset)
+            acc_arr.append(acc_serializers.data)
         serializers = Bklist_Serializer(queryset, many=True)
         return JsonResponse({'result': serializers.data,})
     except Exception as e:
@@ -333,6 +339,14 @@ def staff_is_cancel(request):
             bk_date__gte=now,
             store_id=store_id,
         )
+        acc_arr = []
+        for i in queryset:
+
+            acc_queryset = Account.objects.get(
+                user_id=i.user_id,
+            )
+            acc_serializers = Acc_Serializer(acc_queryset)
+            acc_arr.append(acc_serializers.data)
         serializers = Bklist_Serializer(queryset, many=True)
         return JsonResponse({'result': serializers.data,})
     except Exception as e:
@@ -355,6 +369,14 @@ def staff_is_waiting(request):
             store_id=store_id,
             
         )
+        acc_arr = []
+        for i in queryset:
+
+            acc_queryset = Account.objects.get(
+                user_id=i.user_id,
+            )
+            acc_serializers = Acc_Serializer(acc_queryset)
+            acc_arr.append(acc_serializers.data)
         serializers = Bklist_Serializer(queryset, many=True)
         return JsonResponse({'result': serializers.data,})
     except Exception as e:

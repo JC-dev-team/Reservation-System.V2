@@ -21,9 +21,9 @@ urlpatterns = [
     # /softwayliving/confirm/
     path('is_confirm/',views.staff_is_confirmed), # 已確認
     # /softwayliving/not_confirmed/
-    path('not_confirmed/',views.staff_not_confirmed), # 待確認
+    path('not_confirm/',views.staff_not_confirmed), # 待確認
     # /softwayliving/canceled/
-    path('canceled/',views.staff_is_cancel), # 已刪除
+    path('delete/',views.staff_is_cancel), # 已刪除
 
     ## Ajax api
     # /softwayliving/staff_check/
