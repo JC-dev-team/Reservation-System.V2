@@ -18,6 +18,7 @@ from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
 from django.contrib.sessions.models import Session
 
+
 def error(request):
     request.session.flush()
     return render(request, 'error/error.html', {'action': '/softwayliving/login/'})
@@ -56,21 +57,21 @@ def staff_auth(request):  # authentication staff
         else:
             if 'is_Login' in request.session:
                 request.session.flush()
-            
-            request.session['is_Login']=True
+
+            request.session['is_Login'] = True
             request.session['store_id'] = result['store']
             request.session['staff_id'] = result['staff_id']
-            
+
             return render(request, 'admin_dashbroad.html', {'data': result})
     except Exception as e:
         request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
 
-## Ajax API
+# Ajax API
 @require_http_methods(['POST'])
 def staff_check_reservation(request):
     try:
-        store_id = request.session.get('store_id',None)
+        store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'alert': 'Not Valid 請先登入'})
         start_month = request.POST.get('start_month', None)
@@ -142,7 +143,7 @@ def staff_pass_reservation(request):
         time_session = request.POST.get('time_session', None)
         bk_date = request.POST.get('bk_date', None)
         bk_ps = request.POST.get('bk_ps', None)
-        store_id = request.session.get('store_id',None)
+        store_id = request.session.get('store_id', None)
 
         with transaction.atomic():  # transaction
             store_queryset = Store.objects.only('seat').get(store_id=store_id,)
@@ -179,7 +180,7 @@ def staff_add_reservation(request):  # Help client to add reservation
     try:
         phone = request.POST.get('phone', None)
         username = request.POST.get('username', None)
-        
+
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
@@ -208,10 +209,10 @@ def staff_cancel_reservation(request):
 @require_http_methods(['POST'])  # when there are two time sessions
 def staff_add_event(request):  # add rest day as booking
     try:
-        store_id = request.session.get('store_id',None)
+        store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'error': 'Not valid, 請先登入'})
-        
+
         event_date = request.POST.get('event_date', None)
         time_session = request.POST.get('time_session', None)
         event_type = request.POST.get('event_type', None)
@@ -260,12 +261,12 @@ def staff_add_event(request):  # add rest day as booking
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
-## AJAX checklist
+# AJAX checklist
 @require_http_methods(['GET'])
 def staff_not_confirmed(request):
     try:
         # Get now
-        store_id = request.session.get('store_id',None)
+        store_id = request.session.get('store_id', None)
 
         if store_id == None:
             return JsonResponse({'error': 'Not valid, 請先登入'})
@@ -288,7 +289,6 @@ def staff_not_confirmed(request):
             acc_serializers = Acc_Serializer(acc_queryset)
             acc_arr.append(acc_serializers.data)
 
-
         bk_serializers = Bklist_Serializer(bk_queryset, many=True)
         return JsonResponse({
             'result': bk_serializers.data,
@@ -297,10 +297,11 @@ def staff_not_confirmed(request):
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
+
 @require_http_methods(['GET'])
 def staff_is_confirmed(request):
     try:
-        store_id = request.session.get('store_id',None)
+        store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'error': 'Not valid, 請先登入'})
         # Get now
@@ -320,15 +321,19 @@ def staff_is_confirmed(request):
             )
             acc_serializers = Acc_Serializer(acc_queryset)
             acc_arr.append(acc_serializers.data)
-        serializers = Bklist_Serializer(queryset, many=True)
-        return JsonResponse({'result': serializers.data,})
+        bk_serializers = Bklist_Serializer(queryset, many=True)
+        return JsonResponse({
+            'result': bk_serializers.data,
+            'account': acc_arr,
+        })
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
+
 
 @require_http_methods(['GET'])
 def staff_is_cancel(request):
     try:
-        store_id = request.session.get('store_id',None)
+        store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'error': 'Not valid, 請先登入'})
         # Get now
@@ -347,15 +352,19 @@ def staff_is_cancel(request):
             )
             acc_serializers = Acc_Serializer(acc_queryset)
             acc_arr.append(acc_serializers.data)
-        serializers = Bklist_Serializer(queryset, many=True)
-        return JsonResponse({'result': serializers.data,})
+        bk_serializers = Bklist_Serializer(queryset, many=True)
+        return JsonResponse({
+            'result': bk_serializers.data,
+            'account': acc_arr,
+        })
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
+
 
 @require_http_methods(['GET'])
 def staff_is_waiting(request):
     try:
-        store_id = request.session.get('store_id',None)
+        store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'error': 'Not valid, 請先登入'})
         # Get now
@@ -365,9 +374,9 @@ def staff_is_waiting(request):
             is_cancel=False,
             bk_date__gte=now,
             waiting_num__gt=0,
-            is_confirm = False,
+            is_confirm=False,
             store_id=store_id,
-            
+
         )
         acc_arr = []
         for i in queryset:
@@ -377,8 +386,10 @@ def staff_is_waiting(request):
             )
             acc_serializers = Acc_Serializer(acc_queryset)
             acc_arr.append(acc_serializers.data)
-        serializers = Bklist_Serializer(queryset, many=True)
-        return JsonResponse({'result': serializers.data,})
+        bk_serializers = Bklist_Serializer(queryset, many=True)
+        return JsonResponse({
+            'result': bk_serializers.data,
+            'account': acc_arr,
+        })
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
-
