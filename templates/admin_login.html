@@ -5,11 +5,12 @@
 {% block content %}
 {% load static %}
 <div class="w3-center">
-    <font size="10">
-        <img src="{% static '/images/Spinner01.svg' %}" />
+    <font size='5' face="DFKai-sb">
+        <b><I>聰明工作，智慧生活</I></b>
+        
     </font>
-    <h4>畫面載入中...<br>
-        <br>
+
+
 </div>
 
 <form id='checklogin_form' method="post">
@@ -35,11 +36,12 @@
             // $('#img').attr('src', profile.pictureUrl);
             // $('#social_id').val(data.context.userId); //data.context.userId
             // $('#social_app').val('Line');
-            
+
         })
     }
     //ready
     $(function () {
+        Notiflix.Loading.Hourglass('讀取中....');
         //init LIFF
         liff.init(function (data) {
             initializeApp(data);
@@ -50,15 +52,12 @@
 
         //send data 
         // send()
-        if($('#social_id').val() != '' && $('#social_app').val() != ''){
+        if ($('#social_id').val() != '' && $('#social_app').val() != '') {
             send()
-        }
-        else{
+        } else {
             window.location.replace('/softwayliving/error/');
         }
-        
+
     });
-
-
 </script>
 {% endblock %}
