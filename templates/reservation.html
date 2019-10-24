@@ -346,7 +346,7 @@
 
 
     function reservation_submit() {
-        Notiflix.Loading.Hourglass();
+        Notiflix.Loading.Hourglass('訂位處理中...');
         //submit data
         document.getElementById("reservation_form").action =
             "/booking/reservation/";
@@ -365,122 +365,122 @@
             line_session = '晚餐'
         }
         // Line Liff Messages
-        liff.sendMessages([{
-                "type": "flex",
-                "altText": "Flex Message",
-                "contents": {
-                    "type": "bubble",
-                    "body": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [{
-                                "type": "text",
-                                "text": "❓ " + " 訂位處理中...",
-                                "size": "xl",
-                                "weight": "bold"
-                            },
-                            {
-                                "type": "box",
-                                "layout": "vertical",
-                                "spacing": "sm",
-                                "margin": "lg",
-                                "contents": [{
-                                        "type": "box",
-                                        "layout": "baseline",
-                                        "spacing": "sm",
-                                        "contents": [{
-                                                "type": "text",
-                                                "text": "用餐日期",
-                                                "flex": 2,
-                                                "size": "sm",
-                                                "color": "#AAAAAA"
-                                            },
-                                            {
-                                                "type": "text",
-                                                "text": line_date +
-                                                    ' ' +
-                                                    line_session +
-                                                    ' ' +
-                                                    line_time,
-                                                "flex": 5,
-                                                "size": "sm",
-                                                "color": "#666666",
-                                                "wrap": true
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "type": "box",
-                                        "layout": "baseline",
-                                        "spacing": "sm",
-                                        "contents": [{
-                                                "type": "text",
-                                                "text": "用餐人數",
-                                                "flex": 2,
-                                                "size": "sm",
-                                                "color": "#AAAAAA"
-                                            },
-                                            {
-                                                "type": "text",
-                                                "text": line_number,
-                                                "flex": 5,
-                                                "size": "sm",
-                                                "color": "#666666",
-                                                "wrap": true
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "type": "box",
-                                        "layout": "baseline",
-                                        "spacing": "sm",
-                                        "contents": [{
-                                                "type": "text",
-                                                "text": "飲食習慣",
-                                                "flex": 1,
-                                                "size": "sm",
-                                                "color": "#AAAAAA"
-                                            },
-                                            {
-                                                "type": "text",
-                                                "text": line_habit,
-                                                "flex": 5,
-                                                "size": "sm",
-                                                "color": "#666666",
-                                                "wrap": true
-                                            }
-                                        ]
-                                    }
+        // liff.sendMessages([{
+        //         "type": "flex",
+        //         "altText": "Flex Message",
+        //         "contents": {
+        //             "type": "bubble",
+        //             "body": {
+        //                 "type": "box",
+        //                 "layout": "vertical",
+        //                 "contents": [{
+        //                         "type": "text",
+        //                         "text": "❓ " + " 訂位處理中...",
+        //                         "size": "xl",
+        //                         "weight": "bold"
+        //                     },
+        //                     {
+        //                         "type": "box",
+        //                         "layout": "vertical",
+        //                         "spacing": "sm",
+        //                         "margin": "lg",
+        //                         "contents": [{
+        //                                 "type": "box",
+        //                                 "layout": "baseline",
+        //                                 "spacing": "sm",
+        //                                 "contents": [{
+        //                                         "type": "text",
+        //                                         "text": "用餐日期",
+        //                                         "flex": 2,
+        //                                         "size": "sm",
+        //                                         "color": "#AAAAAA"
+        //                                     },
+        //                                     {
+        //                                         "type": "text",
+        //                                         "text": line_date +
+        //                                             ' ' +
+        //                                             line_session +
+        //                                             ' ' +
+        //                                             line_time,
+        //                                         "flex": 5,
+        //                                         "size": "sm",
+        //                                         "color": "#666666",
+        //                                         "wrap": true
+        //                                     }
+        //                                 ]
+        //                             },
+        //                             {
+        //                                 "type": "box",
+        //                                 "layout": "baseline",
+        //                                 "spacing": "sm",
+        //                                 "contents": [{
+        //                                         "type": "text",
+        //                                         "text": "用餐人數",
+        //                                         "flex": 2,
+        //                                         "size": "sm",
+        //                                         "color": "#AAAAAA"
+        //                                     },
+        //                                     {
+        //                                         "type": "text",
+        //                                         "text": line_number,
+        //                                         "flex": 5,
+        //                                         "size": "sm",
+        //                                         "color": "#666666",
+        //                                         "wrap": true
+        //                                     }
+        //                                 ]
+        //                             },
+        //                             {
+        //                                 "type": "box",
+        //                                 "layout": "baseline",
+        //                                 "spacing": "sm",
+        //                                 "contents": [{
+        //                                         "type": "text",
+        //                                         "text": "飲食習慣",
+        //                                         "flex": 1,
+        //                                         "size": "sm",
+        //                                         "color": "#AAAAAA"
+        //                                     },
+        //                                     {
+        //                                         "type": "text",
+        //                                         "text": line_habit,
+        //                                         "flex": 5,
+        //                                         "size": "sm",
+        //                                         "color": "#666666",
+        //                                         "wrap": true
+        //                                     }
+        //                                 ]
+        //                             }
 
-                                ]
-                            }
-                        ]
-                    },
-                    "footer": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "flex": 0,
-                        "spacing": "sm",
-                        "contents": [{
-                            "type": "button",
-                            "action": {
-                                "type": "uri",
-                                "label": "查詢/取消訂位",
-                                "uri": "line://app/1577114898-D5d8edOv"
-                            },
-                            "color": "#2C9278",
-                            "height": "sm",
-                            "style": "primary"
-                        }]
-                    }
-                }
-            }])
-            // .then(() => {
-            //     liff.closeWindow();
-            // })
-            .catch((err) => {
-                console.log('error : ', err)
-            });
+        //                         ]
+        //                     }
+        //                 ]
+        //             },
+        //             "footer": {
+        //                 "type": "box",
+        //                 "layout": "vertical",
+        //                 "flex": 0,
+        //                 "spacing": "sm",
+        //                 "contents": [{
+        //                     "type": "button",
+        //                     "action": {
+        //                         "type": "uri",
+        //                         "label": "查詢/取消訂位",
+        //                         "uri": "line://app/1577114898-D5d8edOv"
+        //                     },
+        //                     "color": "#2C9278",
+        //                     "height": "sm",
+        //                     "style": "primary"
+        //                 }]
+        //             }
+        //         }
+        //     }])
+        //     // .then(() => {
+        //     //     liff.closeWindow();
+        //     // })
+        //     .catch((err) => {
+        //         console.log('error : ', err)
+        //     });
 
     }
 
@@ -742,13 +742,14 @@
             Notiflix.Confirm.Show('訂位資訊', '確定送出訂單', '是', '否',
                 function () {
                     //alert('YES');
-                    if (status) {
-                        //spinner
-                        //Notiflix.Loading.Hourglass();
-                        //submit function
-                        reservation_submit()
+                    reservation_submit()
 
-                    }
+                    // if (status) {
+                    //     //spinner
+                    //     //Notiflix.Loading.Hourglass();
+                    //     //submit function
+                        
+                    // }
 
                 },
                 function () {
