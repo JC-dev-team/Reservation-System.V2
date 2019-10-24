@@ -408,13 +408,33 @@
     function ajax_is_confirm() {
         $.ajax({
             type: 'GET',
-            url: '/softwayliving/confirm/',
-            data: {
-                'store_id': '{{data.store_id}}'
-            },
+            url: '/softwayliving/is_confirm/',
             success: function (response) {
-                result = response.result
-                console.log(result)
+                if (response.error != null) {
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    console.log(response.error)
+                    // window.location.replace('/booking/error/');
+                } else {
+
+                    result = response.result
+                    account = response.account
+                    event = 'none'
+                    console.log(result)
+                    console.log(account)
+                    console.log(event)
+                    //Function of calendar (return calendar.render())
+                    calendar_fun(event, account, result, num)
+
+                }
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+                console.log(errorThrown)
+                // window.location.replace('/booking/error/');
             }
         })
     }
@@ -423,12 +443,32 @@
         $.ajax({
             type: 'GET',
             url: '/softwayliving/waiting/',
-            data: {
-                'store_id': '{{data.store_id}}'
-            },
             success: function (response) {
-                result = response.result
-                console.log(result)
+                if (response.error != null) {
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    console.log(response.error)
+                    // window.location.replace('/booking/error/');
+                } else {
+
+                    result = response.result
+                    account = response.account
+                    event = 'none'
+                    console.log(result)
+                    console.log(account)
+                    console.log(event)
+                    //Function of calendar (return calendar.render())
+                    calendar_fun(event, account, result, num)
+
+                }
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+                console.log(errorThrown)
+                // window.location.replace('/booking/error/');
             }
         })
     }
@@ -436,13 +476,33 @@
     function ajax_canceled() {
         $.ajax({
             type: 'GET',
-            url: '/softwayliving/canceled/',
-            data: {
-                'store_id': '{{data.store_id}}'
-            },
+            url: '/softwayliving/delete/',
             success: function (response) {
-                result = response.result
-                console.log(result)
+                if (response.error != null) {
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    console.log(response.error)
+                    // window.location.replace('/booking/error/');
+                } else {
+
+                    result = response.result
+                    account = response.account
+                    event = 'none'
+                    console.log(result)
+                    console.log(account)
+                    console.log(event)
+                    //Function of calendar (return calendar.render())
+                    calendar_fun(event, account, result, num)
+
+                }
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+                console.log(errorThrown)
+                // window.location.replace('/booking/error/');
             }
         })
     }
