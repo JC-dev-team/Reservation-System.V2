@@ -16,6 +16,7 @@
     {% csrf_token %}
     <input id="social_id" style="display: none" name='social_id' value="">
     <input id="social_app" style="display: none" name='social_app' value="">
+    <input id="social_name" style="display: none" name='social_name' value="">
 </form>
 
 <script>
@@ -28,10 +29,10 @@
 
     function initializeApp(data) {
         liff.getProfile().then(profile => {
-            // var disname = {
-            //   'name': profile.displayName
-            // };
-            // disname_json = JSON.parse(JSON.stringify(disname.name))
+            var disname = {
+              'name': profile.displayName
+            };
+            disname_json = JSON.parse(JSON.stringify(disname.name))
             // $('#img').attr('src', profile.pictureUrl);
             // $('#social_id').val(data.context.userId); //data.context.userId
             // $('#social_app').val('Line');

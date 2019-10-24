@@ -16,10 +16,6 @@
 <div class="container" style='display: none'>
     <form id="reservation_form" method="post">
         {% csrf_token %}
-        <input id='social_id' name="social_id" type="text" value="" style="display: none">
-        <input id='social_app' name='social_app' type="text" value="" style="display: none">
-
-        <input id='user_id' name='user_id' type="text" value='' style="display: none">
         <input id='store_id' name='store_id' type="text" value="" style="display: none">
 
         <input id='adult' name='adult' type="text" value="" style="display: none">
@@ -716,11 +712,7 @@
         $('#button_submit').click(function (e) {
             var status = true;
 
-            //Information of social 
-            $('#social_id').val('{{data.social_id}}');
-            $('#social_app').val('{{data.social_app}}');
             //Information of user & store
-            $('#user_id').val('{{data.user_id}}');
             $('#store_id').val('6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'); //###
             //Information of people number
             $('#adult').val($('#adult_select').val())
@@ -748,7 +740,7 @@
                     //     //spinner
                     //     //Notiflix.Loading.Hourglass();
                     //     //submit function
-                        
+
                     // }
 
                 },
