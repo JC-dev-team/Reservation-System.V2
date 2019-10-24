@@ -268,6 +268,7 @@ def staff_not_confirmed(request):
     try:
         # Get now
         store_id = request.session.get('store_id',None)
+
         if store_id == None:
             return JsonResponse({'error': 'Not valid, 請先登入'})
 
@@ -278,13 +279,10 @@ def staff_not_confirmed(request):
             is_cancel=False,
             bk_date__gte=now,
             store_id=store_id,
-        ).order_by('-is_confirm', 'waiting_num', 'bk_date',  'bk_st')
+        )
+        # ).order_by('-is_confirm', 'waiting_num', 'bk_date',  'bk_st')
         # order by will be slow, I think better way is regroup
         # add day off data
-        event_queryset = StoreEvent.objects.filter(
-            store_id=store_id,
-            bk_date__gte=now,
-        )
 
         # get user phone number
         acc_arr = []
@@ -297,11 +295,9 @@ def staff_not_confirmed(request):
             acc_arr.append(acc_serializers.data)
 
 
-        event_serializers = StoreEvent_Serializer(event_queryset, many=True)
         bk_serializers = Bklist_Serializer(bk_queryset, many=True)
         return JsonResponse({
             'result': bk_serializers.data,
-            'event': event_serializers.data,
             'account': acc_arr,
         })
     except Exception as e:

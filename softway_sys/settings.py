@@ -68,7 +68,7 @@ X_FRAME_OPTIONS = 'DENY' # default = 'SAMEORIGIN'
 ## session options
 SESSION_ENGINE='django.contrib.sessions.backends.db'
 SESSION_COOKIE_SECURE =False # when deploy need to set to True
-SESSION_SAVE_EVERY_REQUEST=True
+# SESSION_SAVE_EVERY_REQUEST=True
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 60*5
 
