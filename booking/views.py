@@ -68,17 +68,22 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         try:
             with transaction.atomic():  # transaction
                 queryset = Account.objects.select_for_update().get(
-                    username=username,
                     phone=phone,
                 )
-                checkaccount = queryset.select_for_update().get(
-                    social_name='Admin reservation',
-                    social_app=None,
-                    social_id='Admin reservation',
-                )
+                try:
+                    checkaccount = queryset.get(
+                        social_name='Admin reservation',
+                        social_app=None,
+                        social_id='Admin reservation',
+                    )
+                except Account.DoesNotExist:
+                    request.session.flush()
+                    return render(request, 'error/error.html', {'error': '手機號碼已經被註冊過', 'action': '/booking/login/'}) 
+
                 checkaccount.social_name = social_name
                 checkaccount.social_app = social_app
                 checkaccount.social_id = social_id
+                checkaccount.username = username
                 checkaccount.save()
 
         except Account.DoesNotExist:
@@ -116,7 +121,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 @require_http_methods(['POST'])
 @check_recaptcha
 def InsertReservation(request):  # insert booking list
-    try:    
+    try:
         # Check is order by administrator
         if request.session.get('staff_id', None) == None:
             # For validation
@@ -124,7 +129,7 @@ def InsertReservation(request):  # insert booking list
             social_app = request.session.get('social_app', None)
             # Check account
             result = auth.ClientAuthentication(
-            social_id, social_app)
+                social_id, social_app)
             if result == None or result == False:  # Using PC or No social login # Account Not Exist
                 return redirect('/booking/login/',)
                 # return redirect(reverse('member'),args=())

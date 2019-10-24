@@ -20,6 +20,7 @@ from django.contrib.sessions.models import Session
 from django.conf import settings
 from common.utility.recaptcha import check_recaptcha
 
+
 def error(request):
     request.session.flush()
     return render(request, 'error/error.html', {'action': '/softwayliving/login/'})
@@ -38,8 +39,18 @@ def staff_check_reservation_page(request):
 def staff_reservation_page(request):
     return render(request, 'admin_reservation.html',)
 
-
 # function --------------------------
+@require_http_methods(['GET'])
+def member_management(request):
+    try:
+        queryset = Account.objects.all()
+        serializer_class = Acc_Serializer(queryset, many=True)
+        return render(request, 'admin_memberlist.html', {'data': serializer_class.data})
+    except Exception as e:
+        request.session.flush()
+        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
+
 @require_http_methods(['POST', 'GET'])
 def staff_auth(request):  # authentication staff
     try:
@@ -96,7 +107,7 @@ def staff_add_reservation(request):  # Help client to add reservation
                     username=username,
                 )
         except Account.MultipleObjectsReturned:
-            return render(request,'admin_reservation.html',{'error': '姓名與手機遭遇重複，無法進行訂位與註冊'})
+            return render(request, 'admin_reservation.html', {'error': '姓名與手機遭遇重複，無法進行訂位與註冊'})
 
         request.session['user_id'] = queryset.user_id
 
