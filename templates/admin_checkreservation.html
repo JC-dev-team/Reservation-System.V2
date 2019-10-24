@@ -373,17 +373,17 @@
     function ajax_not_confirm(num) {
         $.ajax({
             type: 'GET',
-            url: '/softwayliving/not_confirmed/' ,
+            url: '/softwayliving/not_confirmed/',
             success: function (response) {
                 if (response.error != null) {
                     Notiflix.Notify.Failure('發生錯誤！！');
                     console.log(response.error)
                     // window.location.replace('/booking/error/');
                 } else {
-                    
+
                     result = response.result
                     account = response.account
-                    event = response.event
+                    event = 'none'
                     console.log(result)
                     console.log(account)
                     console.log(event)
@@ -488,7 +488,7 @@
         var status = true;
 
         var store_id = '{{request.session.store_id}}';
-        console.log('store_id :'+store_id);
+        console.log('store_id :' + store_id);
         var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
         var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
 
@@ -515,7 +515,7 @@
 
 
     //calendar function
-    function calendar_fun(event, account, result, num = 0, action = 'render') {
+    function calendar_fun(event = 'none', account, result, num = 0, action = 'render') {
         //spinner hide
         Notiflix.Loading.Remove();
         var calendarEl = document.getElementById('calendar');
@@ -652,30 +652,35 @@
                     console.log(Event)
                 }
 
-                //dayoff event
-                for (var i = 0; i < event.length; i++) {
-                    var date = event[i].event_date
-                    var time_session = event[i].time_session
-                    var event_type = event[i].event_type
+                if (event = 'none') {
+                    console.log('event none')
+                } else {
 
-                    if (time_session == 'Lunch') {
-                        var session = '午餐'
-                    } else {
-                        var session = '晚餐'
+                    //dayoff event
+                    for (var i = 0; i < event.length; i++) {
+                        var date = event[i].event_date
+                        var time_session = event[i].time_session
+                        var event_type = event[i].event_type
+
+                        if (time_session == 'Lunch') {
+                            var session = '午餐'
+                        } else {
+                            var session = '晚餐'
+                        }
+                        if (event_type == 'Day off') {
+                            var type = '店休'
+                        }
+
+                        Event.push({
+                            title: session + type,
+                            start: date,
+                            backgroundColor: 'grey',
+                            textColor: 'white',
+                        });
+                        successCallback(Event)
+
+
                     }
-                    if (event_type == 'Day off') {
-                        var type = '店休'
-                    }
-
-                    Event.push({
-                        title: session + type,
-                        start: date,
-                        backgroundColor: 'grey',
-                        textColor: 'white',
-                    });
-                    successCallback(Event)
-
-
                 }
             },
 
