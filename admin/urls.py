@@ -15,7 +15,7 @@ urlpatterns = [
     path('checkreservation/',views.staff_check_reservation_page),
     # /softwayliving/reservation/
     path('reservation/',views.staff_reservation_page),
-    # /softwayliving/add_reservation/
+    # /softwayliving/admin_reservation/
     path('admin_reservation/',views.staff_add_reservation),
 
     ## Ajax api
