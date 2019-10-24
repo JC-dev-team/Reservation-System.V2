@@ -30,6 +30,7 @@ def staff_login_portal(request):
 
 
 def staff_check_reservation_page(request):
+
     return render(request, 'admin_checkreservation.html')
 
 
@@ -304,6 +305,7 @@ def staff_not_confirmed(request):
             'account': acc_arr,
         })
     except Exception as e:
+        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 @require_http_methods(['GET'])

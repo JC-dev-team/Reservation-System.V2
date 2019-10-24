@@ -22,7 +22,7 @@ def error(request):
     return render(request, 'error/error.html', {'action': '/userdashboard/login/'})
 
 
-@require_http_methods(['POST', 'GET'])
+@require_http_methods(['GET'])
 def user_login(request):
     return render(request, 'user_login.html')
 
