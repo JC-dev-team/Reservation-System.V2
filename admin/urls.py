@@ -19,7 +19,7 @@ urlpatterns = [
     # /softwayliving/waiting/
     path('waiting/',views.staff_is_waiting), # 候補
     # /softwayliving/confirm/
-    path('confirm/',views.staff_is_confirmed), # 已確認
+    path('is_confirm/',views.staff_is_confirmed), # 已確認
     # /softwayliving/not_confirmed/
     path('not_confirmed/',views.staff_not_confirmed), # 待確認
     # /softwayliving/canceled/

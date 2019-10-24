@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from booking.models import Account, ActionLog, BkList, Production, Staff, Store, StoreEvent
+from main.models import Account, ActionLog, BkList, Production, Staff, Store, StoreEvent
 
 
 class check_bklist(serializers.ModelSerializer):

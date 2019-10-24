@@ -8,23 +8,6 @@ from django.conf.urls import handler404
 # # The url will be booking/api/account
 # router.register(r'account', views.AccountViewSet)
 
-# # The url will be booking/api/actionLog
-# router.register(r'actionLog', views.ActionLogViewSet)
-
-# # The url will be booking/api/bookingList
-# router.register(r'bookingList', views.BkListViewSet)
-
-# # The url will be booking/api/production
-# router.register(r'production', views.ProductionViewSet)
-
-# # The url will be booking/api/store
-# router.register(r'store', views.StoreViewSet)
-
-# # The url will be booking/api/staff
-# router.register(r'staff', views.StaffViewSet)
-
-
-
 urlpatterns = [
     ## Page
     # /booking/error/ 

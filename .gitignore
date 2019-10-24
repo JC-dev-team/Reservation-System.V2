@@ -21,3 +21,5 @@ common/__pycache__
 userdashboard/__pycache__
 userdashboard/migrations/__pycache__
 templates/templatetags/__pycache__
+main/__pycache__
+main/migrations/__pycache__

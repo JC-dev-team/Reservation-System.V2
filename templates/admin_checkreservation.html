@@ -487,7 +487,8 @@
         //ajax data
         var status = true;
 
-        var store_id = '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0';
+        var store_id = '{{request.session.store_id}}';
+        console.log('store_id :'+store_id);
         var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
         var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
 

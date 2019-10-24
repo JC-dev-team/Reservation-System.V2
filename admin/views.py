@@ -1,6 +1,6 @@
 from datetime import datetime, date
 from django.shortcuts import render, redirect, reverse
-from booking.models import ActionLog, BkList, Account, Production, Staff, Store, StoreEvent
+from main.models import ActionLog, BkList, Account, Production, Staff, Store, StoreEvent
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, \
     Prod_Serializer, Staff_Serializer, Store_Serializer, StoreEvent_Serializer
 from common.serializers import checkStaffAuth
@@ -16,9 +16,10 @@ from common.utility import auth
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
-
+from django.contrib.sessions.models import Session
 
 def error(request):
+    request.session.flush()
     return render(request, 'error/error.html', {'action': '/softwayliving/login/'})
 
 # admin dashboard ------------------- page
@@ -33,6 +34,7 @@ def staff_check_reservation_page(request):
 
 
 def staff_reservation_page(request):
+    
     return render(request, 'admin_reservation.html')
 
 
@@ -42,15 +44,7 @@ def staff_auth(request):  # authentication staff
     try:
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
-
-        # Check data format
-        valid = checkStaffAuth(data={
-            'social_id': social_id,
-            'social_app': social_app
-        })
-        if valid.is_valid() == False:
-            raise Exception('Not valid, 帳號資料錯誤')
-
+        # Check Auth
         result = auth.StaffAuthentication(social_id, social_app)
 
         if result == None or result == False:
@@ -63,13 +57,11 @@ def staff_auth(request):  # authentication staff
         else:
             if 'is_Login' in request.session:
                 request.session.flush()
+            
             request.session['is_Login']=True
             request.session['store_id'] = result['store']
             request.session['staff_id'] = result['staff_id']
-
-            if 'store_id'in request.session:
-                print(request.session['store_id'])
-
+            
             return render(request, 'admin_dashbroad.html', {'data': result})
     except Exception as e:
         request.session.flush()
@@ -79,16 +71,14 @@ def staff_auth(request):  # authentication staff
 @require_http_methods(['POST'])
 def staff_check_reservation(request):
     try:
-        if 'store_id'in request.session:
-            print('True')
-        print(False)
-        store_id = request.session['store_id']
+        store_id = request.session.get('store_id',None)
+        if store_id == None:
+            return JsonResponse({'alert': 'Not Valid 請先登入'})
         start_month = request.POST.get('start_month', None)
         end_month = request.POST.get('end_month', None)
 
         start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
         end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
-        print('store_id',store_id)
 
         bk_queryset = BkList.objects.filter(  # get all available reservation
             store_id=store_id,
@@ -121,7 +111,6 @@ def staff_check_reservation(request):
         })
 
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 
@@ -154,7 +143,7 @@ def staff_pass_reservation(request):
         time_session = request.POST.get('time_session', None)
         bk_date = request.POST.get('bk_date', None)
         bk_ps = request.POST.get('bk_ps', None)
-        store_id = request.session['store_id']
+        store_id = request.session.get('store_id',None)
 
         with transaction.atomic():  # transaction
             store_queryset = Store.objects.only('seat').get(store_id=store_id,)
@@ -220,7 +209,10 @@ def staff_cancel_reservation(request):
 @require_http_methods(['POST'])  # when there are two time sessions
 def staff_add_event(request):  # add rest day as booking
     try:
-        store_id = request.session['store_id']
+        store_id = request.session.get('store_id',None)
+        if store_id == None:
+            return JsonResponse({'error': 'Not valid, 請先登入'})
+        
         event_date = request.POST.get('event_date', None)
         time_session = request.POST.get('time_session', None)
         event_type = request.POST.get('event_type', None)
@@ -274,15 +266,12 @@ def staff_add_event(request):  # add rest day as booking
 def staff_not_confirmed(request):
     try:
         # Get now
-        store_id = request.session['store_id']
+        store_id = request.session.get('store_id',None)
+        if store_id == None:
+            return JsonResponse({'error': 'Not valid, 請先登入'})
+
         today = date.today()
         now = today.strftime('%Y-%m-%d')
-        # queryset = BkList.objects.filter(
-        #     is_confirm=False,
-        #     is_cancel=False,
-        #     bk_date__gte=now,
-        #     store_id=store_id,
-        # )
         bk_queryset = BkList.objects.filter(
             is_confirm=False,
             is_cancel=False,
@@ -290,13 +279,12 @@ def staff_not_confirmed(request):
             store_id=store_id,
         ).order_by('-is_confirm', 'waiting_num', 'bk_date',  'bk_st')
         # order by will be slow, I think better way is regroup
-        print('1`',bk_queryset)
         # add day off data
         event_queryset = StoreEvent.objects.filter(
             store_id=store_id,
             bk_date__gte=now,
         )
-        print('2',event_queryset)
+
         # get user phone number
         acc_arr = []
         for i in bk_queryset:
@@ -307,7 +295,7 @@ def staff_not_confirmed(request):
             acc_serializers = Acc_Serializer(acc_queryset)
             acc_arr.append(acc_serializers.data)
 
-        print('2',acc_arr)
+
         event_serializers = StoreEvent_Serializer(event_queryset, many=True)
         bk_serializers = Bklist_Serializer(bk_queryset, many=True)
         return JsonResponse({
@@ -321,7 +309,9 @@ def staff_not_confirmed(request):
 @require_http_methods(['GET'])
 def staff_is_confirmed(request):
     try:
-        store_id = request.session['store_id']
+        store_id = request.session.get('store_id',None)
+        if store_id == None:
+            return JsonResponse({'error': 'Not valid, 請先登入'})
         # Get now
         today = date.today()
         now = today.strftime('%Y-%m-%d')
@@ -339,7 +329,9 @@ def staff_is_confirmed(request):
 @require_http_methods(['GET'])
 def staff_is_cancel(request):
     try:
-        store_id = request.session['store_id']
+        store_id = request.session.get('store_id',None)
+        if store_id == None:
+            return JsonResponse({'error': 'Not valid, 請先登入'})
         # Get now
         today = date.today()
         now = today.strftime('%Y-%m-%d')
@@ -356,7 +348,9 @@ def staff_is_cancel(request):
 @require_http_methods(['GET'])
 def staff_is_waiting(request):
     try:
-        store_id = request.session['store_id']
+        store_id = request.session.get('store_id',None)
+        if store_id == None:
+            return JsonResponse({'error': 'Not valid, 請先登入'})
         # Get now
         today = date.today()
         now = today.strftime('%Y-%m-%d')

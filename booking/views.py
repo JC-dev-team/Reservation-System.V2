@@ -1,7 +1,7 @@
 from common.utility.recaptcha import check_recaptcha
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
-from .models import ActionLog, BkList, Account, Production, Staff, Store, StoreEvent
+from main.models import ActionLog, BkList, Account, Production, Staff, Store, StoreEvent
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
 from common.serializers import checkAuth, check_bklist, applymember, Store_form_serializer
 from rest_framework import viewsets, status
@@ -43,11 +43,11 @@ from django.conf import settings
 @check_recaptcha
 def ToBookingView(request):  # The member.html via here in oreder to enroll new member
     try:
+        social_id = request.session.get('social_id', None)
+        social_app = request.session.get('social_app', None)
+        social_name = request.session.get('social_name', None)
         phone = request.POST.get('phone', None)
         username = request.POST.get('username', None)
-        social_id = request.POST.get('social_id', None)
-        social_app = request.POST.get('social_app', None)
-        social_name = request.POST.get('social_name', None)
 
         if social_id == None or social_app == None or social_id == '' or social_app == '':
             raise Exception('Not Valid, 無法取得帳號資料')
@@ -64,27 +64,46 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 
         if valid.is_valid() == False:
             raise Exception('Not valid, 帳號資料錯誤')
-        
-        with transaction.atomic():  # transaction
+        # Check is the account Exists
+        try:
+            with transaction.atomic():  # transaction
+                queryset = Account.objects.select_for_update().get(
+                    username=username,
+                    phone=phone,
 
-            queryset = Account.objects.create(
-                phone=phone,
-                username=username,
-                social_id=social_id,
-                social_app=social_app,
-                social_name=social_name,
-            )
-            queryset = Account.objects.select_for_update().get(
-                phone=phone,
-                username=username,
-                social_id=social_id,
-                social_app=social_app,
-                social_name=social_name,
-            )
+                )
+                checkaccount = queryset.select_for_update().get(
+                    social_name=None,
+                    social_app=None,
+                    social_id=None,
+                )
+                checkaccount.social_name = social_name
+                checkaccount.social_app = social_app
+                checkaccount.social_id = social_id
+                checkaccount.save()
 
+        except Account.DoesNotExist:
+            with transaction.atomic():  # transaction
+
+                queryset = Account.objects.create(
+                    phone=phone,
+                    username=username,
+                    social_id=social_id,
+                    social_app=social_app,
+                    social_name=social_name,
+                )
+        queryset = Account.objects.get(
+            phone=phone,
+            username=username,
+            social_id=social_id,
+            social_app=social_app,
+            social_name=social_name,
+        )
+        request.session['is_Login'] = True
+        request.session['user_id'] =queryset.user_id
         serializer_class = Acc_Serializer(queryset)
-        # render html
 
+        # render html
         return render(request, 'reservation.html', {
             'data': serializer_class.data,
             'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
@@ -100,15 +119,9 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 def InsertReservation(request):  # insert booking list
     try:
         # For validation
-        social_id = request.POST.get('social_id', None)
-        social_app = request.POST.get('social_app', None)
-        # Check data format
-        valid = checkAuth(data={
-            'social_id': social_id,
-            'social_app': social_app
-        })
-        if valid.is_valid() == False:
-            raise Exception('Not valid, 帳號資料錯誤')
+        social_id = request.session.get('social_id', None)
+        social_app = request.session.get('social_app', None)
+        # Check account
         result = auth.ClientAuthentication(
             social_id, social_app)
         if result == None or result == False:  # Using PC or No social login # Account Not Exist
@@ -119,7 +132,7 @@ def InsertReservation(request):  # insert booking list
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/booking/login/'})
         # Account Exist
         # insert data
-        user_id = request.POST.get('user_id', None)
+        user_id = request.session.get('user_id', None)
         store_id = request.POST.get('store_id', None)
         bk_date = request.POST.get('bk_date', None)
         bk_st = request.POST.get('bk_st', None)
@@ -239,7 +252,7 @@ def InsertReservation(request):  # insert booking list
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
 
-            request.session['member_id'] = get_user_info.user_id
+            request.session.flush()
             return render(request, 'reservation_finish.html', {
                 'data': bklist_serializer.data,
                 'store': store_serializer.data,
@@ -254,6 +267,7 @@ def login_portal(request):
 
 
 def error(request):  # error page
+    request.session.flush()
     return render(request, 'error/error.html', {'action': '/booking/login/'})
 
 
@@ -263,6 +277,7 @@ def member(request):
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
         social_name = request.POST.get('social_name', None)
+
         valid = checkAuth(data={
             'social_id': social_id,
             'social_app': social_app
@@ -273,27 +288,42 @@ def member(request):
         result = auth.ClientAuthentication(
             social_id, social_app)  # queryset or something else
         if result == None:  # Using PC or No social login
+            request.session.flush()
             return redirect('/booking/login/')
         elif result == False:  # Account Not Exist
+            request.session['social_id'] = social_id
+            request.session['social_app'] = social_app
+            request.session['social_name'] = social_name
+
             return render(request, 'member.html', {'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
             # return redirect(reverse('member'),args=())
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
+            request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/booking/login/'})
         else:  # Account Exist
             if result.social_name != social_name:
                 result.social_name = social_name
                 result.save()
 
-            serializer = Acc_Serializer(result)
+            if 'is_Login' in request.session:
+                request.session.flush()
 
+            serializer = Acc_Serializer(result)
+            # session
+            request.session['is_Login'] = True
+            request.session['social_id'] = social_id
+            request.session['social_app'] = social_app
+            request.session['social_name'] = social_name
             request.session['user_id'] = result.user_id
 
             return render(request, 'reservation.html', {
                 'data': serializer.data,
-                'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
+                'google_keys': settings.RECAPTCHA_PUBLIC_KEY},
+            )
 
     except Exception as e:
+        request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/booking/login/'})
 
 
@@ -422,7 +452,6 @@ def getCalendar(request):  # full calendar
         end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
 
         # The days between start and end
-        # days = (end_month-start_month).days()
         store_query = Store.objects.only('seat').get(
             store_id=store_id
         )

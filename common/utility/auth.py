@@ -1,7 +1,7 @@
 # from django.contrib.auth.models import User
 # from django.contrib.auth.backends import ModelBackend
 from django.shortcuts import render, redirect, reverse
-from booking.models import Account, Staff
+from main.models import Account, Staff
 from common.serializers import Acc_Serializer, Staff_Serializer
 from django.db import transaction, DatabaseError
 from functools import wraps

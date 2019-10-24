@@ -32,6 +32,7 @@ ADMIN_ENABLED = False
 ## Application definition
 
 INSTALLED_APPS = [
+    'main',
     'booking',
     'userdashboard', 
     'admin',
@@ -61,11 +62,15 @@ CSRF_COOKIE_SECURE =True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT=False # need to be True when production
 X_FRAME_OPTIONS = 'DENY' # default = 'SAMEORIGIN'
-SESSION_COOKIE_SECURE =True
+
+
 
 ## session options
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-# SESSION_COOKIE_AGE = 60*5
+SESSION_ENGINE='django.contrib.sessions.backends.db'
+SESSION_COOKIE_SECURE =False # when deploy need to set to True
+SESSION_SAVE_EVERY_REQUEST=True
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 60*5
 
 ## linebot keys
 LINE_CHANNEL_ACCESS_TOKEN = ""

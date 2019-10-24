@@ -1,6 +1,6 @@
 from datetime import datetime, date,timedelta
 from django.shortcuts import render, redirect, reverse
-from booking.models import ActionLog, BkList, Account, Production, Staff, Store
+from main.models import ActionLog, BkList, Account, Production, Staff, Store
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
 from common.serializers import checkAuth, Store_form_serializer
 from rest_framework import viewsets, status
@@ -15,9 +15,10 @@ from common.utility import auth
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
-
+from django.conf import settings
 
 def error(request):
+    request.session.flush()
     return render(request, 'error/error.html', {'action': '/userdashboard/login/'})
 
 
@@ -31,6 +32,7 @@ def user_auth(request):  # authentication staff
     try:
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
+        social_name = request.POST.get('social_name', None)
 
         # Check data format
         valid = checkAuth(data={
@@ -42,22 +44,37 @@ def user_auth(request):  # authentication staff
 
         result = auth.ClientAuthentication(social_id, social_app)
 
-        if result == None or result == False:
+        if result == None :
+            request.session.flush()
             return render(request, 'error/error404.html', {'action': '/userdashboard/login/'})
+        elif result == False:
+            request.session['social_id'] = social_id
+            request.session['social_app'] = social_app
+            request.session['social_name'] = social_name
+            return render(request, 'member.html', {'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
 
         elif type(result) == dict:  # error occurred
+            request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/userdashboard/login/'})
         else:
+            if 'is_Login' in request.session:
+                request.session.flush()
+            request.session['is_Login'] =True
+            request.session['social_id']= social_id
+            request.session['social_app'] = social_app
+            request.session['social_name'] = social_name
+            request.session['user_id'] = result.user_id
 
             return render(request, 'user_dashboard.html', {'data': result})
     except Exception as e:
+        request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/userdashboard/login/'})
 
 
 @require_http_methods(['POST', 'GET'])
 def user_check_reservation(request):
     try:
-        user_id = request.POST.get('user_id', None)
+        user_id = request.session.get('user_id', None)
         # Account Exist Check
         acc_queryset = Account.objects.get(
             user_id=user_id
@@ -97,9 +114,10 @@ def user_check_reservation(request):
             'store': store_arr,
         })
     except Account.DoesNotExist:  # Account Not Exist
+        request.session.flush()
         return render(request, 'error/error.html', {'error': '帳號不存在', 'action': '/userdashboard/login/'})
     except Exception as e:
-
+        request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/userdashboard/login/'})
 
 
@@ -108,27 +126,20 @@ def user_check_reservation(request):
 def user_cancel_reservation(request):
     try:
         # use session catch
-        # social_id = request.POST.get('social_id', None)
-        # social_app = request.POST.get('social_app', None)
+        social_id = request.session.get('social_id', None)
+        social_app = request.session.get('social_app', None)
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
 
-        # # Check data format
-        # valid = checkAuth(data={
-        #     'social_id': social_id,
-        #     'social_app': social_app
-        # })
-        # if valid.is_valid() == False:
-        #     raise Exception('Not valid, 帳號資料錯誤')
+        # Check data format
+        result = auth.ClientAuthentication(
+            social_id, social_app)
 
-        # result = auth.ClientAuthentication(
-        #     social_id, social_app)
-
-        # if result == None or result == False:  # Using PC or No social login # Account Not Exist
-        #     return JsonResponse({'error': 'Not valid, 帳號驗證失敗'})
-        # # error occurred the type of result is {'error' : error}
-        # elif type(result) == dict:
-        #     raise Exception('error')
+        if result == None or result == False:  # Using PC or No social login # Account Not Exist
+            return JsonResponse({'error': 'Not valid, 帳號驗證失敗'})
+        # error occurred the type of result is {'error' : error}
+        elif type(result) == dict:
+            raise Exception('error')
 
         ## Account Exist
         with transaction.atomic():  # transaction
