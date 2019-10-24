@@ -14,22 +14,23 @@
   <h3 style="text-align: center"><b>會員</b></h3>
   <hr>
   <a onclick="" class="w3-bar-item w3-button"><i class="fas fa-calendar-alt"></i> 訂位</a>
-  <a id='' class="w3-bar-item w3-button"><i class="fas fa-user-circle"></i> 會員名單</a>
-  
+  <a id='sidebar_member_list' onclick="send('sidebar_member_list')" class="w3-bar-item w3-button"><i class="fas fa-user-circle"></i> 會員名單</a>
+
 
   <hr>
   <h3 style="text-align: center"><b>查詢</b></h3>
   <hr>
   <a onclick="send('all')" class="w3-bar-item w3-button"><i class="fas fa-star" style="color:rgb(255, 217, 0);"></i></i>
     總表</a>
-  <a id='sidebar_not_confirm' class="w3-bar-item w3-button"><i class="fa fa-spinner" style="color:orange;"></i> 待確認(含候補</a>
+  <a id='sidebar_not_confirm' class="w3-bar-item w3-button"><i class="fa fa-spinner" style="color:orange;"></i>
+    待確認(含候補</a>
   <a id='sidebar_confirm' class="w3-bar-item w3-button"><i class="fa fa-check" style="color:green;"></i> 已確認</a>
   <a id='sidebar_waiting' class="w3-bar-item w3-button"><i class="fa fa-circle-o" style="color:red;"></i> 候補名單</a>
   <a id='sidebar_cancel' class="w3-bar-item w3-button"><i class="fas fa-trash-alt"></i> 已刪除</a>
 
-  
-  
-  
+
+
+
 
 
 </nav>
@@ -57,22 +58,17 @@
 
 <script>
   function send(action) {
-    if (action == 'not_confirmed') {
-      //待確認
-      window.location.href = '/softwayliving/not_confirmed/'
-    } else if (action == 'confirm'){
-      //已確認
-      window.location.href = '/softwayliving/confirm/'
-    } else if (action == 'waiting'){
-      //候補
-      window.location.href = '/softwayliving/waiting/'
-    }else if (action == 'canceled'){
-      //已刪除
-      window.location.href = '/softwayliving/canceled/'
-    }else{
-      //總表
+    if (action == 'all') {
+      Notiflix.Loading.Hourglass('讀取中....');
+      ///總表
       window.location.href = '/softwayliving/checkreservation/'
+    } else if(action == 'sidebar_member_list') {
+      Notiflix.Loading.Hourglass('讀取中....');
+      //會員名單
+      window.location.href = '/softwayliving/member_list/'
+      
     }
-    
+
+
   }
 </script>
