@@ -280,10 +280,6 @@ def staff_not_confirmed(request):
             bk_date__gte=now,
             store_id=store_id,
         )
-        # ).order_by('-is_confirm', 'waiting_num', 'bk_date',  'bk_st')
-        # order by will be slow, I think better way is regroup
-        # add day off data
-
         # get user phone number
         acc_arr = []
         for i in bk_queryset:
@@ -301,7 +297,6 @@ def staff_not_confirmed(request):
             'account': acc_arr,
         })
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 @require_http_methods(['GET'])
