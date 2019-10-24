@@ -28,7 +28,7 @@
     <a class="g-recaptcha" data-sitekey={{google_keys}} data-callback="onSubmit" data-size="invisible">
     </a>
     <font size='4'>
-      <button id="member_submit"
+      <button id="admin_member_submit"
         class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right">下一步訂位</button>
     </font>
   </form>
@@ -37,9 +37,10 @@
 
 <script>
   $('#admin_member_submit').click(function (e) {
-    document.getElementById('member_form').action = '/softwayliving/admin_reservation/'
-    document.getElementById('member_form').submit()
-
+    Notiflix.Loading.Hourglass('處理中....');
+    document.getElementById('admin_member_form').action = '/softwayliving/admin_reservation/'
+    document.getElementById('admin_member_form').submit()
+    
   })
 </script>
 
