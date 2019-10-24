@@ -64,30 +64,33 @@
 </div> -->
 
 <!-- reservation information-->
-<font size='4'>
+<!-- <font size='4'>
     <button id='hidden_list' class="w3-btn w3-round-large w3-block w3-teal">
         隱藏列表 <i class="fas fa-angle-up"></i></button>
-</font>
+</font> -->
 <div name='information' class="w3-container w3-border w3-round-xxlarge">
     <div class="w3-center">
         <font size='6'>
             <h2>訂位資訊</h2>
             <hr>
 
-            <!-- <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3> -->
-            <div class="w3-container" align="left">
-                <!-- <input type="text" id='bk_uuid' value="" style="display: none">
+            
+                <!-- <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3> -->
+                <div class="w3-container" align="left">
+                    <!-- <input type="text" id='bk_uuid' value="" style="display: none">
                 <input type="text" id='bk_date' value="" style="display: none"> -->
 
-                <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
-                <h4>用餐日期：{{element.bk_date}} </h4>
-                <h4>{{element.time_session|time_session_name}} - {{element.bk_st}}</h4>
-                <h4>訂位人： {{user_info.username}} 先生/小姐</h4>
-                <h4>用餐人數： {{element.adult}} 大 {{element.children}} 小</h4>
-                <h4>價位：＄{{element.bk_price}}</h4>
-                <h4>飲食習慣：{{element.bk_habit}}</h4>
+                    <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
+                    <h4>用餐日期：{{element.bk_date}} </h4>
+                    <h4>{{element.time_session|time_session_name}} - {{element.bk_st}}</h4>
+                    <h4>訂位人： {{user_info.username}} 先生/小姐</h4>
+                    <h4>用餐人數： {{element.adult}} 大 {{element.children}} 小</h4>
+                    <h4>價位：＄{{element.bk_price}}</h4>
+                    <h4>飲食習慣：{{element.bk_habit}}</h4>
 
-            </div>
+                </div>
+
+           
         </font>
 
         <font size='4'>
