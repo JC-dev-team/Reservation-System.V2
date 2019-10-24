@@ -78,12 +78,10 @@ def staff_add_reservation(request):  # Help client to add reservation
         if len(phone) != 10:
             return redirect('/softwayliving/reservation/')
         try:
-            with transaction.atomic():  # transaction
-                queryset = Account.objects.select_for_update().get(
-                    username=username,
-                    phone=phone,
-                )
-
+            queryset = Account.objects.select_for_update().get(
+                username=username,
+                phone=phone,
+            )
         except Account.DoesNotExist:
             with transaction.atomic():  # transaction
                 acc = Account.objects.create(
@@ -91,13 +89,14 @@ def staff_add_reservation(request):  # Help client to add reservation
                     username=username,
                     social_id=None,
                     social_app=None,
-                    social_name=None,
+                    social_name='Admin reservation',
                 )
                 queryset = Account.objects.get(
                     phone=phone,
                     username=username,
                 )
         request.session['user_id'] = queryset.user_id
+        
         serializer_class = Acc_Serializer(queryset)
         return render(request, 'reservation.html', {
             'data': serializer_class.data,

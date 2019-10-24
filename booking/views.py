@@ -72,7 +72,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                     phone=phone,
                 )
                 checkaccount = queryset.select_for_update().get(
-                    social_name=None,
+                    social_name='Admin reservation',
                     social_app=None,
                     social_id=None,
                 )
@@ -116,16 +116,15 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 @require_http_methods(['POST'])
 @check_recaptcha
 def InsertReservation(request):  # insert booking list
-    try:
-        # For validation
-        social_id = request.session.get('social_id', None)
-        social_app = request.session.get('social_app', None)
-        # Check account
-        result = auth.ClientAuthentication(
-            social_id, social_app)
-            
+    try:    
         # Check is order by administrator
         if request.session.get('staff_id', None) == None:
+            # For validation
+            social_id = request.session.get('social_id', None)
+            social_app = request.session.get('social_app', None)
+            # Check account
+            result = auth.ClientAuthentication(
+            social_id, social_app)
             if result == None or result == False:  # Using PC or No social login # Account Not Exist
                 return redirect('/booking/login/',)
                 # return redirect(reverse('member'),args=())
