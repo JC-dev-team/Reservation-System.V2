@@ -72,9 +72,9 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                 )
                 try:
                     checkaccount = queryset.get(
-                        social_name='Admin reservation',
+                        social_name='admin',
                         social_app=None,
-                        social_id='Admin reservation',
+                        social_id='admin',
                     )
                 except Account.DoesNotExist:
                     request.session.flush()

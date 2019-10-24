@@ -98,9 +98,9 @@ def staff_add_reservation(request):  # Help client to add reservation
                 acc = Account.objects.create(
                     phone=phone,
                     username=username,
-                    social_id='Admin reservation',
+                    social_id='admin',
                     social_app=None,
-                    social_name='Admin reservation',
+                    social_name='admin',
                 )
                 queryset = Account.objects.get(
                     phone=phone,
@@ -436,3 +436,8 @@ def staff_is_waiting(request):
         })
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
+
+
+@require_http_methods(['POST'])
+def funcname(parameter_list):
+    pass
