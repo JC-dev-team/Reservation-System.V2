@@ -328,13 +328,13 @@ def member(request):
 
 
 # Ajax api --------------------------------------------------------------
-@require_http_methods(['POST'])
+@require_http_methods(['GET'])
 def getWaitingList(request):  # get waiting list
     try:
-        bk_date = request.POST.get('event_date', None)
-        store_id = request.POST.get('store_id', None)
-        adult = request.POST.get('adult', None)
-        children = request.POST.get('children', None)
+        bk_date = request.GET.get('event_date', None)
+        store_id = request.GET.get('store_id', None)
+        adult = request.GET.get('adult', None)
+        children = request.GET.get('children', None)
         lunch_waiting = None
         dinner_waiting = None
         if (int(adult)+int(children)) < 1:
@@ -402,7 +402,7 @@ def getWaitingList(request):  # get waiting list
                 time_session='Lunch',
                 waiting_num__gt=0,
             ).count()
-            if(lunch_waiting == 0 and status_noon == 'green'):
+            if(status_noon == 'green'):
                 lunch_waiting = '午餐：可訂位'
             else:
                 lunch_waiting = '午餐：候補第' + str((lunch_waiting+1))+'順位'
@@ -429,7 +429,7 @@ def getWaitingList(request):  # get waiting list
                 time_session='Dinner',
                 waiting_num__gt=0,
             ).count()
-            if (dinner_waiting == 0 and status_night == 'green'):
+            if (status_night == 'green'):
                 dinner_waiting = '晚餐：可訂位'
             else:
                 dinner_waiting = '晚餐：候補第' + str((dinner_waiting+1))+'順位'
