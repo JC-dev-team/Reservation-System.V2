@@ -250,7 +250,7 @@
 
     function people_number(data, num, calendar) {
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: '/booking/getCalendar/',
             data: data,
             success: function (response) {
