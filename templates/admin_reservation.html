@@ -2,44 +2,46 @@
 
 {% block headmessage %}
 <div class="w3-center">
-    <h3><b>管理者 - 訂位</b></h3>
+  <h3><b>管理者 - 訂位</b></h3>
 </div>
 {% endblock %}
 
 {% block content %}
 {% load static %}
 <div class="w3-container">
-        <form id='member_form' method="post">
-          {% csrf_token %}
-          <!--Social personal Data-->
-          <input type="text" id='social_id' name='social_id' value="" style="display: none">
-          <input type="text" id='social_name' name='social_name' value="" style="display: none">
-          <input type="text" id='social_app' name='social_app'value="" style="display: none">
-      
-          <font size="4">
-            <label><b>客人姓名</b></label>
-            <input id="member_name" name='username' class="w3-input w3-border w3-round-large" type="text"
-              placeholder="E.g. : 王小明" value='' required>
-          </font>
-          <br>
-          <font size="4">
-            <label><b>客人手機</b></label>
-            <input id="member_phone" name='phone' class="w3-input w3-border w3-round-large" type="tel"
-              placeholder="E.g. : 0900123456" autocomplete="off" pattern="[0]{1}[9]{1}[0-9]{8}" value='' required>
-          </font>
-      
-          <!-- <div class="g-recaptcha" data-sitekey={{google_keys}}></div> -->
-          <a class="g-recaptcha" data-sitekey={{google_keys}} data-callback="onSubmit" data-size="invisible" >
-          </a>
-          <font size='4'>
-            <button id="member_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
-              disabled="false">下一步訂位</button>
-          </font>
-        </form>
-      </div>
+  <form id='member_form' method="post">
+    {% csrf_token %}
+
+    <font size="4">
+      <label><b>客人姓名</b></label>
+      <input id="member_name" name='username' class="w3-input w3-border w3-round-large" type="text"
+        placeholder="E.g. : 王小明" value='' required>
+    </font>
+    <br>
+    <font size="4">
+      <label><b>客人手機</b></label>
+      <input id="member_phone" name='phone' class="w3-input w3-border w3-round-large" type="tel"
+        placeholder="E.g. : 0900123456" autocomplete="off" pattern="[0]{1}[9]{1}[0-9]{8}" value='' required>
+    </font>
+
+    <!-- <div class="g-recaptcha" data-sitekey={{google_keys}}></div> -->
+    <a class="g-recaptcha" data-sitekey={{google_keys}} data-callback="onSubmit" data-size="invisible">
+    </a>
+    <font size='4'>
+      <button id="member_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
+        disabled="false">下一步訂位</button>
+    </font>
+  </form>
+</div>
 
 
-      
+<script>
+  $('#member_submit').click(function (e) {
+    document.getElementById('member_form').action = ''
+    document.getElementById('member_form').submit()
+
+  })
+</script>
 
 
 
