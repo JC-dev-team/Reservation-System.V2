@@ -9,7 +9,7 @@
 {% block content %}
 {% load static %}
 <div class="w3-container">
-  <form id='member_form' method="post">
+  <form id='admin_member_form' method="post">
     {% csrf_token %}
 
     <font size="4">
@@ -28,16 +28,16 @@
     <a class="g-recaptcha" data-sitekey={{google_keys}} data-callback="onSubmit" data-size="invisible">
     </a>
     <font size='4'>
-      <button id="member_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right"
-        disabled="false">下一步訂位</button>
+      <button id="member_submit"
+        class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right">下一步訂位</button>
     </font>
   </form>
 </div>
 
 
 <script>
-  $('#member_submit').click(function (e) {
-    document.getElementById('member_form').action = ''
+  $('#admin_member_submit').click(function (e) {
+    document.getElementById('member_form').action = '/softwayliving/admin_reservation/'
     document.getElementById('member_form').submit()
 
   })
