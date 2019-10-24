@@ -279,7 +279,7 @@
 
     function eventClick_sendDate(data) {
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: '/booking/getWaitingList/',
             data: data,
             success: function (response) {
