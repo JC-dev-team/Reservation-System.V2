@@ -36,7 +36,7 @@ def staff_check_reservation_page(request):
 
 
 def staff_reservation_page(request):
-    return render(request, 'admin_reservation.html')
+    return render(request, 'admin_reservation.html',)
 
 
 # function --------------------------
@@ -78,7 +78,7 @@ def staff_add_reservation(request):  # Help client to add reservation
         if len(phone) != 10:
             return redirect('/softwayliving/reservation/')
         try:
-            queryset = Account.objects.select_for_update().get(
+            queryset = Account.objects.get(
                 username=username,
                 phone=phone,
             )
@@ -87,7 +87,7 @@ def staff_add_reservation(request):  # Help client to add reservation
                 acc = Account.objects.create(
                     phone=phone,
                     username=username,
-                    social_id=None,
+                    social_id='Admin reservation',
                     social_app=None,
                     social_name='Admin reservation',
                 )
@@ -95,8 +95,11 @@ def staff_add_reservation(request):  # Help client to add reservation
                     phone=phone,
                     username=username,
                 )
+        except Account.MultipleObjectsReturned:
+            return render(request,'admin_reservation.html',{'error': '姓名與手機遭遇重複，無法進行訂位與註冊'})
+
         request.session['user_id'] = queryset.user_id
-        
+
         serializer_class = Acc_Serializer(queryset)
         return render(request, 'reservation.html', {
             'data': serializer_class.data,

@@ -74,7 +74,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                 checkaccount = queryset.select_for_update().get(
                     social_name='Admin reservation',
                     social_app=None,
-                    social_id=None,
+                    social_id='Admin reservation',
                 )
                 checkaccount.social_name = social_name
                 checkaccount.social_app = social_app
