@@ -373,7 +373,7 @@
     function ajax_not_confirm(num) {
         $.ajax({
             type: 'GET',
-            url: '/softwayliving/not_confirmed?store_id={{request.session.store_id}}' ,
+            url: '/softwayliving/not_confirmed/' ,
             success: function (response) {
                 if (response.error != null) {
                     Notiflix.Notify.Failure('發生錯誤！！');
@@ -408,7 +408,7 @@
     function ajax_is_confirm() {
         $.ajax({
             type: 'GET',
-            url: '/softwayliving/confirm/?store_id=' + data.store_id,
+            url: '/softwayliving/confirm/',
             data: {
                 'store_id': '{{data.store_id}}'
             },
@@ -422,7 +422,7 @@
     function ajax_waiting() {
         $.ajax({
             type: 'GET',
-            url: '/softwayliving/waiting/?store_id=' + data.store_id,
+            url: '/softwayliving/waiting/',
             data: {
                 'store_id': '{{data.store_id}}'
             },
@@ -436,7 +436,7 @@
     function ajax_canceled() {
         $.ajax({
             type: 'GET',
-            url: '/softwayliving/canceled/?store_id=' + data.store_id,
+            url: '/softwayliving/canceled/',
             data: {
                 'store_id': '{{data.store_id}}'
             },
