@@ -373,7 +373,7 @@
     function ajax_not_confirm(num) {
         $.ajax({
             type: 'GET',
-            url: '/softwayliving/not_confirmed/',
+            url: '/softwayliving/not_confirm/',
             success: function (response) {
                 if (response.error != null) {
                     Notiflix.Notify.Failure('發生錯誤！！');
@@ -405,7 +405,7 @@
         })
     }
     //已確認
-    function ajax_is_confirm() {
+    function ajax_is_confirm(num) {
         $.ajax({
             type: 'GET',
             url: '/softwayliving/is_confirm/',
@@ -439,7 +439,7 @@
         })
     }
     //候補
-    function ajax_waiting() {
+    function ajax_waiting(num) {
         $.ajax({
             type: 'GET',
             url: '/softwayliving/waiting/',
@@ -473,7 +473,7 @@
         })
     }
     //已刪除
-    function ajax_canceled() {
+    function ajax_canceled(num) {
         $.ajax({
             type: 'GET',
             url: '/softwayliving/delete/',
@@ -675,6 +675,7 @@
                     var habit = '#' + result[i].bk_habit + ' ';
                     var waiting_num = result[i].waiting_num
                     var confirm = result[i].is_confirm
+                    var is_cancel = result[i].is_cancel
 
                     var user_phone = account[i].phone
                     var user_name = account[i].username
@@ -690,10 +691,12 @@
                         habit = ''
                     }
 
-                    if (waiting_num == 0 && confirm == false) {
-                        color = 'orange' //待確認
-                    } else if (waiting_num == 0 && confirm == true) {
+                    if (is_cancel == true) {
+                        color = 'grey' //待確認
+                    } else if (confirm == true) {
                         color = 'green' //已確認
+                    } else if (waiting_num == 0 && confirm == false) {
+                        color = 'orange' //已刪除
                     } else {
                         color = 'red' //候補
                     }
@@ -1005,32 +1008,44 @@
     $('#sidebar_not_confirm').click(function (e) {
         console.log('sidebar_not_confirm')
         var num = parseInt($('#date_num').val())
+        //hidden sidebar
+        document.getElementById('mySidebar').style.display = 'none'
         //Clean the calendar
         document.getElementById('calendar').innerHTML = ''
+        Notiflix.Loading.Hourglass('讀取中....');
         ajax_not_confirm(num)
     })
     //Click 已確認
     $('#sidebar_confirm').click(function (e) {
         console.log('sidebar_confirm')
         var num = parseInt($('#date_num').val())
+        //hidden sidebar
+        document.getElementById('mySidebar').style.display = 'none'
         //Clean the calendar
         document.getElementById('calendar').innerHTML = ''
+        Notiflix.Loading.Hourglass('讀取中....');
         ajax_is_confirm(num)
     })
     //Click 候補名單
     $('#sidebar_waiting').click(function (e) {
         console.log('sidebar_waiting')
         var num = parseInt($('#date_num').val())
+        //hidden sidebar
+        document.getElementById('mySidebar').style.display = 'none'
         //Clean the calendar
         document.getElementById('calendar').innerHTML = ''
+        Notiflix.Loading.Hourglass('讀取中....');
         ajax_waiting(num)
     })
     //Click 已刪除
     $('#sidebar_cancel').click(function (e) {
         console.log('sidebar_cancel')
         var num = parseInt($('#date_num').val())
+        //hidden sidebar
+        document.getElementById('mySidebar').style.display = 'none'
         //Clean the calendar
         document.getElementById('calendar').innerHTML = ''
+        Notiflix.Loading.Hourglass('讀取中....');
         ajax_canceled(num)
     })
 </script>
