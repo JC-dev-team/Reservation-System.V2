@@ -18,7 +18,7 @@ from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
 from django.contrib.sessions.models import Session
 from django.conf import settings
-
+from common.utility.recaptcha import check_recaptcha
 
 def error(request):
     request.session.flush()
@@ -70,6 +70,7 @@ def staff_auth(request):  # authentication staff
 
 
 @require_http_methods(['POST'])
+@check_recaptcha
 def staff_add_reservation(request):  # Help client to add reservation
     try:
         phone = request.POST.get('phone', None)
