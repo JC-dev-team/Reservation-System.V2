@@ -438,14 +438,14 @@ def getWaitingList(request):  # get waiting list
         return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
 
 
-@require_http_methods(['POST'])
+@require_http_methods(['GET'])
 def getCalendar(request):  # full calendar
     try:
-        store_id = request.POST.get('store_id', None)
-        start_month = request.POST.get('start_month', None)
-        end_month = request.POST.get('end_month', None)
-        adult = request.POST.get('adult', None)
-        children = request.POST.get('children', None)
+        store_id = request.GET.get('store_id', None)
+        start_month = request.GET.get('start_month', None)
+        end_month = request.GET.get('end_month', None)
+        adult = request.GET.get('adult', None)
+        children = request.GET.get('children', None)
         total = int(adult)+int(children)
         # Convert string to time
         start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
