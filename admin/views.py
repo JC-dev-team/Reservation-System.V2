@@ -17,6 +17,7 @@ from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
 from django.contrib.sessions.models import Session
+from django.conf import settings
 
 
 def error(request):
@@ -67,7 +68,45 @@ def staff_auth(request):  # authentication staff
         request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
 
-# Ajax API
+
+@require_http_methods(['POST'])
+def staff_add_reservation(request):  # Help client to add reservation
+    try:
+        phone = request.POST.get('phone', None)
+        username = request.POST.get('username', None)
+        if len(phone) != 10:
+            return redirect('/softwayliving/reservation/')
+        try:
+            with transaction.atomic():  # transaction
+                queryset = Account.objects.select_for_update().get(
+                    username=username,
+                    phone=phone,
+                )
+
+        except Account.DoesNotExist:
+            with transaction.atomic():  # transaction
+                acc = Account.objects.create(
+                    phone=phone,
+                    username=username,
+                    social_id=None,
+                    social_app=None,
+                    social_name=None,
+                )
+                queryset = Account.objects.get(
+                    phone=phone,
+                    username=username,
+                )
+        request.session['user_id'] = queryset.user_id
+        serializer_class = Acc_Serializer(queryset)
+        return render(request, 'reservation.html', {
+            'data': serializer_class.data,
+            'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
+
+    except Exception as e:
+        request.session.flush()
+        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
+# Ajax API ---------------------------------------------
 @require_http_methods(['POST'])
 def staff_check_reservation(request):
     try:
@@ -170,16 +209,6 @@ def staff_pass_reservation(request):
                 return JsonResponse({'alert': '請先刪除前面非候補訂位'})
             bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
             return JsonResponse({'result': 'success'})
-
-    except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
-
-
-@require_http_methods(['POST'])
-def staff_add_reservation(request):  # Help client to add reservation
-    try:
-        phone = request.POST.get('phone', None)
-        username = request.POST.get('username', None)
 
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})

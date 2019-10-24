@@ -70,7 +70,6 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                 queryset = Account.objects.select_for_update().get(
                     username=username,
                     phone=phone,
-
                 )
                 checkaccount = queryset.select_for_update().get(
                     social_name=None,
@@ -100,7 +99,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
             social_name=social_name,
         )
         request.session['is_Login'] = True
-        request.session['user_id'] =queryset.user_id
+        request.session['user_id'] = queryset.user_id
         serializer_class = Acc_Serializer(queryset)
 
         # render html
@@ -124,16 +123,21 @@ def InsertReservation(request):  # insert booking list
         # Check account
         result = auth.ClientAuthentication(
             social_id, social_app)
-        if result == None or result == False:  # Using PC or No social login # Account Not Exist
-            return redirect('/booking/login/',)
-            # return redirect(reverse('member'),args=())
-        # error occurred the type of result is {'error' : error}
-        elif type(result) == dict:
-            return render(request, 'error/error.html', {'error': result['error'], 'action': '/booking/login/'})
+            
+        # Check is order by administrator
+        if request.session.get('staff_id', None) == None:
+            if result == None or result == False:  # Using PC or No social login # Account Not Exist
+                return redirect('/booking/login/',)
+                # return redirect(reverse('member'),args=())
+            # error occurred the type of result is {'error' : error}
+            elif type(result) == dict:
+                return render(request, 'error/error.html', {'error': result['error'], 'action': '/booking/login/'})
+            store_id = request.POST.get('store_id', None)
+        else:
+            store_id = request.session.get('store_id', None)
         # Account Exist
         # insert data
         user_id = request.session.get('user_id', None)
-        store_id = request.POST.get('store_id', None)
         bk_date = request.POST.get('bk_date', None)
         bk_st = request.POST.get('bk_st', None)
         bk_ed = request.POST.get('bk_ed', None)
