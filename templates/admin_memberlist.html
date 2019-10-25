@@ -19,7 +19,7 @@
         {% for element in data %}
 
         <li class="w3-bar">
-            <span onclick="delete_member(this,'{{element.user_id}})')"
+            <span onclick="delete_member(this,'{{element.user_id}}')"
                 class="w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
             <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg" class="w3-bar-item w3-circle"
                 style="width:85px">
@@ -41,15 +41,45 @@
 
 <script>
     //csrf_ajax
+    // $.ajaxSetup({
+    //     data: {
+    //         csrfmiddlewaretoken: '{{ csrf_token }}'
+    //     },
+    // });
+    
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
     $.ajaxSetup({
-        data: {
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
     });
 
     function ajax_delete_member(t, data) {
         $.ajax({
-            type: 'GET'',
+            type: 'DELETE',
             url: '/softwayliving/remove_member/',
             data: data,
             success: function (response) {
@@ -99,6 +129,7 @@
 
 
     }
+
 </script>
 
 {% endblock %}
