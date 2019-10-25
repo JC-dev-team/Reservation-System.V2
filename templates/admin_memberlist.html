@@ -49,7 +49,7 @@
 
     function ajax_delete_member(t, data) {
         $.ajax({
-            type: 'DELETE',
+            type: 'GET'',
             url: '/softwayliving/remove_member/',
             data: data,
             success: function (response) {
@@ -68,7 +68,7 @@
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Notify.Failure('發生未知錯誤！！');
                 Notiflix.Loading.Remove();
 
             }
