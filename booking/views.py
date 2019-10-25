@@ -339,6 +339,7 @@ def member(request):
 @require_http_methods(['GET'])
 def getWaitingList(request):  # get waiting list
     try:
+        action = request.GET.get('action',None)
         bk_date = request.GET.get('event_date', None)
         store_id = request.GET.get('store_id', None)
         adult = request.GET.get('adult', None)
@@ -444,12 +445,15 @@ def getWaitingList(request):  # get waiting list
 
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
+        if action == 'main' :
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/preview/'})
         return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
 
 
 @require_http_methods(['GET'])
 def getCalendar(request):  # full calendar
     try:
+        action = request.GET.get('action',None)
         store_id = request.GET.get('store_id', None)
         start_month = request.GET.get('start_month', None)
         end_month = request.GET.get('end_month', None)
@@ -464,6 +468,7 @@ def getCalendar(request):  # full calendar
         store_query = Store.objects.only('seat').get(
             store_id=store_id
         )
+
         if total > store_query.seat:
             msg = '超過總座位數量：'+str(store_query.seat)+'個座位'
             return JsonResponse({'alert': msg})
@@ -473,7 +478,6 @@ def getCalendar(request):  # full calendar
             bk_date__range=(start_month, end_month),
             is_cancel=False,
         )
-
         # get all orded reservation
         bookinglist = bk_queryset.filter(  # filter waiting_num != 0
             waiting_num=0,
@@ -483,10 +487,10 @@ def getCalendar(request):  # full calendar
             store_id=store_id,
             event_date__range=(start_month, end_month),
         )
-
         event_arr = []
         for i in st_event:
             event_sub_arr = {}  # event dictionary
+            
             if i.time_session == 'Lunch':
                 i.time_session = '午餐'
             else:
@@ -501,6 +505,7 @@ def getCalendar(request):  # full calendar
                 event_sub_arr['start'] = i.event_date
                 event_sub_arr['backgroundColor'] = 'yellow'
             event_arr.append(event_sub_arr)
+        
         for i in bookinglist:
             event_sub_arr = {}  # event dictionary
             # Convert time_session to chiness
@@ -513,9 +518,8 @@ def getCalendar(request):  # full calendar
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'red'
-                # event_sub_arr['status'] = '候補'
 
-            elif int(i.adult)+int(i.children)+int(adult)+int(children) > store_query.seat:
+            elif int(i.adult)+int(i.children)+total > store_query.seat:
                 event_sub_arr['title'] = i.time_session
                 event_sub_arr['start'] = i.bk_date
                 event_sub_arr['backgroundColor'] = 'red'
@@ -526,8 +530,11 @@ def getCalendar(request):  # full calendar
                 event_sub_arr['backgroundColor'] = 'green'
 
             event_arr.append(event_sub_arr)
+        print('event_arr :',event_arr)
         return JsonResponse({'result': event_arr})
     except Exception as e:
+        if action == 'main' :
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/preview/'})
         return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
 
 

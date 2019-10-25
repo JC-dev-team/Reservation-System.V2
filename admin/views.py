@@ -439,5 +439,18 @@ def staff_is_waiting(request):
 
 
 @require_http_methods(['POST'])
-def funcname(parameter_list):
-    pass
+def staff_remove_member(request):
+    try:
+        # Set auth in future
+        staff_id=request.session.get('staff_id',None)
+        user_id = request.POST.get('user_id',None)
+        with transaction.atomic():  # transaction
+            try:
+                queryset=Account.objects.get(staff_id=staff_id)
+                queryset.delete()
+                return JsonResponse({'result': 'success'})
+            except Account.DoesNotExist:
+                return JsonResponse({'alert': '帳號已刪除或是不存在'})
+            
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})

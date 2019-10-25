@@ -39,6 +39,8 @@ urlpatterns = [
     path('not_confirm/',views.staff_not_confirmed), # 待確認
     # /softwayliving/canceled/
     path('delete/',views.staff_is_cancel), # 已刪除
+    # /softwayliving/remove_member/
+    path('remove_member/',views.staff_remove_member),
 
 
 ]
