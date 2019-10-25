@@ -7,14 +7,34 @@
 <div class="w3-center">
     <font size='5' face="DFKai-sb">
         <b><I>聰明工作，智慧生活</I></b>
-        <h3>Member List</h3>
+        <h3>會員名單</h3>
     </font>
-    {% for element in data %}
-    <p>{{forloop.counter}}</p>
-    <p>{{element.username}} - {{element.social_name}}</p>
-    <p>{{element.phone}}</p>
-    {% endfor %}
 
+</div>
+
+<div class="w3-container">
+
+    <ul class="w3-ul w3-card-4">
+
+        {% for element in data %}
+
+        <li class="w3-bar">
+            <span onclick="this.parentElement.style.display='none'"
+                class="w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg" class="w3-bar-item w3-circle" style="width:85px">
+            <!-- <div class="w3-bar-item w3-left">
+                <i class="fas fa-user-circle" style='color:green;font-size:40px'></i>
+            </div> -->
+            <div class="w3-bar-item">
+                <!-- <span class="w3-left w3-large">({{forloop.counter}})</span> -->
+                <span class="w3-large">{{element.username}} ({{element.social_name}})</span><br>
+                <span>{{element.phone}}</span>
+            </div>
+        </li>
+
+        {% endfor %}
+
+    </ul>
 </div>
 
 
