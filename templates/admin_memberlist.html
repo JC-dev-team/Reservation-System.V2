@@ -26,7 +26,7 @@
                 <i class="fas fa-user-circle" style='color:green;font-size:40px'></i>
             </div> -->
             <div class="w3-bar-item">
-                <span class="w3-left w3-large">({{element.user_id}})</span>
+                <!-- <span class="w3-left w3-large">({{element.user_id}})</span> -->
                 <span class="w3-large">{{element.username}} ({{element.social_name}})</span><br>
                 <span>{{element.phone}}</span>
             </div>
@@ -41,7 +41,7 @@
 <script>
 function ajax_delete_member(t,data){
     $.ajax({
-        type: 'POST',
+        type: 'DELETE',
         url:'/softwayliving/remove_member/',
         data:data,
         success: function (response) {
