@@ -446,7 +446,7 @@ def staff_remove_member(request):
         staff_id = request.session.get('staff_id', None)
         if is_Login !=True or staff_id  ==None :
             return JsonResponse({'alert':'Not Valid, 權限不足'})
-        user_id = request.POST.get('user_id', None)
+        user_id = request.DELETE.get('user_id', None)
         with transaction.atomic():  # transaction
             try:
                 queryset = Account.objects.get(user_id=user_id)
