@@ -19,7 +19,7 @@
         {% for element in data %}
 
         <li class="w3-bar">
-            <span onclick="delete_member(this,'{{element.user_id}})')"
+            <span onclick="delete_member(this, '{{element.user_id}}') "
                 class="w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
             <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg" class="w3-bar-item w3-circle"
                 style="width:85px">
@@ -49,7 +49,7 @@
 
     function ajax_delete_member(t, data) {
         $.ajax({
-            type: 'GET'',
+            type: 'DELETE',
             url: '/softwayliving/remove_member/',
             data: data,
             success: function (response) {
@@ -61,10 +61,11 @@
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else {
                     Notiflix.Notify.Success('已刪除會員！！');
+                    t.parentElement.style.display = 'none'
                 }
 
                 Notiflix.Loading.Remove();
-                t.parentElement.style.display = 'none'
+                
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
