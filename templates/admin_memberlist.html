@@ -9,7 +9,11 @@
         <b><I>聰明工作，智慧生活</I></b>
         
     </font>
-
+    {% for element in data %}
+    <p>{{forloop.counter}}</p>
+    <p>{{element.username}} - {{element.social_name}}</p>
+    <p>{{element.phone}}</p>
+    {% endfor %}
 
 </div>
 
