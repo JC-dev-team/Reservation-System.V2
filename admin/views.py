@@ -438,15 +438,15 @@ def staff_is_waiting(request):
         return JsonResponse({'error': '發生未知錯誤'})
 
 
-@require_http_methods(['DELETE'])
+@require_http_methods(['POST'])
 def staff_remove_member(request):
     try:
         # Set auth in future
         is_Login=request.session.get('is_Login', None)
         staff_id = request.session.get('staff_id', None)
         if is_Login !=True or staff_id  ==None :
-            return JsonResponse({'alert':'Not Valid, 權限不足'})
-        user_id = request.DELETE.get('user_id', None)
+            return JsonResponse({'alert':'Not Valid, 請登入帳號'})
+        user_id = request.POST.get('user_id', None)
         with transaction.atomic():  # transaction
             try:
                 queryset = Account.objects.get(user_id=user_id)
@@ -456,5 +456,4 @@ def staff_remove_member(request):
                 return JsonResponse({'alert': '帳號已刪除或是不存在'})
 
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})

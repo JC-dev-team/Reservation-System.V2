@@ -79,7 +79,7 @@
 
     function ajax_delete_member(t, data) {
         $.ajax({
-            type: 'DELETE',
+            type: 'POST',
             url: '/softwayliving/remove_member/',
             data: data,
             success: function (response) {
@@ -91,10 +91,11 @@
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else {
                     Notiflix.Notify.Success('已刪除會員！！');
+                    t.parentElement.style.display = 'none'
                 }
 
                 Notiflix.Loading.Remove();
-                t.parentElement.style.display = 'none'
+                
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
