@@ -6,8 +6,12 @@ from django.conf.urls import handler404
 
 urlpatterns = [
     ## Page
-    # /main/error/ 
-    # path('error/',views.error, name='error'),
+    # /error/ 
+    path('error/',views.error),
+    # /preview/
+    path('preview/',views.preview),
+    # /
+    path('',views.preview),
     
 ]
 

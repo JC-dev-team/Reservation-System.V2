@@ -355,7 +355,6 @@ def getWaitingList(request):  # get waiting list
         event_queryset = StoreEvent.objects.only('time_session', 'event_type', 'event_date').filter(
             store_id=store_id,
             event_date=bk_date,
-            # event_type='Day off',
         ).distinct()
         # We will get 2 kinds of time_sessions Ex: Lunch & Dinner
         bk_queryset = BkList.objects.filter(  # get all data
@@ -402,6 +401,7 @@ def getWaitingList(request):  # get waiting list
             noon_count += int(children)+int(adult)
             # judge if red or green
             # green = booking available, red = waiting line
+
             if noon_count > store_query.seat:
                 status_noon = 'red'
             else:
@@ -441,6 +441,7 @@ def getWaitingList(request):  # get waiting list
                 dinner_waiting = '晚餐：可訂位'
             else:
                 dinner_waiting = '晚餐：候補第' + str((dinner_waiting+1))+'順位'
+
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})

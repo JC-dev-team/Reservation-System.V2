@@ -144,13 +144,13 @@
 
     function people_number(data, num, calendar) {
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: '/booking/getCalendar/',
             data: data,
             success: function (response) {
                 if (response.error != null) {
                     // console.log(response.error)
-                    window.location.replace('/booking/error/');
+                    window.location.replace('/error/');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else {
@@ -165,7 +165,7 @@
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.log(XMLHttpRequest)
                 console.log(errorThrown)
-                window.location.replace('/booking/error/');
+                window.location.replace('/error/');
             }
 
         })
@@ -173,7 +173,7 @@
 
     function eventClick_sendDate(data) {
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: '/booking/getWaitingList/',
             data: data,
             success: function (response) {

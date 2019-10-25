@@ -19,9 +19,8 @@ from django.db.models import Q  # complex lookup
 from django.conf import settings
 
 # Create your views here.
-@require_http_methods(['GET'])
 def preview(request):
-    try:
-        pass
-    except Exception as e:
-        return render(request, 'error/error.html', {'error': e, 'action': '/booking/login/'})
+    return render(request, 'preview_page.html')
+
+def error(request):
+    return render(request, 'error/error.html',{'action':'/preview/'})
