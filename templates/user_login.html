@@ -5,11 +5,8 @@
 {% block content %}
 {% load static %}
 <div class="w3-center">
-    <font size="10">
-        <img src="{% static '/images/Spinner01.svg' %}" />
-    </font>
-    <h4>畫面載入中...<br>
-        <br>
+    
+    
 </div>
 
 <form id='checklogin_form' method="post">
@@ -41,6 +38,7 @@
     }
     //ready
     $(function () {
+        Notiflix.Loading.Hourglass('讀取中....');
         //init LIFF
         liff.init(function (data) {
             initializeApp(data);
