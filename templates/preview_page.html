@@ -30,9 +30,9 @@
                 <p id='modal_date'></p>
                 <!-- State-->
                 <p id='modal_status'></p>
-                
+
                 <br>
-                
+
                 <p class="w3-right">聯絡我們 <a href="tel:0936336233" class="w3-text-blue">0936336233</a></p>
             </font>
         </div>
@@ -132,7 +132,7 @@
         messageColor: '#dcdcdc',
     });
 
-    
+
 
 
     //csrf_ajax
@@ -158,13 +158,14 @@
                     //console.log('result : ' + result)
                     //Function of calendar (return calendar.render())
                     calendar_fun(result, num)
-
                 }
+                Notiflix.Loading.Remove();
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.log(XMLHttpRequest)
                 console.log(errorThrown)
+                Notiflix.Loading.Remove();
                 window.location.replace('/error/');
             }
 
@@ -235,7 +236,7 @@
 
 
 
-    
+
 
     function calendar_fun(result, num = 0) {
         //spinner hide
@@ -393,7 +394,7 @@
                     'children': child,
                     'event_date': start,
                     'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
-
+                    'action': 'main'
                 }
 
 
@@ -422,6 +423,7 @@
                 'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
                 'start_month': start_month,
                 'end_month': end_month,
+                'action': 'main'
             }
             //Clean the calendar
             document.getElementById('calendar').innerHTML = ''
@@ -454,17 +456,17 @@
 
         //Initial User of displayName & displayPhone
         $('#displayName').html('快速查詢訂位');
-       
-        
+
+
         $('#adult_select, #children_select').change(function (e) {
             document.getElementById('calendar').innerHTML = ''
         })
 
-        
+
     });
 
 
-    
+
 
     //next month of button
     $('body').on('click', 'button.fc-next-button', function () {

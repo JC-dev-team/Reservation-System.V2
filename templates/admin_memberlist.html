@@ -19,14 +19,14 @@
         {% for element in data %}
 
         <li class="w3-bar">
-            <span onclick="this.parentElement.style.display='none'"
+            <span onclick="delete_member(this,'{{element.user_id}})')"
                 class="w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
             <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg" class="w3-bar-item w3-circle" style="width:85px">
             <!-- <div class="w3-bar-item w3-left">
                 <i class="fas fa-user-circle" style='color:green;font-size:40px'></i>
             </div> -->
             <div class="w3-bar-item">
-                <!-- <span class="w3-left w3-large">({{forloop.counter}})</span> -->
+                <span class="w3-left w3-large">({{element.user_id}})</span>
                 <span class="w3-large">{{element.username}} ({{element.social_name}})</span><br>
                 <span>{{element.phone}}</span>
             </div>
@@ -37,5 +37,60 @@
     </ul>
 </div>
 
+
+<script>
+function ajax_delete_member(t,data){
+    $.ajax({
+        type: 'POST',
+        url:'/softwayliving/remove_member/',
+        data:data,
+        success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    // window.location.replace('/softwayliving/error/');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                } else { 
+                    Notiflix.Notify.Success('已刪除會員！！');
+                }
+
+                Notiflix.Loading.Remove();
+                t.parentElement.style.display='none'
+            
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                
+            }
+        
+    })
+}
+
+function delete_member(t,user_id){
+    Notiflix.Confirm.Show('管理者權限', '確定要刪除此會員嗎?', '是-刪除會員', '否-不刪除',
+                function () {
+                    console.log('確認刪除會員 Y')
+
+                    var data = {
+                        'user_id':user_id
+                    }
+                    
+                    //spinner show
+                    Notiflix.Loading.Hourglass('刪除中....');
+                    ajax_delete_member(t,data)
+
+                },
+                function () {
+                    console.log('確認刪除會員 N')
+
+
+                });
+
+
+    
+}
+</script>
 
 {% endblock %}
