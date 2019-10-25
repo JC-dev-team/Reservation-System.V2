@@ -454,6 +454,7 @@ def staff_remove_member(request):
                 return JsonResponse({'result': 'success'})
             except Account.DoesNotExist:
                 return JsonResponse({'alert': '帳號已刪除或是不存在'})
-
+            
     except Exception as e:
+        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
