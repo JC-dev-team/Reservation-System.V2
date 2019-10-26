@@ -18,7 +18,6 @@ class Account(models.Model):
     birth = models.DateField(blank=True, null=True)
     social_name = models.CharField(max_length=45, blank=True, null=True)
     created_date = models.DateTimeField(blank=True, null=True)
-    
 
     class Meta:
         db_table = 'acc___db'
@@ -47,7 +46,8 @@ class AccountLog(models.Model):
 class BkList(models.Model):
     bk_uuid = models.CharField(primary_key=True, max_length=45)
     user = models.ForeignKey(Account, models.DO_NOTHING, blank=True, null=True)
-    store = models.ForeignKey('Store', models.DO_NOTHING)
+    store = models.ForeignKey(
+        'Store', models.DO_NOTHING, blank=True, null=True)
     bk_date = models.DateField()
     time_session = models.CharField(max_length=10)
     bk_st = models.TimeField()
@@ -120,8 +120,9 @@ class Store(models.Model):
     class Meta:
         db_table = 'store___db'
 
+
 class StoreEvent(models.Model):
-    event_id = models.CharField(primary_key=True, max_length=45,default=None)
+    event_id = models.CharField(primary_key=True, max_length=45, default=None)
     store = models.ForeignKey(Store, models.DO_NOTHING)
     event_type = models.CharField(max_length=45)
     event_date = models.DateField()
@@ -130,5 +131,3 @@ class StoreEvent(models.Model):
 
     class Meta:
         db_table = 'store_event___db'
-
-
