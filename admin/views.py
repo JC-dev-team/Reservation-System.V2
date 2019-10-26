@@ -91,7 +91,6 @@ def staff_add_reservation(request):  # Help client to add reservation
             return redirect('/softwayliving/reservation/')
         try:
             queryset = Account.objects.get(
-                username=username,
                 phone=phone,
             )
         except Account.DoesNotExist:
@@ -99,9 +98,9 @@ def staff_add_reservation(request):  # Help client to add reservation
                 acc = Account.objects.create(
                     phone=phone,
                     username=username,
-                    social_id='admin',
-                    social_app=None,
-                    social_name='admin',
+                    social_id='phone reserved',
+                    social_app='phone reserved',
+                    social_name='phone reserved',
                 )
                 queryset = Account.objects.get(
                     phone=phone,
@@ -598,5 +597,4 @@ def staff_remove_member(request):
                 return JsonResponse({'alert': '帳號已刪除或是不存在'})
 
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})

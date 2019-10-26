@@ -73,9 +73,9 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                 )
                 try:
                     checkaccount = queryset.get(
-                        social_name='admin',
-                        social_app=None,
-                        social_id='admin',
+                        social_name='phone reserved',
+                        social_app='phone reserved',
+                        social_id='phone reserved',
                     )
                 except Account.DoesNotExist:
                     request.session.flush()
