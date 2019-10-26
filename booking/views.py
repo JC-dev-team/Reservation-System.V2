@@ -257,7 +257,7 @@ def InsertReservation(request):  # insert booking list
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
 
-            request.session.flush()
+            # request.session.flush()
             return render(request, 'reservation_finish.html', {
                 'data': bklist_serializer.data,
                 'store': store_serializer.data,
