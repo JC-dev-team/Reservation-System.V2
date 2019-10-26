@@ -573,7 +573,7 @@
     }
 
     //ajax function
-    function ajax_post(num=0) {
+    function ajax_post(num = 0) {
         //ajax data
         // var status = true;
 
@@ -582,7 +582,7 @@
         // var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
         // var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
 
-        
+
 
         //Clean the calendar
         document.getElementById('calendar').innerHTML = ''
@@ -844,6 +844,7 @@
                     $("option[name='pass']").attr("selected", true)
                 } else {
                     Notiflix.Report.Warning('警告', '這天/時段店休喔！！', 'ok');
+
                 }
                 var id = info.event.id
                 var date = info.event.start.toISOString().slice(0, 10)
@@ -865,7 +866,13 @@
                 $('#info_event_timesession').val(time_session)
 
                 //document modal
-                document.getElementById('information_Modal').style.display = 'inline';
+                if (list_backgroundcolor != 'green' && list_backgroundcolor != 'orange' &&
+                    list_backgroundcolor != 'red') {
+                    document.getElementById('information_Modal').style.display = 'none';
+                } else {
+                    document.getElementById('information_Modal').style.display = 'inline';
+                }
+
                 document.getElementById('modal_date').innerHTML =
                     '<p id="modal_date">' + '<label><i class="fa fa-calendar"></i></label>' +
                     ' 日期： ' + date + '(' + time + ')' + '</p>'
