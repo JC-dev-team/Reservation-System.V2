@@ -74,23 +74,23 @@
             <h2>訂位資訊</h2>
             <hr>
 
-            
-                <!-- <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3> -->
-                <div class="w3-container" align="left">
-                    <!-- <input type="text" id='bk_uuid' value="" style="display: none">
+
+            <!-- <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3> -->
+            <div class="w3-container" align="left">
+                <!-- <input type="text" id='bk_uuid' value="" style="display: none">
                 <input type="text" id='bk_date' value="" style="display: none"> -->
 
-                    <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
-                    <h4>用餐日期：{{element.bk_date}} </h4>
-                    <h4>{{element.time_session|time_session_name}} - {{element.bk_st}}</h4>
-                    <h4>訂位人： {{user_info.username}} 先生/小姐</h4>
-                    <h4>用餐人數： {{element.adult}} 大 {{element.children}} 小</h4>
-                    <h4>價位：＄{{element.bk_price}}</h4>
-                    <h4>飲食習慣：{{element.bk_habit}}</h4>
+                <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
+                <h4>用餐日期：{{element.bk_date}} </h4>
+                <h4>{{element.time_session|time_session_name}} - {{element.bk_st}}</h4>
+                <h4>訂位人： {{user_info.username}} 先生/小姐</h4>
+                <h4>用餐人數： {{element.adult}} 大 {{element.children}} 小</h4>
+                <h4>價位：＄{{element.bk_price}}</h4>
+                <h4>飲食習慣：{{element.bk_habit}}</h4>
 
-                </div>
+            </div>
 
-           
+
         </font>
 
         <font size='4'>
@@ -120,15 +120,46 @@ console.log($('#bk_date').text())
 
 
 <script type="text/javascript">
-    $.ajaxSetup({
-        data: {
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
-    });
+    // $.ajaxSetup({
+    //     data: {
+    //         csrfmiddlewaretoken: '{{ csrf_token }}'
+    //     },
+    // });
 
     // $('#hidden_list').click(function(e){
     //     document.getElementsByName('information').style.display = 'none'
     // })
+
+
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
 
     function cancelreservation(data) {
         $.ajax({

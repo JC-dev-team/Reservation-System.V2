@@ -13,7 +13,7 @@
 
   <h3 style="text-align: center"><b>會員</b></h3>
   <hr>
-  <a onclick="" class="w3-bar-item w3-button"><i class="fas fa-calendar-alt"></i> 訂位</a>
+  <a onclick="send('sidebar_admin_reservation')" class="w3-bar-item w3-button"><i class="fas fa-calendar-alt"></i> 訂位</a>
   <a id='sidebar_member_list' onclick="send('sidebar_member_list')" class="w3-bar-item w3-button"><i class="fas fa-user-circle"></i> 會員名單</a>
 
 
@@ -67,6 +67,10 @@
       //會員名單
       window.location.href = '/softwayliving/member_list/'
       
+    } else if (action == 'sidebar_admin_reservation'){
+      Notiflix.Loading.Hourglass('讀取中....');
+      //訂位（管理者
+      window.location.href = '/softwayliving/reservation/'
     }
 
 

@@ -7,7 +7,7 @@
 <div class="w3-center">
     <font size='5' face="DFKai-sb">
         <b><I>聰明工作，智慧生活</I></b>
-        <h3>會員名單</h3>
+        <h3>會員名單({{data|length}})</h3>
     </font>
 
 </div>
@@ -27,7 +27,7 @@
                 <i class="fas fa-user-circle" style='color:green;font-size:40px'></i>
             </div> -->
             <div class="w3-bar-item">
-                <!-- <span class="w3-left w3-large">({{element.user_id}})</span> -->
+                <!-- <span class="w3-left w3-large">({{data.count}})</span> -->
                 <span class="w3-large">{{element.username}} ({{element.social_name}})</span><br>
                 <span>{{element.phone}}</span>
             </div>
@@ -40,13 +40,6 @@
 
 
 <script>
-    //csrf_ajax
-    // $.ajaxSetup({
-    //     data: {
-    //         csrfmiddlewaretoken: '{{ csrf_token }}'
-    //     },
-    // });
-    
     // using jQuery
     function getCookie(name) {
         var cookieValue = null;
