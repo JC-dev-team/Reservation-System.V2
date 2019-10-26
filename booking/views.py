@@ -17,8 +17,9 @@ from django.db import transaction, DatabaseError
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q  # complex lookup
 from django.conf import settings
-# from django.contrib.auth import login, logout
-# from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+
 # ----- Class site ----------------------
 
 
@@ -505,7 +506,7 @@ def getCalendar(request):  # full calendar
                 event_sub_arr['start'] = i.event_date
                 event_sub_arr['backgroundColor'] = 'yellow'
             event_arr.append(event_sub_arr)
-        
+        # ---------------------------------------------------------
         for i in bookinglist:
             event_sub_arr = {}  # event dictionary
             # Convert time_session to chiness

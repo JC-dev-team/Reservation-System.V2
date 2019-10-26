@@ -19,7 +19,7 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.sessions.models import Session
 from django.conf import settings
 from common.utility.recaptcha import check_recaptcha
-
+from django.contrib.auth.decorators import login_required
 
 def error(request):
     request.session.flush()
