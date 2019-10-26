@@ -72,7 +72,8 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                     phone=phone,
                 )
                 try:
-                    checkaccount = queryset.get(
+                    checkaccount = Account.objects.select_for_update().get(
+                        phone=phone,
                         social_name='phone reserved',
                         social_app='phone reserved',
                         social_id='phone reserved',
@@ -80,7 +81,6 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                 except Account.DoesNotExist:
                     request.session.flush()
                     return render(request, 'error/error.html', {'error': '手機號碼已經被註冊過', 'action': '/booking/login/'})
-
                 checkaccount.social_name = social_name
                 checkaccount.social_app = social_app
                 checkaccount.social_id = social_id
@@ -526,7 +526,7 @@ def getCalendar(request):  # full calendar
             event_sub_arr = {}  # event dictionary
             # Convert time_session to chinese
             if key == 'Lunch':
-                for sub_key,sub_value in values.items():
+                for sub_key, sub_value in values.items():
                     event_sub_arr['title'] = '午餐'
                     event_sub_arr['start'] = sub_key
                     if (int(sub_value)+total) > store_query.seat:
@@ -534,7 +534,7 @@ def getCalendar(request):  # full calendar
                     else:
                         event_sub_arr['backgroundColor'] = 'green'
             elif key == 'Dinner':
-                for sub_key,sub_value in values.items():
+                for sub_key, sub_value in values.items():
                     event_sub_arr['title'] = '晚餐'
                     event_sub_arr['start'] = sub_key
                     if (int(sub_value)+total) > store_query.seat:
