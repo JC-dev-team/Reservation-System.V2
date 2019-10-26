@@ -231,8 +231,8 @@
     //     },
     // });
 
-        // using jQuery
-        function getCookie(name) {
+    // using jQuery
+    function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie != '') {
             var cookies = document.cookie.split(';');
@@ -260,7 +260,7 @@
             }
         }
     });
-    
+
 
     function admin_dayoff(data) {
         $.ajax({
@@ -540,11 +540,10 @@
 
 
 
-    function admin_ajax_time(data, num, calendar) {
+    function admin_ajax_time(calendar) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/staff_check/',
-            data: data,
             success: function (response) {
                 if (response.error != null) {
                     Notiflix.Notify.Failure('發生錯誤！！');
@@ -574,32 +573,25 @@
     }
 
     //ajax function
-    function ajax_post(num = 0) {
+    function ajax_post() {
         //ajax data
-        var status = true;
+        // var status = true;
 
-        var store_id = '{{request.session.store_id}}';
-        console.log('store_id :' + store_id);
-        var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
-        var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
+        // var store_id = '{{request.session.store_id}}';
+        // console.log('store_id :' + store_id);
+        // var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
+        // var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
 
-        console.log(start_month, end_month)
+        
 
-        if (status) {
-            var data = {
-                'store_id': store_id,
-                'start_month': start_month,
-                'end_month': end_month,
-            }
-            //Clean the calendar
-            document.getElementById('calendar').innerHTML = ''
+        //Clean the calendar
+        document.getElementById('calendar').innerHTML = ''
 
-            // do ajax fuction
-            admin_ajax_time(data, num)
+        // do ajax fuction
+        admin_ajax_time()
 
-            //spinner show
-            Notiflix.Loading.Hourglass('讀取中....');
-        }
+        //spinner show
+        Notiflix.Loading.Hourglass('讀取中....');
 
 
     }
@@ -1023,7 +1015,7 @@
         var num = parseInt(num_str) + 1
         $('#date_num').val(num)
         //do the fuction of ajax_post()
-        ajax_post(num)
+        //ajax_post(num)
     })
 
     //previous month of button
@@ -1032,7 +1024,7 @@
         var num = parseInt(num_str) - 1
         $('#date_num').val(num)
         //do the fuction of ajax_post()
-        ajax_post(num)
+        //ajax_post(num)
     })
 
     //Click 待確認
