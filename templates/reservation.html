@@ -4,7 +4,7 @@
 <!-- Headmessage-->
 {% block headmessage %}
 <div class='w3-center'>
-    <h3><b>舒微生活訂位</b></h3>
+    <h3><b>舒微生活訂位{{request.session.staff_id}}</b></h3>
 
 </div>
 {% endblock %}
@@ -382,11 +382,20 @@
 
 
     function reservation_submit() {
-        Notiflix.Loading.Hourglass('訂位處理中...');
-        //submit data
-        document.getElementById("reservation_form").action =
-            "/booking/reservation/";
-        document.getElementById("reservation_form").submit();
+        if ('{{request.session.staff_id}}' == null) {
+            Notiflix.Loading.Hourglass('訂位處理中...');
+            //submit data
+            document.getElementById("reservation_form").action =
+                "/booking/reservation/";
+            document.getElementById("reservation_form").submit();
+        } else if('{{request.session.staff_id}}' != null){
+            Notiflix.Loading.Hourglass('訂位處理中...');
+            //submit data
+            document.getElementById("reservation_form").action =
+                "/softwayliving/insert_bk/";
+            document.getElementById("reservation_form").submit();
+        }
+
 
         //Line Liff Data
         var line_date = $('#bk_date').val();
