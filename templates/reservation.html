@@ -382,13 +382,14 @@
 
 
     function reservation_submit() {
-        if ('{{request.session.staff_id}}' == null) {
+        console.log('{{request.session.staff_id}}')
+        if ('{{request.session.staff_id}}' == null || '{{request.session.staff_id}}' == '') {
             Notiflix.Loading.Hourglass('訂位處理中...');
             //submit data
             document.getElementById("reservation_form").action =
                 "/booking/reservation/";
             document.getElementById("reservation_form").submit();
-        } else if('{{request.session.staff_id}}' != null){
+        } else if ('{{request.session.staff_id}}' != null && '{{request.session.staff_id}}' != '') {
             Notiflix.Loading.Hourglass('訂位處理中...');
             //submit data
             document.getElementById("reservation_form").action =
@@ -833,5 +834,6 @@
 
 
     })
+
 </script>
 {% endblock %}
