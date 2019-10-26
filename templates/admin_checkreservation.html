@@ -540,7 +540,7 @@
 
 
 
-    function admin_ajax_time(calendar) {
+    function admin_ajax_time(num, calendar) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/staff_check/',
@@ -573,7 +573,7 @@
     }
 
     //ajax function
-    function ajax_post() {
+    function ajax_post(num=0) {
         //ajax data
         // var status = true;
 
@@ -588,7 +588,7 @@
         document.getElementById('calendar').innerHTML = ''
 
         // do ajax fuction
-        admin_ajax_time()
+        admin_ajax_time(num)
 
         //spinner show
         Notiflix.Loading.Hourglass('讀取中....');
