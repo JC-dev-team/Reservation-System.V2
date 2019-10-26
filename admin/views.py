@@ -268,11 +268,6 @@ def staff_check_reservation(request):
         store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'alert': 'Not Valid 請先登入'})
-        # start_month = request.POST.get('start_month', None)
-        # end_month = request.POST.get('end_month', None)
-
-        # start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
-        # end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
         # Get now
         today = date.today()
         now = today.strftime('%Y-%m-%d')
@@ -291,7 +286,6 @@ def staff_check_reservation(request):
         # get user phone number
         acc_arr = []
         for i in bk_queryset:
-
             acc_queryset = Account.objects.get(
                 user_id=i.user_id,
             )
