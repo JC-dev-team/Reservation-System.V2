@@ -268,15 +268,17 @@ def staff_check_reservation(request):
         store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'alert': 'Not Valid 請先登入'})
-        start_month = request.POST.get('start_month', None)
-        end_month = request.POST.get('end_month', None)
+        # start_month = request.POST.get('start_month', None)
+        # end_month = request.POST.get('end_month', None)
 
-        start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
-        end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
-
+        # start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
+        # end_month = datetime.strptime(end_month, '%Y-%m-%d').date()
+        # Get now
+        today = date.today()
+        now = today.strftime('%Y-%m-%d')
         bk_queryset = BkList.objects.filter(  # get all available reservation
             store_id=store_id,
-            bk_date__range=(start_month, end_month),
+            bk_date__gte=now,
             is_cancel=False,
         ).order_by('-is_confirm', 'waiting_num', 'bk_date',  'bk_st')
         # order by will be slow, I think better way is regroup
@@ -284,7 +286,7 @@ def staff_check_reservation(request):
         # add day off data
         event_queryset = StoreEvent.objects.filter(
             store_id=store_id,
-            event_date__range=(start_month, end_month),
+            event_date__gte=now,
         )
         # get user phone number
         acc_arr = []
