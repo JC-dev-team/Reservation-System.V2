@@ -123,23 +123,19 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 @check_recaptcha
 def InsertReservation(request):  # insert booking list
     try:
-        # Check is order by administrator
-        if request.session.get('staff_id', None) == None:
-            # For validation
-            social_id = request.session.get('social_id', None)
-            social_app = request.session.get('social_app', None)
-            # Check account
-            result = auth.ClientAuthentication(
-                social_id, social_app)
-            if result == None or result == False:  # Using PC or No social login # Account Not Exist
-                return redirect('/booking/login/',)
-                # return redirect(reverse('member'),args=())
-            # error occurred the type of result is {'error' : error}
-            elif type(result) == dict:
-                return render(request, 'error/error.html', {'error': result['error'], 'action': '/booking/login/'})
-            store_id = request.POST.get('store_id', None)
-        else:
-            store_id = request.session.get('store_id', None)
+        # For validation
+        social_id = request.session.get('social_id', None)
+        social_app = request.session.get('social_app', None)
+        # Check account
+        result = auth.ClientAuthentication(
+            social_id, social_app)
+        if result == None or result == False:  # Using PC or No social login # Account Not Exist
+            return redirect('/booking/login/',)
+            # return redirect(reverse('member'),args=())
+        # error occurred the type of result is {'error' : error}
+        elif type(result) == dict:
+            return render(request, 'error/error.html', {'error': result['error'], 'action': '/booking/login/'})
+        store_id = request.POST.get('store_id', None)
         # Account Exist
         # insert data
         user_id = request.session.get('user_id', None)

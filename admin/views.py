@@ -2,7 +2,7 @@ from datetime import datetime, date
 from django.shortcuts import render, redirect, reverse
 from main.models import ActionLog, BkList, Account, Production, Staff, Store, StoreEvent
 from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, \
-    Prod_Serializer, Staff_Serializer, Store_Serializer, StoreEvent_Serializer
+    Prod_Serializer, Staff_Serializer, Store_Serializer, StoreEvent_Serializer, Store_form_serializer
 from common.serializers import checkStaffAuth
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
@@ -20,6 +20,7 @@ from django.contrib.sessions.models import Session
 from django.conf import settings
 from common.utility.recaptcha import check_recaptcha
 from django.contrib.auth.decorators import login_required
+
 
 def error(request):
     request.session.flush()
@@ -119,6 +120,147 @@ def staff_add_reservation(request):  # Help client to add reservation
     except Exception as e:
         request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
+
+@require_http_methods(['POST'])
+@check_recaptcha
+def admin_InsertReservation(request):  # insert booking list
+    try:
+        # For validation
+        staff_id = request.session.get('staff_id', None)
+        is_Login = request.session.get('is_Login', None)
+
+        # Check staff is login
+        if is_Login != True or staff_id == None:
+            return redirect('/softwayliving/login/',)
+        # staff account Exist
+        # insert data
+        store_id = request.session.get('store_id', None)
+        user_id = request.session.get('user_id', None)
+        bk_date = request.POST.get('bk_date', None)
+        bk_st = request.POST.get('bk_st', None)
+        bk_ed = request.POST.get('bk_ed', None)
+        adult = request.POST.get('adult', None)
+        children = request.POST.get('children', None)
+        bk_habit = request.POST.get('bk_habit', None)
+        event_type = request.POST.get('event_type', None)
+        time_session = request.POST.get('time_session', None)
+        entire_time = request.POST.get('entire_time', False)
+        bk_price = request.POST.get('price', None)
+        is_cancel = False
+        waiting_num = 0
+        is_confirm = False
+        # Check data format
+        Bklist_Serializer(data={
+            'user_id': user_id,
+            'store_id': store_id,
+            'bk_st': bk_st,
+            'bk_ed': bk_ed,
+            'adult': adult,
+            'children': children,
+            'bk_habit': bk_habit,
+            'event_type': event_type,
+            'time_session': time_session,
+            'entire_time': entire_time,
+            'bk_price': bk_price,
+            'is_cancel': is_cancel,
+            'waiting_num': waiting_num,
+            'is_confirm': is_confirm,
+
+        })
+        # ---------------------------------
+        total = int(adult)+int(children)
+        exact_seat = 0
+        # modify insert data
+        if time_session == 'D':
+            time_session = 'Dinner'
+        elif time_session == 'L':
+            time_session = 'Lunch'
+        else:
+            raise Exception('資料輸入時，發生錯誤')
+
+        with transaction.atomic():  # transaction
+            # get the store seat
+            store_query = Store.objects.only('seat').select_for_update().get(
+                store_id=store_id
+            )
+
+            # get the booking event of that time session
+            bk_queryset = BkList.objects.select_for_update().filter(
+                store_id=store_id,
+                bk_date=bk_date,
+                time_session=time_session,
+                is_cancel=is_cancel,
+                waiting_num=0,
+            )
+
+            # count is that enough for seat values
+            for i in bk_queryset:
+                number = int(i.adult)+int(i.children)
+                exact_seat += number
+
+            # get waiting_num
+            if (exact_seat+total) > store_query.seat:  # need waiting
+                waiting_num = BkList.objects.only('waiting_num').select_for_update().filter(
+                    store_id=store_id,
+                    bk_date=bk_date,
+                    time_session=time_session,
+                    is_cancel=is_cancel,
+                    waiting_num__gt=0,
+                ).count()
+                waiting_num += 1
+            else:  # don't need to wait
+                waiting_num = 0
+
+            final_queryset = BkList.objects.create(  # insert data
+                user_id=user_id,
+                store_id=store_id,
+                bk_date=bk_date,
+                bk_st=bk_st,
+                bk_ed=bk_ed,
+                adult=adult,
+                children=children,
+                bk_habit=bk_habit,
+                event_type=event_type,
+                time_session=time_session,
+                entire_time=entire_time,
+                is_cancel=is_cancel,
+                waiting_num=waiting_num,
+                bk_price=bk_price,
+                is_confirm=is_confirm,
+            )
+            get_user_info = Account.objects.only('user_id', 'username').get(
+                user_id=user_id,
+            )
+
+            get_store_name = Store.objects.only(
+                'store_id',
+                'store_name',
+                'store_address',
+                'store_phone',).get(
+                store_id=store_id
+            )
+
+            if final_queryset.time_session == 'Dinner':
+                final_queryset.time_session = '晚餐'
+            else:
+                final_queryset.time_session = '午餐'
+
+            account_serializer = Acc_Serializer(get_user_info)
+            store_serializer = Store_form_serializer(get_store_name)
+            bklist_serializer = Bklist_Serializer(final_queryset)
+
+            del request.session['user_id']
+            request.session.set_expiry(settings.SESSION_COOKIE_AGE)
+            return render(request, 'reservation_finish.html', {
+                'data': bklist_serializer.data,
+                'store': store_serializer.data,
+                'user_info': account_serializer.data,
+                'action': 'admin'})
+    except Exception as e:
+        request.session.flush()
+        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
 
 # Ajax API ---------------------------------------------
 @require_http_methods(['POST'])
@@ -442,10 +584,10 @@ def staff_is_waiting(request):
 def staff_remove_member(request):
     try:
         # Set auth in future
-        is_Login=request.session.get('is_Login', None)
+        is_Login = request.session.get('is_Login', None)
         staff_id = request.session.get('staff_id', None)
-        if is_Login !=True or staff_id  ==None :
-            return JsonResponse({'alert':'Not Valid, 請登入帳號'})
+        if is_Login != True or staff_id == None:
+            return JsonResponse({'alert': 'Not Valid, 請登入帳號'})
         user_id = request.POST.get('user_id', None)
         with transaction.atomic():  # transaction
             try:
@@ -454,7 +596,7 @@ def staff_remove_member(request):
                 return JsonResponse({'result': 'success'})
             except Account.DoesNotExist:
                 return JsonResponse({'alert': '帳號已刪除或是不存在'})
-            
+
     except Exception as e:
         print(e)
         return JsonResponse({'error': '發生未知錯誤'})
