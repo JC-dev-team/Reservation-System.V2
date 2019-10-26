@@ -3,14 +3,19 @@
 <!-- Sidebar (hidden by default) -->
 <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left"
   style="display:none;z-index:2;width:40%;min-width:230px" id="mySidebar">
-  <i onclick="document.getElementById('mySidebar').style.display = 'none'" class="fa fa-remove  w3-button w3-display-topright"></i>
-  
+  <i onclick="document.getElementById('mySidebar').style.display = 'none'"
+    class="fa fa-remove  w3-button w3-display-topright"></i>
+
   <img id="img" src="{% static '/images/Logo1.jpg' %}" class="w3-circle w3-display-topmiddle" style="width:115px">
   <br><br><br>
-  <p style="text-align: center"> 使用者</p><hr>
-  <a href="/booking/login/"  class="w3-bar-item w3-button"><i class="fas fa-calendar-alt" style="color:green;"></i> 預約訂位</a>
-  <a href="/userdashboard/checkreservation/" class="w3-bar-item w3-button"><i class="fa fa-search" style="color:green;"></i> 查詢訂位</a>
-  <a href="#about" onclick="" class="w3-bar-item w3-button"><i class="fa fa-user-circle" style="color:green;"></i> 會員資料</a>
+  <p style="text-align: center"> 使用者</p>
+  <hr>
+  <a onclick="send('reservation')" class="w3-bar-item w3-button"><i class="fas fa-calendar-alt"
+      style="color:green;"></i> 預約訂位</a>
+  <a onclick="send('check_reservation')" class="w3-bar-item w3-button"><i class="fa fa-search" style="color:green;"></i>
+    查詢訂位</a>
+  <a href="#about" onclick="send('reservation')" class="w3-bar-item w3-button"><i class="fa fa-user-circle"
+      style="color:green;"></i> 會員資料(未開放)</a>
 </nav>
 
 <!-- Top menu -->
@@ -33,3 +38,19 @@
   <hr>
 
 </header>
+
+<script>
+  function send(action) {
+    if (action == 'reservation') {
+      //訂位（使用者
+      window.location.href = '/booking/login/'
+    } else if (action == 'check_reservation') {
+      //查詢（使用者
+      Notiflix.Loading.Hourglass('讀取中....');
+      window.location.href = '/userdashboard/checkreservation/'
+
+    }
+
+
+  }
+</script>

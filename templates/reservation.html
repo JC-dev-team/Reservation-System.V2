@@ -118,17 +118,17 @@
 <div class="w3-display-container">
     <!--store name -->
     <font size="4.5">
-            <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
-                id="store_name_select">
-                <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                <option value="0" selected>北投唭哩岸總店</option>
-            </select>
-        </font>
+        <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
+            id="store_name_select">
+            <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+            <option value="0" selected>北投唭哩岸總店</option>
+        </select>
+    </font>
     <div class="container">
         <!-- Date num calculated-->
         <input id="date_num" value="0" type="text" style="display: none">
 
-        
+
         <!-- adult & children-->
         <div class="left-half" style="width:100%;">
             <font size="4.5">
@@ -250,11 +250,43 @@
 
 
     //csrf_ajax
+    // $.ajaxSetup({
+    //     data: {
+    //         csrfmiddlewaretoken: '{{ csrf_token }}'
+    //     },
+    // });
+
+
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
     $.ajaxSetup({
-        data: {
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
     });
+
 
     function people_number(data, num, calendar) {
         $.ajax({
