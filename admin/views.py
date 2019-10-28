@@ -13,14 +13,15 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
 from common.utility import auth
-from django.contrib.auth import authenticate, login
+from common.utility.auth import _login_required
+from django.contrib.auth import authenticate, login, logout
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
 from django.contrib.sessions.models import Session
 from django.conf import settings
 from common.utility.recaptcha import check_recaptcha
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
 
 
 def error(request):
@@ -33,16 +34,18 @@ def error(request):
 def staff_login_portal(request):
     return render(request, 'admin_login.html')
 
-@login_required(login_url='/softwayliving/login/')
+@_login_required(redirect_url='/softwayliving/login/')
 def staff_check_reservation_page(request):
+    print(request.user.is_authenticated)
     return render(request, 'admin_checkreservation.html')
 
-
+@_login_required(redirect_url='/softwayliving/login/')
 def staff_reservation_page(request):
     return render(request, 'admin_reservation.html',)
 
 # function --------------------------
 @require_http_methods(['GET'])
+@_login_required(redirect_url='/softwayliving/login/')
 def member_management(request):
     try:
         queryset = Account.objects.all()
@@ -59,8 +62,9 @@ def staff_auth(request):  # authentication staff
         email = request.POST.get('email', None)
         password = request.POST.get('password', None)
         # Check Auth
+        print('helo')
         result = auth.StaffAuthentication(email, password)
-
+        print('result : ',result)
         if result == None or result == False:
             request.session.flush()
             return render(request, 'error/error404.html', {'action': '/softwayliving/login/'})
@@ -69,17 +73,14 @@ def staff_auth(request):  # authentication staff
             request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/softwayliving/login/'})
         else:
+            
             if 'is_Login' in request.session:
                 request.session.flush()
-
-            ans=authenticate(email=email, password=password)
-
-            login(request,ans,backend='common.utility.auth.StaffAuthBackend')
-
+                
             request.session['is_Login'] = True
             request.session['store_id'] = result['store']
             request.session['staff_id'] = result['staff_id']
-            
+
             return render(request, 'admin_dashbroad.html', {'data': result})
     except Exception as e:
         request.session.flush()
@@ -87,6 +88,7 @@ def staff_auth(request):  # authentication staff
 
 
 @require_http_methods(['POST'])
+@_login_required(redirect_url='/softwayliving/login/')
 @check_recaptcha
 def staff_add_reservation(request):  # Help client to add reservation
     try:
@@ -127,6 +129,7 @@ def staff_add_reservation(request):  # Help client to add reservation
 
 
 @require_http_methods(['POST'])
+@_login_required(redirect_url='/softwayliving/login/')
 @check_recaptcha
 def admin_InsertReservation(request):  # insert booking list
     try:

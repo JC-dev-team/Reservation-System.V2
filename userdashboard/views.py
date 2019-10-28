@@ -16,6 +16,7 @@ from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
+from common.utility.auth import _login_required
 
 def error(request):
     request.session.flush()
@@ -72,6 +73,7 @@ def user_auth(request):  # authentication staff
 
 
 @require_http_methods(['POST', 'GET'])
+@_login_required(redirect_url='/userdashboard/login/')
 def user_check_reservation(request):
     try:
         user_id = request.session.get('user_id', None)
@@ -105,7 +107,6 @@ def user_check_reservation(request):
             store_serializer = Store_form_serializer(store_queryset)
             store_arr.append(store_serializer.data)
 
-        # enu_store = enumerate(store_arr)
         account_serializer = Acc_Serializer(acc_queryset)
         bk_serializer = Bklist_Serializer(bk_queryset, many=True)
         return render(request, 'user_checkreservation.html', {
@@ -123,23 +124,24 @@ def user_check_reservation(request):
 
 # Ajax API
 @require_http_methods(['POST'])
+@_login_required(redirect_url='/userdashboard/login/')
 def user_cancel_reservation(request):
     try:
         # use session catch
-        social_id = request.session.get('social_id', None)
-        social_app = request.session.get('social_app', None)
+        # social_id = request.session.get('social_id', None)
+        # social_app = request.session.get('social_app', None)
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
 
         # Check data format
-        result = auth.ClientAuthentication(
-            social_id, social_app)
+        # result = auth.ClientAuthentication(
+        #     social_id, social_app)
 
-        if result == None or result == False:  # Using PC or No social login # Account Not Exist
-            return JsonResponse({'error': 'Not valid, 帳號驗證失敗'})
-        # error occurred the type of result is {'error' : error}
-        elif type(result) == dict:
-            raise Exception('error')
+        # if result == None or result == False:  # Using PC or No social login # Account Not Exist
+        #     return JsonResponse({'error': 'Not valid, 帳號驗證失敗'})
+        # # error occurred the type of result is {'error' : error}
+        # elif type(result) == dict:
+        #     raise Exception('error')
 
         ## Account Exist
         with transaction.atomic():  # transaction

@@ -84,7 +84,7 @@ class Production(models.Model):
         db_table = 'prod___db'
 
 
-class Staff(models.Model):
+class Staff(AbstractBaseUser,models.Model):
     staff_id = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     email = models.CharField(max_length=100)
@@ -97,12 +97,12 @@ class Staff(models.Model):
     staff_created = models.DateTimeField(blank=True, null=True)
     is_active = models.IntegerField()
 
+    USERNAME_FIELD = 'email'
     class Meta:
         db_table = 'staff___db'
-    
-    @property
-    def is_authenticated(self):
-        return True
+    # @property
+    # def is_authenticated(self):
+    #     return True
 
 class Store(models.Model):
     store_id = models.CharField(primary_key=True, max_length=45)

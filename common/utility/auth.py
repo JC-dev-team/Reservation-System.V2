@@ -7,6 +7,7 @@ from django.db import transaction, DatabaseError
 from functools import wraps
 import os
 import sys
+from django.contrib.auth.decorators import login_required
 
 
 class StaffAuthBackend(ModelBackend):
@@ -20,15 +21,12 @@ class StaffAuthBackend(ModelBackend):
                     password=password,
                 )
                 return queryset
-
         except Staff.DoesNotExist:  # Staff Not Exist
             return None
-        # except Exception as e:
-        #     return {'error': e}
 
     def get_user(self, staff_id):
         try:
-            return Staff.objects.get(staff_id=staff_id)
+            return Staff.objects.get(pk=staff_id)
         except Staff.DoesNotExist:
             return None
 
@@ -48,25 +46,33 @@ class ClientAuthBackend(ModelBackend):
                     return user
         except Account.DoesNotExist:  # Account Not Exist
             return False
-        # except Exception as e:
-        #     return {'error': e}
-
     def get_user(self, user_id):
         try:
-            return Account.objects.get(user_id=user_id)
+            return Account.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
 
 # decorators
+def valid_pass_test(test_fun, redirect_url='/'):
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            if test_fun(request.session):
+                return view_func(request, *args, **kwargs)
+            else:
+                return redirect(redirect_url)
+        return _wrapped_view
+    return decorator
 
 
-def Client_login_required(function=None, redirect_url='/'):
-    def wrapper(request):
-        if request.session.get('user_id', None) == None or request.session.get('is_Login') != True:
-            return redirect(redirect_url)
-        else:
-            return function(request)
-    return wrapper
+def _login_required(function=None, redirect_url='/'):
+    actual_decorator = valid_pass_test(
+        lambda u: u.get('is_Login',False),
+        redirect_url=redirect_url,
+    )
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
 
 
 def ClientAuthentication(social_id, social_app):  # Account Check Auth
@@ -75,13 +81,11 @@ def ClientAuthentication(social_id, social_app):  # Account Check Auth
         if (social_id == None) or (social_app == None) or(social_id == '') or (social_app == ''):
             return None
         else:   # parameter not None
-            with transaction.atomic():  # transaction
-                User = Account.objects.select_for_update().get(
-                    social_id=social_id,
-                    social_app=social_app,
-                )
-                # serializer = Acc_Serializer(queryset)
-                return User
+            User = Account.objects.get(
+                social_id=social_id,
+                social_app=social_app,
+            )
+            return User
     except Account.DoesNotExist:  # Account Not Exist
         return False
     except Exception as e:
@@ -97,8 +101,8 @@ def StaffAuthentication(email, password):  # staff account checking
                 email=email,
                 password=password,
             )
-            serializer = Staff_Serializer(queryset)
-            return serializer.data
+            serializers=Staff_Serializer(queryset)
+            return serializers.data
 
     except Staff.DoesNotExist:  # Account Not Exist
         return False

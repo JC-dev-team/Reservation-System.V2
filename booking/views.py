@@ -13,7 +13,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
 from common.utility import auth
-from common.utility.auth import Client_login_required
+from common.utility.auth import _login_required
 from django.db import transaction, DatabaseError
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q  # complex lookup
@@ -121,6 +121,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 
 
 @require_http_methods(['POST'])
+@_login_required(redirect_url='/booking/login/')
 @check_recaptcha
 def InsertReservation(request):  # insert booking list
     try:

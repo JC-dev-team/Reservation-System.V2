@@ -12,7 +12,7 @@ urlpatterns = [
     # /softwayliving/StaffAuth/
     path('StaffAuth/',views.staff_auth,),
     # /softwayliving/checkreservation/
-    path('checkreservation/',views.staff_check_reservation_page),
+    path('checkreservation/',views.staff_check_reservation_page,),
     # /softwayliving/reservation/
     path('reservation/',views.staff_reservation_page),
     # /softwayliving/admin_reservation/
