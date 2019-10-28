@@ -13,6 +13,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
 from common.utility import auth
+from django.contrib.auth import authenticate, login
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
@@ -32,7 +33,7 @@ def error(request):
 def staff_login_portal(request):
     return render(request, 'admin_login.html')
 
-
+@login_required(login_url='/softwayliving/login/')
 def staff_check_reservation_page(request):
     return render(request, 'admin_checkreservation.html')
 
@@ -55,10 +56,10 @@ def member_management(request):
 @require_http_methods(['POST', 'GET'])
 def staff_auth(request):  # authentication staff
     try:
-        social_id = request.POST.get('social_id', None)
-        social_app = request.POST.get('social_app', None)
+        email = request.POST.get('email', None)
+        password = request.POST.get('password', None)
         # Check Auth
-        result = auth.StaffAuthentication(social_id, social_app)
+        result = auth.StaffAuthentication(email, password)
 
         if result == None or result == False:
             request.session.flush()
@@ -71,10 +72,14 @@ def staff_auth(request):  # authentication staff
             if 'is_Login' in request.session:
                 request.session.flush()
 
+            ans=authenticate(email=email, password=password)
+
+            login(request,ans,backend='common.utility.auth.StaffAuthBackend')
+
             request.session['is_Login'] = True
             request.session['store_id'] = result['store']
             request.session['staff_id'] = result['staff_id']
-
+            
             return render(request, 'admin_dashbroad.html', {'data': result})
     except Exception as e:
         request.session.flush()

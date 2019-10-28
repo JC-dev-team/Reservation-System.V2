@@ -13,12 +13,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
 from common.utility import auth
+from common.utility.auth import Client_login_required
 from django.db import transaction, DatabaseError
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q  # complex lookup
 from django.conf import settings
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth import login, logout
+# from django.contrib.auth.decorators import login_required
 
 # ----- Class site ----------------------
 
@@ -448,6 +449,7 @@ def getWaitingList(request):  # get waiting list
 
 
 @require_http_methods(['GET'])
+
 def getCalendar(request):  # full calendar
     try:
         action = request.GET.get('action', None)

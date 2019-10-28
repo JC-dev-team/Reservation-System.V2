@@ -6,6 +6,7 @@
 #   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
 
@@ -13,11 +14,13 @@ class Account(models.Model):
     user_id = models.CharField(primary_key=True, max_length=45)
     social_id = models.CharField(max_length=45, blank=True, null=True)
     social_app = models.CharField(max_length=45, blank=True, null=True)
+    social_name = models.CharField(max_length=45)
     username = models.CharField(max_length=45)
     phone = models.CharField(max_length=10)
     birth = models.DateField(blank=True, null=True)
-    social_name = models.CharField(max_length=45, blank=True, null=True)
     created_date = models.DateTimeField(blank=True, null=True)
+    is_active = models.IntegerField()
+    comment = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         db_table = 'acc___db'
@@ -84,26 +87,22 @@ class Production(models.Model):
 class Staff(models.Model):
     staff_id = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
-    social_id = models.CharField(max_length=45)
-    social_app = models.CharField(max_length=45, blank=True, null=True)
+    email = models.CharField(max_length=100)
+    password = models.CharField(max_length=45)
     staff_name = models.CharField(max_length=45)
-    staff_id_num = models.CharField(
-        unique=True, max_length=10, blank=True, null=True)
     staff_phone = models.CharField(max_length=10, blank=True, null=True)
     staff_birth = models.DateField(blank=True, null=True)
-    staff_gender = models.CharField(max_length=45)
-    staff_address = models.CharField(max_length=200, blank=True, null=True)
-    staff_email = models.CharField(max_length=100)
+    last_login = models.DateTimeField(blank=True, null=True)
     staff_level = models.PositiveIntegerField()
-    staff_age = models.PositiveIntegerField(blank=True, null=True)
-    staff_skills = models.CharField(max_length=45, blank=True, null=True)
     staff_created = models.DateTimeField(blank=True, null=True)
-    staff_ended = models.DateTimeField(blank=True, null=True)
-    end_reason = models.CharField(max_length=200, blank=True, null=True)
+    is_active = models.IntegerField()
 
     class Meta:
         db_table = 'staff___db'
-
+    
+    @property
+    def is_authenticated(self):
+        return True
 
 class Store(models.Model):
     store_id = models.CharField(primary_key=True, max_length=45)
@@ -131,3 +130,35 @@ class StoreEvent(models.Model):
 
     class Meta:
         db_table = 'store_event___db'
+
+
+# auth
+# class staff_test(AbstractBaseUser, PermissionsMixin):
+
+# class StaffManager(BaseUserManager):
+#     use_in_migrations = True
+#     staff_id = models.CharField(primary_key=True, max_length=45)
+#     staff_email = models.CharField(max_length=100)
+#     staff_password = models.CharField(max_length=20)
+#     store = models.ForeignKey('Store', models.DO_NOTHING)
+#     staff_name = models.CharField(max_length=45)
+#     staff_phone = models.CharField(max_length=10, blank=True, null=True)
+#     staff_birth = models.DateField(blank=True, null=True)
+#     staff_gender = models.CharField(max_length=45)
+#     staff_address = models.CharField(max_length=200, blank=True, null=True)
+#     staff_level = models.PositiveIntegerField()
+#     staff_age = models.PositiveIntegerField(blank=True, null=True)
+#     staff_skills = models.CharField(max_length=45, blank=True, null=True)
+#     staff_created = models.DateTimeField(blank=True, null=True)
+#     last_login_date = models.DateTimeField(blank=True, null=True)
+
+#     # python manage.py createsuperuser
+#     def create_superuser(self, email, password):
+#         user = self.model(
+#             email=email,
+#         )
+#         user.set_password(password)
+#         user.save(using=self._db)
+#         return user
+
+

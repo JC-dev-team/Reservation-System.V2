@@ -27,14 +27,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-HOST_SCHEME= "http://" # remove before production
+# HOST_SCHEME= "http://" # remove before production
 ADMIN_ENABLED = False
-## Application definition
+# Application definition
 
 INSTALLED_APPS = [
     'main',
     'booking',
-    'userdashboard', 
+    'userdashboard',
     'admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
 ]
-## Invisible reCaptcha
+# Invisible reCaptcha
 RECAPTCHA_PUBLIC_KEY = '6LftQr0UAAAAAJ8Pkllthz85Wzj7gaAmsPLISMcu'
 RECAPTCHA_PRIVATE_KEY = '6LftQr0UAAAAAJqjEwg2fiEzZXAd-NGgGWQwDulz'
 
@@ -56,23 +56,27 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-## Security settings
-SECURE_CONTENT_TYPE_NOSNIFF =True
-CSRF_COOKIE_SECURE =True
+# Security settings
+SECURE_CONTENT_TYPE_NOSNIFF = True
+CSRF_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
-SECURE_SSL_REDIRECT=False # need to be True when production
-X_FRAME_OPTIONS = 'DENY' # default = 'SAMEORIGIN'
+SECURE_SSL_REDIRECT = False  # need to be True when production
+X_FRAME_OPTIONS = 'DENY'  # default = 'SAMEORIGIN'
 
+# Authentication
+AUTHENTICATION_BACKENDS = ['common.utility.auth.ClientAuthBackend',
+                           'common.utility.auth.StaffAuthBackend',
+                           'django.contrib.auth.backends.ModelBackend',
+                           ]
 
-
-## session options
-SESSION_ENGINE='django.contrib.sessions.backends.db'
-SESSION_COOKIE_SECURE =False # when deploy need to set to True
+# session options
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_SECURE = False  # when deploy need to set to True
 # SESSION_SAVE_EVERY_REQUEST=True
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 60*15
 
-## linebot keys
+# linebot keys
 LINE_CHANNEL_ACCESS_TOKEN = ""
 LINE_CHANNEL_SECRET = ""
 
@@ -91,7 +95,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries':{
-                'tagfunctions':'templates.templatetags.tagfunctions',
+                'tagfunctions': 'templates.templatetags.tagfunctions',
             }
         },
     },
@@ -105,7 +109,7 @@ WSGI_APPLICATION = 'softway_sys.wsgi.application'
 # You need to downgrade openssl by conda install openssl=1.0.2r
 # when you are using macOS
 
-## Deploy on aws elastic beanstalk
+# Deploy on aws elastic beanstalk
 if 'RDS_HOSTNAME' in os.environ:
     DATABASES = {
         'default': {
@@ -119,20 +123,19 @@ if 'RDS_HOSTNAME' in os.environ:
     }
 else:
     DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'softway',
-        'USER': 'root',
-        'PASSWORD': 'rootadmin',
-        'HOST': 'database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'softway',
+            'USER': 'root',
+            'PASSWORD': 'rootadmin',
+            'HOST': 'database-mysql.cbelqfilciuy.us-east-1.rds.amazonaws.com',
+            'PORT': '3306',
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 
+            }
         }
     }
-}
-
 
 
 # Password validation

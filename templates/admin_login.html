@@ -15,16 +15,14 @@
 
 <form id='checklogin_form' method="post">
     {% csrf_token %}
-    <input id="social_id" style="display: none" name='social_id' value="">
-    <input id="social_app" style="display: none" name='social_app' value="">
+    <input id="email" style="display: none" name='email' value="">
+    <input id="password" style="display: none" name='password' value="">
 </form>
 
 <script>
     function send() {
-        if (true) {
-            document.getElementById("checklogin_form").action = "/softwayliving/StaffAuth/";
-            document.getElementById("checklogin_form").submit();
-        }
+        document.getElementById("checklogin_form").action = "/softwayliving/StaffAuth/";
+        document.getElementById("checklogin_form").submit();
     }
 
     function initializeApp(data) {
@@ -47,12 +45,12 @@
             initializeApp(data);
         });
         //remember to edit it to Line Liff
-        $('#social_id').val('9636ff56-e78b-11e9-a2b8-0ec425232520'); //data.context.userId
-        $('#social_app').val('Line');
+        $('#email').val('123@123.com'); //data.context.userId
+        $('#password').val('Line');
 
         //send data 
         // send()
-        if ($('#social_id').val() != '' && $('#social_app').val() != '') {
+        if ($('#email').val() != '' && $('#password').val() != '') {
             send()
         } else {
             window.location.replace('/softwayliving/error/');
