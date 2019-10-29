@@ -8,7 +8,8 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
-
+from django.utils import timezone
+from django.core.mail import send_mail
 
 class Account(models.Model):
     user_id = models.CharField(primary_key=True, max_length=45)
@@ -84,26 +85,6 @@ class Production(models.Model):
         db_table = 'prod___db'
 
 
-class Staff(AbstractBaseUser,models.Model):
-    staff_id = models.CharField(primary_key=True, max_length=45)
-    store = models.ForeignKey('Store', models.DO_NOTHING)
-    email = models.CharField(max_length=100)
-    password = models.CharField(max_length=45)
-    staff_name = models.CharField(max_length=45)
-    staff_phone = models.CharField(max_length=10, blank=True, null=True)
-    staff_birth = models.DateField(blank=True, null=True)
-    last_login = models.DateTimeField(blank=True, null=True)
-    staff_level = models.PositiveIntegerField()
-    staff_created = models.DateTimeField(blank=True, null=True)
-    is_active = models.IntegerField()
-
-    USERNAME_FIELD = 'email'
-    class Meta:
-        db_table = 'staff___db'
-    # @property
-    # def is_authenticated(self):
-    #     return True
-
 class Store(models.Model):
     store_id = models.CharField(primary_key=True, max_length=45)
     store_name = models.CharField(unique=True, max_length=45)
@@ -132,33 +113,56 @@ class StoreEvent(models.Model):
         db_table = 'store_event___db'
 
 
+class Staff(AbstractBaseUser, models.Model, PermissionsMixin):
+    staff_id = models.CharField(primary_key=True, max_length=45)
+    store = models.ForeignKey('Store', models.DO_NOTHING)
+    email = models.CharField(max_length=100)
+    password = models.CharField(max_length=45)
+    staff_name = models.CharField(max_length=45)
+    staff_phone = models.CharField(max_length=10, blank=True, null=True)
+    staff_birth = models.DateField(blank=True, null=True)
+    last_login = models.DateTimeField(blank=True, null=True)
+    staff_level = models.PositiveIntegerField()
+    staff_created = models.DateTimeField(blank=True, null=True)
+    is_active = models.IntegerField()
+
+    USERNAME_FIELD = 'email'
+
+    class Meta:
+        db_table = 'staff___db'
+    # @property
+    # def is_authenticated(self):
+    #     return True
+
 # auth
-# class staff_test(AbstractBaseUser, PermissionsMixin):
-
-# class StaffManager(BaseUserManager):
-#     use_in_migrations = True
-#     staff_id = models.CharField(primary_key=True, max_length=45)
-#     staff_email = models.CharField(max_length=100)
-#     staff_password = models.CharField(max_length=20)
-#     store = models.ForeignKey('Store', models.DO_NOTHING)
-#     staff_name = models.CharField(max_length=45)
-#     staff_phone = models.CharField(max_length=10, blank=True, null=True)
-#     staff_birth = models.DateField(blank=True, null=True)
-#     staff_gender = models.CharField(max_length=45)
-#     staff_address = models.CharField(max_length=200, blank=True, null=True)
-#     staff_level = models.PositiveIntegerField()
-#     staff_age = models.PositiveIntegerField(blank=True, null=True)
-#     staff_skills = models.CharField(max_length=45, blank=True, null=True)
-#     staff_created = models.DateTimeField(blank=True, null=True)
-#     last_login_date = models.DateTimeField(blank=True, null=True)
-
-#     # python manage.py createsuperuser
-#     def create_superuser(self, email, password):
-#         user = self.model(
-#             email=email,
-#         )
-#         user.set_password(password)
-#         user.save(using=self._db)
-#         return user
 
 
+class StaffManager(BaseUserManager):
+
+    def _create_user(self, email, password,
+                     is_admin, is_superuser, **extra_fields):
+        """
+        Creates and saves a User with the given email and password.
+        """
+        now = timezone.now()
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email,
+                          is_admin=is_admin,
+                          is_active=True,
+                          is_superuser=is_superuser,
+                          last_login=now,
+                          **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        return self._create_user(email, password, False, False,
+                                 **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        return self._create_user(email, password, True, True,
+                                 **extra_fields)
+    
