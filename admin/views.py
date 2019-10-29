@@ -14,7 +14,8 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
 from common.utility import auth
 from common.utility.auth import _login_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate,  logout
+from django.contrib.auth import login as auth_login
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
@@ -34,18 +35,19 @@ def error(request):
 def staff_login_portal(request):
     return render(request, 'admin_login.html')
 
+
 @login_required(login_url='/softwayliving/login/')
 def staff_check_reservation_page(request):
-    print(request.user.is_authenticated)
     return render(request, 'admin_checkreservation.html')
 
-@_login_required(redirect_url='/softwayliving/login/')
+
+@login_required(login_url='/softwayliving/login/')
 def staff_reservation_page(request):
     return render(request, 'admin_reservation.html',)
 
 # function --------------------------
 @require_http_methods(['GET'])
-@_login_required(redirect_url='/softwayliving/login/')
+@login_required(login_url='/softwayliving/login/')
 def member_management(request):
     try:
         queryset = Account.objects.all()
@@ -73,10 +75,11 @@ def staff_auth(request):  # authentication staff
         else:
             if request.user.is_authenticated:
                 request.session.flush()
-            user = authenticate(request,email,password)
+            staff = authenticate(request,email=email, password=password)
             # if 'is_Login' in request.session:
             #     request.session.flush()
-            login(request,user,backend='common.utility.auth.StaffAuthBackend')
+            auth_login(request, staff,
+                       backend='common.utility.auth.StaffAuthBackend')
             request.session['is_Login'] = True
             request.session['store_id'] = result['store']
             request.session['staff_id'] = result['staff_id']
@@ -88,7 +91,7 @@ def staff_auth(request):  # authentication staff
 
 
 @require_http_methods(['POST'])
-@_login_required(redirect_url='/softwayliving/login/')
+@login_required(login_url='/softwayliving/login/')
 @check_recaptcha
 def staff_add_reservation(request):  # Help client to add reservation
     try:
@@ -105,9 +108,10 @@ def staff_add_reservation(request):  # Help client to add reservation
                 acc = Account.objects.create(
                     phone=phone,
                     username=username,
-                    social_id='phone reserved',
-                    social_app='phone reserved',
-                    social_name='phone reserved',
+                    social_id='電話訂位',
+                    social_app='電話訂位',
+                    social_name='電話訂位',
+                    is_active=True,
                 )
                 queryset = Account.objects.get(
                     phone=phone,
@@ -129,7 +133,7 @@ def staff_add_reservation(request):  # Help client to add reservation
 
 
 @require_http_methods(['POST'])
-@_login_required(redirect_url='/softwayliving/login/')
+@login_required(login_url='/softwayliving/login/')
 @check_recaptcha
 def admin_InsertReservation(request):  # insert booking list
     try:

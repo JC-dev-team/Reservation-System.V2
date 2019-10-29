@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 class StaffAuthBackend(ModelBackend):
-    def authenticate(self, request, email, password):
+    def authenticate(self, request,email=None, password=None):
         try:
             if (email == None) or (password == None):  # Using PC or No social login
                 return None
@@ -32,7 +32,7 @@ class StaffAuthBackend(ModelBackend):
 
 
 class ClientAuthBackend(ModelBackend):
-    def authenticate(self, request, social_id=None, social_app=None):
+    def authenticate(self,request, social_id=None, social_app=None):
         try:
             # Using PC or No social login
             if (social_id == None) or (social_app == None) or(social_id == '') or (social_app == ''):

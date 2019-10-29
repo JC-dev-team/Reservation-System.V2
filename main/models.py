@@ -6,7 +6,7 @@
 #   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, AbstractUser
 from django.db import models
 from django.utils import timezone
 from django.core.mail import send_mail
@@ -23,16 +23,15 @@ class Account(models.Model):
     created_date = models.DateTimeField(blank=True, null=True)
     is_active = models.IntegerField()
     comment = models.CharField(max_length=100, blank=True, null=True)
-
     class Meta:
         db_table = 'acc___db'
 
 
 class ActionLog(models.Model):
-    act_id = models.CharField(primary_key=True, max_length=45)
-    staff = models.ForeignKey('Staff', models.DO_NOTHING)
-    act_time = models.DateTimeField(blank=True, null=True)
-    act_ops = models.CharField(max_length=45)
+    act_id = models.IntegerField(primary_key=True)
+    user = models.ForeignKey('Staff', models.DO_NOTHING)
+    created_date = models.DateTimeField(blank=True, null=True)
+    operation = models.CharField(max_length=150)
 
     class Meta:
         db_table = 'action_log___db'
@@ -102,7 +101,38 @@ class StoreEvent(models.Model):
 
     class Meta:
         db_table = 'store_event___db'
-class Staff(models.Model):
+        
+## auth
+class StaffManager(BaseUserManager):
+
+    def _create_user(self, email, password,
+                     is_admin, is_superuser, **extra_fields):
+        """
+        Creates and saves a User with the given email and password.
+        """
+        now = timezone.now()
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email,
+                          is_admin=is_admin,
+                          is_active=True,
+                          is_superuser=is_superuser,
+                          last_login=now,
+                          **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        return self._create_user(email, password, False, False,
+                                 **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        return self._create_user(email, password, True, True,
+                                 **extra_fields)
+
+class Staff(AbstractBaseUser,PermissionsMixin):
     staff_id = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     email = models.CharField(unique=True, max_length=100)
@@ -117,78 +147,29 @@ class Staff(models.Model):
     is_admin = models.IntegerField()
     is_active = models.IntegerField()
 
+    USERNAME_FIELD = 'email'
+    objects = StaffManager()
+    REQUIRED_FIELDS=[]
     class Meta:
         db_table = 'staff___db'
-# auth
 
+    def __str__(self):
+        return self.email
 
-# class StaffManager(BaseUserManager):
+    def get_full_name(self):
+        return self.staff_name
 
-#     def _create_user(self, email, password,
-#                      is_admin, is_superuser, **extra_fields):
-#         """
-#         Creates and saves a User with the given email and password.
-#         """
-#         now = timezone.now()
-#         if not email:
-#             raise ValueError('The given email must be set')
-#         email = self.normalize_email(email)
-#         user = self.model(email=email,
-#                           is_admin=is_admin,
-#                           is_active=True,
-#                           is_superuser=is_superuser,
-#                           last_login=now,
-#                           **extra_fields)
-#         user.set_password(password)
-#         user.save(using=self._db)
-#         return user
+    # this methods are require to login super user from admin panel
+    def has_perm(self, perm, obj=None):
+        return self.is_superuser
 
-#     def create_user(self, email, password=None, **extra_fields):
-#         return self._create_user(email, password, False, False,
-#                                  **extra_fields)
+    # this methods are require to login super user from admin panel
+    def has_module_perms(self, app_label):
+        return self.is_superuser
 
-#     def create_superuser(self, email, password, **extra_fields):
-#         return self._create_user(email, password, True, True,
-#                                  **extra_fields)
-
-
-# class Staff(AbstractBaseUser, PermissionsMixin, models.Model):
-#     staff_id = models.CharField(primary_key=True, max_length=45)
-#     store = models.ForeignKey('Store', models.DO_NOTHING)
-#     email = models.CharField(unique=True, max_length=100)
-#     password = models.CharField(max_length=45)
-#     staff_name = models.CharField(max_length=45)
-#     staff_phone = models.CharField(max_length=10, blank=True, null=True)
-#     staff_birth = models.DateField(blank=True, null=True)
-#     last_login = models.DateTimeField(blank=True, null=True)
-#     staff_level = models.PositiveIntegerField()
-#     staff_created = models.DateTimeField(blank=True, null=True)
-#     is_superuser = models.IntegerField()
-#     is_admin = models.IntegerField()
-#     is_active = models.IntegerField()
-
-#     USERNAME_FIELD = 'email'
-#     objects = StaffManager()
-
-#     class Meta:
-#         db_table = 'staff___db'
-
-#     def __str__(self):
-#         return self.email
-
-#     def get_full_name(self):
-#         return self.staff_name
-
-#     # this methods are require to login super user from admin panel
-#     def has_perm(self, perm, obj=None):
-#         return self.is_superuser
-
-#     # this methods are require to login super user from admin panel
-#     def has_module_perms(self, app_label):
-#         return self.is_superuser
-
-#     def email_user(self, subject, message, from_email=None):
-#         """
-#         Sends an email to this User.
-#         """
-#         send_mail(subject, message, from_email, [self.email])
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        """
+        Sends an email to this User.
+        """
+        send_mail(subject, message, from_email, [self.email], **kwargs)
+    
