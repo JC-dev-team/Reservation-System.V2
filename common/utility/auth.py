@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.contrib.auth.backends import ModelBackend
 from django.shortcuts import render, redirect, reverse
 from main.models import Account, Staff
@@ -8,26 +7,27 @@ from functools import wraps
 import os
 import sys
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 
-
+User = get_user_model()
 class StaffAuthBackend(ModelBackend):
     def authenticate(self, request, email, password):
         try:
             if (email == None) or (password == None):  # Using PC or No social login
                 return None
             else:   # parameter not None
-                queryset = Staff.objects.get(
+                queryset = User.objects.get(
                     email=email,
                     password=password,
                 )
                 return queryset
-        except Staff.DoesNotExist:  # Staff Not Exist
+        except User.DoesNotExist:  # Staff Not Exist
             return None
 
     def get_user(self, staff_id):
         try:
-            return Staff.objects.get(pk=staff_id)
-        except Staff.DoesNotExist:
+            return User.objects.get(pk=staff_id)
+        except User.DoesNotExist:
             return None
 
 

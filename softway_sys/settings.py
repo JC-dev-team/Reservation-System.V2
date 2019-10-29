@@ -27,8 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-# HOST_SCHEME= "http://" # remove before production
-ADMIN_ENABLED = False
+# ADMIN_ENABLED = False
 # Application definition
 
 INSTALLED_APPS = [
@@ -64,7 +63,7 @@ SECURE_SSL_REDIRECT = False  # need to be True when production
 X_FRAME_OPTIONS = 'DENY'  # default = 'SAMEORIGIN'
 
 # Authentication
-AUTH_USER_MODEL  = 'main.Staff'
+# AUTH_USER_MODEL  = 'main.Staff'
 AUTHENTICATION_BACKENDS = ['common.utility.auth.ClientAuthBackend',
                            'common.utility.auth.StaffAuthBackend',
                            'django.contrib.auth.backends.ModelBackend',

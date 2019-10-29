@@ -21,7 +21,7 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.sessions.models import Session
 from django.conf import settings
 from common.utility.recaptcha import check_recaptcha
-# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
 
 
 def error(request):
@@ -34,7 +34,7 @@ def error(request):
 def staff_login_portal(request):
     return render(request, 'admin_login.html')
 
-@_login_required(redirect_url='/softwayliving/login/')
+@login_required(login_url='/softwayliving/login/')
 def staff_check_reservation_page(request):
     print(request.user.is_authenticated)
     return render(request, 'admin_checkreservation.html')
@@ -62,9 +62,7 @@ def staff_auth(request):  # authentication staff
         email = request.POST.get('email', None)
         password = request.POST.get('password', None)
         # Check Auth
-        print('helo')
         result = auth.StaffAuthentication(email, password)
-        print('result : ',result)
         if result == None or result == False:
             request.session.flush()
             return render(request, 'error/error404.html', {'action': '/softwayliving/login/'})
@@ -73,10 +71,12 @@ def staff_auth(request):  # authentication staff
             request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/softwayliving/login/'})
         else:
-            
-            if 'is_Login' in request.session:
+            if request.user.is_authenticated:
                 request.session.flush()
-                
+            user = authenticate(request,email,password)
+            # if 'is_Login' in request.session:
+            #     request.session.flush()
+            login(request,user,backend='common.utility.auth.StaffAuthBackend')
             request.session['is_Login'] = True
             request.session['store_id'] = result['store']
             request.session['staff_id'] = result['staff_id']
