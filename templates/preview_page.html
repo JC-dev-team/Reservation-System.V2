@@ -4,7 +4,7 @@
 <!-- Headmessage-->
 {% block headmessage %}
 <div class='w3-center'>
-    <h3><b>Preview Page</b></h3>
+    <h3><b>注意：限查訊空位</b></h3>
 
 </div>
 {% endblock %}
@@ -32,7 +32,9 @@
                 <p id='modal_status'></p>
 
                 <br>
-
+                <button class="w3-button w3-red w3-section"
+                    onclick="document.getElementById('information_Modal').style.display='none'">關閉 <i
+                        class="fa fa-remove"></i></button>
                 <p class="w3-right">聯絡我們 <a href="tel:0936336233" class="w3-text-blue">0936336233</a></p>
             </font>
         </div>
@@ -41,13 +43,20 @@
 
 <!-- Adult & Children Select-->
 <div class="w3-display-container">
+    <!--store name -->
+    <font size="4.5">
+        <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
+            id="store_name_select">
+            <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+            <option value="0" selected>北投唭哩岸總店</option>
+        </select>
+    </font>
     <div class="container">
         <!-- Date num calculated-->
         <input id="date_num" value="0" type="text" style="display: none">
         <!-- adult & children-->
         <div class="left-half" style="width:100%;">
             <font size="4.5">
-                <label><i class="fa fa-male"></i> 成人</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id="adult_select">
                     <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
@@ -76,7 +85,6 @@
         <br>
         <div class="right-half" style="width:100%;">
             <font size="4.5">
-                <label><i class="fa fa-child"></i> 兒童</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id="children_select">
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
@@ -95,6 +103,7 @@
             </font>
         </div>
     </div>
+
     <font size='4'>
         <button id="people_number_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding">
             <i class="fa fa-search"></i> 查詢空位</button>
@@ -472,6 +481,7 @@
 
     //ready
     $(function () {
+        document.getElementById('sidebar_button').style.display = 'none'
         //Date addDays() & addMonths()
         Date.prototype.addDays = function (days) {
             var date = new Date(this.valueOf());
