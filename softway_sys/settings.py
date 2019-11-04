@@ -122,6 +122,7 @@ WSGI_APPLICATION = 'softway_sys.wsgi.application'
 #         }
 #     }
 # else:
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -132,7 +133,13 @@ DATABASES = {
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-
+            # 'ssl': {
+            #     'ca': os.path.join(os.path.dirname(__file__), 
+            #     'rds-combined-ca-bundle.pem')
+            #     }
+            # 'ssl': {
+            #     'ca': '/Users/cheyuwu/Downloads/rds-combined-ca-bundle.pem'
+            #     }
         }
     }
 }
