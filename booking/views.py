@@ -553,7 +553,6 @@ def getCalendar(request):  # full calendar
 
         return JsonResponse({'result': event_arr})
     except Exception as e:
-        print(str(e))
         if action == 'main':
             return JsonResponse({'error': '發生未知錯誤', 'action': '/preview/'})
         return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
