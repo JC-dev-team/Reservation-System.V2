@@ -34,7 +34,7 @@ def user_auth(request):  # authentication staff
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
         social_name = request.POST.get('social_name', None)
-
+        
         # Check data format
         valid = checkAuth(data={
             'social_id': social_id,
@@ -76,6 +76,7 @@ def user_auth(request):  # authentication staff
 @_login_required(redirect_url='/userdashboard/login/')
 def user_check_reservation(request):
     try:
+        request.session.set_expiry(900)
         user_id = request.session.get('user_id', None)
         # Account Exist Check
         acc_queryset = Account.objects.get(
@@ -128,20 +129,10 @@ def user_check_reservation(request):
 def user_cancel_reservation(request):
     try:
         # use session catch
-        # social_id = request.session.get('social_id', None)
-        # social_app = request.session.get('social_app', None)
+        request.session.set_expiry(900)
+
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
-
-        # Check data format
-        # result = auth.ClientAuthentication(
-        #     social_id, social_app)
-
-        # if result == None or result == False:  # Using PC or No social login # Account Not Exist
-        #     return JsonResponse({'error': 'Not valid, 帳號驗證失敗'})
-        # # error occurred the type of result is {'error' : error}
-        # elif type(result) == dict:
-        #     raise Exception('error')
 
         ## Account Exist
         with transaction.atomic():  # transaction

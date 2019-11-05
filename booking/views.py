@@ -110,6 +110,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         serializer_class = Acc_Serializer(queryset)
 
         # render html
+
         return render(request, 'reservation.html', {
             'data': serializer_class.data,
             'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
@@ -125,6 +126,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 @check_recaptcha
 def InsertReservation(request):  # insert booking list
     try:
+        request.session.set_expiry(900)
         # For validation
         social_id = request.session.get('social_id', None)
         social_app = request.session.get('social_app', None)
@@ -338,6 +340,7 @@ def member(request):
 @require_http_methods(['GET'])
 def getWaitingList(request):  # get waiting list
     try:
+        request.session.set_expiry(900)
         action = request.GET.get('action', None)
         bk_date = request.GET.get('event_date', None)
         store_id = request.GET.get('store_id', None)
@@ -450,9 +453,10 @@ def getWaitingList(request):  # get waiting list
 
 
 @require_http_methods(['GET'])
-
 def getCalendar(request):  # full calendar
     try:
+        # Renew session
+        request.session.set_expiry(900)
         action = request.GET.get('action', None)
         store_id = request.GET.get('store_id', None)
         start_month = request.GET.get('start_month', None)
@@ -549,6 +553,7 @@ def getCalendar(request):  # full calendar
 
         return JsonResponse({'result': event_arr})
     except Exception as e:
+        print(str(e))
         if action == 'main':
             return JsonResponse({'error': '發生未知錯誤', 'action': '/preview/'})
         return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})

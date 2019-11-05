@@ -57,7 +57,7 @@ MIDDLEWARE = [
 ]
 # Security settings
 SECURE_CONTENT_TYPE_NOSNIFF = True
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False # need to be True when production
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT = False  # need to be True when production
 X_FRAME_OPTIONS = 'DENY'  # default = 'SAMEORIGIN'
@@ -74,7 +74,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SECURE = False  # when deploy need to set to True
 # SESSION_SAVE_EVERY_REQUEST=True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-# SESSION_COOKIE_AGE = 60*15
+SESSION_COOKIE_AGE = 6*15
 
 # linebot keys
 LINE_CHANNEL_ACCESS_TOKEN = "hVTaUoLcsdGG+pGoBTcAXG8OB41nU9YLxb3SeQiCi9leMxE50U2BaW9dFfIcf0wAvIQpW080FGL6efM545aq7tfEZMNffOIJZBFl0pFglvq71onAm6Wfy7tdX8c696QrrPSgZB+uePfe1b+9+swpElGUYhWQfeY8sLGRXgo3xvw="

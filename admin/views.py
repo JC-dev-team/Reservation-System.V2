@@ -38,11 +38,13 @@ def staff_login_portal(request):
 
 @login_required(login_url='/softwayliving/login/')
 def staff_check_reservation_page(request):
+    request.session.set_expiry(900)
     return render(request, 'admin_checkreservation.html')
 
 
 @login_required(login_url='/softwayliving/login/')
 def staff_reservation_page(request):
+    request.session.set_expiry(900)
     return render(request, 'admin_reservation.html',)
 
 # function --------------------------
@@ -50,6 +52,7 @@ def staff_reservation_page(request):
 @login_required(login_url='/softwayliving/login/')
 def member_management(request):
     try:
+        request.session.set_expiry(900)
         queryset = Account.objects.all()
         serializer_class = Acc_Serializer(queryset, many=True)
         return render(request, 'admin_memberlist.html', {'data': serializer_class.data})
@@ -95,6 +98,7 @@ def staff_auth(request):  # authentication staff
 @check_recaptcha
 def staff_add_reservation(request):  # Help client to add reservation
     try:
+        request.session.set_expiry(900)
         phone = request.POST.get('phone', None)
         username = request.POST.get('username', None)
         if len(phone) != 10:
@@ -137,6 +141,7 @@ def staff_add_reservation(request):  # Help client to add reservation
 @check_recaptcha
 def admin_InsertReservation(request):  # insert booking list
     try:
+        request.session.set_expiry(900)
         # For validation
         staff_id = request.session.get('staff_id', None)
         is_Login = request.session.get('is_Login', None)
@@ -277,6 +282,7 @@ def admin_InsertReservation(request):  # insert booking list
 @require_http_methods(['POST'])
 def staff_check_reservation(request):
     try:
+        request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'alert': 'Not Valid 請先登入'})
@@ -319,6 +325,7 @@ def staff_check_reservation(request):
 @require_http_methods(['POST'])
 def staff_confirm_reservation(request):
     try:
+        request.session.set_expiry(900)
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
         bk_ps = request.POST.get('bk_ps', None)
@@ -341,6 +348,7 @@ def staff_confirm_reservation(request):
 @require_http_methods(['POST'])
 def staff_pass_reservation(request):
     try:
+        request.session.set_expiry(900)
         bk_uuid = request.POST.get('bk_uuid', None)
         time_session = request.POST.get('time_session', None)
         bk_date = request.POST.get('bk_date', None)
@@ -380,6 +388,7 @@ def staff_pass_reservation(request):
 @require_http_methods(['POST'])
 def staff_cancel_reservation(request):
     try:
+        request.session.set_expiry(900)
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
 
@@ -401,6 +410,7 @@ def staff_cancel_reservation(request):
 @require_http_methods(['POST'])  # when there are two time sessions
 def staff_add_event(request):  # add rest day as booking
     try:
+        request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'error': 'Not valid, 請先登入'})
@@ -457,6 +467,7 @@ def staff_add_event(request):  # add rest day as booking
 @require_http_methods(['GET'])
 def staff_not_confirmed(request):
     try:
+        request.session.set_expiry(900)
         # Get now
         store_id = request.session.get('store_id', None)
 
@@ -493,6 +504,7 @@ def staff_not_confirmed(request):
 @require_http_methods(['GET'])
 def staff_is_confirmed(request):
     try:
+        request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'error': 'Not valid, 請先登入'})
@@ -525,6 +537,7 @@ def staff_is_confirmed(request):
 @require_http_methods(['GET'])
 def staff_is_cancel(request):
     try:
+        request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'error': 'Not valid, 請先登入'})
@@ -556,6 +569,7 @@ def staff_is_cancel(request):
 @require_http_methods(['GET'])
 def staff_is_waiting(request):
     try:
+        request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'error': 'Not valid, 請先登入'})
@@ -590,6 +604,7 @@ def staff_is_waiting(request):
 @require_http_methods(['POST'])
 def staff_remove_member(request):
     try:
+        request.session.set_expiry(900)
         # Set auth in future
         is_Login = request.session.get('is_Login', None)
         staff_id = request.session.get('staff_id', None)
