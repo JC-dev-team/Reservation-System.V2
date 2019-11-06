@@ -106,6 +106,7 @@ WSGI_APPLICATION = 'softway_sys.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+
 # You need to downgrade openssl by conda install openssl=1.0.2r
 # when you are using macOS
 
@@ -137,9 +138,9 @@ DATABASES = {
             #     'ca': os.path.join(os.path.dirname(__file__), 
             #     'rds-combined-ca-bundle.pem')
             #     }
-            # 'ssl': {
-            #     'ca': '/Users/cheyuwu/Downloads/rds-combined-ca-bundle.pem'
-            #     }
+            'ssl': {
+                'ssl-ca': '/Users/cheyuwu/Downloads/rds-combined-ca-bundle.pem'
+                }
         }
     }
 }
