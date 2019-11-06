@@ -13,6 +13,7 @@ checkbooking/migrations/__pycache__
 .idea/system.iml
 .idea/vcs.xml
 .idea/workspace.xml
+.idea
 __pycache__/manage.cpython-36.pyc
 .idea/libraries/R_User_Library.xml
 utility/__pycache__

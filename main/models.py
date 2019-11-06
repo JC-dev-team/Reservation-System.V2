@@ -101,7 +101,32 @@ class StoreEvent(models.Model):
 
     class Meta:
         db_table = 'store_event___db'
-        
+
+# class Staff(models.Model):
+#     staff_id = models.CharField(primary_key=True, max_length=45)
+#     store = models.ForeignKey('Store', models.DO_NOTHING)
+#     email = models.EmailField(unique=True, max_length=100)
+#     password = models.CharField(max_length=45)
+#     staff_name = models.CharField(max_length=45)
+#     staff_phone = models.CharField(max_length=10, blank=True, null=True)
+#     staff_birth = models.DateField(blank=True, null=True)
+#     staff_level = models.PositiveIntegerField()
+#     is_superuser = models.IntegerField()
+#     is_admin = models.IntegerField()
+
+#     class Meta:
+#         db_table = 'staff___db'
+
+# class User(AbstractUser):
+#     username=None
+#     first_name=None
+#     last_name=None
+#     is_staff=None
+#     password=None
+#     is_superuser = models.IntegerField()
+#     is_admin = models.IntegerField()
+
+
 ## auth
 class StaffManager(BaseUserManager):
 
@@ -135,7 +160,7 @@ class StaffManager(BaseUserManager):
 class Staff(AbstractBaseUser,PermissionsMixin):
     staff_id = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
-    email = models.CharField(unique=True, max_length=100)
+    email = models.EmailField(unique=True, max_length=100)
     password = models.CharField(max_length=45)
     staff_name = models.CharField(max_length=45)
     staff_phone = models.CharField(max_length=10, blank=True, null=True)

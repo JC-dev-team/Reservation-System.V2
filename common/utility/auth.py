@@ -8,6 +8,7 @@ import os
 import sys
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import check_password, make_password
 
 User = get_user_model()
 class StaffAuthBackend(ModelBackend):
@@ -94,7 +95,7 @@ def ClientAuthentication(social_id, social_app):  # Account Check Auth
 
 def StaffAuthentication(email, password):  # staff account checking
     try:
-        if (email == None) or (password == None):  # Using PC or No social login
+        if (email == None) or (password == None):  # Not
             return None
         else:   # parameter not None
             queryset = Staff.objects.get(

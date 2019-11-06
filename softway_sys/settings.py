@@ -48,6 +48,7 @@ RECAPTCHA_PRIVATE_KEY = '6LftQr0UAAAAAJqjEwg2fiEzZXAd-NGgGWQwDulz'
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -55,9 +56,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# Session timeout using package
+SESSION_EXPIRE_SECONDS = 3600
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+
 # Security settings
 SECURE_CONTENT_TYPE_NOSNIFF = True
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False # need to be True when production
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT = False  # need to be True when production
 X_FRAME_OPTIONS = 'DENY'  # default = 'SAMEORIGIN'
@@ -74,11 +79,10 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SECURE = False  # when deploy need to set to True
 # SESSION_SAVE_EVERY_REQUEST=True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-# SESSION_COOKIE_AGE = 60*15
 
 # linebot keys
-LINE_CHANNEL_ACCESS_TOKEN = ""
-LINE_CHANNEL_SECRET = ""
+LINE_CHANNEL_ACCESS_TOKEN = "hVTaUoLcsdGG+pGoBTcAXG8OB41nU9YLxb3SeQiCi9leMxE50U2BaW9dFfIcf0wAvIQpW080FGL6efM545aq7tfEZMNffOIJZBFl0pFglvq71onAm6Wfy7tdX8c696QrrPSgZB+uePfe1b+9+swpElGUYhWQfeY8sLGRXgo3xvw="
+LINE_CHANNEL_SECRET = "b5391bea9569c6739730808037e88d4eIssue"
 
 ROOT_URLCONF = 'softway_sys.urls'
 
