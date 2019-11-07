@@ -31,7 +31,6 @@ def error(request):
 
 # admin dashboard ------------------- page
 
-
 def staff_login_portal(request):
     return render(request, 'admin_login.html')
 

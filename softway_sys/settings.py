@@ -48,7 +48,7 @@ RECAPTCHA_PRIVATE_KEY = '6LftQr0UAAAAAJqjEwg2fiEzZXAd-NGgGWQwDulz'
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django_session_timeout.middleware.SessionTimeoutMiddleware',
+    # 'django_session_timeout.middleware.SessionTimeoutMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,8 +57,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 # Session timeout using package
-SESSION_EXPIRE_SECONDS = 3600
-SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+# SESSION_EXPIRE_SECONDS = 3600
+# SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 
 # Security settings
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -142,9 +142,9 @@ DATABASES = {
             #     'ca': os.path.join(os.path.dirname(__file__), 
             #     'rds-combined-ca-bundle.pem')
             #     }
-            'ssl': {
-                'ssl-ca': '/Users/cheyuwu/Downloads/rds-combined-ca-bundle.pem'
-                }
+            # 'ssl': {
+            #     'ssl-ca': '/Users/cheyuwu/Downloads/rds-combined-ca-bundle.pem'
+            #     }
         }
     }
 }

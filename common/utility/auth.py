@@ -11,16 +11,26 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password, make_password
 
 User = get_user_model()
+
+
 class StaffAuthBackend(ModelBackend):
-    def authenticate(self, request,email=None, password=None):
+    def authenticate(self, request, email=None, password=None):
         try:
-            if (email == None) or (password == None):  # Using PC or No social login
+            flag=request.session.POST.get('flag',None)
+            if (email == None) or (password == None):  # Using lost require values
                 return None
             else:   # parameter not None
                 queryset = User.objects.get(
                     email=email,
-                    password=password,
                 )
+                if flag != None:
+                    result = check_password(password, queryset.password)
+                    if result == False:
+                        return None
+                elif flag == None:
+                    password = make_password(password)
+                    User.password = password
+                    User.save()
                 return queryset
         except User.DoesNotExist:  # Staff Not Exist
             return None
@@ -33,7 +43,7 @@ class StaffAuthBackend(ModelBackend):
 
 
 class ClientAuthBackend(ModelBackend):
-    def authenticate(self,request, social_id=None, social_app=None):
+    def authenticate(self, request, social_id=None, social_app=None):
         try:
             # Using PC or No social login
             if (social_id == None) or (social_app == None) or(social_id == '') or (social_app == ''):
@@ -47,6 +57,7 @@ class ClientAuthBackend(ModelBackend):
                     return user
         except Account.DoesNotExist:  # Account Not Exist
             return False
+
     def get_user(self, user_id):
         try:
             return Account.objects.get(pk=user_id)
@@ -54,6 +65,8 @@ class ClientAuthBackend(ModelBackend):
             return None
 
 # decorators
+
+
 def valid_pass_test(test_fun, redirect_url='/'):
     def decorator(view_func):
         @wraps(view_func)
@@ -68,7 +81,7 @@ def valid_pass_test(test_fun, redirect_url='/'):
 
 def _login_required(function=None, redirect_url='/'):
     actual_decorator = valid_pass_test(
-        lambda u: u.get('is_Login',False),
+        lambda u: u.get('is_Login', False),
         redirect_url=redirect_url,
     )
     if function:
@@ -102,7 +115,7 @@ def StaffAuthentication(email, password):  # staff account checking
                 email=email,
                 password=password,
             )
-            serializers=Staff_Serializer(queryset)
+            serializers = Staff_Serializer(queryset)
             return serializers.data
 
     except Staff.DoesNotExist:  # Account Not Exist
