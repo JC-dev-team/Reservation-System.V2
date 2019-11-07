@@ -12,121 +12,6 @@ from django.utils import timezone
 from django.core.mail import send_mail
 
 
-class Account(models.Model):
-    user_id = models.CharField(primary_key=True, max_length=45)
-    social_id = models.CharField(max_length=45, blank=True, null=True)
-    social_app = models.CharField(max_length=45, blank=True, null=True)
-    social_name = models.CharField(max_length=45)
-    username = models.CharField(max_length=45)
-    phone = models.CharField(max_length=10)
-    birth = models.DateField(blank=True, null=True)
-    created_date = models.DateTimeField(blank=True, null=True)
-    is_active = models.IntegerField()
-    comment = models.CharField(max_length=100, blank=True, null=True)
-    class Meta:
-        db_table = 'acc___db'
-
-
-class ActionLog(models.Model):
-    act_id = models.IntegerField(primary_key=True)
-    user = models.ForeignKey('Staff', models.DO_NOTHING)
-    created_date = models.DateTimeField(blank=True, null=True)
-    operation = models.CharField(max_length=150)
-
-    class Meta:
-        db_table = 'action_log___db'
-
-
-class BkList(models.Model):
-    bk_uuid = models.CharField(primary_key=True, max_length=45)
-    user = models.ForeignKey(Account, models.DO_NOTHING, blank=True, null=True)
-    store = models.ForeignKey(
-        'Store', models.DO_NOTHING, blank=True, null=True)
-    bk_date = models.DateField()
-    time_session = models.CharField(max_length=10)
-    bk_st = models.TimeField()
-    bk_ed = models.TimeField(blank=True, null=True)
-    wh_bk = models.DateTimeField(blank=True, null=True)
-    adult = models.PositiveIntegerField()
-    children = models.PositiveIntegerField()
-    bk_ps = models.CharField(max_length=200, blank=True, null=True)
-    bk_habit = models.CharField(max_length=200, blank=True, null=True)
-    event_type = models.CharField(max_length=20, blank=True, null=True)
-    is_cancel = models.IntegerField()
-    waiting_num = models.PositiveIntegerField()
-    entire_time = models.IntegerField()
-    bk_price = models.PositiveIntegerField()
-    is_confirm = models.IntegerField()
-
-    class Meta:
-        db_table = 'bk_list___db'
-
-
-class Production(models.Model):
-    prod_uuid = models.CharField(primary_key=True, max_length=45)
-    store = models.ForeignKey('Store', models.DO_NOTHING)
-    prod_name = models.CharField(max_length=45)
-    prod_img = models.CharField(max_length=100)
-    prod_price = models.PositiveIntegerField(blank=True, null=True)
-    prod_desc = models.CharField(max_length=200, blank=True, null=True)
-    prod_created = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'prod___db'
-
-
-class Store(models.Model):
-    store_id = models.CharField(primary_key=True, max_length=45)
-    store_name = models.CharField(unique=True, max_length=45)
-    store_address = models.CharField(max_length=45)
-    store_phone = models.CharField(max_length=20)
-    store_fax = models.CharField(max_length=20, blank=True, null=True)
-    tk_service = models.IntegerField()
-    stay_time = models.IntegerField()
-    pay_md = models.CharField(max_length=4, blank=True, null=True)
-    seat = models.PositiveIntegerField()
-    store_created = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'store___db'
-
-
-class StoreEvent(models.Model):
-    event_id = models.CharField(primary_key=True, max_length=45, default=None)
-    store = models.ForeignKey(Store, models.DO_NOTHING)
-    event_type = models.CharField(max_length=45)
-    event_date = models.DateField()
-    time_session = models.CharField(max_length=45)
-    event_created = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'store_event___db'
-
-# class Staff(models.Model):
-#     staff_id = models.CharField(primary_key=True, max_length=45)
-#     store = models.ForeignKey('Store', models.DO_NOTHING)
-#     email = models.EmailField(unique=True, max_length=100)
-#     password = models.CharField(max_length=45)
-#     staff_name = models.CharField(max_length=45)
-#     staff_phone = models.CharField(max_length=10, blank=True, null=True)
-#     staff_birth = models.DateField(blank=True, null=True)
-#     staff_level = models.PositiveIntegerField()
-#     is_superuser = models.IntegerField()
-#     is_admin = models.IntegerField()
-
-#     class Meta:
-#         db_table = 'staff___db'
-
-# class User(AbstractUser):
-#     username=None
-#     first_name=None
-#     last_name=None
-#     is_staff=None
-#     password=None
-#     is_superuser = models.IntegerField()
-#     is_admin = models.IntegerField()
-
-
 ## auth
 class StaffManager(BaseUserManager):
 
@@ -157,9 +42,11 @@ class StaffManager(BaseUserManager):
         return self._create_user(email, password, True, True,
                                  **extra_fields)
 
-class Staff(AbstractBaseUser,PermissionsMixin):
+
+class Staff(AbstractBaseUser, PermissionsMixin):
     staff_id = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
+    #username
     email = models.EmailField(unique=True, max_length=100)
     password = models.CharField(max_length=45)
     staff_name = models.CharField(max_length=45)
@@ -168,13 +55,14 @@ class Staff(AbstractBaseUser,PermissionsMixin):
     last_login = models.DateTimeField(blank=True, null=True)
     staff_level = models.PositiveIntegerField()
     staff_created = models.DateTimeField(blank=True, null=True)
-    is_superuser = models.IntegerField()
-    is_admin = models.IntegerField()
-    is_active = models.IntegerField()
+    is_superuser = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'email'
     objects = StaffManager()
-    REQUIRED_FIELDS=[]
+    REQUIRED_FIELDS = []
+
     class Meta:
         db_table = 'staff___db'
 
@@ -197,4 +85,109 @@ class Staff(AbstractBaseUser,PermissionsMixin):
         Sends an email to this User.
         """
         send_mail(subject, message, from_email, [self.email], **kwargs)
-    
+
+class Account(models.Model):
+    user_id = models.CharField(primary_key=True, max_length=45)
+    social_id = models.CharField(max_length=45, blank=True, null=True)
+    social_app = models.CharField(max_length=45, blank=True, null=True)
+    social_name = models.CharField(max_length=45)
+    username = models.CharField(max_length=45)
+    phone = models.CharField(max_length=10)
+    birth = models.DateField(blank=True, null=True)
+    created_date = models.DateTimeField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    comment = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        db_table = 'acc___db'
+
+
+class BkList(models.Model):
+    bk_uuid = models.CharField(primary_key=True, max_length=45)
+    user = models.ForeignKey(Account, models.DO_NOTHING, blank=True, null=True)
+    store = models.ForeignKey(
+        'Store', models.DO_NOTHING, blank=True, null=True)
+    bk_date = models.DateField()
+    time_session = models.CharField(max_length=10)
+    bk_st = models.TimeField()
+    bk_ed = models.TimeField(blank=True, null=True)
+    wh_bk = models.DateTimeField(blank=True, null=True)
+    adult = models.PositiveIntegerField()
+    children = models.PositiveIntegerField()
+    bk_ps = models.CharField(max_length=200, blank=True, null=True)
+    bk_habit = models.CharField(max_length=200, blank=True, null=True)
+    event_type = models.CharField(max_length=20, blank=True, null=True)
+    is_cancel = models.BooleanField(default=False)
+    waiting_num = models.PositiveIntegerField()
+    entire_time = models.BooleanField(default=False)
+    bk_price = models.PositiveIntegerField()
+    is_confirm = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'bk_list___db'
+
+
+class Production(models.Model):
+    prod_uuid = models.CharField(primary_key=True, max_length=45)
+    store = models.ForeignKey('Store', models.DO_NOTHING)
+    prod_name = models.CharField(max_length=45)
+    prod_img = models.CharField(max_length=100)
+    prod_price = models.PositiveIntegerField(blank=True, null=True)
+    prod_desc = models.CharField(max_length=200, blank=True, null=True)
+    prod_created = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'prod___db'
+
+
+class Store(models.Model):
+    store_id = models.CharField(primary_key=True, max_length=45)
+    store_name = models.CharField(unique=True, max_length=45)
+    store_address = models.CharField(max_length=45)
+    store_phone = models.CharField(max_length=20)
+    store_fax = models.CharField(max_length=20, blank=True, null=True)
+    tk_service = models.IntegerField()
+    stay_time = models.IntegerField()
+    seat = models.PositiveIntegerField()
+    store_created = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'store___db'
+
+
+class StoreEvent(models.Model):
+    event_id = models.CharField(primary_key=True, max_length=45, default=None)
+    store = models.ForeignKey(Store, models.DO_NOTHING)
+    event_type = models.CharField(max_length=45)
+    event_date = models.DateField()
+    time_session = models.CharField(max_length=45)
+    event_created = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'store_event___db'
+
+
+class StaffActionLog(models.Model):
+    staff = models.ForeignKey(Staff, models.DO_NOTHING)
+    location = models.CharField(max_length=300)
+    # Field renamed to remove unsuitable characters.
+    ip_address = models.CharField(max_length=200)
+    operation = models.CharField(max_length=150)
+    created_date = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'staff_action_log___db'
+
+
+class UserActionLog(models.Model):
+    user = models.ForeignKey(Account, models.DO_NOTHING)
+    operation = models.CharField(max_length=200)
+    location = models.CharField(max_length=300)
+    created_date = models.DateTimeField(blank=True, null=True)
+    # Field renamed to remove unsuitable characters.
+    ip_address = models.CharField(max_length=200)
+
+    class Meta:
+        db_table = 'user__action_log___db'
+
+
