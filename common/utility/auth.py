@@ -113,11 +113,13 @@ def StaffAuthentication(email, password):  # staff account checking
         else:   # parameter not None
             queryset = Staff.objects.get(
                 email=email,
-                password=password,
             )
-            serializers = Staff_Serializer(queryset)
-            return serializers.data
-
+            if check_password(password,queryset.password):
+                serializers = Staff_Serializer(queryset)
+                return serializers.data
+            else:
+                return 'ERROR'
+            
     except Staff.DoesNotExist:  # Account Not Exist
         return False
     except Exception as e:

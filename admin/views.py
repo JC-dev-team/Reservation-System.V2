@@ -31,6 +31,7 @@ def error(request):
 
 # admin dashboard ------------------- page
 
+
 def staff_login_portal(request):
     return render(request, 'admin_login.html')
 
@@ -65,23 +66,30 @@ def staff_auth(request):  # authentication staff
     try:
         email = request.POST.get('email', None)
         password = request.POST.get('password', None)
+
+        if int(request.session.get('try_time', 0)) >= 5:
+            return render(request, 'error/error.html', 
+            {
+                'action': '/softwayliving/login/',
+                'error':'Trying too many times',
+            })
+
         # Check Auth
         result = auth.StaffAuthentication(email, password)
         if result == None or result == False:
             request.session.flush()
             return render(request, 'error/error404.html', {'action': '/softwayliving/login/'})
-
+        elif result == 'ERROR':
+            request.session['try_time'] = int(
+                request.session.get('try_time', 0))+1
+            return redirect('/softwayliving/login/')
         elif type(result) == dict:  # error occurred
             request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/softwayliving/login/'})
         else:
-            print('hello')
             if request.user.is_authenticated:
                 request.session.flush()
-            staff = authenticate(request,email=email, password=password)
-            print(staff)
-            # if 'is_Login' in request.session:
-            #     request.session.flush()
+            staff = authenticate(request, email=email, password=password)
             auth_login(request, staff,
                        backend='common.utility.auth.StaffAuthBackend')
             request.session['is_Login'] = True
