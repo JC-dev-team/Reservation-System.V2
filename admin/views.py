@@ -75,9 +75,11 @@ def staff_auth(request):  # authentication staff
             request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/softwayliving/login/'})
         else:
+            print('hello')
             if request.user.is_authenticated:
                 request.session.flush()
             staff = authenticate(request,email=email, password=password)
+            print(staff)
             # if 'is_Login' in request.session:
             #     request.session.flush()
             auth_login(request, staff,

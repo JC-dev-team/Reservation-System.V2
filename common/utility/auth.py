@@ -9,29 +9,29 @@ import sys
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password, make_password
+import uuid
 
 User = get_user_model()
-
 
 class StaffAuthBackend(ModelBackend):
     def authenticate(self, request, email=None, password=None):
         try:
-            flag=request.session.POST.get('flag',None)
+            flag=request.POST.get('flag',None)
             if (email == None) or (password == None):  # Using lost require values
                 return None
             else:   # parameter not None
-                queryset = User.objects.get(
+                User_data = User.objects.get(
                     email=email,
                 )
-                if flag != None:
-                    result = check_password(password, queryset.password)
+                if flag == None:
+                    result = check_password(password, User_data.password)
                     if result == False:
                         return None
-                elif flag == None:
+                elif flag != None:
                     password = make_password(password)
-                    User.password = password
-                    User.save()
-                return queryset
+                    User_data.password = password
+                    User_data.save()
+                return User_data
         except User.DoesNotExist:  # Staff Not Exist
             return None
 

@@ -48,7 +48,7 @@ class Staff(AbstractBaseUser, PermissionsMixin):
     store = models.ForeignKey('Store', models.DO_NOTHING)
     #username
     email = models.EmailField(unique=True, max_length=100)
-    password = models.CharField(max_length=45)
+    password = models.CharField(max_length=150)
     staff_name = models.CharField(max_length=45)
     staff_phone = models.CharField(max_length=10, blank=True, null=True)
     staff_birth = models.DateField(blank=True, null=True)
