@@ -78,7 +78,8 @@ AUTHENTICATION_BACKENDS = ['common.utility.auth.ClientAuthBackend',
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SECURE = False  # when deploy need to set to True
 # SESSION_SAVE_EVERY_REQUEST=True
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 60*15 
 
 # linebot keys
 LINE_CHANNEL_ACCESS_TOKEN = "hVTaUoLcsdGG+pGoBTcAXG8OB41nU9YLxb3SeQiCi9leMxE50U2BaW9dFfIcf0wAvIQpW080FGL6efM545aq7tfEZMNffOIJZBFl0pFglvq71onAm6Wfy7tdX8c696QrrPSgZB+uePfe1b+9+swpElGUYhWQfeY8sLGRXgo3xvw="

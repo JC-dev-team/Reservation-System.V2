@@ -52,6 +52,8 @@ def staff_reservation_page(request):
 @login_required(login_url='/softwayliving/login/')
 def member_management(request):
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
         queryset = Account.objects.all()
         serializer_class = Acc_Serializer(queryset, many=True)
@@ -82,7 +84,7 @@ def staff_auth(request):  # authentication staff
         elif result == 'ERROR':
             request.session['try_time'] = int(
                 request.session.get('try_time', 0))+1
-            return redirect('/softwayliving/login/')
+            return render(request, 'softwayliving/login/',{'error':'帳號或是密碼輸入錯誤'})
         elif type(result) == dict:  # error occurred
             request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/softwayliving/login/'})
@@ -107,6 +109,9 @@ def staff_auth(request):  # authentication staff
 @check_recaptcha
 def staff_add_reservation(request):  # Help client to add reservation
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+
         request.session.set_expiry(900)
         phone = request.POST.get('phone', None)
         username = request.POST.get('username', None)
@@ -131,7 +136,7 @@ def staff_add_reservation(request):  # Help client to add reservation
                     username=username,
                 )
         except Account.MultipleObjectsReturned:
-            return render(request, 'admin_reservation.html', {'error': '姓名與手機遭遇重複，無法進行訂位與註冊'})
+            return render(request, 'admin_reservation.html', {'error': '姓名與手機重複申請，無法進行訂位與註冊'})
 
         request.session['user_id'] = queryset.user_id
 
@@ -150,6 +155,9 @@ def staff_add_reservation(request):  # Help client to add reservation
 @check_recaptcha
 def admin_InsertReservation(request):  # insert booking list
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+
         request.session.set_expiry(900)
         # For validation
         staff_id = request.session.get('staff_id', None)
@@ -291,6 +299,8 @@ def admin_InsertReservation(request):  # insert booking list
 @require_http_methods(['POST'])
 def staff_check_reservation(request):
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
         if store_id == None:
@@ -334,6 +344,8 @@ def staff_check_reservation(request):
 @require_http_methods(['POST'])
 def staff_confirm_reservation(request):
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
@@ -357,6 +369,8 @@ def staff_confirm_reservation(request):
 @require_http_methods(['POST'])
 def staff_pass_reservation(request):
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
         bk_uuid = request.POST.get('bk_uuid', None)
         time_session = request.POST.get('time_session', None)
@@ -397,6 +411,8 @@ def staff_pass_reservation(request):
 @require_http_methods(['POST'])
 def staff_cancel_reservation(request):
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
@@ -419,6 +435,9 @@ def staff_cancel_reservation(request):
 @require_http_methods(['POST'])  # when there are two time sessions
 def staff_add_event(request):  # add rest day as booking
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+
         request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
         if store_id == None:
@@ -476,6 +495,9 @@ def staff_add_event(request):  # add rest day as booking
 @require_http_methods(['GET'])
 def staff_not_confirmed(request):
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+
         request.session.set_expiry(900)
         # Get now
         store_id = request.session.get('store_id', None)
@@ -513,6 +535,9 @@ def staff_not_confirmed(request):
 @require_http_methods(['GET'])
 def staff_is_confirmed(request):
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+
         request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
         if store_id == None:
@@ -546,6 +571,9 @@ def staff_is_confirmed(request):
 @require_http_methods(['GET'])
 def staff_is_cancel(request):
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+
         request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
         if store_id == None:
@@ -578,6 +606,9 @@ def staff_is_cancel(request):
 @require_http_methods(['GET'])
 def staff_is_waiting(request):
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+
         request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
         if store_id == None:
@@ -613,6 +644,9 @@ def staff_is_waiting(request):
 @require_http_methods(['POST'])
 def staff_remove_member(request):
     try:
+        if request.user.is_authenticated == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+
         request.session.set_expiry(900)
         # Set auth in future
         is_Login = request.session.get('is_Login', None)

@@ -126,6 +126,10 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 @check_recaptcha
 def InsertReservation(request):  # insert booking list
     try:
+        # Check session is expired
+        if request.session.get('is_Login',False)==False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/booking/login/'})
+        
         request.session.set_expiry(900)
         # For validation
         social_id = request.session.get('social_id', None)
@@ -287,13 +291,6 @@ def member(request):
         social_app = request.POST.get('social_app', None)
         social_name = request.POST.get('social_name', None)
 
-        valid = checkAuth(data={
-            'social_id': social_id,
-            'social_app': social_app
-        })
-        if valid.is_valid() == False:
-            raise Exception('Not valid, 帳號資料錯誤')
-
         result = auth.ClientAuthentication(
             social_id, social_app)  # queryset or something else
         if result == None:  # Using PC or No social login
@@ -340,6 +337,9 @@ def member(request):
 @require_http_methods(['GET'])
 def getWaitingList(request):  # get waiting list
     try:
+        if request.session.get('is_Login',False)==False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/booking/login/'})
+        
         request.session.set_expiry(900)
         action = request.GET.get('action', None)
         bk_date = request.GET.get('event_date', None)
@@ -456,6 +456,9 @@ def getWaitingList(request):  # get waiting list
 def getCalendar(request):  # full calendar
     try:
         # Renew session
+        if request.session.get('is_Login',False)==False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/booking/login/'})
+        
         request.session.set_expiry(900)
         action = request.GET.get('action', None)
         store_id = request.GET.get('store_id', None)

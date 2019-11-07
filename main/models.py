@@ -92,6 +92,7 @@ class Account(models.Model):
     social_app = models.CharField(max_length=45, blank=True, null=True)
     social_name = models.CharField(max_length=45)
     username = models.CharField(max_length=45)
+    level = models.CharField(max_length=45)
     phone = models.CharField(max_length=10)
     birth = models.DateField(blank=True, null=True)
     created_date = models.DateTimeField(blank=True, null=True)
