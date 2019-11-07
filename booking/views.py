@@ -18,6 +18,7 @@ from django.db import transaction, DatabaseError
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q  # complex lookup
 from django.conf import settings
+from common.utility.linebot import linebot_send_msg
 # from django.contrib.auth import login, logout
 # from django.contrib.auth.decorators import login_required
 
@@ -264,7 +265,7 @@ def InsertReservation(request):  # insert booking list
             account_serializer = Acc_Serializer(get_user_info)
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
-
+            linebot_send_msg(social_id)
             # request.session.flush()
             return render(request, 'reservation_finish.html', {
                 'data': bklist_serializer.data,
