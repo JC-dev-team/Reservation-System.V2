@@ -23,7 +23,7 @@ from django.contrib.sessions.models import Session
 from django.conf import settings
 from common.utility.recaptcha import check_recaptcha
 from django.contrib.auth.decorators import login_required
-
+from common.utility.linebot import linebot_send_msg
 
 def error(request):
     request.session.flush()
@@ -282,7 +282,7 @@ def admin_InsertReservation(request):  # insert booking list
             account_serializer = Acc_Serializer(get_user_info)
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
-
+            linebot_send_msg(account_serializer.social_id, bklist_serializer)
             del request.session['user_id']
             request.session.set_expiry(settings.SESSION_COOKIE_AGE)
             return render(request, 'reservation_finish.html', {

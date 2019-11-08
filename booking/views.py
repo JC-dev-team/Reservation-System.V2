@@ -1,7 +1,7 @@
 from common.utility.recaptcha import check_recaptcha
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
-from main.models import  BkList, Account, Production, Staff, Store, StoreEvent
+from main.models import BkList, Account, Production, Staff, Store, StoreEvent
 from common.serializers import Acc_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
 from common.serializers import checkAuth, check_bklist, applymember, Store_form_serializer
 from rest_framework import viewsets, status
@@ -129,9 +129,9 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 def InsertReservation(request):  # insert booking list
     try:
         # Check session is expired
-        if request.session.get('is_Login',False)==False:
-            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/booking/login/'})
-        
+        if request.session.get('is_Login', False) == False:
+            return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/booking/login/'})
+
         request.session.set_expiry(900)
         # For validation
         social_id = request.session.get('social_id', None)
@@ -266,7 +266,7 @@ def InsertReservation(request):  # insert booking list
             account_serializer = Acc_Serializer(get_user_info)
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
-            linebot_send_msg(social_id)
+            linebot_send_msg(social_id, bklist_serializer)
             # request.session.flush()
             return render(request, 'reservation_finish.html', {
                 'data': bklist_serializer.data,
@@ -324,7 +324,7 @@ def member(request):
             request.session['social_app'] = social_app
             request.session['social_name'] = social_name
             request.session['user_id'] = result.user_id
-            ## Test linebot remove after finish
+            # Test linebot remove after finish
             linebot_send_msg(social_id)
             return render(request, 'reservation.html', {
                 'data': serializer.data,
@@ -339,7 +339,7 @@ def member(request):
 # Ajax api --------------------------------------------------------------
 @require_http_methods(['GET'])
 def getWaitingList(request):  # get waiting list
-    try:       
+    try:
         request.session.set_expiry(900)
         action = request.GET.get('action', None)
         bk_date = request.GET.get('event_date', None)
@@ -455,7 +455,7 @@ def getWaitingList(request):  # get waiting list
 @require_http_methods(['GET'])
 def getCalendar(request):  # full calendar
     try:
-        # Renew session        
+        # Renew session
         request.session.set_expiry(900)
         action = request.GET.get('action', None)
         store_id = request.GET.get('store_id', None)
