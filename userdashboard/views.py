@@ -1,7 +1,7 @@
 from datetime import datetime, date,timedelta
 from django.shortcuts import render, redirect, reverse
-from main.models import ActionLog, BkList, Account, Production, Staff, Store
-from common.serializers import Acc_Serializer, Actlog_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
+from main.models import BkList, Account, Production, Staff, Store
+from common.serializers import Acc_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
 from common.serializers import checkAuth, Store_form_serializer
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
@@ -76,6 +76,9 @@ def user_auth(request):  # authentication staff
 @_login_required(redirect_url='/userdashboard/login/')
 def user_check_reservation(request):
     try:
+        if request.session.get('is_Login',False) == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/userdashboard/login/'})
+
         request.session.set_expiry(900)
         user_id = request.session.get('user_id', None)
         # Account Exist Check
@@ -128,6 +131,8 @@ def user_check_reservation(request):
 @_login_required(redirect_url='/userdashboard/login/')
 def user_cancel_reservation(request):
     try:
+        if request.session.get('is_Login',False) == False:
+            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/userdashboard/login/'})
         # use session catch
         request.session.set_expiry(900)
 

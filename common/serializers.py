@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from main.models import Account, ActionLog, BkList, Production, Staff, Store, StoreEvent
+from main.models import Account, BkList, Production, Staff, Store, StoreEvent
 
 
 class check_bklist(serializers.ModelSerializer):
@@ -31,13 +31,6 @@ class Acc_Serializer(serializers.ModelSerializer):
         model = Account
         fields = '__all__'
         # fields = ('user_id', 'social_id', 'social_app', 'username', 'phone','birth',)
-
-
-class Actlog_Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = ActionLog
-        fields = '__all__'
-
 
 class Bklist_Serializer(serializers.ModelSerializer):
     class Meta:
