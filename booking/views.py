@@ -19,6 +19,8 @@ from django.views.decorators.http import require_http_methods
 from django.db.models import Q  # complex lookup
 from django.conf import settings
 from common.utility.linebot import linebot_send_msg
+# from main.views import linebot_send_msg
+
 # from django.contrib.auth import login, logout
 # from django.contrib.auth.decorators import login_required
 
@@ -303,7 +305,7 @@ def member(request):
             request.session['social_name'] = social_name
 
             return render(request, 'member.html', {'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
-            # return redirect(reverse('member'),args=())
+
         # error occurred the type of result is {'error' : error}
         elif type(result) == dict:
             request.session.flush()
