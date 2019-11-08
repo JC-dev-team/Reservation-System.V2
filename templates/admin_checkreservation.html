@@ -415,9 +415,9 @@
                     result = response.result
                     account = response.account
                     event = 'none'
-                    console.log(result)
-                    console.log(account)
-                    console.log(event)
+                    // console.log(result)
+                    // console.log(account)
+                    // console.log(event)
                     //Function of calendar (return calendar.render())
                     calendar_fun(event, account, result, num)
 
@@ -450,9 +450,9 @@
                     result = response.result
                     account = response.account
                     event = 'none'
-                    console.log(result)
-                    console.log(account)
-                    console.log(event)
+                    // console.log(result)
+                    // console.log(account)
+                    // console.log(event)
                     //Function of calendar (return calendar.render())
                     calendar_fun(event, account, result, num)
 
@@ -484,9 +484,9 @@
                     result = response.result
                     account = response.account
                     event = 'none'
-                    console.log(result)
-                    console.log(account)
-                    console.log(event)
+                    // console.log(result)
+                    // console.log(account)
+                    // console.log(event)
                     //Function of calendar (return calendar.render())
                     calendar_fun(event, account, result, num)
 
@@ -518,9 +518,9 @@
                     result = response.result
                     account = response.account
                     event = 'none'
-                    console.log(result)
-                    console.log(account)
-                    console.log(event)
+                    // console.log(result)
+                    // console.log(account)
+                    // console.log(event)
                     //Function of calendar (return calendar.render())
                     calendar_fun(event, account, result, num)
 
@@ -553,7 +553,7 @@
                     result = response.result
                     account = response.account
                     event = response.event
-                    console.log(event)
+                    // console.log(event)
                     //Function of calendar (return calendar.render())
                     calendar_fun(event, account, result, num)
 
@@ -735,7 +735,7 @@
                     });
 
                     successCallback(Event)
-                    console.log(Event)
+                    //console.log(Event)
                 }
 
                 if (event = 'none') {
@@ -771,7 +771,7 @@
             },
 
             eventRender: function (info) {
-                console.log(info)
+                //console.log(info)
                 var month_text = info.el.text
 
                 if (month_text != undefined) {
@@ -794,7 +794,7 @@
 
             //Function
             dateClick: function (info) {
-                console.log(info)
+                //console.log(info)
                 var date = info.dateStr
                 $("#dayoff_date").val(date)
 
@@ -811,7 +811,7 @@
 
             },
             eventClick: function (info) {
-                console.log(info)
+                //console.log(info)
                 //clean ps data
                 $('#bk_ps').val('')
                 var list_backgroundcolor = info.event.backgroundColor
@@ -944,7 +944,7 @@
                         'bk_date': date,
                         'bk_ps': $('#bk_ps').val()
                     }
-                    console.log(id)
+                    
                     var event = calendar.getEventById(id)
                     //spinner show
                     Notiflix.Loading.Hourglass('確認中....');
