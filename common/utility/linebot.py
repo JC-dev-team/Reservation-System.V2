@@ -12,6 +12,5 @@ def linebot_send_msg(line_id):
         line_bot_api.push_message(line_id, TextSendMessage(text=text))
         return 'success'
     except Exception as e:
-        print(e)
         return 'failure'
     

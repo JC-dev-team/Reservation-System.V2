@@ -17,8 +17,7 @@ from django.db import transaction, DatabaseError
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q  # complex lookup
 from django.conf import settings
-from linebot import LineBotApi
-from linebot.models import TextSendMessage
+
     
 # Create your views here.
 def preview(request):
@@ -26,15 +25,3 @@ def preview(request):
 
 def error(request):
     return render(request, 'error/error.html',{'action':'/preview/'})
-
-def linebot_send_msg(line_id):
-    try:
-        text="<h1>Hello World</h1>"
-
-        line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
-        # push message to one user
-        line_bot_api.push_message(line_id, TextSendMessage(text=text))
-        return 'success'
-    except Exception as e:
-        print(e)
-        return 'failure'

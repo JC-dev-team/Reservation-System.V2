@@ -325,7 +325,8 @@ def member(request):
             request.session['social_app'] = social_app
             request.session['social_name'] = social_name
             request.session['user_id'] = result.user_id
-
+            ## Test linebot remove after finish
+            linebot_send_msg(social_id)
             return render(request, 'reservation.html', {
                 'data': serializer.data,
                 'google_keys': settings.RECAPTCHA_PUBLIC_KEY},
