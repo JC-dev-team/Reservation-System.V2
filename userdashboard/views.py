@@ -132,7 +132,7 @@ def user_check_reservation(request):
 def user_cancel_reservation(request):
     try:
         if request.session.get('is_Login',False) == False:
-            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/userdashboard/login/'})
+            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/userdashboard/login/'})
         # use session catch
         request.session.set_expiry(900)
 

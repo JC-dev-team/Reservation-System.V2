@@ -337,10 +337,7 @@ def member(request):
 # Ajax api --------------------------------------------------------------
 @require_http_methods(['GET'])
 def getWaitingList(request):  # get waiting list
-    try:
-        if request.session.get('is_Login',False)==False:
-            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/booking/login/'})
-        
+    try:       
         request.session.set_expiry(900)
         action = request.GET.get('action', None)
         bk_date = request.GET.get('event_date', None)
@@ -456,10 +453,7 @@ def getWaitingList(request):  # get waiting list
 @require_http_methods(['GET'])
 def getCalendar(request):  # full calendar
     try:
-        # Renew session
-        if request.session.get('is_Login',False)==False:
-            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/booking/login/'})
-        
+        # Renew session        
         request.session.set_expiry(900)
         action = request.GET.get('action', None)
         store_id = request.GET.get('store_id', None)
