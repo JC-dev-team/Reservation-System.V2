@@ -93,7 +93,8 @@
                     <option value="Lunch" selected>（店休）午餐</option>
                     <option value="Dinner">（店休）晚餐</option>
                     <option value="Allday">（店休）全天</option>
-
+                    <option value="Cancel_Lunch" >（取消店休）午餐</option>
+                    <option value="Cancel_Dinner">（取消店休）晚餐</option>
                 </select>
 
                 <br>
@@ -261,7 +262,7 @@
         }
     });
 
-
+    //設定店休日期/時段
     function admin_dayoff(data) {
         $.ajax({
             type: 'POST',
@@ -295,6 +296,39 @@
         });
     }
 
+    //取消店休日期/時段
+    function admin_cancel_dayoff(data) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/cancel_event/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    // window.location.replace('/softwayliving/error/');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                } else {
+                    result = response.result
+                    console.log(result)
+                    Notiflix.Notify.Success('已取消店休！！');
+
+                }
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+                //Reload
+                window.location.reload();
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生錯誤！！');
+                Notiflix.Loading.Remove();
+                document.getElementById('dayoff_Modal').style.display = 'none';
+            }
+
+        });
+    }
 
     function admin_cancel(data, event) {
         $.ajax({
@@ -738,7 +772,7 @@
                     //console.log(Event)
                 }
 
-                if (event = 'none') {
+                if (event == 'none') {
                     console.log('event none')
                 } else {
 
@@ -756,7 +790,7 @@
                         if (event_type == 'Day off') {
                             var type = '店休'
                         }
-
+                        
                         Event.push({
                             title: session + type,
                             start: date,
@@ -1004,14 +1038,26 @@
     $('#modal_button_dayoff').click(function (e) {
         var date = $("#dayoff_date").val()
         var time_session = $('#dayoff_timesession_select').val()
-        console.log('time_session: ' + time_session)
-        var data = {
-            store_id: '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+        console.log('time_session: ' + time_session.split('_')[0])
+        console.log('time_session: ' + time_session.split('_')[1])
+        if (time_session != 'Dinner' && time_session != 'Lunch') {
+            var data = {
+            event_date: date,
+            time_session: time_session.split('_')[0],
+            event_type: 'Day off'
+        }
+        admin_cancel_dayoff(data)
+
+        } else{
+            var data = {
             event_date: date,
             time_session: time_session,
             event_type: 'Day off'
         }
         admin_dayoff(data)
+
+        }
+        
         //spinner show
         Notiflix.Loading.Hourglass('處理中....');
     })
