@@ -43,7 +43,8 @@ urlpatterns = [
     path('delete/',views.staff_is_cancel), # 已刪除
     # /softwayliving/remove_member/
     path('remove_member/',views.staff_remove_member),
-
+    # /softwayliving/cancel_event/
+    path('cancel_event/',views.staff_cancel_event),
 
 ]
 

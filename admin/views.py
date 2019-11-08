@@ -55,7 +55,7 @@ def member_management(request):
         if request.user.is_authenticated == False:
             return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
-        queryset = Account.objects.all()
+        queryset = Account.objects.filter(is_active=True)
         serializer_class = Acc_Serializer(queryset, many=True)
         return render(request, 'admin_memberlist.html', {'data': serializer_class.data})
     except Exception as e:
@@ -657,10 +657,48 @@ def staff_remove_member(request):
         with transaction.atomic():  # transaction
             try:
                 queryset = Account.objects.get(user_id=user_id)
-                queryset.delete()
+                queryset.is_active = False
+                queryset.save()
                 return JsonResponse({'result': 'success'})
             except Account.DoesNotExist:
                 return JsonResponse({'alert': '帳號已刪除或是不存在'})
 
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
+@require_http_methods(['POST'])
+def staff_cancel_event(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        request.session.set_expiry(900)
+
+        store_id = request.session.get('store_id', None)
+        if store_id == None:
+            return JsonResponse({'error': 'Not valid, 請先登入'})
+        
+        event_date = request.POST.get('event_date', None)
+        time_session = request.POST.get('time_session', None)
+        event_type = request.POST.get('event_type', None)
+
+        with transaction.atomic():  # transaction
+            try:
+                instance=StoreEvent.objects.get(
+                    store_id=store_id,
+                    event_date=event_date,
+                    time_session=time_session,
+                    event_type=event_type,
+                )
+                instance.delete()
+            except StoreEvent.DoesNotExist:
+                return JsonResponse({'alert': '帳號已刪除或是不存在'})
+        return JsonResponse({'result': 'success'})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
+@require_http_methods(['POST'])
+def add_admin_member(request):
+    try:
+        pass
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
