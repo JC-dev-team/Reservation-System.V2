@@ -33,7 +33,7 @@
             $('#social_id').val(data.context.userId); //data.context.userId
             $('#social_app').val('Line');
             $('#social_name').val(disname.json)
-            
+            send()
         })
     }
     //ready
@@ -52,12 +52,13 @@
 
         //send data 
         // send()
-        if($('#social_id').val() != '' && $('#social_app').val() != ''){
-            send()
-        }
-        else{
-            window.location.replace('/booking/error/');
-        }
+        // if($('#social_id').val() == '' || $('#social_app').val() == ''){
+        //     window.location.replace('/booking/error/');
+        // }else{
+        //     send()
+        // }
+        
+
     });
 
 
