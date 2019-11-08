@@ -19,7 +19,6 @@ from django.views.decorators.http import require_http_methods
 from django.db.models import Q  # complex lookup
 from django.conf import settings
 from common.utility.linebot import linebot_send_msg
-# from main.views import linebot_send_msg
 
 # from django.contrib.auth import login, logout
 # from django.contrib.auth.decorators import login_required

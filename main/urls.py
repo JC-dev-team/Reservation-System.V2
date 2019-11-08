@@ -12,8 +12,6 @@ urlpatterns = [
     path('preview/',views.preview),
     # /
     path('',views.preview),
-    # LineBot
-    path('callback/',views.linebot_send_msg),
     
 ]
 
