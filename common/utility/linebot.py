@@ -4,16 +4,16 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 
-def linebot_send_msg(line_id, info):
+def linebot_send_msg(line_id, info = None):
     try:
-        if info.time_session == "Dinner":
-            time_session = '晚餐'
-        else:
-            time_session = '午餐'
-        if info.is_confirm :
-            is_confirm ='已確認'
-        else :
-            is_confirm ='待確認'
+        # if info.time_session == "Dinner":
+        #     time_session = '晚餐'
+        # else:
+        #     time_session = '午餐'
+        # if info.is_confirm :
+        #     is_confirm ='已確認'
+        # else :
+        #     is_confirm ='待確認'
 
         text = "<h1>Hello World</h1>"
 
