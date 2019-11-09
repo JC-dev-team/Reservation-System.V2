@@ -28,9 +28,10 @@ class StaffAuthBackend(ModelBackend):
                     if result == False:
                         return None
                 elif flag != None:
-                    password = make_password(password)
-                    User_data.password = password
-                    User_data.save()
+                    with transaction.atomic():  # transaction
+                        password = make_password(password)
+                        User_data.password = password
+                        User_data.save()
                 return User_data
         except User.DoesNotExist:  # Staff Not Exist
             return None

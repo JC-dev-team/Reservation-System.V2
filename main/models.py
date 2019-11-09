@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 
 
-## auth
+# auth
 class StaffManager(BaseUserManager):
 
     def _create_user(self, email, password,
@@ -35,18 +35,22 @@ class StaffManager(BaseUserManager):
         return user
 
     def create_user(self, email, password=None, **extra_fields):
-        return self._create_user(email, password, False, False,
+        return self._create_user(email, password, is_admin=False, is_superuser=False,
+                                 **extra_fields)
+
+    def create_admin(self, email, password=None, **extra_fields):
+        return self._create_user(email, password, is_admin=True, is_superuser=False,
                                  **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
-        return self._create_user(email, password, True, True,
+        return self._create_user(email, password, is_admin=True, is_superuser=True,
                                  **extra_fields)
 
 
 class Staff(AbstractBaseUser, PermissionsMixin):
     staff_id = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
-    #username
+    # username
     email = models.EmailField(unique=True, max_length=100)
     password = models.CharField(max_length=150)
     staff_name = models.CharField(max_length=45)
@@ -85,6 +89,7 @@ class Staff(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         """
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
 
 class Account(models.Model):
     user_id = models.CharField(primary_key=True, max_length=45)
@@ -132,8 +137,8 @@ class Production(models.Model):
     prod_uuid = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     prod_name = models.CharField(max_length=45)
-    prod_img = models.CharField(max_length=100)
-    prod_price = models.PositiveIntegerField(blank=True, null=True)
+    prod_img = models.CharField(max_length=100,blank=True, null=True)
+    prod_price = models.PositiveIntegerField()
     prod_desc = models.CharField(max_length=200, blank=True, null=True)
     prod_created = models.DateTimeField(blank=True, null=True)
 
@@ -147,7 +152,7 @@ class Store(models.Model):
     store_address = models.CharField(max_length=45)
     store_phone = models.CharField(max_length=20)
     store_fax = models.CharField(max_length=20, blank=True, null=True)
-    tk_service = models.IntegerField()
+    tk_service = models.BooleanField(default=False)
     stay_time = models.IntegerField()
     seat = models.PositiveIntegerField()
     store_created = models.DateTimeField(blank=True, null=True)
@@ -171,7 +176,6 @@ class StoreEvent(models.Model):
 class StaffActionLog(models.Model):
     staff = models.ForeignKey(Staff, models.DO_NOTHING)
     location = models.CharField(max_length=300)
-    # Field renamed to remove unsuitable characters.
     ip_address = models.CharField(max_length=200)
     operation = models.CharField(max_length=150)
     created_date = models.DateTimeField(blank=True, null=True)
@@ -185,10 +189,7 @@ class UserActionLog(models.Model):
     operation = models.CharField(max_length=200)
     location = models.CharField(max_length=300)
     created_date = models.DateTimeField(blank=True, null=True)
-    # Field renamed to remove unsuitable characters.
     ip_address = models.CharField(max_length=200)
 
     class Meta:
         db_table = 'user__action_log___db'
-
-

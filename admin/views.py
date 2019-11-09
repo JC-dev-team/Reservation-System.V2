@@ -24,6 +24,7 @@ from django.conf import settings
 from common.utility.recaptcha import check_recaptcha
 from django.contrib.auth.decorators import login_required
 from common.utility.linebot import linebot_send_msg
+from django.contrib.auth.hashers import check_password, make_password
 
 def error(request):
     request.session.flush()
@@ -33,7 +34,7 @@ def error(request):
 
 
 def staff_login_portal(request):
-    return render(request, 'admin_login.html')
+    return render(request, 'admin_login.html', {'error': ''})
 
 
 @login_required(login_url='/softwayliving/login/')
@@ -53,7 +54,7 @@ def staff_reservation_page(request):
 def member_management(request):
     try:
         if request.user.is_authenticated == False:
-            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+            return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
         queryset = Account.objects.filter(is_active=True)
         serializer_class = Acc_Serializer(queryset, many=True)
@@ -70,11 +71,11 @@ def staff_auth(request):  # authentication staff
         password = request.POST.get('password', None)
 
         if int(request.session.get('try_time', 0)) >= 5:
-            return render(request, 'error/error.html', 
-            {
-                'action': '/softwayliving/login/',
-                'error':'Trying too many times',
-            })
+            return render(request, 'error/error.html',
+                          {
+                              'action': '/softwayliving/login/',
+                              'error': 'Trying too many times',
+                          })
 
         # Check Auth
         result = auth.StaffAuthentication(email, password)
@@ -84,7 +85,7 @@ def staff_auth(request):  # authentication staff
         elif result == 'ERROR':
             request.session['try_time'] = int(
                 request.session.get('try_time', 0))+1
-            return render(request, 'softwayliving/login/',{'error':'帳號或是密碼輸入錯誤'})
+            return render(request, 'softwayliving/login/', {'error': '帳號或是密碼輸入錯誤'})
         elif type(result) == dict:  # error occurred
             request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/softwayliving/login/'})
@@ -110,7 +111,7 @@ def staff_auth(request):  # authentication staff
 def staff_add_reservation(request):  # Help client to add reservation
     try:
         if request.user.is_authenticated == False:
-            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+            return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
 
         request.session.set_expiry(900)
         phone = request.POST.get('phone', None)
@@ -156,7 +157,7 @@ def staff_add_reservation(request):  # Help client to add reservation
 def admin_InsertReservation(request):  # insert booking list
     try:
         if request.user.is_authenticated == False:
-            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+            return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
 
         request.session.set_expiry(900)
         # For validation
@@ -282,7 +283,11 @@ def admin_InsertReservation(request):  # insert booking list
             account_serializer = Acc_Serializer(get_user_info)
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
-            linebot_send_msg(account_serializer.social_id, bklist_serializer)
+
+            line_send_result = linebot_send_msg(
+                account_serializer.social_id, bklist_serializer)
+            if line_send_result == 'failure':
+                raise Exception('linebot send message failed')
             del request.session['user_id']
             request.session.set_expiry(settings.SESSION_COOKIE_AGE)
             return render(request, 'reservation_finish.html', {
@@ -666,6 +671,7 @@ def staff_remove_member(request):
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
+
 @require_http_methods(['POST'])
 def staff_cancel_event(request):
     try:
@@ -676,14 +682,14 @@ def staff_cancel_event(request):
         store_id = request.session.get('store_id', None)
         if store_id == None:
             return JsonResponse({'error': 'Not valid, 請先登入'})
-        
+
         event_date = request.POST.get('event_date', None)
         time_session = request.POST.get('time_session', None)
         event_type = request.POST.get('event_type', None)
 
         with transaction.atomic():  # transaction
             try:
-                instance=StoreEvent.objects.get(
+                instance = StoreEvent.objects.get(
                     store_id=store_id,
                     event_date=event_date,
                     time_session=time_session,
@@ -691,14 +697,72 @@ def staff_cancel_event(request):
                 )
                 instance.delete()
             except StoreEvent.DoesNotExist:
-                return JsonResponse({'alert': '帳號已刪除或是不存在'})
+                return JsonResponse({'alert': '該事件已刪除或是不存在'})
         return JsonResponse({'result': 'success'})
     except Exception as e:
+        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 @require_http_methods(['POST'])
 def add_admin_member(request):
     try:
-        pass
+        if request.user.is_authenticated == False:
+            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        request.session.set_expiry(900)
+
+        store_id = request.POST.get('store_id', None)
+        email = request.POST.get('email', None)
+        staff_level = request.POST.get('staff_level', None)
+        is_superuser = request.POST.get('is_superuser', False)
+        is_admin = request.POST.get('is_admin', False)
+        staff_name = request.POST.get('staff_name', None)
+        password = make_password(request.POST.get('password',None))
+
+
+        with transaction.atomic():  # transaction
+            queryset=Staff.objects.create_admin(
+                email=email,
+                password=password,
+                staff_level=staff_level,
+                staff_name=staff_name,
+                store_id=store_id,
+                is_superuser=is_superuser,
+                is_admin=is_admin,
+            )
+        serializer_class=Staff_Serializer(queryset)
+        return JsonResponse({'reuslt':serializer_class.data})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
+@require_http_methods(['POST'])
+def add_product(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        request.session.set_expiry(900)
+
+        store_id = request.session.get('store_id', None)
+
+        with transaction.atomic():  # transaction
+            Production.objects.create(
+                store_id=store_id,
+                prod_name = prod_name,
+
+            )
+
+        return JsonResponse({'reuslt':serializer_class.data})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
+@require_http_methods(['POST'])
+def add_store(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        request.session.set_expiry(900)
+
+        with transaction.atomic():  # transaction
+            pass
+        return JsonResponse({'reuslt':serializer_class.data})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
