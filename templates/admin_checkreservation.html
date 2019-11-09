@@ -90,7 +90,7 @@
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id='dayoff_action_select_1' required>
                     <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                    <option value="creat_dayoff" selected>設定店休</option>
+                    <option value="creat_dayoff" selected>新增店休</option>
                     <option value="cancel_dayoff">取消店休</option>
 
                 </select>
@@ -714,17 +714,8 @@
 
             events: function (info, successCallback) {
 
-                var Event = [{
-                    id: '3',
-                    title: '店休',
-                    start: new Date(),
-                    startRecur: new Date().addDays(3),
-                    backgroundColor: 'grey',
-                    textColor: 'white',
-                    daysOfWeek: [1],
-
-                }, ];
-                successCallback(Event)
+                var Event = [];
+                //successCallback(Event)
 
 
                 //reservation event
@@ -849,7 +840,7 @@
 
             },
             eventClick: function (info) {
-                //console.log(info)
+                //console.log(info.event)
                 //clean ps data
                 $('#bk_ps').val('')
                 var list_backgroundcolor = info.event.backgroundColor
@@ -881,7 +872,12 @@
                     //selected
                     $("option[name='pass']").attr("selected", true)
                 } else {
-                    Notiflix.Report.Warning('警告', '這天/時段店休喔！！', 'ok');
+                    //open dayoff modal
+                    document.getElementById('dayoff_Modal').style.display = 'inline';
+                    document.getElementById('modal_date_dayoff').innerHTML =
+                        '<p id="modal_date_dayoff">' + '<label><i class="fa fa-calendar"></i></label>' +
+                        ' 日期： ' + info.event.start.addDays(1).toISOString().slice(0, 10) + '</p>'
+                    //Notiflix.Report.Warning('警告', '這天/時段店休喔！！', 'ok');
 
                 }
                 var id = info.event.id
@@ -1068,15 +1064,15 @@
         //spinner show
         Notiflix.Loading.Hourglass('處理中....');
     })
-    
-    $("#dayoff_action_select_1").change(function(e){
+
+    $("#dayoff_action_select_1").change(function (e) {
         console.log('selected')
         if ($(this).val() == 'cancel_dayoff') {
             $("option[value='Allday']").hide()
-        } else{
+        } else {
             $("option[value='Allday']").show()
         }
-        
+
     })
     //next month of button
     $('body').on('click', 'button.fc-next-button', function () {

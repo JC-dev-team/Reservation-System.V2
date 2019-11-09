@@ -4,7 +4,7 @@
 <!-- Headmessage-->
 {% block headmessage %}
 <div class='w3-center'>
-    <h3><b>舒微生活訂位{{request.session.staff_id}}</b></h3>
+    <h3><b>舒微生活訂位</b></h3>
 
 </div>
 {% endblock %}
@@ -116,77 +116,82 @@
 
 <!-- Adult & Children Select-->
 <div class="w3-display-container">
-    <!--store name -->
-    <font size="4.5">
-        <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
-            id="store_name_select">
-            <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-            <option value="0" selected>北投唭哩岸總店</option>
-        </select>
-    </font>
-    <div class="container">
-        <!-- Date num calculated-->
-        <input id="date_num" value="0" type="text" style="display: none">
+    <div class="w3-container">
+        <!--store name -->
+        <font size="4.5">
+            <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
+                id="store_name_select">
+                <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                <option value="0" selected>北投唭哩岸總店</option>
+            </select>
+        </font>
+        <div class="container">
+            <!-- Date num calculated-->
+            <input id="date_num" value="0" type="text" style="display: none">
 
 
-        <!-- adult & children-->
-        <div class="left-half" style="width:100%;">
-            <font size="4.5">
-                <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    id="adult_select">
-                    <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
-                    <option value="1">1 大人</option>
-                    <option value="2" selected>2 大人</option>
-                    <option value="3">3 大人</option>
-                    <option value="4">4 大人</option>
-                    <option value="5">5 大人</option>
-                    <option value="6">6 大人</option>
-                    <option value="7">7 大人</option>
-                    <option value="8">8 大人</option>
-                    <option value="10">10 大人</option>
-                    <option value="11">11 大人</option>
-                    <option value="12">12 大人</option>
-                    <option value="13">13 大人</option>
-                    <option value="14">14 大人</option>
-                    <option value="15">15 大人</option>
-                    <option value="16">16 大人</option>
-                    <option value="17">17 大人</option>
-                    <option value="18">18 大人</option>
-                    <option value="19">19 大人</option>
-                    <option value="20">20 大人</option>
-                </select>
-            </font>
+            <!-- adult & children-->
+            <div class="left-half" style="width:100%;">
+                <font size="4.5">
+                    <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+                        id="adult_select">
+                        <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
+                        <option value="1">1 大人</option>
+                        <option value="2" selected>2 大人</option>
+                        <option value="3">3 大人</option>
+                        <option value="4">4 大人</option>
+                        <option value="5">5 大人</option>
+                        <option value="6">6 大人</option>
+                        <option value="7">7 大人</option>
+                        <option value="8">8 大人</option>
+                        <option value="10">10 大人</option>
+                        <option value="11">11 大人</option>
+                        <option value="12">12 大人</option>
+                        <option value="13">13 大人</option>
+                        <option value="14">14 大人</option>
+                        <option value="15">15 大人</option>
+                        <option value="16">16 大人</option>
+                        <option value="17">17 大人</option>
+                        <option value="18">18 大人</option>
+                        <option value="19">19 大人</option>
+                        <option value="20">20 大人</option>
+                    </select>
+                </font>
+            </div>
+            <br>
+            <div class="right-half" style="width:100%;">
+                <font size="4.5">
+                    <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
+                        id="children_select">
+                        <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                        <option value="0" selected>0 小孩</option>
+                        <option value="1">1 小孩</option>
+                        <option value="2">2 小孩</option>
+                        <option value="3">3 小孩</option>
+                        <option value="4">4 小孩</option>
+                        <option value="5">5 小孩</option>
+                        <option value="6">6 小孩</option>
+                        <option value="7">7 小孩</option>
+                        <option value="8">8 小孩</option>
+                        <option value="9">9 小孩</option>
+                        <option value="10">10 小孩</option>
+                    </select>
+                </font>
+            </div>
+
         </div>
-        <br>
-        <div class="right-half" style="width:100%;">
-            <font size="4.5">
-                <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                    id="children_select">
-                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                    <option value="0" selected>0 小孩</option>
-                    <option value="1">1 小孩</option>
-                    <option value="2">2 小孩</option>
-                    <option value="3">3 小孩</option>
-                    <option value="4">4 小孩</option>
-                    <option value="5">5 小孩</option>
-                    <option value="6">6 小孩</option>
-                    <option value="7">7 小孩</option>
-                    <option value="8">8 小孩</option>
-                    <option value="9">9 小孩</option>
-                    <option value="10">10 小孩</option>
-                </select>
-            </font>
-        </div>
+
+        <font size='4'>
+            <a id="people_number_submit" href='#calendar_container'
+                class="w3-btn w3-round-large w3-block w3-teal w3-padding">
+                <i class="fa fa-search"></i> 查詢空位</a>
+        </font>
     </div>
-    <font size='4'>
-        <button id="people_number_submit" class="w3-btn w3-round-large w3-block w3-teal w3-padding">
-            <i class="fa fa-search"></i> 查詢空位</button>
-    </font>
 </div>
 <hr>
 
 <!-- Calendar-->
-<div id='calendar_container' class="container" style='display: none'>
+<div id='calendar_container' class="container w3-center" style='display: none'>
     <p>
         <font color="red">紅色</font>：已客滿(可後補）/ <font color="green">綠色</font>：可訂位
     </p>
