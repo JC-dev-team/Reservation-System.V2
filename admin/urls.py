@@ -46,6 +46,8 @@ urlpatterns = [
     # /softwayliving/cancel_event/
     path('cancel_event/',views.staff_cancel_event),
 
+    # path('eve/',views.event_AAAA),
+
 ]
 
 

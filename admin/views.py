@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date,timedelta
 from django.shortcuts import render, redirect, reverse
 from main.models import BkList, Account, Production, Staff, Store, StoreEvent
 from common.serializers import Acc_Serializer, Bklist_Serializer, \
@@ -25,6 +25,8 @@ from common.utility.recaptcha import check_recaptcha
 from django.contrib.auth.decorators import login_required
 from common.utility.linebot import linebot_send_msg
 from django.contrib.auth.hashers import check_password, make_password
+from django.views.decorators.csrf import csrf_exempt
+from copy import deepcopy
 
 def error(request):
     request.session.flush()
@@ -703,11 +705,14 @@ def staff_cancel_event(request):
         print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
+
 @require_http_methods(['POST'])
-def add_admin_member(request):
+def add_admin(request):
     try:
         if request.user.is_authenticated == False:
             return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        elif request.user.is_superuser == False:
+            return JsonResponse({'alert': '權限不足'})
         request.session.set_expiry(900)
 
         store_id = request.POST.get('store_id', None)
@@ -716,11 +721,10 @@ def add_admin_member(request):
         is_superuser = request.POST.get('is_superuser', False)
         is_admin = request.POST.get('is_admin', False)
         staff_name = request.POST.get('staff_name', None)
-        password = make_password(request.POST.get('password',None))
-
+        password = make_password(request.POST.get('password', None))
 
         with transaction.atomic():  # transaction
-            queryset=Staff.objects.create_admin(
+            queryset = Staff.objects.create_admin(
                 email=email,
                 password=password,
                 staff_level=staff_level,
@@ -729,28 +733,73 @@ def add_admin_member(request):
                 is_superuser=is_superuser,
                 is_admin=is_admin,
             )
-        serializer_class=Staff_Serializer(queryset)
-        return JsonResponse({'reuslt':serializer_class.data})
+        return JsonResponse({'reuslt': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
+
+
+@require_http_methods(['POST'])
+def delete_admin(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        elif request.user.is_superuser == False:
+            return JsonResponse({'alert': '權限不足'})
+
+        request.session.set_expiry(900)
+        staff_id = request.POST.get('staff_id', None)
+        with transaction.atomic():  # transaction
+            queryset = Staff.objects.get(staff_id=staff_id)
+            queryset.delete()
+
+        return JsonResponse({'reuslt': 'success'})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
 
 @require_http_methods(['POST'])
 def add_product(request):
     try:
         if request.user.is_authenticated == False:
             return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        elif request.user.is_admin == False:
+            return JsonResponse({'alert': '權限不足'})
+
         request.session.set_expiry(900)
 
         store_id = request.session.get('store_id', None)
+        prod_name = request.POST.get('prod_name', None)
+        prod_price = request.POST.get('prod_price', None)
+        prod_img = request.POST.get('prod_img', None)
+        prod_desc = request.POST.get('prod_desc', None)
 
         with transaction.atomic():  # transaction
-            Production.objects.create(
+            queryset = Production.objects.create(
                 store_id=store_id,
-                prod_name = prod_name,
-
+                prod_name=prod_name,
+                prod_price=prod_price,
+                prod_img=prod_img,
+                prod_desc=prod_desc,
             )
+        return JsonResponse({'reuslt': 'success'})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
 
-        return JsonResponse({'reuslt':serializer_class.data})
+@require_http_methods(['POST'])
+def delete_product(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        elif request.user.is_superuser == False:
+            return JsonResponse({'alert': '權限不足'})
+
+        request.session.set_expiry(900)
+        prod_id = request.POST.get('prod_id', None)
+        with transaction.atomic():  # transaction
+            queryset = Production.objects.get(prod_id=prod_id)
+            queryset.delete()
+            
+        return JsonResponse({'reuslt': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
@@ -760,9 +809,57 @@ def add_store(request):
         if request.user.is_authenticated == False:
             return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
+        store_name = request.POST.get('store_name', None)
+        store_address = request.POST.get('store_address', None)
+        store_phone = request.POST.get('store_phone', None)
+        store_fax = request.POST.get('store_fax', None)
+        tk_service = request.POST.get('tk_service', False)
+        stay_time = request.POST.get('stay_time', None)
+        seat = request.POST.get('seat', None)
 
         with transaction.atomic():  # transaction
-            pass
-        return JsonResponse({'reuslt':serializer_class.data})
+            queryset = Store.objects.create(
+                store_name=store_name,
+                store_address=store_address,
+                store_phone=store_phone,
+                store_fax=store_fax,
+                tk_service=tk_service,
+                stay_time=stay_time,
+                seat=seat,
+            )
+
+        return JsonResponse({'reuslt': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
+
+
+
+# @csrf_exempt
+# def event_AAAA(request):
+#     store_id = '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'
+#     event_type ='Day off'
+#     today = date.today()
+#     event_date = deepcopy(today)
+#     counter =0
+#     while event_date.strftime('%Y-%m-%d')<='2022-12-31':
+
+#         if event_date.weekday()!=0:
+#             counter+=1
+#             event_date= (today+timedelta(days=counter))
+#         else :    
+#             event_date=event_date.strftime('%Y-%m-%d')
+#             with transaction.atomic():  # transaction
+#                 StoreEvent.objects.create(
+#                     store_id=store_id, 
+#                     event_type=event_type, 
+#                     event_date=event_date,
+#                     time_session='Lunch')
+#                 StoreEvent.objects.create(
+#                     store_id=store_id, 
+#                     event_type=event_type, 
+#                     event_date=event_date,
+#                     time_session='Dinner')
+#                 counter+=1
+#                 event_date= (today+timedelta(days=counter))
+
+#     return JsonResponse({'reuslt': 'success'})

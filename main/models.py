@@ -134,7 +134,7 @@ class BkList(models.Model):
 
 
 class Production(models.Model):
-    prod_uuid = models.CharField(primary_key=True, max_length=45)
+    prod_id = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     prod_name = models.CharField(max_length=45)
     prod_img = models.CharField(max_length=100,blank=True, null=True)
