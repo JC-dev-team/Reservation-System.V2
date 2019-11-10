@@ -1,4 +1,4 @@
-from datetime import datetime, date,timedelta
+from datetime import datetime, date, timedelta
 from django.shortcuts import render, redirect, reverse
 from main.models import BkList, Account, Production, Staff, Store, StoreEvent
 from common.serializers import Acc_Serializer, Bklist_Serializer, \
@@ -27,6 +27,7 @@ from common.utility.linebot import linebot_send_msg
 from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.csrf import csrf_exempt
 from copy import deepcopy
+
 
 def error(request):
     request.session.flush()
@@ -94,6 +95,9 @@ def staff_auth(request):  # authentication staff
         else:
             if request.user.is_authenticated:
                 request.session.flush()
+            if result.is_active == False:
+                return render(request, 'error/error.html', {'error': '很抱歉，帳號遭到鎖定，請洽客服人員', 'action': '/softwayliving/login/'})
+            
             staff = authenticate(request, email=email, password=password)
             auth_login(request, staff,
                        backend='common.utility.auth.StaffAuthBackend')
@@ -702,7 +706,6 @@ def staff_cancel_event(request):
                 return JsonResponse({'alert': '該事件已刪除或是不存在'})
         return JsonResponse({'result': 'success'})
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 
@@ -785,29 +788,37 @@ def add_product(request):
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
+
 @require_http_methods(['POST'])
 def delete_product(request):
     try:
         if request.user.is_authenticated == False:
             return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
-        elif request.user.is_superuser == False:
+        elif request.user.is_admin == False:
             return JsonResponse({'alert': '權限不足'})
 
         request.session.set_expiry(900)
         prod_id = request.POST.get('prod_id', None)
+        store_id = request.session.get('store_id', None)
         with transaction.atomic():  # transaction
-            queryset = Production.objects.get(prod_id=prod_id)
+            queryset = Production.objects.get(
+                prod_id=prod_id,
+                store_id=store_id
+            )
             queryset.delete()
-            
+
         return JsonResponse({'reuslt': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
+
 
 @require_http_methods(['POST'])
 def add_store(request):
     try:
         if request.user.is_authenticated == False:
             return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        elif request.user.is_superuser == False:
+            return JsonResponse({'alert': '權限不足'})
         request.session.set_expiry(900)
         store_name = request.POST.get('store_name', None)
         store_address = request.POST.get('store_address', None)
@@ -833,6 +844,25 @@ def add_store(request):
         return JsonResponse({'error': '發生未知錯誤'})
 
 
+@require_http_methods(['POST'])
+def delete_store(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        elif request.user.is_superuser == False:
+            return JsonResponse({'alert': '權限不足'})
+
+        request.session.set_expiry(900)
+        store_id = request.POST.get('store_id', None)
+        with transaction.atomic():  # transaction
+            queryset = Store.objects.get(
+                store_id=store_id
+            )
+            queryset.delete()
+
+        return JsonResponse({'reuslt': 'success'})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
 
 # @csrf_exempt
 # def event_AAAA(request):
@@ -846,17 +876,17 @@ def add_store(request):
 #         if event_date.weekday()!=0:
 #             counter+=1
 #             event_date= (today+timedelta(days=counter))
-#         else :    
+#         else :
 #             event_date=event_date.strftime('%Y-%m-%d')
 #             with transaction.atomic():  # transaction
 #                 StoreEvent.objects.create(
-#                     store_id=store_id, 
-#                     event_type=event_type, 
+#                     store_id=store_id,
+#                     event_type=event_type,
 #                     event_date=event_date,
 #                     time_session='Lunch')
 #                 StoreEvent.objects.create(
-#                     store_id=store_id, 
-#                     event_type=event_type, 
+#                     store_id=store_id,
+#                     event_type=event_type,
 #                     event_date=event_date,
 #                     time_session='Dinner')
 #                 counter+=1

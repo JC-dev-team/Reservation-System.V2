@@ -266,8 +266,8 @@ def InsertReservation(request):  # insert booking list
             account_serializer = Acc_Serializer(get_user_info)
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
-            line_send_result=linebot_send_msg(social_id, bklist_serializer)
-            if line_send_result =='failure':
+            line_send_result = linebot_send_msg(social_id, bklist_serializer)
+            if line_send_result == 'failure':
                 raise Exception('linebot send message failed')
             # request.session.flush()
             return render(request, 'reservation_finish.html', {
@@ -301,6 +301,7 @@ def member(request):
             request.session.flush()
             return redirect('/booking/login/')
         elif result == False:  # Account Not Exist
+
             request.session['social_id'] = social_id
             request.session['social_app'] = social_app
             request.session['social_name'] = social_name
@@ -312,12 +313,14 @@ def member(request):
             request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/booking/login/'})
         else:  # Account Exist
+            if 'is_Login' in request.session:
+                request.session.flush()
             if result.social_name != social_name:
                 result.social_name = social_name
                 result.save()
-
-            if 'is_Login' in request.session:
+            if result.is_active ==False:
                 request.session.flush()
+                return render(request, 'error/error.html', {'error': '很抱歉，帳號已經遭到鎖定，請洽客服人員', 'action': '/booking/login/'})
 
             serializer = Acc_Serializer(result)
             # session

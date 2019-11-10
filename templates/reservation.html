@@ -371,6 +371,7 @@
             },
             error: function (response) {
                 Notiflix.Report.Warning('警告', '發生錯誤！！請重新開啟', 'ok');
+                Notiflix.Loading.Remove();
                 console.log(errorThrown)
             }
 

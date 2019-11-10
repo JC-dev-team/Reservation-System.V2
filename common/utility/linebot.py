@@ -1,7 +1,7 @@
 from django.conf import settings
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import (MessageEvent, TextMessage, TextSendMessage,FlexSendMessage, BubbleContainer)
 
 
 def linebot_send_msg(line_id, info= None):

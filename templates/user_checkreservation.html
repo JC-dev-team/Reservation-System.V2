@@ -172,6 +172,7 @@ console.log($('#bk_date').text())
                     window.location.replace('/userdashboard/error/');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok ');
+                    Notiflix.Loading.Remove();
                 } else {
                     result = response.result
                     Notiflix.Report.Success('提醒', '已取消此訂位！！', 'ok ');
@@ -186,6 +187,7 @@ console.log($('#bk_date').text())
                 console.log(XMLHttpRequest)
                 console.log(errorThrown)
                 Notiflix.Report.Warning('警告', '無法取消訂位，請聯絡店家', 'ok ');
+                Notiflix.Loading.Remove();
                 //window.location.replace('/userdashboard/error/');
             }
 
