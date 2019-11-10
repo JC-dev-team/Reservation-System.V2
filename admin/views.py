@@ -95,7 +95,8 @@ def staff_auth(request):  # authentication staff
         else:
             if request.user.is_authenticated:
                 request.session.flush()
-            if result.is_active == False:
+
+            if result['is_active'] == False:
                 return render(request, 'error/error.html', {'error': '很抱歉，帳號遭到鎖定，請洽客服人員', 'action': '/softwayliving/login/'})
             
             staff = authenticate(request, email=email, password=password)

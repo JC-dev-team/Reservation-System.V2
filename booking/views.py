@@ -533,20 +533,23 @@ def getCalendar(request):  # full calendar
             else:
                 people_count[i.time_session][_date] = people_count[i.time_session].get(
                     _date, 0)+int(i.adult)+int(i.children)
-
+        
         for key, values in people_count.items():
-            event_sub_arr = {}  # event dictionary
             # Convert time_session to chinese
             if key == 'Lunch':
                 for sub_key, sub_value in values.items():
+                    event_sub_arr = {}  # event dictionary
                     event_sub_arr['title'] = '午餐'
                     event_sub_arr['start'] = sub_key
+                    
                     if (int(sub_value)+total) > store_query.seat:
                         event_sub_arr['backgroundColor'] = 'red'
                     else:
                         event_sub_arr['backgroundColor'] = 'green'
+                    event_arr.append(event_sub_arr)
             elif key == 'Dinner':
                 for sub_key, sub_value in values.items():
+                    event_sub_arr = {}  # event dictionary
                     event_sub_arr['title'] = '晚餐'
                     event_sub_arr['start'] = sub_key
                     if (int(sub_value)+total) > store_query.seat:
@@ -554,8 +557,7 @@ def getCalendar(request):  # full calendar
                     else:
                         event_sub_arr['backgroundColor'] = 'green'
 
-            event_arr.append(event_sub_arr)
-
+                    event_arr.append(event_sub_arr)
         return JsonResponse({'result': event_arr})
     except Exception as e:
         if action == 'main':
