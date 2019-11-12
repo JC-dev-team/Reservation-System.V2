@@ -373,8 +373,19 @@ def staff_confirm_reservation(request):
             if bk_queryset.exists() == False:
                 return JsonResponse({'alert': '資料已經被刪除或是訂位完成'})
             bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
-            return JsonResponse({'result': 'success'})
+            bklist_serializer = bklist_serializer(bk_queryset)
+            acc_queryset = Account.objects.get(
+                user_id=bk_queryset.user_id
+            )
 
+            line_send_result = linebot_send_msg(
+                acc_queryset.social_id, acc_queryset, bklist_serializer.data)
+
+            if line_send_result == 'failure':
+                raise Exception('linebot send message failed')
+            return JsonResponse({'result': 'success'})
+    except Account.DoesNotExist:
+        return JsonResponse({'alert': '客戶資料不存在'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
@@ -415,6 +426,17 @@ def staff_pass_reservation(request):
             if total > store_queryset.seat:
                 return JsonResponse({'alert': '請先刪除前面非候補訂位'})
             bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
+            bklist_serializer = bklist_serializer(bk_queryset)
+            acc_queryset = Account.objects.get(
+                user_id=bk_queryset.user_id
+            )
+
+            line_send_result = linebot_send_msg(
+                acc_queryset.social_id, acc_queryset, bklist_serializer.data)
+
+            if line_send_result == 'failure':
+                raise Exception('linebot send message failed')
+
             return JsonResponse({'result': 'success'})
 
     except Exception as e:
