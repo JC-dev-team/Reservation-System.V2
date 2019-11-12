@@ -264,7 +264,8 @@ def InsertReservation(request):  # insert booking list
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
             # Use linebot
-            line_send_result = linebot_send_msg(social_id,account_serializer ,bklist_serializer)
+            line_send_result = linebot_send_msg(
+                social_id, account_serializer.data, bklist_serializer.data)
             if line_send_result == 'failure':
                 raise Exception('linebot send message failed')
             # request.session.flush()
@@ -316,7 +317,7 @@ def member(request):
             if result.social_name != social_name:
                 result.social_name = social_name
                 result.save()
-            if result.is_active ==False:
+            if result.is_active == False:
                 request.session.flush()
                 return render(request, 'error/error.html', {'error': '很抱歉，帳號已經遭到鎖定，請洽客服人員', 'action': '/booking/login/'})
 
@@ -530,7 +531,7 @@ def getCalendar(request):  # full calendar
             else:
                 people_count[i.time_session][_date] = people_count[i.time_session].get(
                     _date, 0)+int(i.adult)+int(i.children)
-        
+
         for key, values in people_count.items():
             # Convert time_session to chinese
             if key == 'Lunch':
@@ -538,7 +539,7 @@ def getCalendar(request):  # full calendar
                     event_sub_arr = {}  # event dictionary
                     event_sub_arr['title'] = '午餐'
                     event_sub_arr['start'] = sub_key
-                    
+
                     if (int(sub_value)+total) > store_query.seat:
                         event_sub_arr['backgroundColor'] = 'red'
                     else:

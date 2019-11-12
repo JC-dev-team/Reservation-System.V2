@@ -292,7 +292,7 @@ def admin_InsertReservation(request):  # insert booking list
             bklist_serializer = Bklist_Serializer(final_queryset)
 
             line_send_result = linebot_send_msg(
-                get_user_info.social_id, account_serializer.data, bklist_serializer)
+                get_user_info.social_id, account_serializer.data, bklist_serializer.data)
 
             if line_send_result == 'failure':
                 raise Exception('linebot send message failed')
