@@ -1,10 +1,10 @@
 from django.conf import settings
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage
 
 
-def linebot_send_msg(line_id, info= None):
+def linebot_send_msg(line_id, info=None):
     try:
         # if info.time_session == "Dinner":
         #     time_session = '晚餐'
@@ -16,13 +16,127 @@ def linebot_send_msg(line_id, info= None):
         #     is_confirm ='待確認'
 
         text = "<h1>Hello World</h1>"
+        flex ={
+            "type": "bubble",
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": "SoftWay 訂位處理中",
+                            "size": "xl",
+                            "weight": "bold"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "spacing": "sm",
+                            "margin": "lg",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "預約",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "Miraina Tower, 4-1-6 Shinjuku, Tokyo",
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": True
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "電話",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "0900123456",
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": True
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "時間",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "10:00 - 23:00",
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": True
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "備註",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "10:00 - 23:00",
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": True
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+            }
+        }
 
         line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
         # push message to one user
-        
-        line_bot_api.push_message('U5ee811f1f2f899eb66844500ef14a371', TextSendMessage(text='1'))
-        #line_bot_api.push_message('Uf7e1093512c0dac60f60974ff53e4a2c', TextSendMessage(text='2'))
-        
+
+        #line_bot_api.push_message('U5ee811f1f2f899eb66844500ef14a371', TextSendMessage(text='1'))
+        line_bot_api.push_message('U5ee811f1f2f899eb66844500ef14a371', FlexSendMessage(
+            alt_text="hello", contents=flex))
+        line_bot_api.push_message('Uf7e1093512c0dac60f60974ff53e4a2c', FlexSendMessage(
+            alt_text="hello", contents=flex))
+
         return 'success'
     except Exception as e:
         return 'failure'
