@@ -264,7 +264,7 @@ def InsertReservation(request):  # insert booking list
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
             # Use linebot
-            line_send_result = linebot_send_msg(social_id,account_serializer ,bklist_serializer)
+            line_send_result = linebot_send_msg(social_id,account_serializer.data ,bklist_serializer.data)
             if line_send_result == 'failure':
                 raise Exception('linebot send message failed')
             # request.session.flush()

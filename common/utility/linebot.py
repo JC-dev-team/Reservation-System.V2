@@ -6,16 +6,17 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendM
 
 def linebot_send_msg(line_id, user=None,info=None):
     try:
-        if info.time_session == "Dinner":
-            time_session = '晚餐'
+        if info['time_session'] == "Dinner":
+            time_session_info = '晚餐'
         else:
-            time_session = '午餐'
-        if info.is_confirm :
-            is_confirm ='已確認'
-        else :
-            is_confirm ='待確認'
+            time_session_info = '午餐'
 
-        text = "<h1>Hello World</h1>"
+        username_info = user['username']+' '+str(info['adult'])+'大'+str(info['children'])+'小'
+        date_info = str(info['bk_date'])+' '+time_session_info+' '+str(info['bk_st'])
+        phone_info = user['phone']
+        habit_info = info['bk_habit']
+
+        text = ""
         flex ={
             "type": "bubble",
             "body": {
@@ -48,7 +49,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                                         },
                                         {
                                             "type": "text",
-                                            "text": user['username']+' '+info['adult']+'大'+info['children']+'小',
+                                            "text": username_info,
                                             "flex": 5,
                                             "size": "sm",
                                             "color": "#666666",
@@ -70,7 +71,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                                         },
                                         {
                                             "type": "text",
-                                            "text": user['phone'],
+                                            "text": phone_info,
                                             "flex": 5,
                                             "size": "sm",
                                             "color": "#666666",
@@ -92,7 +93,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                                         },
                                         {
                                             "type": "text",
-                                            "text": info['bk_date']+' '+info['bk_st'],
+                                            "text":date_info,
                                             "flex": 5,
                                             "size": "sm",
                                             "color": "#666666",
@@ -114,7 +115,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                                         },
                                         {
                                             "type": "text",
-                                            "text": info['bk_ps'],
+                                            "text": info['bk_habit'],
                                             "flex": 5,
                                             "size": "sm",
                                             "color": "#666666",
