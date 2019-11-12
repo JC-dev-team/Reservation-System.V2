@@ -16,7 +16,7 @@ def linebot_send_msg(line_id, user=None,info=None):
         else :
             is_confirm_info ='SoftWay 訂位處理中'
 
-        if info['bk_ps']== None:
+        if info['bk_ps']== None or info['bk_ps']== '':
             ps_info = '無'
         else:
             ps_info = info['bk_ps']

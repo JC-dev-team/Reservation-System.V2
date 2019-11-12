@@ -88,7 +88,7 @@ def staff_auth(request):  # authentication staff
         elif result == 'ERROR':
             request.session['try_time'] = int(
                 request.session.get('try_time', 0))+1
-            return render(request, 'softwayliving/login/', {'error': '帳號或是密碼輸入錯誤'})
+            return render(request, 'admin_login.html', {'error': '帳號或是密碼輸入錯誤'})
         elif type(result) == dict:  # error occurred
             request.session.flush()
             return render(request, 'error/error.html', {'error': result['error'], 'action': '/softwayliving/login/'})
@@ -370,23 +370,32 @@ def staff_confirm_reservation(request):
                 is_cancel=False,
                 is_confirm=False,
             )
+            
             if bk_queryset.exists() == False:
                 return JsonResponse({'alert': '資料已經被刪除或是訂位完成'})
-            bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
-            bklist_serializer = bklist_serializer(bk_queryset)
-            acc_queryset = Account.objects.get(
-                user_id=bk_queryset.user_id
-            )
 
+            bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
+            
+            bklist_queryset = BkList.objects.select_for_update().get(
+                bk_uuid=bk_uuid,
+            )
+            
+            acc_queryset = Account.objects.get(
+                user_id=bklist_queryset.user_id
+            )
+            bk_serializer = Bklist_Serializer(bklist_queryset)
+            acc_serializer=Acc_Serializer(acc_queryset)
             line_send_result = linebot_send_msg(
-                acc_queryset.social_id, acc_queryset, bklist_serializer.data)
+                acc_queryset.social_id, acc_serializer.data, bk_serializer.data)
 
             if line_send_result == 'failure':
                 raise Exception('linebot send message failed')
             return JsonResponse({'result': 'success'})
+
     except Account.DoesNotExist:
         return JsonResponse({'alert': '客戶資料不存在'})
     except Exception as e:
+        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 
