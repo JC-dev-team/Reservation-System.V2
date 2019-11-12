@@ -135,7 +135,7 @@ DATABASES = {
         'NAME': 'softway',
         'USER': 'root',
         'PASSWORD': 'rootadmin',
-        'HOST': 'mysql-iamback.cbelqfilciuy.us-east-1.rds.amazonaws.com',
+        'HOST': 'mysqlbeenattack.cbelqfilciuy.us-east-1.rds.amazonaws.com',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",

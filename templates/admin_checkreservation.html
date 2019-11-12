@@ -842,6 +842,8 @@
             eventClick: function (info) {
                 //console.log(info.event)
                 //clean ps data
+                var date = info.event.start.addDays(1).toISOString().slice(0, 10)
+                $("#dayoff_date").val(date)
                 $('#bk_ps').val('')
                 var list_backgroundcolor = info.event.backgroundColor
                 if (list_backgroundcolor == 'orange') {
@@ -876,7 +878,7 @@
                     document.getElementById('dayoff_Modal').style.display = 'inline';
                     document.getElementById('modal_date_dayoff').innerHTML =
                         '<p id="modal_date_dayoff">' + '<label><i class="fa fa-calendar"></i></label>' +
-                        ' 日期： ' + info.event.start.addDays(1).toISOString().slice(0, 10) + '</p>'
+                        ' 日期： ' + date + '</p>'
                     //Notiflix.Report.Warning('警告', '這天/時段店休喔！！', 'ok');
 
                 }
@@ -1045,18 +1047,20 @@
         console.log('time_session: ' + time_session)
         if (action == 'cancel_dayoff') {
             var data = {
-                event_date: date,
-                time_session: time_session,
-                event_type: 'Day off'
+                'event_date': date,
+                'time_session': time_session,
+                'event_type': 'Day off'
             }
+            
             admin_cancel_dayoff(data)
 
         } else { //creat_dayoff
             var data = {
-                event_date: date,
-                time_session: time_session,
-                event_type: 'Day off'
+                'event_date': date,
+                'time_session': time_session,
+                'event_type': 'Day off'
             }
+            
             admin_dayoff(data)
 
         }

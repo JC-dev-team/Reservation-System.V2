@@ -116,7 +116,6 @@ class BkList(models.Model):
     bk_date = models.DateField()
     time_session = models.CharField(max_length=10)
     bk_st = models.TimeField()
-    bk_ed = models.TimeField(blank=True, null=True)
     wh_bk = models.DateTimeField(blank=True, null=True)
     adult = models.PositiveIntegerField()
     children = models.PositiveIntegerField()
