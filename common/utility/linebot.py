@@ -11,11 +11,23 @@ def linebot_send_msg(line_id, user=None,info=None):
         else:
             time_session_info = '午餐'
 
+        if info['is_confirm'] :
+            is_confirm_info ='SoftWay 訂位已確認'
+        else :
+            is_confirm_info ='SoftWay 訂位處理中'
+
+        if info['bk_ps']== None:
+            ps_info = '無'
+        else:
+            ps_info = info['bk_ps']
+
         username_info = user['username']+' '+str(info['adult'])+'大'+str(info['children'])+'小'
         date_info = str(info['bk_date'])+' '+time_session_info+' '+str(info['bk_st'])
         phone_info = user['phone']
         habit_info = info['bk_habit']
 
+        
+        
         text = ""
         flex ={
             "type": "bubble",
@@ -25,7 +37,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                     "contents": [
                         {
                             "type": "text",
-                            "text": "SoftWay 訂位處理中",
+                            "text": is_confirm_info,
                             "size": "xl",
                             "weight": "bold"
                         },
@@ -108,7 +120,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                                     "contents": [
                                         {
                                             "type": "text",
-                                            "text": "備註",
+                                            "text": "習慣",
                                             "flex": 1,
                                             "size": "sm",
                                             "color": "#AAAAAA"
@@ -116,6 +128,28 @@ def linebot_send_msg(line_id, user=None,info=None):
                                         {
                                             "type": "text",
                                             "text": info['bk_habit'],
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": True
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "備註",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": ps_info,
                                             "flex": 5,
                                             "size": "sm",
                                             "color": "#666666",
