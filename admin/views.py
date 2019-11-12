@@ -98,7 +98,7 @@ def staff_auth(request):  # authentication staff
 
             if result['is_active'] == False:
                 return render(request, 'error/error.html', {'error': '很抱歉，帳號遭到鎖定，請洽客服人員', 'action': '/softwayliving/login/'})
-            
+
             staff = authenticate(request, email=email, password=password)
             auth_login(request, staff,
                        backend='common.utility.auth.StaffAuthBackend')
@@ -270,7 +270,7 @@ def admin_InsertReservation(request):  # insert booking list
                 bk_price=bk_price,
                 is_confirm=is_confirm,
             )
-            get_user_info = Account.objects.only('user_id', 'username').get(
+            get_user_info = Account.objects.only('user_id', 'socila_id', 'username').get(
                 user_id=user_id,
             )
 
@@ -292,7 +292,8 @@ def admin_InsertReservation(request):  # insert booking list
             bklist_serializer = Bklist_Serializer(final_queryset)
 
             line_send_result = linebot_send_msg(
-                account_serializer.social_id, bklist_serializer)
+                get_user_info.social_id, account_serializer.data, bklist_serializer)
+
             if line_send_result == 'failure':
                 raise Exception('linebot send message failed')
             del request.session['user_id']

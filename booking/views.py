@@ -263,7 +263,8 @@ def InsertReservation(request):  # insert booking list
             account_serializer = Acc_Serializer(get_user_info)
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
-            line_send_result = linebot_send_msg(social_id, bklist_serializer)
+            # Use linebot
+            line_send_result = linebot_send_msg(social_id,account_serializer ,bklist_serializer)
             if line_send_result == 'failure':
                 raise Exception('linebot send message failed')
             # request.session.flush()
@@ -327,7 +328,6 @@ def member(request):
             request.session['social_name'] = social_name
             request.session['user_id'] = result.user_id
             # Test linebot remove after finish
-            linebot_send_msg(social_id)
             return render(request, 'reservation.html', {
                 'data': serializer.data,
                 'google_keys': settings.RECAPTCHA_PUBLIC_KEY},

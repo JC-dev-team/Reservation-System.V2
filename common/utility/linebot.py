@@ -48,7 +48,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                                         },
                                         {
                                             "type": "text",
-                                            "text": user.username+' '+info.adult+'大'+info.children+'小',
+                                            "text": user['username']+' '+info['adult']+'大'+info['children']+'小',
                                             "flex": 5,
                                             "size": "sm",
                                             "color": "#666666",
@@ -70,7 +70,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                                         },
                                         {
                                             "type": "text",
-                                            "text": user.phone,
+                                            "text": user['phone'],
                                             "flex": 5,
                                             "size": "sm",
                                             "color": "#666666",
@@ -92,7 +92,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                                         },
                                         {
                                             "type": "text",
-                                            "text": info.bk_date+' '+info.bk_st,
+                                            "text": info['bk_date']+' '+info['bk_st'],
                                             "flex": 5,
                                             "size": "sm",
                                             "color": "#666666",
@@ -114,7 +114,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                                         },
                                         {
                                             "type": "text",
-                                            "text": info.bk_ps,
+                                            "text": info['bk_ps'],
                                             "flex": 5,
                                             "size": "sm",
                                             "color": "#666666",
