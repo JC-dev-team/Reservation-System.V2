@@ -700,11 +700,10 @@ def staff_modify_member(request):
         birth = request.POST.get('birth', None)
         username = request.POST.get('username', None)
         phone = request.POST.get('phone', None)
-
         with transaction.atomic():  # transaction
             try:
                 queryset = Account.objects.get(user_id=user_id)
-                if birth != None or birth != '' or birth != 'None':
+                if birth != None and birth != '' and birth != 'None':
                     queryset.birth = birth
                 queryset.username = username
                 queryset.phone = phone
@@ -713,7 +712,6 @@ def staff_modify_member(request):
             except Account.DoesNotExist:
                 return JsonResponse({'alert': '帳號已刪除或是不存在'})
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 
