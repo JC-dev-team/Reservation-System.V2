@@ -123,15 +123,15 @@
                 if (response.error != null) {
                     console.log(response.error)
                     Notiflix.Notify.Failure('發生錯誤！！');
+                    Notiflix.Loading.Remove();
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
+                    Notiflix.Loading.Remove();
                 } else {
                     Notiflix.Notify.Success('已儲存！！');
-                    t.parentElement.style.display = 'none'
+                    document.getElementById('edit_Modal').style.display = 'none'
+                    window.location.reload();
                 }
-
-                Notiflix.Loading.Remove();
-
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -161,7 +161,7 @@
                 }
 
                 Notiflix.Loading.Remove();
-
+                
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -212,21 +212,19 @@
 
 
     function lock_member(t, user_id) {
-        Notiflix.Confirm.Show('管理者權限', '確定要刪除此會員嗎?', '是-刪除會員', '否-不刪除',
+        Notiflix.Confirm.Show('管理者權限', '確定要凍結此會員嗎?', '是-凍結會員', '否',
             function () {
-                console.log('確認刪除會員 Y')
 
                 var data = {
                     'user_id': user_id
                 }
 
                 //spinner show
-                Notiflix.Loading.Hourglass('刪除中....');
+                Notiflix.Loading.Hourglass('正在凍結....');
                 ajax_lock_member(t, data)
 
             },
             function () {
-                console.log('確認刪除會員 N')
 
 
             });

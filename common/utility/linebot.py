@@ -13,8 +13,13 @@ def linebot_send_msg(line_id, user=None,info=None):
 
         if info['is_confirm'] :
             is_confirm_info ='SoftWay 訂位已確認'
+            color = '#05C11C'
+        elif info['is_cancel']:
+            is_confirm_info ='SoftWay 訂位已取消'
+            color = '#E83B4F'
         else :
             is_confirm_info ='SoftWay 訂位處理中'
+            color = '#E7881D'
 
         if info['bk_ps']== None or info['bk_ps']== '':
             ps_info = '無'
@@ -25,7 +30,7 @@ def linebot_send_msg(line_id, user=None,info=None):
         date_info = str(info['bk_date'])+' '+time_session_info+' '+str(info['bk_st'])
         phone_info = user['phone']
         habit_info = info['bk_habit']
-
+        price_info = str(info['bk_price'])
         
         
         text = ""
@@ -39,7 +44,8 @@ def linebot_send_msg(line_id, user=None,info=None):
                             "type": "text",
                             "text": is_confirm_info,
                             "size": "xl",
-                            "weight": "bold"
+                            "weight": "bold",
+                            "color": color
                         },
                         {
                             "type": "box",
@@ -120,6 +126,28 @@ def linebot_send_msg(line_id, user=None,info=None):
                                     "contents": [
                                         {
                                             "type": "text",
+                                            "text": "價位",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": price_info,
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": True
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [
+                                        {
+                                            "type": "text",
                                             "text": "習慣",
                                             "flex": 1,
                                             "size": "sm",
@@ -127,7 +155,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                                         },
                                         {
                                             "type": "text",
-                                            "text": info['bk_habit'],
+                                            "text": habit_info,
                                             "flex": 5,
                                             "size": "sm",
                                             "color": "#666666",
