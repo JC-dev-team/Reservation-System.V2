@@ -686,7 +686,7 @@ def staff_is_waiting(request):
 
 
 @require_http_methods(['POST'])
-def staff_remove_member(request):
+def staff_lock_member(request):
     try:
         if request.user.is_authenticated == False:
             return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
