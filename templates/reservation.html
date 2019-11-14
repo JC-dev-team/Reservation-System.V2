@@ -120,7 +120,7 @@
         <!--store name -->
         <font size="4.5">
             <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
-                id="store_name_select">
+                id="store_name_select" onclick='getStoreInfo()'>
                 <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
                 <option value="0" selected>北投唭哩岸總店</option>
             </select>
@@ -292,6 +292,31 @@
         }
     });
 
+    function getStoreInfo() {
+        $.ajax({
+            type: "GET",
+            url: '/booking/getStoreInfo/',
+            success: function (response) {
+                if (response.error != null) {
+                    // console.log(response.error)
+                    window.location.replace('/booking/error/');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                } else {
+                    $('#store_name_select').empty()
+                    for (var i = 0; i < response.result.length; i++) {
+                        $('#store_name_select').append(`<option value="${response.result[i].store_id}"> 
+                                       ${response.result[i].store_name} 
+                                  </option>`)
+                    }
+
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                window.location.replace('/booking/error/');
+            }
+        })
+    }
 
     function people_number(data, num, calendar) {
         $.ajax({
@@ -725,5 +750,6 @@
 
 
     })
+
 </script>
 {% endblock %}
