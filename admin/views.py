@@ -370,21 +370,21 @@ def staff_confirm_reservation(request):
                 is_cancel=False,
                 is_confirm=False,
             )
-            
+
             if bk_queryset.exists() == False:
                 return JsonResponse({'alert': '資料已經被刪除或是訂位完成'})
 
             bk_queryset.update(waiting_num=0, is_confirm=True, bk_ps=bk_ps)
-            
+
             bklist_queryset = BkList.objects.select_for_update().get(
                 bk_uuid=bk_uuid,
             )
-            
+
             acc_queryset = Account.objects.get(
                 user_id=bklist_queryset.user_id
             )
             bk_serializer = Bklist_Serializer(bklist_queryset)
-            acc_serializer=Acc_Serializer(acc_queryset)
+            acc_serializer = Acc_Serializer(acc_queryset)
             line_send_result = linebot_send_msg(
                 acc_queryset.social_id, acc_serializer.data, bk_serializer.data)
 
@@ -683,6 +683,7 @@ def staff_is_waiting(request):
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
+
 @require_http_methods(['POST'])
 def staff_modify_member(request):
     try:
@@ -694,18 +695,19 @@ def staff_modify_member(request):
         # staff_id = request.session.get('staff_id', None)
         # if is_Login != True or staff_id == None:
         #     return JsonResponse({'alert': 'Not Valid, 請登入帳號'})
-        
-        user_id = request.POST.get('user_id',None)
-        birth=request.POST.get('birth',None)
-        username=request.POST.get('username',None)
-        phone = request.POST.get('phone',None)
+
+        user_id = request.POST.get('user_id', None)
+        birth = request.POST.get('birth', None)
+        username = request.POST.get('username', None)
+        phone = request.POST.get('phone', None)
 
         with transaction.atomic():  # transaction
             try:
                 queryset = Account.objects.get(user_id=user_id)
-                queryset.birth=birth
-                queryset.username=username
-                queryset.phone=phone
+                if birth != None or birth != '' or birth != 'None':
+                    queryset.birth = birth
+                queryset.username = username
+                queryset.phone = phone
                 queryset.save()
                 return JsonResponse({'result': 'success'})
             except Account.DoesNotExist:
@@ -851,6 +853,7 @@ def add_product(request):
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
+
 @require_http_methods(['POST'])
 def modify_product(request):
     try:
@@ -860,7 +863,6 @@ def modify_product(request):
             return JsonResponse({'alert': '權限不足'})
         request.session.set_expiry(900)
         prod_id = request.POST.get('prod_id', None)
-
 
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
@@ -920,6 +922,7 @@ def add_store(request):
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
+
 @require_http_methods(['POST'])
 def modify_store(request):
     try:
@@ -927,12 +930,13 @@ def modify_store(request):
             return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         elif request.user.is_superuser == False:
             return JsonResponse({'alert': '權限不足'})
-        
+
         request.session.set_expiry(900)
         store_id = request.POST.get('store_id', None)
 
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
+
 
 @require_http_methods(['POST'])
 def delete_store(request):

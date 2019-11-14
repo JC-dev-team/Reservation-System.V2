@@ -45,7 +45,7 @@ urlpatterns = [
     path('lock_member/',views.staff_lock_member),
     # /softwayliving/cancel_event/
     path('cancel_event/',views.staff_cancel_event),
-    # /softwayliving/modfiy_member/
+    # /softwayliving/modify_member/
     path('modify_member/',views.staff_modify_member),
 
     # path('eve/',views.event_AAAA),
