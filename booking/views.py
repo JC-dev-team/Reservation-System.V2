@@ -38,7 +38,7 @@ from common.utility.linebot import linebot_send_msg
 #         query_set = queryset.filter(phone=phone)
 #         return query_set
 
-# Definition site ------------------------------------------------
+## Definition site ------------------------------------------------
 # def error_404_view(request,exception):
 #     # data = {"name": "ThePythonDjango.com"}
 #     return render(request,'error/error404.html')
@@ -156,8 +156,8 @@ def InsertReservation(request):  # insert booking list
         bk_habit = request.POST.get('bk_habit', None)
         event_type = request.POST.get('event_type', None)
         time_session = request.POST.get('time_session', None)
-        entire_time = request.POST.get('entire_time', False)
         bk_price = request.POST.get('price', None)
+        entire_time = False
         is_cancel = False
         waiting_num = 0
         is_confirm = False
@@ -343,7 +343,8 @@ def member(request):
 @require_http_methods(['GET'])
 def getWaitingList(request):  # get waiting list
     try:
-        request.session.set_expiry(900)
+        if request.session.get('is_Login', None) != None:
+            request.session.set_expiry(900)
         action = request.GET.get('action', None)
         bk_date = request.GET.get('event_date', None)
         store_id = request.GET.get('store_id', None)
@@ -456,10 +457,27 @@ def getWaitingList(request):  # get waiting list
 
 
 @require_http_methods(['GET'])
+def getStoreInfo(request):
+    try:
+        if request.session.get('is_Login', None) != None:
+            request.session.set_expiry(900)
+        action = request.GET.get('action', None)
+        queryset = Store.objects.all()
+        store_serializer = Store_form_serializer(queryset, many=True)
+
+        return JsonResponse({'result': store_serializer.data})
+    except Exception as e:
+        if action == 'main':
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/preview/'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
+
+
+@require_http_methods(['GET'])
 def getCalendar(request):  # full calendar
     try:
         # Renew session
-        request.session.set_expiry(900)
+        if request.session.get('is_Login', None) != None:
+            request.session.set_expiry(900)
         action = request.GET.get('action', None)
         store_id = request.GET.get('store_id', None)
         start_month = request.GET.get('start_month', None)

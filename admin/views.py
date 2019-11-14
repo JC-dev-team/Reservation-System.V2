@@ -395,7 +395,6 @@ def staff_confirm_reservation(request):
     except Account.DoesNotExist:
         return JsonResponse({'alert': '客戶資料不存在'})
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤'})
 
 
@@ -684,6 +683,36 @@ def staff_is_waiting(request):
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
+@require_http_methods(['POST'])
+def staff_modify_member(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        request.session.set_expiry(900)
+        # Set auth in future
+        # is_Login = request.session.get('is_Login', None)
+        # staff_id = request.session.get('staff_id', None)
+        # if is_Login != True or staff_id == None:
+        #     return JsonResponse({'alert': 'Not Valid, 請登入帳號'})
+        
+        user_id = request.POST.get('user_id',None)
+        birth=request.POST.get('birth',None)
+        username=request.POST.get('username',None)
+        phone = request.POST.get('phone',None)
+
+        with transaction.atomic():  # transaction
+            try:
+                queryset = Account.objects.get(user_id=user_id)
+                queryset.birth=birth
+                queryset.username=username
+                queryset.phone=phone
+                queryset.save()
+                return JsonResponse({'result': 'success'})
+            except Account.DoesNotExist:
+                return JsonResponse({'alert': '帳號已刪除或是不存在'})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
 
 @require_http_methods(['POST'])
 def staff_lock_member(request):
@@ -697,6 +726,7 @@ def staff_lock_member(request):
         staff_id = request.session.get('staff_id', None)
         if is_Login != True or staff_id == None:
             return JsonResponse({'alert': 'Not Valid, 請登入帳號'})
+
         user_id = request.POST.get('user_id', None)
         with transaction.atomic():  # transaction
             try:
@@ -821,6 +851,20 @@ def add_product(request):
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
+@require_http_methods(['POST'])
+def modify_product(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        elif request.user.is_admin == False:
+            return JsonResponse({'alert': '權限不足'})
+        request.session.set_expiry(900)
+        prod_id = request.POST.get('prod_id', None)
+
+
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
+
 
 @require_http_methods(['POST'])
 def delete_product(request):
@@ -876,6 +920,19 @@ def add_store(request):
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤'})
 
+@require_http_methods(['POST'])
+def modify_store(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        elif request.user.is_superuser == False:
+            return JsonResponse({'alert': '權限不足'})
+        
+        request.session.set_expiry(900)
+        store_id = request.POST.get('store_id', None)
+
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤'})
 
 @require_http_methods(['POST'])
 def delete_store(request):

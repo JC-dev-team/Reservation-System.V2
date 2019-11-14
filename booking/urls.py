@@ -26,7 +26,8 @@ urlpatterns = [
     path('getCalendar/',views.getCalendar, name='getCalendar'), 
     # /booking/getWaitingList/ 
     path('getWaitingList/',views.getWaitingList, name='getWaitingList'),
-
+    # /booking/getStoreInfo/
+    path('getStoreInfo',views.getStoreInfo),
 
     
     # re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),

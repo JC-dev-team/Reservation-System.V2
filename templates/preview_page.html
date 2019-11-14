@@ -318,7 +318,8 @@
             //Default View
             defaultView: 'dayGridMonth',
             //defaultDate
-            defaultDate: (new Date().addMonths(num)).toISOString().slice(0, 10),
+            defaultDate: (new Date().addDays(3).addMonths(num)).toISOString().slice(0, 10),
+
             //Height
             height: 'auto',
             contentHeight: 500,
