@@ -30,6 +30,7 @@
                 <div class="w3-container">
                     <br>
                     <font size="4">
+                        <input id='edit_user_id' type="text" style="display: none">
                         <!-- action-->
                         <label><span> 姓名： </label><span onclick="document.getElementById('edit_username').removeAttribute('disabled')"><i class="far fa-edit w3-right"></i></span>
                         <input id='edit_username' type="text" class="w3-input w3-border" value="" disabled>
@@ -43,7 +44,7 @@
                         
 
                         <br>
-                        <button id='modal_button_save' onclick=''
+                        <button id='modal_button_save' onclick='save_edit()'
                             class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">儲存
                             <i class="fa fa-check"></i></button>
                         <button class="w3-button w3-red w3-section"
@@ -57,7 +58,7 @@
         <li class="w3-bar">
             <button onclick="lock_member(this,'{{element.user_id}}')" class="w3-button w3-white w3-large w3-right"><i
                     class="fas fa-ban"></i></button>
-            <button onclick="edit_member(this,'{{element.username}}', '{{element.phone}}','{{element.birth}}')"
+            <button onclick="edit_member(this,'{{element.user_id}}','{{element.username}}', '{{element.phone}}','{{element.birth}}')"
                 class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
 
 
@@ -116,7 +117,7 @@
     function ajax_save_edit(data){
         $.ajax({
             type: 'POST',
-            url: '/softwayliving/modfiy_member/',
+            url: '/softwayliving/modify_member/',
             data: data,
             success: function (response) {
                 if (response.error != null) {
@@ -176,19 +177,21 @@
     function save_edit(){
         Notiflix.Confirm.Show('管理者權限', '確定要更動嗎?', '是-儲存', '否',
             function () {
-
+                var user_id = $('#edit_user_id').val();
                 var username = $('#edit_username').val();
                 var phone = $('#edit_phone').val();
                 var birth = $('#edit_birth').val();
+                
 
                 var data = {
+                    'user_id':user_id,
                     'username': username,
                     'phone':phone,
                     'birth':birth
                 }
 
                 //spinner show
-                Notiflix.Loading.Hourglass('刪除中....');
+                Notiflix.Loading.Hourglass('更新中....');
                 ajax_save_edit(data)
 
             },
@@ -198,8 +201,9 @@
         
     }
 
-    function edit_member(t, username, phone, birth){
+    function edit_member(t, user_id,username, phone, birth){
         document.getElementById('edit_Modal').style.display = 'inline'
+        document.getElementById('edit_user_id').value = user_id
         document.getElementById('edit_username').value = username
         document.getElementById('edit_phone').value = phone
         document.getElementById('edit_birth').value = birth
