@@ -12,26 +12,66 @@
 
 </div>
 
+
+
 <div class="w3-container">
 
     <ul class="w3-ul w3-card-4">
 
         {% for element in data %}
+        <!-- edit Modal -->
+        <div id="edit_Modal" class="w3-modal">
+            <div class="w3-modal-content w3-animate-top w3-card-4">
+                <header class="w3-container w3-teal w3-center w3-padding-32">
+                    <span onclick="document.getElementById('edit_Modal').style.display='none'"
+                        class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
+                    <h2 class="w3-wide"><i class="fa fa-bell"></i> 管理者權限</h2>
+                </header>
+                <div class="w3-container">
+                    <br>
+                    <font size="4">
+                        <!-- action-->
+                        <label><span> 姓名： </label><span onclick="document.getElementById('edit_username').removeAttribute('disabled')"><i class="far fa-edit w3-right"></i></span>
+                        <input id='edit_username' type="text" class="w3-input w3-border" value="" disabled>
+                        <br>
+                        <label><span> 電話： </label><span onclick="document.getElementById('edit_phone').removeAttribute('disabled')"><i class="far fa-edit w3-right"></i></span>
+                        <input id='edit_phone' type="tel" class="w3-input w3-border" value="" disabled>
+                        <br>
+                        <label><span> 生日： </label><span onclick="document.getElementById('edit_birth').removeAttribute('disabled')"><i class="far fa-edit w3-right"></i></span>
+                        <input id='edit_birth' type="text" class="w3-input w3-border" value="" disabled>
 
-        <li class="w3-bar">
-            <div class="w3-bar-item">
-                <button onclick="delete_member(this,'{{element.user_id}}')"
-                    class="w3-button w3-white w3-normal w3-right">修改</button>
-                <button onclick="delete_member(this,'{{element.user_id}}')"
-                    class="w3-button w3-white w3-normal w3-right">修改</button>
+                        
+
+                        <br>
+                        <button id='modal_button_save' onclick=''
+                            class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">儲存
+                            <i class="fa fa-check"></i></button>
+                        <button class="w3-button w3-red w3-section"
+                            onclick="document.getElementById('edit_Modal').style.display='none'">關閉 <i
+                                class="fa fa-remove"></i></button>
+                    </font>
+                </div>
+
             </div>
+        </div>
+        <li class="w3-bar">
+            <button onclick="lock_member(this,'{{element.user_id}}')" class="w3-button w3-white w3-large w3-right"><i
+                    class="fas fa-ban"></i></button>
+            <button onclick="edit_member(this,'{{element.username}}', '{{element.phone}}','{{element.birth}}')"
+                class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
+
+
             <!-- <div class="w3-bar-item w3-left">
                 <i class="fas fa-user-circle" style='color:green;font-size:40px'></i>
             </div> -->
             <div class="w3-bar-item">
                 <!-- <span class="w3-left w3-large">({{data.count}})</span> -->
-                <span class="w3-large">{{element.username}} ({{element.social_name}})</span><br>
-                <span>{{element.phone}}</span>
+                <span class="w3-large"><i class="far fa-user"></i> {{element.username}}
+                    ({{element.social_name}})</span><br>
+                <span><i class="fas fa-phone"></i> {{element.phone}}</span><br>
+                {% if element.birth != None %}
+                <span><i class="fas fa-birthday-cake"></i> {{element.birth}}</span>
+                {% endif %}
             </div>
         </li>
 
@@ -72,10 +112,40 @@
         }
     });
 
-    function ajax_delete_member(t, data) {
+
+    function ajax_save_edit(data){
         $.ajax({
             type: 'POST',
-            url: '/softwayliving/remove_member/',
+            url: '/softwayliving/modfiy_member/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                } else {
+                    Notiflix.Notify.Success('已儲存！！');
+                    t.parentElement.style.display = 'none'
+                }
+
+                Notiflix.Loading.Remove();
+
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Loading.Remove();
+
+            }
+
+        })
+    }
+
+    function ajax_lock_member(t, data) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/lock_member/',
             data: data,
             success: function (response) {
                 if (response.error != null) {
@@ -102,7 +172,42 @@
         })
     }
 
-    function delete_member(t, user_id) {
+
+    function save_edit(){
+        Notiflix.Confirm.Show('管理者權限', '確定要更動嗎?', '是-儲存', '否',
+            function () {
+
+                var username = $('#edit_username').val();
+                var phone = $('#edit_phone').val();
+                var birth = $('#edit_birth').val();
+
+                var data = {
+                    'username': username,
+                    'phone':phone,
+                    'birth':birth
+                }
+
+                //spinner show
+                Notiflix.Loading.Hourglass('刪除中....');
+                ajax_save_edit(data)
+
+            },
+            function () {
+
+            });
+        
+    }
+
+    function edit_member(t, username, phone, birth){
+        document.getElementById('edit_Modal').style.display = 'inline'
+        document.getElementById('edit_username').value = username
+        document.getElementById('edit_phone').value = phone
+        document.getElementById('edit_birth').value = birth
+
+    }
+
+
+    function lock_member(t, user_id) {
         Notiflix.Confirm.Show('管理者權限', '確定要刪除此會員嗎?', '是-刪除會員', '否-不刪除',
             function () {
                 console.log('確認刪除會員 Y')
@@ -113,7 +218,7 @@
 
                 //spinner show
                 Notiflix.Loading.Hourglass('刪除中....');
-                ajax_delete_member(t, data)
+                ajax_lock_member(t, data)
 
             },
             function () {
