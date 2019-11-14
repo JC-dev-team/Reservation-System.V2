@@ -890,7 +890,9 @@
                 var information = info.event.title.split('\n')[0]
                 var user_name = info.event.title.split('\n')[1].split(' ')[0]
                 var user_phone = info.event.title.split('\n')[1].split(' ')[1]
-
+                console.log(info)
+                console.log(info.event)
+            
                 if (time_session == '午餐') {
                     time_session = 'Lunch'
                 } else {
@@ -926,7 +928,7 @@
                     '<p id="modal_status">' + '<label><i class="fa fa-info-circle"></i></label>' +
                     ' 訂單狀態： ' + status + '</p>'
 
-
+                // document.getElementById('bk_ps').value = 
             }
         });
         if (action == 'render') {
