@@ -19,10 +19,12 @@
         {% for element in data %}
 
         <li class="w3-bar">
-            <span onclick="delete_member(this,'{{element.user_id}}')"
-                class="w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg" class="w3-bar-item w3-circle"
-                style="width:85px">
+            <div class="w3-bar-item">
+                <button onclick="delete_member(this,'{{element.user_id}}')"
+                    class="w3-button w3-white w3-normal w3-right">修改</button>
+                <button onclick="delete_member(this,'{{element.user_id}}')"
+                    class="w3-button w3-white w3-normal w3-right">修改</button>
+            </div>
             <!-- <div class="w3-bar-item w3-left">
                 <i class="fas fa-user-circle" style='color:green;font-size:40px'></i>
             </div> -->
@@ -88,7 +90,7 @@
                 }
 
                 Notiflix.Loading.Remove();
-                
+
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -123,7 +125,6 @@
 
 
     }
-
 </script>
 
 {% endblock %}
