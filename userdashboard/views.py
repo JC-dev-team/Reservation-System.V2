@@ -153,9 +153,9 @@ def user_cancel_reservation(request):
                     is_cancel=False,
                 )
                 if bk_queryset.exists() == False:
-                    return JsonResponse({'error': '資料已經刪除或是不存在'})
+                    return JsonResponse({'error': '資料已經刪除或是不存在', 'action': '/userdashboard/error/'})
                 bk_queryset.update(is_cancel=True)
                 return JsonResponse({'result': 'success'})
         
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/userdashboard/error/'})

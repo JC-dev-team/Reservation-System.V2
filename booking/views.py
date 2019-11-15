@@ -38,7 +38,7 @@ from common.utility.linebot import linebot_send_msg
 #         query_set = queryset.filter(phone=phone)
 #         return query_set
 
-## Definition site ------------------------------------------------
+# Definition site ------------------------------------------------
 # def error_404_view(request,exception):
 #     # data = {"name": "ThePythonDjango.com"}
 #     return render(request,'error/error404.html')
@@ -434,7 +434,7 @@ def getWaitingList(request):  # get waiting list
                 night_count += int(i.children)+int(i.adult)
 
             night_count += int(children)+int(adult)
-            # judge if red or green
+            # check if red or green
             # green = booking available, red = waiting line
             if night_count > store_query.seat:
                 status_night = 'red'
@@ -452,8 +452,10 @@ def getWaitingList(request):  # get waiting list
         return JsonResponse({'lunch_status': lunch_waiting, 'dinner_status': dinner_waiting})
     except Exception as e:
         if action == 'main':
-            return JsonResponse({'error': '發生未知錯誤', 'action': '/preview/'})
-        return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/error/'})
+        elif request.user.is_authenticated:
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/error/'})
 
 
 @require_http_methods(['GET'])
@@ -462,14 +464,48 @@ def getStoreInfo(request):
         if request.session.get('is_Login', None) != None:
             request.session.set_expiry(900)
         action = request.GET.get('action', None)
-        queryset = Store.objects.all()
+        if request.user.is_authenticated:
+            store_id = request.session.get('store_id', None)
+            queryset = Store.objects.filter(
+                store_id=store_id)
+            if queryset.exists() == False:
+                return JsonResponse({'error': '無法取得店家資料，請重新登入', 'action': '/softwayliving/error/'})
+            
+        else:
+            queryset = Store.objects.all()
+
         store_serializer = Store_form_serializer(queryset, many=True)
+
+        return JsonResponse({'result': store_serializer.data,})
+    except Exception as e:
+        if action == 'main':
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/error/'})
+        elif request.user.is_authenticated:
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/error/'})
+
+
+@require_http_methods(['GET'])
+def getStoreSeat(request):
+    try:
+        if request.session.get('is_Login', None) != None:
+            request.session.set_expiry(900)
+        action = request.GET.get('action', None)
+        if request.user.is_authenticated:
+            store_id = request.session.get('store_id', None)
+        else :
+            store_id = request.GET.get('store_id', None)
+        queryset = Store.objects.get(store_id=store_id)
+
+        store_serializer = Store_form_serializer(queryset)
 
         return JsonResponse({'result': store_serializer.data})
     except Exception as e:
         if action == 'main':
-            return JsonResponse({'error': '發生未知錯誤', 'action': '/preview/'})
-        return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/error/'})
+        elif request.user.is_authenticated:
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/error/'})
 
 
 @require_http_methods(['GET'])
@@ -577,8 +613,10 @@ def getCalendar(request):  # full calendar
         return JsonResponse({'result': event_arr})
     except Exception as e:
         if action == 'main':
-            return JsonResponse({'error': '發生未知錯誤', 'action': '/preview/'})
-        return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/login/'})
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/error/'})
+        elif request.user.is_authenticated:
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/error/'})
 
 
 # Test function ------------------------

@@ -34,8 +34,6 @@ def error(request):
     return render(request, 'error/error.html', {'action': '/softwayliving/login/'})
 
 # admin dashboard ------------------- page
-
-
 def staff_login_portal(request):
     return render(request, 'admin_login.html', {'error': ''})
 
@@ -180,7 +178,6 @@ def admin_InsertReservation(request):  # insert booking list
         user_id = request.session.get('user_id', None)
         bk_date = request.POST.get('bk_date', None)
         bk_st = request.POST.get('bk_st', None)
-        bk_ed = request.POST.get('bk_ed', None)
         adult = request.POST.get('adult', None)
         children = request.POST.get('children', None)
         bk_habit = request.POST.get('bk_habit', None)
@@ -196,7 +193,6 @@ def admin_InsertReservation(request):  # insert booking list
             'user_id': user_id,
             'store_id': store_id,
             'bk_st': bk_st,
-            'bk_ed': bk_ed,
             'adult': adult,
             'children': children,
             'bk_habit': bk_habit,
@@ -258,7 +254,6 @@ def admin_InsertReservation(request):  # insert booking list
                 store_id=store_id,
                 bk_date=bk_date,
                 bk_st=bk_st,
-                bk_ed=bk_ed,
                 adult=adult,
                 children=children,
                 bk_habit=bk_habit,
@@ -270,7 +265,7 @@ def admin_InsertReservation(request):  # insert booking list
                 bk_price=bk_price,
                 is_confirm=is_confirm,
             )
-            get_user_info = Account.objects.only('user_id', 'socila_id', 'username').get(
+            get_user_info = Account.objects.only('user_id', 'social_id', 'username').get(
                 user_id=user_id,
             )
 
@@ -351,7 +346,7 @@ def staff_check_reservation(request):
         })
 
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -395,7 +390,7 @@ def staff_confirm_reservation(request):
     except Account.DoesNotExist:
         return JsonResponse({'alert': '客戶資料不存在'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -448,7 +443,7 @@ def staff_pass_reservation(request):
             return JsonResponse({'result': 'success'})
 
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -472,7 +467,7 @@ def staff_cancel_reservation(request):
             return JsonResponse({'result': 'success'})
 
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])  # when there are two time sessions
@@ -532,7 +527,7 @@ def staff_add_event(request):  # add rest day as booking
 
         return JsonResponse({'result': 'success'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 # AJAX checklist
 @require_http_methods(['GET'])
@@ -572,7 +567,7 @@ def staff_not_confirmed(request):
             'account': acc_arr,
         })
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['GET'])
@@ -608,7 +603,7 @@ def staff_is_confirmed(request):
             'account': acc_arr,
         })
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['GET'])
@@ -643,7 +638,7 @@ def staff_is_cancel(request):
             'account': acc_arr,
         })
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['GET'])
@@ -681,7 +676,7 @@ def staff_is_waiting(request):
             'account': acc_arr,
         })
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -691,11 +686,6 @@ def staff_modify_member(request):
             return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
         # Set auth in future
-        # is_Login = request.session.get('is_Login', None)
-        # staff_id = request.session.get('staff_id', None)
-        # if is_Login != True or staff_id == None:
-        #     return JsonResponse({'alert': 'Not Valid, 請登入帳號'})
-
         user_id = request.POST.get('user_id', None)
         birth = request.POST.get('birth', None)
         username = request.POST.get('username', None)
@@ -712,7 +702,7 @@ def staff_modify_member(request):
             except Account.DoesNotExist:
                 return JsonResponse({'alert': '帳號已刪除或是不存在'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -739,7 +729,7 @@ def staff_lock_member(request):
                 return JsonResponse({'alert': '帳號已刪除或是不存在'})
 
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -770,7 +760,7 @@ def staff_cancel_event(request):
                 return JsonResponse({'alert': '該事件已刪除或是不存在'})
         return JsonResponse({'result': 'success'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -802,7 +792,7 @@ def add_admin(request):
             )
         return JsonResponse({'reuslt': 'success'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -821,7 +811,7 @@ def delete_admin(request):
 
         return JsonResponse({'reuslt': 'success'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -850,7 +840,7 @@ def add_product(request):
             )
         return JsonResponse({'reuslt': 'success'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -864,7 +854,7 @@ def modify_product(request):
         prod_id = request.POST.get('prod_id', None)
 
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -887,7 +877,7 @@ def delete_product(request):
 
         return JsonResponse({'reuslt': 'success'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -919,7 +909,7 @@ def add_store(request):
 
         return JsonResponse({'reuslt': 'success'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -934,7 +924,7 @@ def modify_store(request):
         store_id = request.POST.get('store_id', None)
 
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
 @require_http_methods(['POST'])
@@ -955,7 +945,7 @@ def delete_store(request):
 
         return JsonResponse({'reuslt': 'success'})
     except Exception as e:
-        return JsonResponse({'error': '發生未知錯誤'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 # @csrf_exempt
 # def event_AAAA(request):

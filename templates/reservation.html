@@ -54,7 +54,6 @@
                 <!-- Time Select-->
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id='bk_st_select' required>
-                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
                     <option name='noon' value="L11:00" selected disable='disabled'>中午：11:00</option>
                     <option name='noon' value="L11:30" disable='disabled'>中午：11:30</option>
                     <option name='noon' value="L12:00" disable='disabled'>中午：12:00</option>
@@ -120,41 +119,21 @@
         <!--store name -->
         <font size="4.5">
             <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
-                id="store_name_select" onchange='getStoreInfo()'>
-                <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                <!-- <option value="0" selected>北投唭哩岸總店</option> -->
+                id="store_name_select">
+                <option selected disabled hidden>請選擇店家</option>
+
             </select>
         </font>
         <div class="container">
             <!-- Date num calculated-->
             <input id="date_num" value="0" type="text" style="display: none">
 
-
             <!-- adult & children-->
             <div class="left-half" style="width:100%;">
                 <font size="4.5">
                     <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                        id="adult_select">
-                        <!-- <option value="" selected disabled hidden>請選擇人數</option> -->
-                        <option value="1">1 大人</option>
-                        <option value="2" selected>2 大人</option>
-                        <option value="3">3 大人</option>
-                        <option value="4">4 大人</option>
-                        <option value="5">5 大人</option>
-                        <option value="6">6 大人</option>
-                        <option value="7">7 大人</option>
-                        <option value="8">8 大人</option>
-                        <option value="10">10 大人</option>
-                        <option value="11">11 大人</option>
-                        <option value="12">12 大人</option>
-                        <option value="13">13 大人</option>
-                        <option value="14">14 大人</option>
-                        <option value="15">15 大人</option>
-                        <option value="16">16 大人</option>
-                        <option value="17">17 大人</option>
-                        <option value="18">18 大人</option>
-                        <option value="19">19 大人</option>
-                        <option value="20">20 大人</option>
+                        id="adult_select" onchange="getStoreSeat()">
+                        <option selected disabled hidden>請選擇人數</option>
                     </select>
                 </font>
             </div>
@@ -163,18 +142,8 @@
                 <font size="4.5">
                     <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                         id="children_select">
-                        <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                        <option value="0" selected>0 小孩</option>
-                        <option value="1">1 小孩</option>
-                        <option value="2">2 小孩</option>
-                        <option value="3">3 小孩</option>
-                        <option value="4">4 小孩</option>
-                        <option value="5">5 小孩</option>
-                        <option value="6">6 小孩</option>
-                        <option value="7">7 小孩</option>
-                        <option value="8">8 小孩</option>
-                        <option value="9">9 小孩</option>
-                        <option value="10">10 小孩</option>
+                        <option selected disabled hidden>請選擇人數</option>
+
                     </select>
                 </font>
             </div>
@@ -251,17 +220,68 @@
         cancelButtonBackground: '#a9a9a9',
         plainText: true,
     });
+    // store selector
+    $.ajax({
+        type: "GET",
+        url: '/booking/getStoreInfo/',
+        success: function (response) {
 
+            if (response.error != null) {
+                Notiflix.Report.Failure('發生錯誤', response.error, 'ok');
+                Notiflix.Loading.Remove();
+            } else if (response.alert != null) {
+                Notiflix.Report.Warning('警告', response.alert, 'ok');
+                Notiflix.Loading.Remove();
+            } else {
+                // Clean drop-down menu
+                $('#store_name_select').empty();
+                // $("#store_name_select").append("<option selected disabled hidden>請選擇店家</option>")
+                for (var i = 0; i < response.result.length; i++) {
+                    $("#store_name_select").append($("<option></option>").attr("value", response.result[
+                        i].store_id).text(response.result[i].store_name));
+                }
+                if (response.result.length == 1) {
+                    getStoreSeat()
+                }
 
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            Notiflix.Report.Failure('錯誤', '很抱歉，發生無法預期之異常', 'ok');
+            Notiflix.Loading.Remove();
+        }
+    });
+    function getStoreSeat() {
+        $.ajax({
+            type: "GET",
+            url: '/booking/getStoreSeat/',
+            data: {
+                'store_id': $('#store_name_select').val()
+            },
+            success: function (response) {
+                if (response.error != null) {
+                    Notiflix.Report.Failure('發生錯誤', response.error, 'ok');
+                    Notiflix.Loading.Remove();
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                    Notiflix.Loading.Remove();
+                } else {
+                    // Clean drop-down menu
+                    $('#adult_select').empty()
+                    $('#children_select').empty()
+                    for (var i = 1; i <= response.result.seat; i++) {
+                        $("#adult_select").append($("<option></option>").attr("value", i).text(i.toString() + ' 大人'));
+                        $("#children_select").append($("<option></option>").attr("value", i - 1).text((i - 1).toString() + ' 小孩'));
+                    }
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Report.Failure('錯誤', '很抱歉，發生無法預期之異常', 'ok');
+                Notiflix.Loading.Remove();
+            }
+        });
 
-    //csrf_ajax
-    // $.ajaxSetup({
-    //     data: {
-    //         csrfmiddlewaretoken: '{{ csrf_token }}'
-    //     },
-    // });
-
-
+    }
     // using jQuery
     function getCookie(name) {
         var cookieValue = null;
@@ -292,36 +312,6 @@
         }
     });
 
-    function getStoreInfo() {
-        $.ajax({
-            type: "GET",
-            url: '/booking/getStoreInfo/',
-            success: function (response) {
-                if (response.error != null) {
-                    // console.log(response.error)
-                    window.location.replace('/booking/error/');
-                } else if (response.alert != null) {
-                    Notiflix.Report.Warning('警告', response.alert, 'ok');
-                } else {
-                    $("#store_name_select").append($("<option></option>").attr("value", "").text(""));
-                    // $('#store_name_select').empty()
-                    console.log('hello')
-                    for (var i = 0; i < response.result.length; i++) {
-                        $("#store_name_select").append($("<option></option>").attr("value", response.result[
-                            i].store_id).text(response.result[i].store_name))
-                        // $('#store_name_select').append(`<option value="${}"> 
-                        //                ${} 
-                        //           </option>`)
-                    }
-
-                }
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                window.location.replace('/booking/error/');
-            }
-        })
-    }
-
     function people_number(data, num, calendar) {
         $.ajax({
             type: 'GET',
@@ -329,23 +319,18 @@
             data: data,
             success: function (response) {
                 if (response.error != null) {
-                    // console.log(response.error)
-                    window.location.replace('/booking/error/');
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else {
                     result = response.result
-                    //console.log('result : ' + result)
-                    //Function of calendar (return calendar.render())
                     calendar_fun(result, num)
-
                 }
-
+                Notiflix.Loading.Remove();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log(XMLHttpRequest)
-                console.log(errorThrown)
-                window.location.replace('/booking/error/');
+                Notiflix.Report.Failure('錯誤', '很抱歉，發生無法預期之異常', 'ok');
+                Notiflix.Loading.Remove();
             }
 
         })
@@ -357,51 +342,55 @@
             url: '/booking/getWaitingList/',
             data: data,
             success: function (response) {
-                console.log(response)
-                var lunch_status = response.lunch_status
-                var dinner_status = response.dinner_status
-                console.log('lunch status : ' + lunch_status)
-                console.log('dinner status : ' + dinner_status)
-                //insert Modal of state
-                document.getElementById('modal_status').innerHTML =
-                    '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + '<br>' +
-                    lunch_status +
-                    ' / ' + dinner_status
-
-                //select disable
-                if (lunch_status == '午餐：店休' && dinner_status == '晚餐：店休') {
-                    console.log('disable')
-                    $('#button_submit').attr('disabled', true)
-                    $("option[name='noon']").attr('disabled', true)
-                    $("option[name='night']").attr('disabled', true)
-                    $("option[name='none']").attr('selected', true)
-                } else if (lunch_status == '午餐：店休') {
-                    $('#button_submit').attr('disabled', false)
-                    $("option[name='noon']").attr('disabled', true)
-                    $("option[name='night']").attr('disabled', false);
-                    $("option[name='night']").attr('selected', 'selected');
-                } else if (dinner_status == '晚餐：店休') {
-                    $('#button_submit').attr('disabled', false)
-                    $("option[name='night']").attr('disabled', true)
-                    $("option[name='noon']").attr('disabled', false);
-                    $("option[name='noon']").attr('selected', 'selected');
+                if (response.error != null) {
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else {
-                    $('#button_submit').attr('disabled', false)
-                    $("option[name='noon']").attr('disabled', false)
-                    $("option[name='night']").attr('disabled', false)
-                    $("option[name='noon']").attr('selected', true)
-                }
+                    var lunch_status = response.lunch_status
+                    var dinner_status = response.dinner_status
+                    console.log('lunch status : ' + lunch_status)
+                    console.log('dinner status : ' + dinner_status)
+                    //insert Modal of state
+                    document.getElementById('modal_status').innerHTML =
+                        '<label><i class="fa fa-info-circle"></i></label>' + ' 訂位狀態： ' + '<br>' +
+                        lunch_status +
+                        ' / ' + dinner_status
 
-                //Show the Modal
-                document.getElementById('information_Modal').style.display = 'inline';
-                //Hidden spinner
-                Notiflix.Loading.Remove();
-                // $('#cover-spin').hide();
+                    //select disable
+                    if (lunch_status == '午餐：店休' && dinner_status == '晚餐：店休') {
+                        console.log('disable')
+                        $('#button_submit').attr('disabled', true)
+                        $("option[name='noon']").attr('disabled', true)
+                        $("option[name='night']").attr('disabled', true)
+                        $("option[name='none']").attr('selected', true)
+                    } else if (lunch_status == '午餐：店休') {
+                        $('#button_submit').attr('disabled', false)
+                        $("option[name='noon']").attr('disabled', true)
+                        $("option[name='night']").attr('disabled', false);
+                        $("option[name='night']").attr('selected', 'selected');
+                    } else if (dinner_status == '晚餐：店休') {
+                        $('#button_submit').attr('disabled', false)
+                        $("option[name='night']").attr('disabled', true)
+                        $("option[name='noon']").attr('disabled', false);
+                        $("option[name='noon']").attr('selected', 'selected');
+                    } else {
+                        $('#button_submit').attr('disabled', false)
+                        $("option[name='noon']").attr('disabled', false)
+                        $("option[name='night']").attr('disabled', false)
+                        $("option[name='noon']").attr('selected', true)
+                    }
+
+                    //Show the Modal
+                    document.getElementById('information_Modal').style.display = 'inline';
+                    //Hidden spinner
+                    Notiflix.Loading.Remove();
+                    // $('#cover-spin').hide();
+                }
             },
             error: function (response) {
                 Notiflix.Report.Warning('警告', '發生錯誤！！請重新開啟', 'ok');
                 Notiflix.Loading.Remove();
-                console.log(errorThrown)
             }
 
         })
@@ -507,33 +496,33 @@
             selectable: true,
 
             events: [{
-                    id: '1',
-                    title: '午餐',
-                    start: new Date(),
-                    startRecur: new Date().addDays(3),
-                    backgroundColor: 'green',
-                    textColor: 'white',
-                    daysOfWeek: [2, 3, 4, 5, 6, 0]
-                },
-                {
-                    id: '2',
-                    title: '晚餐',
-                    start: new Date(),
-                    startRecur: new Date().addDays(3),
-                    backgroundColor: 'green',
-                    textColor: 'white',
-                    daysOfWeek: [2, 3, 4, 5, 6, 0]
-                },
-                {
-                    id: '3',
-                    title: '店休',
-                    start: new Date(),
-                    startRecur: new Date().addDays(3),
-                    backgroundColor: 'red',
-                    textColor: 'white',
-                    daysOfWeek: [1],
+                id: '1',
+                title: '午餐',
+                start: new Date(),
+                startRecur: new Date().addDays(3),
+                backgroundColor: 'green',
+                textColor: 'white',
+                daysOfWeek: [2, 3, 4, 5, 6, 0]
+            },
+            {
+                id: '2',
+                title: '晚餐',
+                start: new Date(),
+                startRecur: new Date().addDays(3),
+                backgroundColor: 'green',
+                textColor: 'white',
+                daysOfWeek: [2, 3, 4, 5, 6, 0]
+            },
+            {
+                id: '3',
+                title: '店休',
+                start: new Date(),
+                startRecur: new Date().addDays(3),
+                backgroundColor: 'red',
+                textColor: 'white',
+                daysOfWeek: [1],
 
-                },
+            },
 
             ],
 
@@ -575,8 +564,7 @@
             eventClick: function (info) {
                 var adult = $('#adult_select').val();
                 var child = $('#children_select').val();
-
-                console.log(info)
+                var store_info = $('#store_name_select').val();
                 var evMousEnter_st = info.event.start
                 var start = (new Date(evMousEnter_st).addDays(1)).toISOString().slice(0, 10)
                 var title = info.event.title
@@ -606,11 +594,9 @@
                     'adult': adult,
                     'children': child,
                     'event_date': start,
-                    'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+                    'store_id': store_info,
 
                 }
-
-
                 eventClick_sendDate(data)
                 //spinner show
                 Notiflix.Loading.Hourglass();
@@ -624,6 +610,7 @@
         var status = true;
         var adult = $('#adult_select').val();
         var child = $('#children_select').val();
+        var store_info = $('#store_name_select').val();
         // var Date = moment().add(1,'M')
         var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
         var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
@@ -633,7 +620,7 @@
             var data = {
                 'adult': adult,
                 'children': child,
-                'store_id': '6f48f753-e4f0-11e9-bfcb-0e9f22d909c0',
+                'store_id': store_info,
                 'start_month': start_month,
                 'end_month': end_month,
             }
@@ -641,11 +628,16 @@
             document.getElementById('calendar').innerHTML = ''
 
             // do ajax fuction
-            people_number(data, num)
+            if (data.adult != null && data.children != null && data.adult != '' && data.children != '' && data.store_id != '' && data.store_id != null) {
+                people_number(data, num)
 
-            //spinner show
-            document.getElementById('calendar_container').style.display = 'inline'
-            Notiflix.Loading.Hourglass();
+                //spinner show
+                document.getElementById('calendar_container').style.display = 'inline'
+                Notiflix.Loading.Hourglass();
+            }
+            else {
+                Notiflix.Report.Failure('發生錯誤', '請選擇欲訂位之店家', 'ok');
+            }
 
         }
 
@@ -683,14 +675,14 @@
             var status = true;
 
             //Information of user & store
-            $('#store_id').val('6f48f753-e4f0-11e9-bfcb-0e9f22d909c0'); //###
+            $('#store_id').val($('#store_name_select').val()); //###
             //Information of people number
             $('#adult').val($('#adult_select').val())
             $('#children').val($('#children_select').val())
             //Information of reservation date & time
             $('#bk_date').val($('#bk_date_select').text())
             $('#time_session').val($('#bk_st_select').val().slice(0, 1))
-            $('#bk_st').val($('#bk_st_select').val().slice(1, ))
+            $('#bk_st').val($('#bk_st_select').val().slice(1))
             $('#entire_time').val(0) //Default False
             $('#event_type').val('online-reservation')
             //Information of reservation ps & price
