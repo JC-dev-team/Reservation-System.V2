@@ -120,9 +120,9 @@
         <!--store name -->
         <font size="4.5">
             <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
-                id="store_name_select" onclick='getStoreInfo()'>
+                id="store_name_select" onchange='getStoreInfo()'>
                 <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                <option value="0" selected>北投唭哩岸總店</option>
+                <!-- <option value="0" selected>北投唭哩岸總店</option> -->
             </select>
         </font>
         <div class="container">
@@ -305,10 +305,13 @@
                 } else {
                     $("#store_name_select").append($("<option></option>").attr("value", "").text(""));
                     // $('#store_name_select').empty()
+                    console.log('hello')
                     for (var i = 0; i < response.result.length; i++) {
-                        $('#store_name_select').append(`<option value="${response.result[i].store_id}"> 
-                                       ${response.result[i].store_name} 
-                                  </option>`)
+                        $("#store_name_select").append($("<option></option>").attr("value", response.result[
+                            i].store_id).text(response.result[i].store_name))
+                        // $('#store_name_select').append(`<option value="${}"> 
+                        //                ${} 
+                        //           </option>`)
                     }
 
                 }
