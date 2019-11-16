@@ -312,7 +312,7 @@ def staff_productions_page(request):
             return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
-        queryset = Store.objects.filter(pk=store_id)
+        queryset = Production.objects.filter(store_id=store_id)
         serializers = Prod_Serializer(queryset, many=True)
 
         return render(request, 'admin_productlist.html', {'data': serializers.data})

@@ -472,7 +472,6 @@ def getProdInfo(request):
 
         queryset = Production.objects.filter(store_id=store_id)
         serializer = Prod_Serializer(queryset, many=True)
-        print('finished')
         return JsonResponse({'result': serializer.data})
         
     except Exception as e:

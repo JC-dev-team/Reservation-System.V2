@@ -265,7 +265,6 @@
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                     Notiflix.Loading.Remove();
                 } else {
-                    console.log('data : '+response.result)
                     $('#price_select').empty();
                     for(var i = 0; i < response.result.length; i++){
                         $('#price_select').append($("<option></option>").attr("value", response.result[
