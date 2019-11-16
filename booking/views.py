@@ -463,6 +463,7 @@ def getProdInfo(request):
     try:
         if request.session.get('is_Login', None) != None:
             request.session.set_expiry(900)
+        
         action = request.GET.get('action', None)
         # Check is Store admin or not
         if request.user.is_authenticated:
