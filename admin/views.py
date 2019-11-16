@@ -105,6 +105,7 @@ def staff_auth(request):  # authentication staff
             request.session['is_Login'] = True
             request.session['store_id'] = result['store']
             request.session['staff_id'] = result['staff_id']
+            request.session['staff_name'] = result['staff_name']
 
             return render(request, 'admin_dashbroad.html', {'data': result})
     except Exception as e:
@@ -312,7 +313,7 @@ def staff_productions_page(request):
             return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
-        queryset = Production.objects.filter(store_id=store_id)
+        queryset = Production.objects.filter(store_id=store_id).order_by('prod_price')
         serializers = Prod_Serializer(queryset, many=True)
 
         return render(request, 'admin_productlist.html', {'data': serializers.data})
@@ -870,7 +871,25 @@ def modify_product(request):
             return JsonResponse({'alert': '權限不足'})
         request.session.set_expiry(900)
         prod_id = request.POST.get('prod_id', None)
+        store_id = request.session.get('store_id', None)
+        prod_name = request.POST.get('prod_name', None)
+        prod_price = request.POST.get('prod_price', None)
+        prod_img = request.POST.get('prod_img', None)
+        prod_desc = request.POST.get('prod_desc', None)
 
+        with transaction.atomic():  # transaction
+            queryset=Production.objects.get(
+                prod_id=prod_id, 
+                store_id=store_id,
+            )
+            queryset.prod_name = prod_name
+            queryset.prod_price = prod_price
+            queryset.prod_img = prod_img
+            queryset.prod_desc = prod_desc
+            queryset.save()
+            return JsonResponse({'result': 'success'})
+    except Production.DoesNotExist:
+        return JsonResponse({'alert':'該資料不存在'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -892,8 +911,10 @@ def delete_product(request):
                 store_id=store_id
             )
             queryset.delete()
-
-        return JsonResponse({'reuslt': 'success'})
+            return JsonResponse({'reuslt': 'success'})
+    except Production.DoesNotExist:
+        return JsonResponse({'alert':'該資料不存在或是已經被刪除'})
+        
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
