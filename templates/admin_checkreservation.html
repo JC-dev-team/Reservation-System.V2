@@ -747,11 +747,11 @@
                     }
 
                     if (is_cancel == true) {
-                        color = 'grey' //待確認
+                        color = 'grey' //已刪除
                     } else if (confirm == true) {
                         color = 'green' //已確認
                     } else if (waiting_num == 0 && confirm == false) {
-                        color = 'orange' //已刪除
+                        color = 'orange' //待確認
                     } else {
                         color = 'red' //候補
                     }
@@ -879,7 +879,7 @@
                     document.getElementById('modal_date_dayoff').innerHTML =
                         '<p id="modal_date_dayoff">' + '<label><i class="fa fa-calendar"></i></label>' +
                         ' 日期： ' + date + '</p>'
-                    //Notiflix.Report.Warning('警告', '這天/時段店休喔！！', 'ok');
+                    
 
                 }
                 var id = info.event.id
