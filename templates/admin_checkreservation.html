@@ -746,7 +746,7 @@
                     }
 
                     if (is_cancel == true) {
-                        color = 'grey' //已刪除
+                        color = 'black' //已刪除
                     } else if (confirm == true) {
                         color = 'green' //已確認
                     } else if (waiting_num == 0 && confirm == false) {
@@ -872,7 +872,7 @@
                     $("option[name='cancel']").show()
                     //selected
                     $("option[name='pass']").attr("selected", true)
-                } else {
+                } else if (list_backgroundcolor == 'grey')  {
                     //open dayoff modal
                     document.getElementById('dayoff_Modal').style.display = 'inline';
                     document.getElementById('modal_date_dayoff').innerHTML =

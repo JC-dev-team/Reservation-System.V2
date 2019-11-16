@@ -1,0 +1,328 @@
+{% extends 'admin_base.html' %}
+
+<!-- include 'header.html'   => image-->
+<!-- content-->
+{% block content %}
+{% load static %}
+<div class="w3-center">
+    <font size='5' face="DFKai-sb">
+        <b><I>聰明工作，智慧生活</I></b>
+        <h3>分店管理(共{{data|length}}筆)</h3>
+    </font>
+
+</div>
+
+<!-- add Modal -->
+<div id="add_Modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+        <header class="w3-container w3-teal w3-center w3-padding-32">
+            <span onclick="document.getElementById('add_Modal').style.display='none'"
+                class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
+            <h2 class="w3-wide"><i class="fa fa-bell"></i> 新增價位</h2>
+        </header>
+        <div class="w3-container">
+            <br>
+            <font size="4">
+                <!-- action-->
+                
+                <label><span> 名稱： </label>
+                <input id='add_prod_name' type="text" class="w3-input w3-border" placeholder="E.g: $1200" value="">
+                <br>
+                <label><span> 價位： </label>
+                <input id='add_prod_price' type="text" class="w3-input w3-border" placeholder="E.g: 1200" value="">
+
+                <br>
+                <button id='modal_button_save_add' onclick='save_add()'
+                    class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">確定新增
+                    <i class="fa fa-check"></i></button>
+                <button class="w3-button w3-red w3-section"
+                    onclick="document.getElementById('add_Modal').style.display='none'">關閉 <i
+                        class="fa fa-remove"></i></button>
+            </font>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="w3-container">
+
+    <ul class="w3-ul w3-card-4">
+
+        {% for element in data %}
+        <!-- edit Modal -->
+        <div id="edit_Modal" class="w3-modal">
+            <div class="w3-modal-content w3-animate-top w3-card-4">
+                <header class="w3-container w3-teal w3-center w3-padding-32">
+                    <span onclick="document.getElementById('edit_Modal').style.display='none'"
+                        class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
+                    <h2 class="w3-wide"><i class="fa fa-bell"></i> 修改價位</h2>
+                </header>
+                <div class="w3-container">
+                    <br>
+                    <font size="4">
+                        <input id='edit_prod_id' type="text" style="display: none">
+                        <!-- action-->
+                        <label><span> 名稱： </label><span
+                            onclick="document.getElementById('edit_prod_name').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
+                        <input id='edit_prod_name' type="text" class="w3-input w3-border" value="" disabled>
+                        <br>
+                        <label><span> 價位： </label><span
+                            onclick="document.getElementById('edit_prod_price').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
+                        <input id='edit_prod_price' type="text" class="w3-input w3-border" value="" disabled>
+
+                        <br>
+                        <button id='modal_button_save_edit' onclick='save_edit()'
+                            class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">儲存
+                            <i class="fa fa-check"></i></button>
+                        <button class="w3-button w3-red w3-section"
+                            onclick="document.getElementById('edit_Modal').style.display='none'">關閉 <i
+                                class="fa fa-remove"></i></button>
+                    </font>
+                </div>
+
+            </div>
+        </div>
+        <li class="w3-bar">
+            <button onclick="delete_product(this,'{{element.prod_id}}')" class="w3-button w3-white w3-large w3-right"><i
+                    class="fas fa-times"></i></button>
+            <button onclick="edit_product(this,'{{element.prod_id}}','{{element.prod_name}}','{{element.prod_price}}')"
+                class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
+
+            <div class="w3-bar-item">
+                <span class="w3-large"><i class="fas fa-tags"></i> {{element.prod_name}}</span><br>
+
+
+            </div>
+        </li>
+
+        {% endfor %}
+    </ul>
+    <br>
+    <button onclick="add_product()" class="w3-button w3-white w3-xxlarge w3-right"><i
+            class="fas fa-plus-circle"></i></button>
+
+</div>
+
+
+<script>
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    function ajax_add_product(data) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/AddProduct/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    Notiflix.Loading.Remove();
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                    Notiflix.Loading.Remove();
+                } else {
+                    Notiflix.Notify.Success('已新增！！');
+                    document.getElementById('add_Modal').style.display = 'none'
+                    window.location.reload();
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Loading.Remove();
+
+            }
+
+        })
+    }
+
+    function ajax_edit_product(data) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/ModifyProduct/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    Notiflix.Loading.Remove();
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                    Notiflix.Loading.Remove();
+                } else {
+                    Notiflix.Notify.Success('已儲存！！');
+                    document.getElementById('edit_Modal').style.display = 'none'
+                    window.location.reload();
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Loading.Remove();
+
+            }
+
+        })
+    }
+
+    function ajax_delete_product(t, data) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/DeleteProduct/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    console.log(response.error)
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    // window.location.replace('/softwayliving/error/');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                } else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                } else {
+                    Notiflix.Notify.Success('已刪除！！');
+                    t.parentElement.style.display = 'none'
+                }
+
+                Notiflix.Loading.Remove();
+
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Loading.Remove();
+
+            }
+
+        })
+    }
+
+
+    function save_add() {
+        Notiflix.Confirm.Show('管理者權限', '確定要新增嗎?', '是-新增', '否',
+            function () {
+                var status = true
+                var prod_name = $('#add_prod_name').val();
+                var prod_price = $('#add_prod_price').val();
+
+                if (prod_name == '') {
+                    Notiflix.Notify.Failure('請輸入名稱！！')
+                    status = false;
+                } else if (prod_price == '') {
+                    Notiflix.Notify.Failure('請輸入價位！！')
+                    status = false;
+                }
+
+                if (status) {
+                    var data = {
+                        'prod_name': prod_name,
+                        'prod_price': prod_price
+                    }
+
+                    //spinner show
+                    Notiflix.Loading.Hourglass('新增中....');
+                    ajax_add_product(data)
+                }
+
+
+            },
+            function () {
+
+            });
+    }
+
+    function save_edit() {
+        Notiflix.Confirm.Show('管理者權限', '確定要更動嗎?', '是-儲存', '否',
+            function () {
+                var prod_id = $('#edit_prod_id').val();
+                var prod_name = $('#edit_prod_name').val();
+                var prod_price = $('#edit_prod_price').val();
+
+
+                var data = {
+                    'prod_id': prod_id,
+                    'prod_name': prod_name,
+                    'prod_price': prod_price
+                }
+
+                //spinner show
+                Notiflix.Loading.Hourglass('更新中....');
+                ajax_edit_product(data)
+
+            },
+            function () {
+
+            });
+
+    }
+
+    function add_product() {
+        document.getElementById('add_Modal').style.display = 'inline'
+    }
+
+    function edit_product(t, prod_id, prod_name, prod_price) {
+        document.getElementById('edit_Modal').style.display = 'inline'
+        document.getElementById('edit_prod_id').value = prod_id
+        document.getElementById('edit_prod_name').value = prod_name
+        document.getElementById('edit_prod_price').value = prod_price
+
+
+    }
+
+
+    function delete_product(t, prod_id) {
+        Notiflix.Confirm.Show('管理者權限', '確定要刪除此價位嗎?', '是-刪除', '否',
+            function () {
+
+                var data = {
+                    'prod_id': prod_id
+                }
+
+                //spinner show
+                Notiflix.Loading.Hourglass('正在刪除....');
+                ajax_delete_product(t, data)
+
+            },
+            function () {
+
+
+            });
+
+
+
+    }
+</script>
+
+{% endblock %}

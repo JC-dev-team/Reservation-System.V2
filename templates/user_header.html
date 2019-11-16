@@ -6,14 +6,15 @@
   <i onclick="document.getElementById('mySidebar').style.display = 'none'"
     class="fa fa-remove  w3-button w3-display-topright"></i>
 
-  <img id="img" src="{% static '/images/Logo1.jpg' %}" class="w3-circle w3-display-topmiddle" style="width:115px">
+  <img id="img" src="{% static '/images/Logo1.jpg' %}" class="w3-circle w3-display-topmiddle" style="width:100px">
   <br><br><br>
-  <p style="text-align: center"> 使用者</p>
+  <p style="text-align: center"><b> {{ data.username }} </b></p>
   <hr>
-  <a onclick="send('reservation')" class="w3-bar-item w3-button"><i class="fas fa-calendar-alt"
-      style="color:green;"></i> 預約訂位</a>
-  <a onclick="send('check_reservation')" class="w3-bar-item w3-button"><i class="fa fa-search" style="color:green;"></i>
-    查詢訂位</a>
+  <a onclick="send('reservation')" class="w3-bar-item w3-button" style="font-size:20px"><i class="fas fa-calendar-alt" style="color:green;"
+      style="font-size:24px"></i> <b>預約訂位</b></a>
+  <a onclick="send('check_reservation')" class="w3-bar-item w3-button" style="font-size:20px"><i class="fa fa-search" style="color:green;"
+      style="font-size:24px"></i>
+    <b>查詢訂位</b></a>
   <!-- <a href="#about" onclick="send('reservation')" class="w3-bar-item w3-button"><i class="fa fa-user-circle"
       style="color:green;"></i> 會員資料(未開放)</a> -->
 </nav>
@@ -29,7 +30,7 @@
 
 
 <header class="w3-center w3-animate-top w3-padding-small">
-  <img id="img" src="{% static '/images/Logo1.jpg' %}" class="w3-circle" style="width:115px">
+  <img id="img" src="{% static '/images/Logo1.jpg' %}" class="w3-circle" style="width:100px">
 
   <br>
   <b style="font-size:130%;" id="displayName">Softway 舒微生活</b>
