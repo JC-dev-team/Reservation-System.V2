@@ -133,7 +133,7 @@ def linebot_send_msg(line_id, user=None,info=None):
                                         },
                                         {
                                             "type": "text",
-                                            "text": price_info,
+                                            "text": 'NT$ ' + price_info,
                                             "flex": 5,
                                             "size": "sm",
                                             "color": "#666666",
@@ -196,11 +196,10 @@ def linebot_send_msg(line_id, user=None,info=None):
 
         #line_bot_api.push_message('U5ee811f1f2f899eb66844500ef14a371', TextSendMessage(text='1'))
         line_bot_api.push_message('U5ee811f1f2f899eb66844500ef14a371', FlexSendMessage(
-            alt_text="hello", contents=flex))
+            alt_text="訂位資訊通知", contents=flex))
         line_bot_api.push_message('Uf7e1093512c0dac60f60974ff53e4a2c', FlexSendMessage(
-            alt_text="hello", contents=flex))
+            alt_text="訂位資訊通知", contents=flex))
 
         return 'success'
     except Exception as e:
-        print(e)
         return 'failure'
