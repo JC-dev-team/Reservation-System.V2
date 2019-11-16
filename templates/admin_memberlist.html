@@ -127,7 +127,10 @@
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                     Notiflix.Loading.Remove();
-                } else {
+                }else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                }  else {
                     Notiflix.Notify.Success('已儲存！！');
                     document.getElementById('edit_Modal').style.display = 'none'
                     window.location.reload();
@@ -155,6 +158,9 @@
                     // window.location.replace('/softwayliving/error/');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
+                } else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
                 } else {
                     Notiflix.Notify.Success('已刪除會員！！');
                     t.parentElement.style.display = 'none'

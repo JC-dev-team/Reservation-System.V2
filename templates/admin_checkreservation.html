@@ -231,15 +231,6 @@
             fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
         },
     });
-
-
-    //csrf_ajax
-    // $.ajaxSetup({
-    //     data: {
-    //         csrfmiddlewaretoken: '{{ csrf_token }}'
-    //     },
-    // });
-
     // using jQuery
     function getCookie(name) {
         var cookieValue = null;
@@ -278,9 +269,7 @@
             data: data,
             success: function (response) {
                 if (response.error != null) {
-                    console.log(response.error)
                     Notiflix.Notify.Failure('發生錯誤！！');
-                    // window.location.replace('/softwayliving/error/');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else {
@@ -317,7 +306,10 @@
                     // window.location.replace('/softwayliving/error/');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
-                } else {
+                }else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                }  else {
                     result = response.result
                     console.log(result)
                     Notiflix.Notify.Success('已取消店休！！');
@@ -350,7 +342,10 @@
                     // window.location.replace('/booking/error/');
                 } else if (response.alert != null) {
                     Notiflix.Notify.Warning(response.alert);
-                } else {
+                }else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                }  else {
                     result = response.result
                     console.log(result)
                     event.setProp('backgroundColor', 'grey')
@@ -383,7 +378,10 @@
                     // window.location.replace('/booking/error/');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
-                } else {
+                }else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                }  else {
                     result = response.result
                     console.log(result)
                     event.setProp('backgroundColor', 'green')
@@ -418,7 +416,10 @@
                     // window.location.replace('/booking/error/');
                 } else if (response.alert != null) {
                     alert(response.alert)
-                } else {
+                }else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                }  else {
                     result = response.result
                     console.log(result)
                     event.setProp('backgroundColor', 'green')
@@ -451,7 +452,10 @@
                     Notiflix.Notify.Failure('發生錯誤！！');
                     console.log(response.error)
                     // window.location.replace('/booking/error/');
-                } else {
+                }else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                }  else {
 
                     result = response.result
                     account = response.account
@@ -486,7 +490,11 @@
                     Notiflix.Notify.Failure('發生錯誤！！');
                     console.log(response.error)
                     // window.location.replace('/booking/error/');
-                } else {
+                }else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                } 
+                 else {
 
                     result = response.result
                     account = response.account
@@ -520,7 +528,10 @@
                     Notiflix.Notify.Failure('發生錯誤！！');
                     console.log(response.error)
                     // window.location.replace('/booking/error/');
-                } else {
+                }else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                }  else {
 
                     result = response.result
                     account = response.account
@@ -554,7 +565,10 @@
                     Notiflix.Notify.Failure('發生錯誤！！');
                     console.log(response.error)
                     // window.location.replace('/booking/error/');
-                } else {
+                }else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                }  else {
 
                     result = response.result
                     account = response.account
@@ -590,7 +604,10 @@
                     Notiflix.Notify.Failure('發生錯誤！！');
                     console.log(response.error)
                     // window.location.replace('/booking/error/');
-                } else {
+                }else if(response.outdated != null){
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                }  else {
                     result = response.result
                     account = response.account
                     event = response.event
