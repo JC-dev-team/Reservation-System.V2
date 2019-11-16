@@ -24,9 +24,7 @@
             <br>
             <font size="4">
                 <!-- action-->
-                <label><span> 店家編號：(管理者無須填寫) </label>
-                <input id='add_store_id' type="text" class="w3-input w3-border" value='6f48f753-e4f0-11e9-bfcb-0e9f22d909c0' disabled>
-                <br>
+                
                 <label><span> 名稱： </label>
                 <input id='add_prod_name' type="text" class="w3-input w3-border" placeholder="E.g: $1200" value="">
                 <br>
@@ -88,7 +86,7 @@
             </div>
         </div>
         <li class="w3-bar">
-            <button onclick="delect_product(this,'{{element.prod_id}}')" class="w3-button w3-white w3-large w3-right"><i
+            <button onclick="delete_product(this,'{{element.prod_id}}')" class="w3-button w3-white w3-large w3-right"><i
                     class="fas fa-times"></i></button>
             <button onclick="edit_product(this,'{{element.prod_id}}','{{element.prod_name}}','{{element.prod_price}}')"
                 class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
@@ -140,7 +138,7 @@
         }
     });
 
-    function ajax_add_product(data){
+    function ajax_add_product(data) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/AddProduct/',
@@ -198,7 +196,7 @@
         })
     }
 
-    function ajax_delect_product(t, data) {
+    function ajax_delete_product(t, data) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/DelectProduct/',
@@ -229,22 +227,32 @@
     }
 
 
-    function save_add(){
+    function save_add() {
         Notiflix.Confirm.Show('管理者權限', '確定要新增嗎?', '是-新增', '否',
             function () {
-                var store_id = $('#add_store_id').val();
+                var status = true
                 var prod_name = $('#add_prod_name').val();
                 var prod_price = $('#add_prod_price').val();
 
-                var data = {
-                    'store_id': store_id,
-                    'prod_name': prod_name,
-                    'prod_price': prod_price
+                if (prod_name == '') {
+                    Notiflix.Notify.Failure('請輸入名稱！！')
+                    status = false;
+                } else if (prod_price == '') {
+                    Notiflix.Notify.Failure('請輸入價位！！')
+                    status = false;
                 }
-                
-                //spinner show
-                Notiflix.Loading.Hourglass('新增中....');
-                ajax_add_product(data)
+
+                if (status) {
+                    var data = {
+                        'prod_name': prod_name,
+                        'prod_price': prod_price
+                    }
+
+                    //spinner show
+                    Notiflix.Loading.Hourglass('新增中....');
+                    ajax_add_product(data)
+                }
+
 
             },
             function () {
@@ -291,7 +299,7 @@
     }
 
 
-    function delect_product(t, prod_id) {
+    function delete_product(t, prod_id) {
         Notiflix.Confirm.Show('管理者權限', '確定要刪除此價位嗎?', '是-刪除', '否',
             function () {
 
@@ -301,7 +309,7 @@
 
                 //spinner show
                 Notiflix.Loading.Hourglass('正在刪除....');
-                ajax_delect_member(t, data)
+                ajax_delete_product(t, data)
 
             },
             function () {
