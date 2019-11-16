@@ -49,7 +49,16 @@ urlpatterns = [
     path('cancel_event/',views.staff_cancel_event),
     # /softwayliving/modify_member/
     path('modify_member/',views.staff_modify_member),
+    
+    ## Productions
+    # /softwayliving/AddProduct/
+    path('AddProduct/',views.add_product),
+    # /softwayliving/ModifyProduct/
+    path('ModifyProduct/',views.modify_product),
+    # /softwayliving/DeleteProduct/
+    path('DeleteProduct/',views.delete_product),
 
+    ## Test
     # path('eve/',views.event_AAAA),
 
 ]
