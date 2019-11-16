@@ -21,6 +21,8 @@ urlpatterns = [
     path('member_list/',views.member_management),
     # /softwayliving/insert_bk/
     path('insert_bk/',views.admin_InsertReservation),
+    # /softwayliving/productions/
+    path('productions/',views.staff_productions_page),
     
     ## Ajax api
     # /softwayliving/staff_check/

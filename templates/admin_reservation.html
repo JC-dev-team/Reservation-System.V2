@@ -4,9 +4,9 @@
 <div class="w3-center">
   <h3><b>管理者 - 訂位</b></h3>
   <font size="5" color="red">
-      {{error}}
+    {{error}}
   </font>
-  
+
 </div>
 {% endblock %}
 
@@ -41,13 +41,12 @@
 
 <script>
   $('#admin_member_submit').click(function (e) {
-    Notiflix.Loading.Hourglass('處理中....');
-    document.getElementById('admin_member_form').action = '/softwayliving/admin_reservation/'
-    document.getElementById('admin_member_form').submit()
-    
+    if ((/[0]{1}[9]{1}[0-9]{8}/).test($('#member_phone').val())) {
+      Notiflix.Loading.Hourglass('處理中....');
+      document.getElementById('admin_member_form').action = '/softwayliving/admin_reservation/'
+      document.getElementById('admin_member_form').submit()
+    } 
   })
 </script>
-
-
 
 {% endblock %}

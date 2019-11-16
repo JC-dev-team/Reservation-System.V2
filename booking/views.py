@@ -459,6 +459,31 @@ def getWaitingList(request):  # get waiting list
 
 
 @require_http_methods(['GET'])
+def getProdInfo(request):
+    try:
+        if request.session.get('is_Login', None) != None:
+            request.session.set_expiry(900)
+        action = request.GET.get('action', None)
+        # Check is Store admin or not
+        if request.user.is_authenticated:
+            store_id = request.session.get('store_id', None)
+        else:
+            store_id = request.GET.get('store_id', None)
+
+        queryset = Production.objects.filter(store_id=store_id)
+        serializer = Prod_Serializer(queryset, many=True)
+        print('finished')
+        return JsonResponse({'result': serializer.data})
+        
+    except Exception as e:
+        if action == 'main':
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/error/'})
+        elif request.user.is_authenticated:
+            return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/error/'})
+
+
+@require_http_methods(['GET'])
 def getStoreInfo(request):
     try:
         if request.session.get('is_Login', None) != None:
@@ -470,13 +495,13 @@ def getStoreInfo(request):
                 store_id=store_id)
             if queryset.exists() == False:
                 return JsonResponse({'error': '無法取得店家資料，請重新登入', 'action': '/softwayliving/error/'})
-            
+
         else:
             queryset = Store.objects.all()
 
         store_serializer = Store_form_serializer(queryset, many=True)
 
-        return JsonResponse({'result': store_serializer.data,})
+        return JsonResponse({'result': store_serializer.data, })
     except Exception as e:
         if action == 'main':
             return JsonResponse({'error': '發生未知錯誤', 'action': '/error/'})
@@ -493,7 +518,7 @@ def getStoreSeat(request):
         action = request.GET.get('action', None)
         if request.user.is_authenticated:
             store_id = request.session.get('store_id', None)
-        else :
+        else:
             store_id = request.GET.get('store_id', None)
         queryset = Store.objects.get(store_id=store_id)
 
