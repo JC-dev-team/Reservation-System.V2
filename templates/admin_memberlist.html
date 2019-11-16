@@ -32,16 +32,22 @@
                     <font size="4">
                         <input id='edit_user_id' type="text" style="display: none">
                         <!-- action-->
-                        <label><span> 姓名： </label><span onclick="document.getElementById('edit_username').removeAttribute('disabled')"><i class="far fa-edit w3-right"></i></span>
+                        <label><span> 姓名： </label><span
+                            onclick="document.getElementById('edit_username').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
                         <input id='edit_username' type="text" class="w3-input w3-border" value="" disabled>
                         <br>
-                        <label><span> 電話： </label><span onclick="document.getElementById('edit_phone').removeAttribute('disabled')"><i class="far fa-edit w3-right"></i></span>
+                        <label><span> 電話： </label><span
+                            onclick="document.getElementById('edit_phone').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
                         <input id='edit_phone' type="tel" class="w3-input w3-border" value="" disabled>
                         <br>
-                        <label><span> 生日： </label><span onclick="document.getElementById('edit_birth').removeAttribute('disabled')"><i class="far fa-edit w3-right"></i></span>
+                        <label><span> 生日： </label><span
+                            onclick="document.getElementById('edit_birth').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
                         <input id='edit_birth' type="text" class="w3-input w3-border" value="" disabled>
 
-                        
+
 
                         <br>
                         <button id='modal_button_save' onclick='save_edit()'
@@ -58,7 +64,8 @@
         <li class="w3-bar">
             <button onclick="lock_member(this,'{{element.user_id}}')" class="w3-button w3-white w3-large w3-right"><i
                     class="fas fa-ban" style="color:red"></i></button>
-            <button onclick="edit_member(this,'{{element.user_id}}','{{element.username}}', '{{element.phone}}','{{element.birth}}')"
+            <button
+                onclick="edit_member(this,'{{element.user_id}}','{{element.username}}', '{{element.phone}}','{{element.birth}}')"
                 class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
 
 
@@ -114,31 +121,29 @@
     });
 
 
-    function ajax_save_edit(data){
+    function ajax_save_edit(data) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/modify_member/',
             data: data,
             success: function (response) {
                 if (response.error != null) {
-                    console.log(response.error)
-                    Notiflix.Notify.Failure('發生錯誤！！');
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
                     Notiflix.Loading.Remove();
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                     Notiflix.Loading.Remove();
-                }else if(response.outdated != null){
+                } else if (response.outdated != null) {
                     Notiflix.Report.Warning('警告', response.outdated, 'ok');
                     window.location.replace(response.action)
-                }  else {
+                } else {
                     Notiflix.Notify.Success('已儲存！！');
                     document.getElementById('edit_Modal').style.display = 'none'
                     window.location.reload();
                 }
-
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Notify.Failure('很抱歉，發生未知錯誤！！');
                 Notiflix.Loading.Remove();
 
             }
@@ -153,25 +158,20 @@
             data: data,
             success: function (response) {
                 if (response.error != null) {
-                    console.log(response.error)
-                    Notiflix.Notify.Failure('發生錯誤！！');
-                    // window.location.replace('/softwayliving/error/');
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
-                } else if(response.outdated != null){
+                } else if (response.outdated != null) {
                     Notiflix.Report.Warning('警告', response.outdated, 'ok');
                     window.location.replace(response.action)
                 } else {
                     Notiflix.Notify.Success('已刪除會員！！');
                     t.parentElement.style.display = 'none'
                 }
-
                 Notiflix.Loading.Remove();
-                
-
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Notify.Failure('很抱歉，發生未知錯誤！！');
                 Notiflix.Loading.Remove();
 
             }
@@ -180,20 +180,20 @@
     }
 
 
-    function save_edit(){
+    function save_edit() {
         Notiflix.Confirm.Show('管理者權限', '確定要更動嗎?', '是-儲存', '否',
             function () {
                 var user_id = $('#edit_user_id').val();
                 var username = $('#edit_username').val();
                 var phone = $('#edit_phone').val();
                 var birth = $('#edit_birth').val();
-                
+
 
                 var data = {
-                    'user_id':user_id,
+                    'user_id': user_id,
                     'username': username,
-                    'phone':phone,
-                    'birth':birth
+                    'phone': phone,
+                    'birth': birth
                 }
 
                 //spinner show
@@ -204,10 +204,10 @@
             function () {
 
             });
-        
+
     }
 
-    function edit_member(t, user_id,username, phone, birth){
+    function edit_member(t, user_id, username, phone, birth) {
         document.getElementById('edit_Modal').style.display = 'inline'
         document.getElementById('edit_user_id').value = user_id
         document.getElementById('edit_username').value = username
@@ -220,24 +220,18 @@
     function lock_member(t, user_id) {
         Notiflix.Confirm.Show('管理者權限', '確定要凍結此會員嗎?', '是-凍結會員', '否',
             function () {
-
                 var data = {
                     'user_id': user_id
                 }
-
                 //spinner show
                 Notiflix.Loading.Hourglass('正在凍結....');
                 ajax_lock_member(t, data)
 
             },
             function () {
-
-
             });
-
-
-
     }
+
 </script>
 
 {% endblock %}

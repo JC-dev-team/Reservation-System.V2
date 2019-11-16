@@ -120,12 +120,6 @@ console.log($('#bk_date').text())
 
 
 <script type="text/javascript">
-    // $.ajaxSetup({
-    //     data: {
-    //         csrfmiddlewaretoken: '{{ csrf_token }}'
-    //     },
-    // });
-
     // $('#hidden_list').click(function(e){
     //     document.getElementsByName('information').style.display = 'none'
     // })
@@ -168,27 +162,22 @@ console.log($('#bk_date').text())
             data: data,
             success: function (response) {
                 if (response.error != null) {
-                    // console.log(response.error)
-                    window.location.replace('/userdashboard/error/');
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok ');
                     Notiflix.Loading.Remove();
-                } else {
+                }else if (response.outdated != null) {
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                }  else {
                     result = response.result
                     Notiflix.Report.Success('提醒', '已取消此訂位！！', 'ok ');
                     window.location.reload()
-
-                    // console.log(result)
-                    //Function of calendar (return calendar.render())
                 }
-
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log(XMLHttpRequest)
-                console.log(errorThrown)
-                Notiflix.Report.Warning('警告', '無法取消訂位，請聯絡店家', 'ok ');
+                Notiflix.Report.Failure('錯誤', '無法取消訂位，請聯絡店家', 'ok ');
                 Notiflix.Loading.Remove();
-                //window.location.replace('/userdashboard/error/');
             }
 
         })
@@ -201,7 +190,6 @@ console.log($('#bk_date').text())
     }
 
     function cancel_click(date, uuid) {
-        console.log(date, uuid)
         Notiflix.Confirm.Show('取消訂位', '確定取消訂位', '是', '否',
             function () {
                 //alert('YES');
@@ -209,7 +197,6 @@ console.log($('#bk_date').text())
                     'bk_uuid': uuid,
                     'bk_date': date
                 }
-                console.log(data)
                 Notiflix.Loading.Hourglass('刪除訂位中....');
                 cancelreservation(data)
 

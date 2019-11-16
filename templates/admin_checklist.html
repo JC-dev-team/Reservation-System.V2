@@ -259,9 +259,7 @@
             data: data,
             success: function (response) {
                 if (response.error != null) {
-                    console.log(response.error)
-                    Notiflix.Notify.Failure('發生錯誤！！');
-                    // window.location.replace('/softwayliving/error/');
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else if (response.outdated != null) {
@@ -269,7 +267,6 @@
                     window.location.replace(response.action)
                 } else {
                     result = response.result
-                    console.log(result)
                     Notiflix.Notify.Success('已設為店休！！');
 
                 }
@@ -280,7 +277,7 @@
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Notify.Failure('很抱歉，發生未知錯誤！！');
                 Notiflix.Loading.Remove();
                 document.getElementById('dayoff_Modal').style.display = 'none';
             }
@@ -296,9 +293,7 @@
             data: data,
             success: function (response) {
                 if (response.error != null) {
-                    console.log(response.error)
-                    Notiflix.Notify.Failure('發生錯誤！！');
-                    // window.location.replace('/booking/error/');
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
                     Notiflix.Notify.Warning(response.alert);
                 } else if (response.outdated != null) {
@@ -306,7 +301,6 @@
                     window.location.replace(response.action)
                 } else {
                     result = response.result
-                    console.log(result)
                     event.setProp('backgroundColor', 'grey')
                     Notiflix.Notify.Success('訂單已刪除！！');
 
@@ -315,10 +309,9 @@
                 Notiflix.Loading.Remove();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Notify.Failure('很抱歉，發生未知錯誤！！');
                 Notiflix.Loading.Remove();
                 document.getElementById('dayoff_Modal').style.display = 'none';
-                // window.location.replace('/booking/error/');
             }
 
         });
@@ -331,10 +324,7 @@
             data: data,
             success: function (response) {
                 if (response.error != null) {
-                    console.log(response.error)
-                    Notiflix.Notify.Failure('發生錯誤！！');
-
-                    // window.location.replace('/booking/error/');
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else if (response.outdated != null) {
@@ -351,11 +341,9 @@
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Notify.Failure('很抱歉，發生未知錯誤！！');
                 Notiflix.Loading.Remove();
                 document.getElementById('information_Modal').style.display = 'none';
-                console.log(errorThrown)
-                // window.location.replace('/booking/error/');
             }
 
         });
@@ -369,10 +357,7 @@
             data: data,
             success: function (response) {
                 if (response.error != null) {
-                    console.log(response.error)
-                    Notiflix.Notify.Failure('發生錯誤！！');
-
-                    // window.location.replace('/booking/error/');
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else if (response.outdated != null) {
@@ -391,11 +376,9 @@
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Notify.Failure('很抱歉，發生未知錯誤！！');
                 Notiflix.Loading.Remove();
                 document.getElementById('information_Modal').style.display = 'none';
-                console.log(errorThrown)
-                // window.location.replace('/booking/error/');
             }
 
         });
@@ -408,9 +391,7 @@
             data: data,
             success: function (response) {
                 if (response.error != null) {
-                    Notiflix.Notify.Failure('發生錯誤！！');
-                    console.log(response.error)
-                    // window.location.replace('/booking/error/');
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else if (response.outdated != null) {
@@ -429,10 +410,9 @@
                 document.getElementById('dayoff_Modal').style.display = 'none';
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Notify.Failure('很抱歉，發生未知錯誤！！');
                 Notiflix.Loading.Remove();
                 document.getElementById('dayoff_Modal').style.display = 'none';
-                // window.location.replace('/booking/error/');
             }
 
         });

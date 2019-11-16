@@ -16,7 +16,7 @@ from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
-from common.utility.auth import _login_required
+from common.utility.auth import _login_required as Clinet_login_required
 
 def error(request):
     request.session.flush()
@@ -73,7 +73,7 @@ def user_auth(request):  # authentication staff
 
 
 @require_http_methods(['POST', 'GET'])
-@_login_required(redirect_url='/userdashboard/login/')
+@Clinet_login_required(redirect_url='/userdashboard/login/')
 def user_check_reservation(request):
     try:
         if request.session.get('is_Login',False) == False:
@@ -128,11 +128,11 @@ def user_check_reservation(request):
 
 # Ajax API
 @require_http_methods(['POST'])
-@_login_required(redirect_url='/userdashboard/login/')
+@Clinet_login_required(redirect_url='/userdashboard/login/')
 def user_cancel_reservation(request):
     try:
         if request.session.get('is_Login',False) == False:
-            return JsonResponse({'error': '憑證已經過期，請重新登入', 'action': '/userdashboard/login/'})
+            return JsonResponse({'outdated': '憑證已經過期，請重新登入', 'action': '/userdashboard/login/'})
         # use session catch
         request.session.set_expiry(900)
 
