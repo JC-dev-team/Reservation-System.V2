@@ -76,12 +76,12 @@
                 <label><i class="fa fa-usd"></i> 價位/每人(必選)：</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id='price_select' required>
-                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
-                    <option value="500" selected>$500</option>
+                    <option selected disabled hidden>請選擇價位</option>
+                    <!-- <option value="500" selected>$500</option>
                     <option value="600">$600</option>
                     <option value="800">$800</option>
                     <option value="1000">$1000(戰斧牛排套餐)</option>
-                    <option value="1200">$1200</option>
+                    <option value="1200">$1200</option> -->
                 </select>
 
                 <br>
@@ -90,7 +90,7 @@
                 <label><i class="fa fa-bell"></i> 飲食習慣：</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id='bk_habit_select' required>
-                    <!-- <option value="0" selected disabled hidden>請選擇人數</option> -->
+                    <!-- <option  selected disabled hidden>請選擇飲食習慣</option> -->
                     <option value="無" selected>無</option>
                     <option value="不吃牛">不吃牛</option>
                     <option value="不吃海鮮">不吃海鮮</option>
@@ -132,7 +132,7 @@
             <div class="left-half" style="width:100%;">
                 <font size="4.5">
                     <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
-                        id="adult_select" onchange="getStoreSeat()">
+                        id="adult_select" >
                         <option selected disabled hidden>請選擇人數</option>
                     </select>
                 </font>
@@ -235,7 +235,6 @@
             } else {
                 // Clean drop-down menu
                 $('#store_name_select').empty();
-                // $("#store_name_select").append("<option selected disabled hidden>請選擇店家</option>")
                 for (var i = 0; i < response.result.length; i++) {
                     $("#store_name_select").append($("<option></option>").attr("value", response.result[
                         i].store_id).text(response.result[i].store_name));
@@ -251,6 +250,37 @@
             Notiflix.Loading.Remove();
         }
     });
+    function getProductInfo(){
+        $.ajax({
+            type: 'GET',
+            url:'/booking/getProdInfo/',
+            data:{
+                'store_id': $('#store_name_select').val()
+            },
+            success: function(response){
+                if (response.error != null) {
+                    Notiflix.Report.Failure('發生錯誤', response.error, 'ok');
+                    Notiflix.Loading.Remove();
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                    Notiflix.Loading.Remove();
+                } else {
+                    console.log('data : '+response.result)
+                    $('#price_select').empty();
+                    for(var i = 0; i < response.result.length; i++){
+                        $('#price_select').append($("<option></option>").attr("value", response.result[
+                        i].prod_price).text(response.result[i].prod_name));
+                    }
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Report.Failure('錯誤', '很抱歉，發生無法預期之異常', 'ok');
+                Notiflix.Loading.Remove();
+            }
+
+        })
+    }
+
     function getStoreSeat() {
         $.ajax({
             type: "GET",
@@ -267,8 +297,8 @@
                     Notiflix.Loading.Remove();
                 } else {
                     // Clean drop-down menu
-                    $('#adult_select').empty()
-                    $('#children_select').empty()
+                    $('#adult_select').empty();
+                    $('#children_select').empty();
                     for (var i = 1; i <= response.result.seat; i++) {
                         $("#adult_select").append($("<option></option>").attr("value", i).text(i.toString() + ' 大人'));
                         $("#children_select").append($("<option></option>").attr("value", i - 1).text((i - 1).toString() + ' 小孩'));
@@ -380,10 +410,11 @@
                         $("option[name='night']").attr('disabled', false)
                         $("option[name='noon']").attr('selected', true)
                     }
-
-                    //Show the Modal
+                    // Get price list info
+                    getProductInfo();
+                    // Show the Modal
                     document.getElementById('information_Modal').style.display = 'inline';
-                    //Hidden spinner
+                    // Hidden spinner
                     Notiflix.Loading.Remove();
                     // $('#cover-spin').hide();
                 }

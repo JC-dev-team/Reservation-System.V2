@@ -34,6 +34,8 @@ def error(request):
     return render(request, 'error/error.html', {'action': '/softwayliving/login/'})
 
 # admin dashboard ------------------- page
+
+
 def staff_login_portal(request):
     return render(request, 'admin_login.html', {'error': ''})
 
@@ -298,6 +300,22 @@ def admin_InsertReservation(request):  # insert booking list
                 'store': store_serializer.data,
                 'user_info': account_serializer.data,
                 'action': 'admin'})
+    except Exception as e:
+        request.session.flush()
+        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
+
+@login_required(login_url='/softwayliving/login/')
+def staff_productions_page(request):
+    try:
+        if request.user.is_authenticated == False:
+            return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        request.session.set_expiry(900)
+        store_id = request.session.get('store_id', None)
+        queryset = Store.objects.filter(pk=store_id)
+        serializers = Prod_Serializer(queryset, many=True)
+
+        return render(request, 'admin_productlist.html', {'data': serializers.data})
     except Exception as e:
         request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})

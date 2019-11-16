@@ -149,6 +149,7 @@
                 'store_id': $('#store_name_select').val()
             },
             success: function (response) {
+                
                 if (response.error != null) {
                     Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
