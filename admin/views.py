@@ -34,6 +34,8 @@ def error(request):
     return render(request, 'error/error.html', {'action': '/softwayliving/login/'})
 
 # admin dashboard ------------------- page
+
+
 def staff_login_portal(request):
     # If the session is not outdated
     if request.user.is_authenticated:
@@ -314,10 +316,48 @@ def staff_productions_page(request):
             return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
         store_id = request.session.get('store_id', None)
-        queryset = Production.objects.filter(store_id=store_id).order_by('prod_price')
+        queryset = Production.objects.filter(
+            store_id=store_id).order_by('prod_price')
         serializers = Prod_Serializer(queryset, many=True)
 
         return render(request, 'admin_productlist.html', {'data': serializers.data})
+    except Exception as e:
+        request.session.flush()
+        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
+
+@login_required(login_url='/softwayliving/login/')
+def staff_admins_page(request):
+    try:
+        if request.user.is_authenticated == False:
+            return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        request.session.set_expiry(900)
+        store_id = request.session.get('store_id', None)
+
+        queryset = Staff.objects.filter(
+            store_id=store_id
+        ).order_by('-staff_level')
+        serializers = Staff_Serializer(queryset, many=True)
+
+        return render(request, '', {'data': serializers.data})
+    except Exception as e:
+        request.session.flush()
+        return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
+@login_required(login_url='/softwayliving/login/')
+def staff_stores_page(request):
+    try:
+        if request.user.is_authenticated == False:
+            return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        request.session.set_expiry(900)
+        store_id = request.session.get('store_id', None)
+
+        queryset = Store.objects.filter(
+            store_id=store_id
+        ).order_by('-staff_level')
+        serializers = Store_Serializer(queryset, many=True)
+
+        return render(request, '', {'data': serializers.data})
     except Exception as e:
         request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
@@ -545,7 +585,7 @@ def staff_add_event(request):  # add rest day as booking
                 else:
                     return JsonResponse({'alert': '此時段已經是店休了'})
 
-        return JsonResponse({'result': 'success'})
+            return JsonResponse({'result': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -778,7 +818,7 @@ def staff_cancel_event(request):
                 instance.delete()
             except StoreEvent.DoesNotExist:
                 return JsonResponse({'alert': '該事件已刪除或是不存在'})
-        return JsonResponse({'result': 'success'})
+            return JsonResponse({'result': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -810,7 +850,7 @@ def add_admin(request):
                 is_superuser=is_superuser,
                 is_admin=is_admin,
             )
-        return JsonResponse({'reuslt': 'success'})
+            return JsonResponse({'reuslt': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -825,11 +865,18 @@ def delete_admin(request):
 
         request.session.set_expiry(900)
         staff_id = request.POST.get('staff_id', None)
+        staff_name = request.POST.get('staff_name', None)
+        email = request.POST.get('email', None)
+
         with transaction.atomic():  # transaction
-            queryset = Staff.objects.get(staff_id=staff_id)
+            queryset = Staff.objects.get(
+                staff_id=staff_id,
+                staff_name=staff_name,
+                email=email,
+            )
             queryset.delete()
 
-        return JsonResponse({'reuslt': 'success'})
+            return JsonResponse({'reuslt': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -858,7 +905,7 @@ def add_product(request):
                 prod_img=prod_img,
                 prod_desc=prod_desc,
             )
-        return JsonResponse({'reuslt': 'success'})
+            return JsonResponse({'reuslt': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -879,8 +926,8 @@ def modify_product(request):
         prod_desc = request.POST.get('prod_desc', None)
 
         with transaction.atomic():  # transaction
-            queryset=Production.objects.get(
-                prod_id=prod_id, 
+            queryset = Production.objects.get(
+                prod_id=prod_id,
                 store_id=store_id,
             )
             queryset.prod_name = prod_name
@@ -890,7 +937,7 @@ def modify_product(request):
             queryset.save()
             return JsonResponse({'result': 'success'})
     except Production.DoesNotExist:
-        return JsonResponse({'alert':'該資料不存在'})
+        return JsonResponse({'alert': '該資料不存在'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -914,8 +961,8 @@ def delete_product(request):
             queryset.delete()
             return JsonResponse({'reuslt': 'success'})
     except Production.DoesNotExist:
-        return JsonResponse({'alert':'該資料不存在或是已經被刪除'})
-        
+        return JsonResponse({'alert': '該資料不存在或是已經被刪除'})
+
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -933,7 +980,6 @@ def add_store(request):
         store_phone = request.POST.get('store_phone', None)
         store_fax = request.POST.get('store_fax', None)
         tk_service = request.POST.get('tk_service', False)
-        stay_time = request.POST.get('stay_time', None)
         seat = request.POST.get('seat', None)
 
         with transaction.atomic():  # transaction
@@ -943,11 +989,10 @@ def add_store(request):
                 store_phone=store_phone,
                 store_fax=store_fax,
                 tk_service=tk_service,
-                stay_time=stay_time,
                 seat=seat,
             )
 
-        return JsonResponse({'reuslt': 'success'})
+            return JsonResponse({'reuslt': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -962,7 +1007,25 @@ def modify_store(request):
 
         request.session.set_expiry(900)
         store_id = request.POST.get('store_id', None)
+        store_name = request.POST.get('store_name', None)
+        store_address = request.POST.get('store_address', None)
+        store_phone = request.POST.get('store_phone', None)
+        store_fax = request.POST.get('store_fax', None)
+        tk_service = request.POST.get('tk_service', False)
+        seat = request.POST.get('seat', None)
 
+        with transaction.atomic():  # transaction
+            queryset = Store.objects.get(
+                store_id=store_id,
+            )
+            queryset.store_name = store_name
+            queryset.store_address = store_address
+            queryset.store_phone = store_phone
+            queryset.store_fax = store_fax
+            queryset.tk_service = tk_service
+            queryset.seat = seat
+            queryset.save()
+            return JsonResponse({'reuslt': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -977,13 +1040,15 @@ def delete_store(request):
 
         request.session.set_expiry(900)
         store_id = request.POST.get('store_id', None)
+        store_name = request.POST.get('store_name', None)
         with transaction.atomic():  # transaction
             queryset = Store.objects.get(
-                store_id=store_id
+                store_id=store_id,
+                store_name=store_name,
             )
             queryset.delete()
 
-        return JsonResponse({'reuslt': 'success'})
+            return JsonResponse({'reuslt': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 

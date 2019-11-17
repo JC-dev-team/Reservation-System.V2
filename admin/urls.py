@@ -23,40 +23,68 @@ urlpatterns = [
     path('insert_bk/',views.admin_InsertReservation),
     # /softwayliving/productions/
     path('productions/',views.staff_productions_page),
-    
+    # /softwayliving/admins/
+    path('admins/',views.staff_admins_page),
+    # /softwayliving/stores/
+    path('stores/',views.staff_stores_page),
+
+
     ## Ajax api
-    # /softwayliving/staff_check/
-    path('staff_check/',views.staff_check_reservation),
+
+    ### Event API
     # /softwayliving/add_event/
     path('add_event/',views.staff_add_event),
+    # /softwayliving/cancel_event/
+    path('cancel_event/',views.staff_cancel_event),
+
+    ### Reservation API
+    # /softwayliving/staff_check/
+    path('staff_check/',views.staff_check_reservation),
     # /softwayliving/confirm/
     path('confirm/',views.staff_confirm_reservation),
     # /softwayliving/delete/
     path('cancel/',views.staff_cancel_reservation),
     # /softwayliving/pass/ 
     path('pass/',views.staff_pass_reservation),
+
+    ### reservation's category
     # /softwayliving/waiting/
-    path('waiting/',views.staff_is_waiting), # 候補
+    path('waiting/',views.staff_is_waiting), # get候補
     # /softwayliving/confirm/
-    path('is_confirm/',views.staff_is_confirmed), # 已確認
+    path('is_confirm/',views.staff_is_confirmed), # get已確認
     # /softwayliving/not_confirmed/
-    path('not_confirm/',views.staff_not_confirmed), # 待確認
+    path('not_confirm/',views.staff_not_confirmed), # get待確認
     # /softwayliving/canceled/
-    path('delete/',views.staff_is_cancel), # 已刪除
+    path('delete/',views.staff_is_cancel), # get已刪除
+
+    ### member Info operations
     # /softwayliving/lock_member/
     path('lock_member/',views.staff_lock_member),
-    # /softwayliving/cancel_event/
-    path('cancel_event/',views.staff_cancel_event),
     # /softwayliving/modify_member/
     path('modify_member/',views.staff_modify_member),
-    
-    ## Productions
+
+    ### Productions api
     # /softwayliving/AddProduct/
     path('AddProduct/',views.add_product),
     # /softwayliving/ModifyProduct/
     path('ModifyProduct/',views.modify_product),
     # /softwayliving/DeleteProduct/
     path('DeleteProduct/',views.delete_product),
+
+    ### admin api
+    # /softwayliving/AddAdmin/
+    path('AddAdmin/',views.add_admin),
+    # /softwayliving/DeleteAdmin/
+    path('DeleteAdmin/',views.delete_admin),
+
+    ### Store api
+    # /softwayliving/AddStore/
+    path('AddStore/',views.add_store),
+    # /softwayliving/ModifyStore/
+    path('ModifyStore/',views.modify_store),
+    # /softwayliving/DeleteStore/
+    path('DeleteStore/',views.delete_store),
+
 
     ## Test
     # path('eve/',views.event_AAAA),
