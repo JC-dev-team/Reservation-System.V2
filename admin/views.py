@@ -354,10 +354,10 @@ def staff_stores_page(request):
 
         queryset = Store.objects.filter(
             store_id=store_id
-        ).order_by('-staff_level')
+        )
         serializers = Store_Serializer(queryset, many=True)
 
-        return render(request, '', {'data': serializers.data})
+        return render(request, 'admin_storesetting.html', {'data': serializers.data})
     except Exception as e:
         request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
