@@ -339,7 +339,7 @@ def staff_admins_page(request):
         ).order_by('-staff_level')
         serializers = Staff_Serializer(queryset, many=True)
 
-        return render(request, '', {'data': serializers.data})
+        return render(request, 'admin_adminsetting.html', {'data': serializers.data})
     except Exception as e:
         request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
