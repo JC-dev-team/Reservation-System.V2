@@ -1,8 +1,11 @@
 from datetime import datetime, date, timedelta
 from django.shortcuts import render, redirect, reverse
 from main.models import BkList, Account, Production, Staff, Store, StoreEvent
-from common.serializers import Acc_Serializer, Bklist_Serializer, \
-    Prod_Serializer, Staff_Serializer, Store_Serializer, StoreEvent_Serializer, Store_form_serializer
+from main.models import (BkList, Account, Production,
+                         Staff, Store, StoreEvent, StaffActionLog, UserActionLog)
+from common.serializers import (Acc_Serializer, Bklist_Serializer, Prod_Serializer,
+                                Staff_Serializer, Store_Serializer, UserActionLog_Serializer, StaffActionLog_Serializer)
+from common.serializers import (StoreEvent_Serializer, Store_form_serializer)
 from common.serializers import checkStaffAuth
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
@@ -67,7 +70,7 @@ def member_management(request):
         return render(request, 'admin_memberlist.html', {'data': serializer_class.data})
     except Exception as e:
         request.session.flush()
-        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
 
 @require_http_methods(['POST', 'GET'])
@@ -113,7 +116,7 @@ def staff_auth(request):  # authentication staff
             return render(request, 'admin_dashbroad.html')
     except Exception as e:
         request.session.flush()
-        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
 
 @require_http_methods(['POST'])
@@ -159,7 +162,7 @@ def staff_add_reservation(request):  # Help client to add reservation
 
     except Exception as e:
         request.session.flush()
-        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
 
 @require_http_methods(['POST'])
@@ -306,7 +309,7 @@ def admin_InsertReservation(request):  # insert booking list
                 'action': 'admin'})
     except Exception as e:
         request.session.flush()
-        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
 
 @login_required(login_url='/softwayliving/login/')
@@ -323,7 +326,7 @@ def staff_productions_page(request):
         return render(request, 'admin_productlist.html', {'data': serializers.data})
     except Exception as e:
         request.session.flush()
-        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
 
 @login_required(login_url='/softwayliving/login/')
@@ -342,7 +345,8 @@ def staff_admins_page(request):
         return render(request, 'admin_adminsetting.html', {'data': serializers.data})
     except Exception as e:
         request.session.flush()
-        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
+
 
 @login_required(login_url='/softwayliving/login/')
 def staff_stores_page(request):
@@ -360,7 +364,7 @@ def staff_stores_page(request):
         return render(request, 'admin_storesetting.html', {'data': serializers.data})
     except Exception as e:
         request.session.flush()
-        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
 
 # Ajax API ---------------------------------------------
@@ -524,7 +528,7 @@ def staff_cancel_reservation(request):
             if bk_queryset.exists() == False:
                 return JsonResponse({'alert': '資料不存在或是已被刪除'})
             bk_queryset.update(is_cancel=True)
-            
+
             return JsonResponse({'result': 'success'})
 
     except Exception as e:

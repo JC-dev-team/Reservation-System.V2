@@ -2,8 +2,8 @@ from common.utility.recaptcha import check_recaptcha
 from common.utility.geolocation import get_client_ip
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
-from main.models import BkList, Account, Production, Staff, Store, StoreEvent
-from common.serializers import Acc_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
+from main.models import (BkList, Account, Production, Staff, Store, StoreEvent,StaffActionLog,UserActionLog)
+from common.serializers import (Acc_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer,UserActionLog_Serializer,StaffActionLog_Serializer)
 from common.serializers import checkAuth, check_bklist, applymember, Store_form_serializer
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
@@ -275,6 +275,7 @@ def InsertReservation(request):  # insert booking list
                 'data': bklist_serializer.data,
                 'store': store_serializer.data,
                 'user_info': account_serializer.data, })
+
     except Exception as e:
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
