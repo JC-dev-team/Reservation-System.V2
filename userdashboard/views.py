@@ -71,7 +71,8 @@ def user_auth(request):  # authentication staff
             return render(request, 'user_dashboard.html', {'data': result})
     except Exception as e:
         request.session.flush()
-        return render(request, 'error/error.html', {'error': e, 'action': '/userdashboard/login/'})
+
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/userdashboard/login/'})
 
 
 @require_http_methods(['POST', 'GET'])
@@ -124,8 +125,9 @@ def user_check_reservation(request):
         request.session.flush()
         return render(request, 'error/error.html', {'error': '帳號不存在', 'action': '/userdashboard/login/'})
     except Exception as e:
+        
         request.session.flush()
-        return render(request, 'error/error.html', {'error': e, 'action': '/userdashboard/login/'})
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/userdashboard/login/'})
 
 
 # Ajax API
