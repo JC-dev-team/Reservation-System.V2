@@ -1,4 +1,5 @@
 from common.utility.recaptcha import check_recaptcha
+from common.utility.geolocation import get_client_ip
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
 from main.models import BkList, Account, Production, Staff, Store, StoreEvent
@@ -120,7 +121,8 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
     except Exception as e:
         # render html
         request.session.flush()
-        return render(request, 'error/error.html', {'error': e, 'action': '/booking/login/'})
+
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
 
 
 @require_http_methods(['POST'])
@@ -275,7 +277,7 @@ def InsertReservation(request):  # insert booking list
                 'user_info': account_serializer.data, })
     except Exception as e:
         request.session.flush()
-        return render(request, 'error/error.html', {'error': e, 'action': '/booking/login/'})
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
 
 
 def login_portal(request):
@@ -336,7 +338,7 @@ def member(request):
 
     except Exception as e:
         request.session.flush()
-        return render(request, 'error/error.html', {'error': e, 'action': '/booking/login/'})
+        return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
 
 
 # Ajax api --------------------------------------------------------------
