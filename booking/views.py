@@ -277,6 +277,7 @@ def InsertReservation(request):  # insert booking list
                 'data': bklist_serializer.data,
                 'store': store_serializer.data,
                 'user_info': account_serializer.data, })
+
     except Exception as e:
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})

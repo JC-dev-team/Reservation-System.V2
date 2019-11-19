@@ -1,8 +1,10 @@
 from common.utility.recaptcha import check_recaptcha
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
-from .models import BkList, Account, Production, Staff, Store, StoreEvent,UserActionLog,StaffActionLog
-from common.serializers import Acc_Serializer,Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
+from .models import (BkList, Account, Production, Staff,
+                     Store, StoreEvent, StaffActionLog, UserActionLog)
+from common.serializers import (Acc_Serializer, Bklist_Serializer, Prod_Serializer,
+                                Staff_Serializer, Store_Serializer, UserActionLog_Serializer, StaffActionLog_Serializer)
 from common.serializers import checkAuth, check_bklist, applymember, Store_form_serializer
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
@@ -18,10 +20,11 @@ from django.views.decorators.http import require_http_methods
 from django.db.models import Q  # complex lookup
 from django.conf import settings
 
-    
+
 # Create your views here.
 def preview(request):
     return render(request, 'preview_page.html')
 
+
 def error(request):
-    return render(request, 'error/error.html',{'action':'/preview/'})
+    return render(request, 'error/error.html', {'action': '/preview/'})

@@ -1,6 +1,7 @@
 from datetime import datetime, date, timedelta
 from django.shortcuts import render, redirect, reverse
-from main.models import (BkList, Account, Production, Staff, Store, UserActionLog, StaffActionLog)
+from main.models import (BkList, Account, Production,
+                         Staff, Store, StoreEvent, StaffActionLog, UserActionLog)
 from common.serializers import (Acc_Serializer, Bklist_Serializer, Prod_Serializer,
                                 Staff_Serializer, Store_Serializer, UserActionLog_Serializer, StaffActionLog_Serializer)
 from common.serializers import checkAuth, Store_form_serializer
@@ -125,7 +126,7 @@ def user_check_reservation(request):
         request.session.flush()
         return render(request, 'error/error.html', {'error': '帳號不存在', 'action': '/userdashboard/login/'})
     except Exception as e:
-        
+
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/userdashboard/login/'})
 
