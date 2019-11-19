@@ -1,7 +1,7 @@
 from common.utility.recaptcha import check_recaptcha
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
-from .models import BkList, Account, Production, Staff, Store, StoreEvent
+from .models import BkList, Account, Production, Staff, Store, StoreEvent,UserActionLog,StaffActionLog
 from common.serializers import Acc_Serializer,Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
 from common.serializers import checkAuth, check_bklist, applymember, Store_form_serializer
 from rest_framework import viewsets, status

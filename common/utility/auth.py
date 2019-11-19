@@ -79,7 +79,7 @@ def valid_pass_test(test_fun, redirect_url='/'):
         return _wrapped_view
     return decorator
 
-
+# Client Login
 def _login_required(function=None, redirect_url='/'):
     actual_decorator = valid_pass_test(
         lambda u: u.get('is_Login', False),

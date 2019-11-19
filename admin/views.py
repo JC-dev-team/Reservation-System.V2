@@ -1,8 +1,12 @@
 from datetime import datetime, date, timedelta
 from django.shortcuts import render, redirect, reverse
-from main.models import BkList, Account, Production, Staff, Store, StoreEvent
-from common.serializers import Acc_Serializer, Bklist_Serializer, \
-    Prod_Serializer, Staff_Serializer, Store_Serializer, StoreEvent_Serializer, Store_form_serializer
+from main.models import (BkList, Account, Production,
+                         Staff, Store, StoreEvent, UserActionLog, StaffActionLog)
+from common.serializers import (Acc_Serializer, Bklist_Serializer,
+                                Prod_Serializer, Staff_Serializer, Store_Serializer,
+                                StoreEvent_Serializer, Store_form_serializer, 
+                                UserActionLog_Serializer, StaffActionLog_Serializer)
+                                
 from common.serializers import checkStaffAuth
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
@@ -66,6 +70,7 @@ def member_management(request):
         serializer_class = Acc_Serializer(queryset, many=True)
         return render(request, 'admin_memberlist.html', {'data': serializer_class.data})
     except Exception as e:
+
         request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
 
@@ -343,6 +348,7 @@ def staff_admins_page(request):
     except Exception as e:
         request.session.flush()
         return render(request, 'error/error.html', {'error': e, 'action': '/softwayliving/login/'})
+
 
 @login_required(login_url='/softwayliving/login/')
 def staff_stores_page(request):

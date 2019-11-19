@@ -1,7 +1,8 @@
-from datetime import datetime, date,timedelta
+from datetime import datetime, date, timedelta
 from django.shortcuts import render, redirect, reverse
-from main.models import BkList, Account, Production, Staff, Store
-from common.serializers import Acc_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
+from main.models import (BkList, Account, Production, Staff, Store, UserActionLog, StaffActionLog)
+from common.serializers import (Acc_Serializer, Bklist_Serializer, Prod_Serializer,
+                                Staff_Serializer, Store_Serializer, UserActionLog_Serializer, StaffActionLog_Serializer)
 from common.serializers import checkAuth, Store_form_serializer
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
@@ -17,6 +18,7 @@ from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from common.utility.auth import _login_required as Clinet_login_required
+
 
 def error(request):
     request.session.flush()
@@ -34,7 +36,7 @@ def user_auth(request):  # authentication staff
         social_id = request.POST.get('social_id', None)
         social_app = request.POST.get('social_app', None)
         social_name = request.POST.get('social_name', None)
-        
+
         # Check data format
         valid = checkAuth(data={
             'social_id': social_id,
@@ -45,7 +47,7 @@ def user_auth(request):  # authentication staff
 
         result = auth.ClientAuthentication(social_id, social_app)
 
-        if result == None :
+        if result == None:
             request.session.flush()
             return render(request, 'error/error404.html', {'action': '/userdashboard/login/'})
         elif result == False:
@@ -60,8 +62,8 @@ def user_auth(request):  # authentication staff
         else:
             if 'is_Login' in request.session:
                 request.session.flush()
-            request.session['is_Login'] =True
-            request.session['social_id']= social_id
+            request.session['is_Login'] = True
+            request.session['social_id'] = social_id
             request.session['social_app'] = social_app
             request.session['social_name'] = social_name
             request.session['user_id'] = result.user_id
@@ -76,8 +78,8 @@ def user_auth(request):  # authentication staff
 @Clinet_login_required(redirect_url='/userdashboard/login/')
 def user_check_reservation(request):
     try:
-        if request.session.get('is_Login',False) == False:
-            return render(request,'error/error.html',{'error': '憑證已經過期，請重新登入', 'action': '/userdashboard/login/'})
+        if request.session.get('is_Login', False) == False:
+            return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/userdashboard/login/'})
 
         request.session.set_expiry(900)
         user_id = request.session.get('user_id', None)
@@ -93,7 +95,7 @@ def user_check_reservation(request):
             bk_date__gte=now,
             is_cancel=False,
 
-        ).order_by('is_confirm','-waiting_num','bk_date','bk_st')
+        ).order_by('is_confirm', '-waiting_num', 'bk_date', 'bk_st')
         # If data not exists
         if bk_queryset.exists() == False:
             account_serializer = Acc_Serializer(acc_queryset)
@@ -131,7 +133,7 @@ def user_check_reservation(request):
 @Clinet_login_required(redirect_url='/userdashboard/login/')
 def user_cancel_reservation(request):
     try:
-        if request.session.get('is_Login',False) == False:
+        if request.session.get('is_Login', False) == False:
             return JsonResponse({'outdated': '憑證已經過期，請重新登入', 'action': '/userdashboard/login/'})
         # use session catch
         request.session.set_expiry(900)
@@ -139,7 +141,7 @@ def user_cancel_reservation(request):
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
 
-        ## Account Exist
+        # Account Exist
         with transaction.atomic():  # transaction
             bk_date_ = datetime.strptime(bk_date, '%Y-%m-%d')
             bk_date_tmp = bk_date_ - timedelta(days=3)
@@ -156,6 +158,6 @@ def user_cancel_reservation(request):
                     return JsonResponse({'error': '資料已經刪除或是不存在', 'action': '/userdashboard/error/'})
                 bk_queryset.update(is_cancel=True)
                 return JsonResponse({'result': 'success'})
-        
+
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/userdashboard/error/'})

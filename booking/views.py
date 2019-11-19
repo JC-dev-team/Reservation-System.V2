@@ -1,8 +1,10 @@
 from common.utility.recaptcha import check_recaptcha
 from datetime import datetime
 from django.shortcuts import render, redirect, reverse
-from main.models import BkList, Account, Production, Staff, Store, StoreEvent
-from common.serializers import Acc_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer, Store_Serializer
+from main.models import (BkList, Account, Production,
+                         Staff, Store, StoreEvent, StaffActionLog, UserActionLog)
+from common.serializers import (Acc_Serializer, Bklist_Serializer, Prod_Serializer, Staff_Serializer,
+                                Store_Serializer, UserActionLog_Serializer, StaffActionLog_Serializer)
 from common.serializers import checkAuth, check_bklist, applymember, Store_form_serializer
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
@@ -13,7 +15,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
 from common.utility import auth
-from common.utility.auth import _login_required
+from common.utility.auth import _login_required as Client_login_required
 from django.db import transaction, DatabaseError
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q  # complex lookup
@@ -124,7 +126,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 
 
 @require_http_methods(['POST'])
-@_login_required(redirect_url='/booking/login/')
+@Client_login_required(redirect_url='/booking/login/')
 @check_recaptcha
 def InsertReservation(request):  # insert booking list
     try:
@@ -463,7 +465,7 @@ def getProdInfo(request):
     try:
         if request.session.get('is_Login', None) != None:
             request.session.set_expiry(900)
-        
+
         action = request.GET.get('action', None)
         # Check is Store admin or not
         if request.user.is_authenticated:
@@ -474,7 +476,7 @@ def getProdInfo(request):
         queryset = Production.objects.filter(store_id=store_id)
         serializer = Prod_Serializer(queryset, many=True)
         return JsonResponse({'result': serializer.data})
-        
+
     except Exception as e:
         if action == 'main':
             return JsonResponse({'error': '發生未知錯誤', 'action': '/error/'})
