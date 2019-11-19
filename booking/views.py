@@ -113,9 +113,21 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         request.session['is_Login'] = True
         request.session['user_id'] = queryset.user_id
         serializer_class = Acc_Serializer(queryset)
-
+        with transaction.atomic():  # transaction
+            try:
+                ip,location,err=get_client_ip(request)
+                if err != None:
+                    raise Exception(err)
+                    # return render(request, 'error/error.html', {'error': str(err), 'action': '/softwayliving/login/'})
+                UserActionLog.objects.create(
+                    user_id=queryset.user_id,
+                    location=location, 
+                    ip=ip,
+                    operation='Login'
+                )
+            except Exception as e:
+                pass
         # render html
-
         return render(request, 'reservation.html', {
             'data': serializer_class.data,
             'google_keys': settings.RECAPTCHA_PUBLIC_KEY})

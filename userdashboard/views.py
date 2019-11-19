@@ -19,7 +19,7 @@ from django.db.models import Q  # complex lookup
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from common.utility.auth import _login_required as Clinet_login_required
-
+from common.utility.geolocation import get_client_ip
 
 def error(request):
     request.session.flush()
@@ -68,7 +68,20 @@ def user_auth(request):  # authentication staff
             request.session['social_app'] = social_app
             request.session['social_name'] = social_name
             request.session['user_id'] = result.user_id
-
+            with transaction.atomic():  # transaction
+                try:
+                    ip,location,err=get_client_ip(request)
+                    if err != None:
+                        raise Exception(err)
+                        # return render(request, 'error/error.html', {'error': str(err), 'action': '/softwayliving/login/'})
+                    UserActionLog.objects.create(
+                        user_id=result.user_id,
+                        location=location, 
+                        ip=ip,
+                        operation='Login'
+                    )
+                except Exception as e:
+                    pass
             return render(request, 'user_dashboard.html', {'data': result})
     except Exception as e:
         request.session.flush()

@@ -5,9 +5,7 @@ from main.models import (BkList, Account, Production,
 from common.serializers import (Acc_Serializer, Bklist_Serializer,
                                 Prod_Serializer, Staff_Serializer, Store_Serializer,
                                 StoreEvent_Serializer, Store_form_serializer, 
-                                UserActionLog_Serializer, StaffActionLog_Serializer)
-                                
-from common.serializers import checkStaffAuth
+                                UserActionLog_Serializer, StaffActionLog_Serializer,checkStaffAuth)
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -17,6 +15,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
 from common.utility import auth
+from common.utility.geolocation import get_client_ip
 from common.utility.auth import _login_required
 from django.contrib.auth import authenticate,  logout
 from django.contrib.auth import login as auth_login
@@ -42,8 +41,8 @@ def error(request):
 
 def staff_login_portal(request):
     # If the session is not outdated
-    if request.user.is_authenticated:
-        return render(request, 'admin_dashbroad.html')
+    # if request.user.is_authenticated:
+    #     return render(request, 'admin_dashbroad.html')
     return render(request, 'admin_login.html', {'error': ''})
 
 
@@ -78,6 +77,7 @@ def member_management(request):
 @require_http_methods(['POST', 'GET'])
 def staff_auth(request):  # authentication staff
     try:
+        
         email = request.POST.get('email', None)
         password = request.POST.get('password', None)
 
@@ -87,7 +87,6 @@ def staff_auth(request):  # authentication staff
                               'action': '/softwayliving/login/',
                               'error': 'Trying too many times',
                           })
-
         # Check Auth
         result = auth.StaffAuthentication(email, password)
         if result == None or result == False:
@@ -115,7 +114,7 @@ def staff_auth(request):  # authentication staff
             request.session['staff_id'] = result['staff_id']
             request.session['staff_name'] = result['staff_name']
 
-            return render(request, 'admin_dashbroad.html')
+            return render(request, 'admin_dashbroad.html')       
     except Exception as e:
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
@@ -531,6 +530,10 @@ def staff_cancel_reservation(request):
             if bk_queryset.exists() == False:
                 return JsonResponse({'alert': '資料不存在或是已被刪除'})
             bk_queryset.update(is_cancel=True)
+
+            # Send Line message
+            # line_send_result = linebot_send_msg(
+            #     acc_queryset.social_id, acc_queryset, bklist_serializer.data)
 
             return JsonResponse({'result': 'success'})
 
