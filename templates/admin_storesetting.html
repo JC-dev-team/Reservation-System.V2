@@ -24,12 +24,26 @@
             <br>
             <font size="4">
                 <!-- action-->
-                
-                <label><span> 名稱： </label>
-                <input id='add_prod_name' type="text" class="w3-input w3-border" placeholder="E.g: $1200" value="">
+
+                <label><span> 店家名稱： </label>
+                <input id='add_store_name' type="text" class="w3-input w3-border" placeholder="E.g: $1200" value="">
                 <br>
-                <label><span> 價位： </label>
-                <input id='add_prod_price' type="text" class="w3-input w3-border" placeholder="E.g: 1200" value="">
+                <label><span> 店家地址： </label>
+                <input id='add_store_address' type="text" class="w3-input w3-border" placeholder="E.g: 1200" value="">
+                <br>
+                <label><span> 店家電話： </label>
+                <input id='add_store_phone' type="tel" class="w3-input w3-border" placeholder="E.g: $1200" value="">
+                <br>
+                <label><span> 店家傳真： </label>
+                <input id='add_store_fax' type="tel" class="w3-input w3-border" placeholder="E.g: 1200" value="">
+                <br>
+                <label><span> 提供外帶： </label>
+                <input id='add_tk_service' type="text" class="w3-input w3-border" placeholder="E.g: $1200" value="">
+                <br>
+                <label><span> 店內座位： </label>
+                <input id='add_seat' type="tel" class="w3-input w3-border" placeholder="E.g: 1200" value="">
+                <br>
+
 
                 <br>
                 <button id='modal_button_save_add' onclick='save_add()'
@@ -56,27 +70,50 @@
                 <header class="w3-container w3-teal w3-center w3-padding-32">
                     <span onclick="document.getElementById('edit_Modal').style.display='none'"
                         class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
-                    <h2 class="w3-wide"><i class="fa fa-bell"></i> 修改價位</h2>
+                    <h2 class="w3-wide"><i class="fa fa-bell"></i> 修改店家資訊</h2>
                 </header>
                 <div class="w3-container">
                     <br>
                     <font size="4">
-                        <input id='edit_prod_id' type="text" style="display: none">
+                        <input id='edit_store_id' type="text" style="display: none">
                         <!-- action-->
-                        <label><span> 名稱： </label><span
-                            onclick="document.getElementById('edit_prod_name').removeAttribute('disabled')"><i
+                        <label><span> 店家名稱： </label><span
+                            onclick="document.getElementById('edit_store_name').removeAttribute('disabled')"><i
                                 class="far fa-edit w3-right"></i></span>
-                        <input id='edit_prod_name' type="text" class="w3-input w3-border" value="" disabled>
+                        <input id='edit_store_name' type="text" class="w3-input w3-border" value="" disabled>
                         <br>
-                        <label><span> 價位： </label><span
-                            onclick="document.getElementById('edit_prod_price').removeAttribute('disabled')"><i
+                        <label><span> 店家地址： </label><span
+                            onclick="document.getElementById('edit_store_address').removeAttribute('disabled')"><i
                                 class="far fa-edit w3-right"></i></span>
-                        <input id='edit_prod_price' type="text" class="w3-input w3-border" value="" disabled>
+                        <input id='edit_store_address' type="text" class="w3-input w3-border" value="" disabled>
+                        <br>
+                        <label><span> 店家電話： </label><span
+                            onclick="document.getElementById('edit_store_phone').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
+                        <input id='edit_store_phone' type="text" class="w3-input w3-border" value="" disabled>
+                        <br>
+                        <label><span> 店家傳真： </label><span
+                            onclick="document.getElementById('edit_store_fax').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
+                        <input id='edit_store_fax' type="text" class="w3-input w3-border" value="" disabled>
+                        <br>
+                        <label><span> 提供外帶： </label><span
+                            onclick="document.getElementById('edit_tk_service').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
+                        <input id='edit_tk_service' type="text" class="w3-input w3-border" value="" disabled>
+                        <br>
+                        <label><span> 店內座位： </label><span
+                            onclick="document.getElementById('edit_seat').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
+                        <input id='edit_seat' type="text" class="w3-input w3-border" value="" disabled>
+                        <br>
 
-                        <br>
                         <button id='modal_button_save_edit' onclick='save_edit()'
                             class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">儲存
                             <i class="fa fa-check"></i></button>
+                        <button id='modal_button_delect_store' onclick="delete_store(this,'{{element.store_id}}')"
+                            class="w3-button w3-block w3-red w3-padding-16 w3-section w3-right">刪除店家
+                            <i class="fas fa-trash-alt"></i></button>
                         <button class="w3-button w3-red w3-section"
                             onclick="document.getElementById('edit_Modal').style.display='none'">關閉 <i
                                 class="fa fa-remove"></i></button>
@@ -86,13 +123,16 @@
             </div>
         </div>
         <li class="w3-bar">
-            <button onclick="delete_product(this,'{{element.prod_id}}')" class="w3-button w3-white w3-large w3-right"><i
-                    class="fas fa-times"></i></button>
-            <button onclick="edit_product(this,'{{element.prod_id}}','{{element.prod_name}}','{{element.prod_price}}')"
+            <!--go to admin_setting-->
+            <button onclick= "send('admin')" class="w3-button w3-white w3-large w3-right"><i
+                    class="fas fa-angle-right"></i></button>
+            <!--edit-->
+            <button
+                onclick="edit_store(this,'{{element.store_id}}','{{element.store_name}}','{{element.store_address}}','{{element.store_phone}}','{{element.store_fax}}','{{element.tk_service}}','{{element.seat}}')"
                 class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
 
             <div class="w3-bar-item">
-                <span class="w3-large"><i class="fas fa-tags"></i> {{element.prod_name}}</span><br>
+                <span class="w3-large"><i class="fas fa-star"></i> {{element.store_name}}</span><br>
 
 
             </div>
@@ -101,7 +141,7 @@
         {% endfor %}
     </ul>
     <br>
-    <button onclick="add_product()" class="w3-button w3-white w3-xxlarge w3-right"><i
+    <button onclick="add_store()" class="w3-button w3-white w3-xxlarge w3-right"><i
             class="fas fa-plus-circle"></i></button>
 
 </div>
@@ -138,10 +178,10 @@
         }
     });
 
-    function ajax_add_product(data) {
+    function ajax_add_store(data) {
         $.ajax({
             type: 'POST',
-            url: '/softwayliving/AddProduct/',
+            url: '/softwayliving//',
             data: data,
             success: function (response) {
                 if (response.error != null) {
@@ -167,10 +207,10 @@
         })
     }
 
-    function ajax_edit_product(data) {
+    function ajax_edit_store(data) {
         $.ajax({
             type: 'POST',
-            url: '/softwayliving/ModifyProduct/',
+            url: '/softwayliving//',
             data: data,
             success: function (response) {
                 if (response.error != null) {
@@ -196,10 +236,10 @@
         })
     }
 
-    function ajax_delete_product(t, data) {
+    function ajax_delete_store(t, data) {
         $.ajax({
             type: 'POST',
-            url: '/softwayliving/DeleteProduct/',
+            url: '/softwayliving/',
             data: data,
             success: function (response) {
                 if (response.error != null) {
@@ -208,7 +248,7 @@
                     // window.location.replace('/softwayliving/error/');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
-                } else if(response.outdated != null){
+                } else if (response.outdated != null) {
                     Notiflix.Report.Warning('警告', response.outdated, 'ok');
                     window.location.replace(response.action)
                 } else {
@@ -234,26 +274,46 @@
         Notiflix.Confirm.Show('管理者權限', '確定要新增嗎?', '是-新增', '否',
             function () {
                 var status = true
-                var prod_name = $('#add_prod_name').val();
-                var prod_price = $('#add_prod_price').val();
+                var store_name = $('#add_store_name').val();
+                var store_address = $('#add_store_address').val();
+                var store_phone = $('#add_store_phone').val();
+                var store_fax = $('#add_store_fax').val();
+                var tk_service = $('#add_tk_service').val();
+                var seat = $('#add_seat').val();
 
-                if (prod_name == '') {
-                    Notiflix.Notify.Failure('請輸入名稱！！')
+                if (store_name == '') {
+                    Notiflix.Notify.Failure('請輸入店家名稱！！')
                     status = false;
-                } else if (prod_price == '') {
-                    Notiflix.Notify.Failure('請輸入價位！！')
+                } else if (store_address == '') {
+                    Notiflix.Notify.Failure('請輸入店家地址！！')
+                    status = false;
+                } else if (store_phone == '') {
+                    Notiflix.Notify.Failure('請輸入店家電話！！')
+                    status = false;
+                } else if (store_fax == '') {
+                    Notiflix.Notify.Failure('請輸入店家傳真！！')
+                    status = false;
+                } else if (tk_service == '') {
+                    Notiflix.Notify.Failure('請輸入是否提供外帶！！')
+                    status = false;
+                } else if (seat == '') {
+                    Notiflix.Notify.Failure('請輸入店內座位數！！')
                     status = false;
                 }
 
                 if (status) {
                     var data = {
-                        'prod_name': prod_name,
-                        'prod_price': prod_price
+                        'store_name': store_name,
+                        'store_address': store_address,
+                        'store_phone': store_phone,
+                        'store_fax': store_fax,
+                        'tk_service': tk_service,
+                        'seat': seat
                     }
 
                     //spinner show
                     Notiflix.Loading.Hourglass('新增中....');
-                    ajax_add_product(data)
+                    ajax_add_store(data)
                 }
 
 
@@ -288,40 +348,50 @@
 
     }
 
-    function add_product() {
+    function add_store() {
         document.getElementById('add_Modal').style.display = 'inline'
     }
 
-    function edit_product(t, prod_id, prod_name, prod_price) {
+    function edit_store(t, store_id, store_name, store_address, store_phone, store_fax, tk_service, seat) {
         document.getElementById('edit_Modal').style.display = 'inline'
-        document.getElementById('edit_prod_id').value = prod_id
-        document.getElementById('edit_prod_name').value = prod_name
-        document.getElementById('edit_prod_price').value = prod_price
+        document.getElementById('edit_store_id').value = store_id
+        document.getElementById('edit_store_name').value = store_name
+        document.getElementById('edit_store_address').value = store_address
+        document.getElementById('edit_store_phone').value = store_phone
+        document.getElementById('edit_store_fax').value = store_fax
+        document.getElementById('edit_tk_service').value = tk_service
+        document.getElementById('edit_seat').value = seat
+
 
 
     }
 
 
-    function delete_product(t, prod_id) {
+    function delete_store(t, store_id) {
         Notiflix.Confirm.Show('管理者權限', '確定要刪除此價位嗎?', '是-刪除', '否',
             function () {
 
                 var data = {
-                    'prod_id': prod_id
+                    'store_id': store_id
                 }
 
                 //spinner show
                 Notiflix.Loading.Hourglass('正在刪除....');
-                ajax_delete_product(t, data)
+                ajax_delete_store(t, data)
 
             },
             function () {
 
 
             });
+    }
 
-
-
+    function send(action) {
+        console.log('gg')
+        if (action == 'admin') {
+            console.log(action)
+            window.location.href = '/softwayliving/admins/'
+        }
     }
 </script>
 
