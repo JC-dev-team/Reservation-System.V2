@@ -1,0 +1,237 @@
+{% extends 'admin_base.html' %}
+
+<!-- include 'header.html'   => image-->
+<!-- content-->
+{% block content %}
+{% load static %}
+<div class="w3-center">
+    <font size='5' face="DFKai-sb">
+        <b><I>聰明工作，智慧生活</I></b>
+        <h3>管理者權限(共{{data|length}}筆)</h3>
+    </font>
+
+</div>
+
+
+
+<div class="w3-container">
+
+    <ul class="w3-ul w3-card-4">
+
+        {% for element in data %}
+        <!-- edit Modal -->
+        <div id="edit_Modal" class="w3-modal">
+            <div class="w3-modal-content w3-animate-top w3-card-4">
+                <header class="w3-container w3-teal w3-center w3-padding-32">
+                    <span onclick="document.getElementById('edit_Modal').style.display='none'"
+                        class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
+                    <h2 class="w3-wide"><i class="fa fa-bell"></i> 管理者權限</h2>
+                </header>
+                <div class="w3-container">
+                    <br>
+                    <font size="4">
+                        <input id='edit_user_id' type="text" style="display: none">
+                        <!-- action-->
+                        <label><span> 姓名： </label><span
+                            onclick="document.getElementById('edit_username').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
+                        <input id='edit_username' type="text" class="w3-input w3-border" value="" disabled>
+                        <br>
+                        <label><span> 電話： </label><span
+                            onclick="document.getElementById('edit_phone').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
+                        <input id='edit_phone' type="tel" class="w3-input w3-border" value="" disabled>
+                        <br>
+                        <label><span> 生日： </label><span
+                            onclick="document.getElementById('edit_birth').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
+                        <input id='edit_birth' type="text" class="w3-input w3-border" value="" disabled>
+
+
+
+                        <br>
+                        <button id='modal_button_save' onclick='save_edit()'
+                            class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">儲存
+                            <i class="fa fa-check"></i></button>
+                        <button class="w3-button w3-red w3-section"
+                            onclick="document.getElementById('edit_Modal').style.display='none'">關閉 <i
+                                class="fa fa-remove"></i></button>
+                    </font>
+                </div>
+
+            </div>
+        </div>
+        <li class="w3-bar">
+            <button onclick="lock_member(this,'{{element.user_id}}')" class="w3-button w3-white w3-large w3-right"><i
+                    class="fas fa-ban" style="color:red"></i></button>
+            <button
+                onclick="edit_member(this,'{{element.user_id}}','{{element.username}}', '{{element.phone}}','{{element.birth}}')"
+                class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
+
+
+            <!-- <div class="w3-bar-item w3-left">
+                <i class="fas fa-user-circle" style='color:green;font-size:40px'></i>
+            </div> -->
+            <div class="w3-bar-item">
+                <!-- <span class="w3-left w3-large">({{data.count}})</span> -->
+                <span class="w3-large"><i class="far fa-user"></i> {{element.username}}
+                    ({{element.social_name}})</span><br>
+                <span><i class="fas fa-phone"></i> {{element.phone}}</span><br>
+                {% if element.birth != None %}
+                <span><i class="fas fa-birthday-cake"></i> {{element.birth}}</span>
+                {% endif %}
+            </div>
+        </li>
+
+        {% endfor %}
+
+    </ul>
+</div>
+
+
+<script>
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+    function ajax_save_edit(data) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/modify_member/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
+                    Notiflix.Loading.Remove();
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                    Notiflix.Loading.Remove();
+                } else if (response.outdated != null) {
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                } else {
+                    Notiflix.Notify.Success('已儲存！！');
+                    document.getElementById('edit_Modal').style.display = 'none'
+                    window.location.reload();
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('很抱歉，發生未知錯誤！！');
+                Notiflix.Loading.Remove();
+
+            }
+
+        })
+    }
+
+    function ajax_lock_member(t, data) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/lock_member/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                } else if (response.outdated != null) {
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                } else {
+                    Notiflix.Notify.Success('已刪除會員！！');
+                    t.parentElement.style.display = 'none'
+                }
+                Notiflix.Loading.Remove();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('很抱歉，發生未知錯誤！！');
+                Notiflix.Loading.Remove();
+
+            }
+
+        })
+    }
+
+
+    function save_edit() {
+        Notiflix.Confirm.Show('管理者權限', '確定要更動嗎?', '是-儲存', '否',
+            function () {
+                var user_id = $('#edit_user_id').val();
+                var username = $('#edit_username').val();
+                var phone = $('#edit_phone').val();
+                var birth = $('#edit_birth').val();
+
+
+                var data = {
+                    'user_id': user_id,
+                    'username': username,
+                    'phone': phone,
+                    'birth': birth
+                }
+
+                //spinner show
+                Notiflix.Loading.Hourglass('更新中....');
+                ajax_save_edit(data)
+
+            },
+            function () {
+
+            });
+
+    }
+
+    function edit_member(t, user_id, username, phone, birth) {
+        document.getElementById('edit_Modal').style.display = 'inline'
+        document.getElementById('edit_user_id').value = user_id
+        document.getElementById('edit_username').value = username
+        document.getElementById('edit_phone').value = phone
+        document.getElementById('edit_birth').value = birth
+
+    }
+
+
+    function lock_member(t, user_id) {
+        Notiflix.Confirm.Show('管理者權限', '確定要凍結此會員嗎?', '是-凍結會員', '否',
+            function () {
+                var data = {
+                    'user_id': user_id
+                }
+                //spinner show
+                Notiflix.Loading.Hourglass('正在凍結....');
+                ajax_lock_member(t, data)
+
+            },
+            function () {
+            });
+    }
+
+</script>
+
+{% endblock %}

@@ -9,15 +9,14 @@
         <b><I>聰明工作，智慧生活</I></b>
         <h3>會員名單(共{{data|length}}筆)</h3>
     </font>
-
 </div>
 
+<button id='ban_button' onclick="switch_list('ban')" class="w3-button w3-red w3-large w3-right">封鎖名單</button>
+<button id='normal_button' onclick="switch_list('normal')" class="w3-button w3-teal w3-large w3-right">正常名單</button>
 
 
-<div class="w3-container">
-
+<div id='normal_list' class="w3-container">
     <ul class="w3-ul w3-card-4">
-
         {% for element in data %}
         <!-- edit Modal -->
         <div id="edit_Modal" class="w3-modal">
@@ -47,8 +46,6 @@
                                 class="far fa-edit w3-right"></i></span>
                         <input id='edit_birth' type="text" class="w3-input w3-border" value="" disabled>
 
-
-
                         <br>
                         <button id='modal_button_save' onclick='save_edit()'
                             class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">儲存
@@ -68,12 +65,7 @@
                 onclick="edit_member(this,'{{element.user_id}}','{{element.username}}', '{{element.phone}}','{{element.birth}}')"
                 class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
 
-
-            <!-- <div class="w3-bar-item w3-left">
-                <i class="fas fa-user-circle" style='color:green;font-size:40px'></i>
-            </div> -->
             <div class="w3-bar-item">
-                <!-- <span class="w3-left w3-large">({{data.count}})</span> -->
                 <span class="w3-large"><i class="far fa-user"></i> {{element.username}}
                     ({{element.social_name}})</span><br>
                 <span><i class="fas fa-phone"></i> {{element.phone}}</span><br>
@@ -87,6 +79,32 @@
 
     </ul>
 </div>
+
+
+<div id='ban_list' class="w3-container" style="display: none">
+    <ul class="w3-ul w3-card-4">
+        {% for element in data %}
+
+        <li class="w3-bar">
+            {% if element.is_active == False %}
+            <button onclick="unlock_member(this,'{{element.user_id}}')" class="w3-button w3-white w3-large w3-right"><i
+                    class="fas fa-unlock-alt" style="color:green"></i></button>
+
+
+            <div class="w3-bar-item">
+                <span class="w3-large"><i class="far fa-user"></i> {{element.username}}
+                    ({{element.social_name}})</span><br>
+                <span><i class="fas fa-phone"></i> {{element.phone}}</span><br>
+
+            </div>
+            {% endif %}
+        </li>
+
+        {% endfor %}
+
+    </ul>
+</div>
+
 
 
 <script>
@@ -228,10 +246,19 @@
                 ajax_lock_member(t, data)
 
             },
-            function () {
-            });
+            function () {});
     }
 
+    function switch_list(action) {
+        if (action == 'ban') {
+            document.getElementById('ban_list').style.display = 'inline'
+            document.getElementById('normal_list').style.display = 'none'
+        } else if (action == 'normal'){
+            document.getElementById('ban_list').style.display = 'none'
+            document.getElementById('normal_list').style.display = 'inline'
+        }
+
+    }
 </script>
 
 {% endblock %}
