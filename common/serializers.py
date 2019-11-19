@@ -6,7 +6,7 @@ class check_bklist(serializers.ModelSerializer):
     class Meta:
         model = BkList
         fields = ('user_id', 'store_id', 'bk_date', 'bk_st',
-                'adult', 'children', 'bk_ps', 'bk_habit', 'event_type',
+                  'adult', 'children', 'bk_ps', 'bk_habit', 'event_type',
                   'time_session', 'entire_time', 'bk_price', 'is_confirm')
 
 
@@ -63,7 +63,8 @@ class Store_Serializer(serializers.ModelSerializer):
 class Store_form_serializer(serializers.ModelSerializer):
     class Meta:
         model = Store
-        fields = ('store_id', 'store_name', 'store_address', 'store_phone','seat')
+        fields = ('store_id', 'store_name',
+                  'store_address', 'store_phone', 'seat')
 
 
 class StoreEvent_Serializer(serializers.ModelSerializer):
