@@ -60,6 +60,8 @@ urlpatterns = [
     ### member Info operations
     # /softwayliving/lock_member/
     path('lock_member/',views.staff_lock_member),
+    # /softwayliving/lock_member/
+    path('unlock_member/',views.staff_unlock_member),
     # /softwayliving/modify_member/
     path('modify_member/',views.staff_modify_member),
 

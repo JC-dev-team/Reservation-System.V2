@@ -41,8 +41,8 @@ def error(request):
 
 def staff_login_portal(request):
     # If the session is not outdated
-    # if request.user.is_authenticated:
-    #     return render(request, 'admin_dashbroad.html')
+    if request.user.is_authenticated:
+        return render(request, 'admin_dashbroad.html')
     return render(request, 'admin_login.html', {'error': ''})
 
 
@@ -802,6 +802,31 @@ def staff_lock_member(request):
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
+@require_http_methods(['POST'])
+def staff_unlock_member(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'outdated': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+
+        request.session.set_expiry(900)
+        # Set auth in future
+        is_Login = request.session.get('is_Login', None)
+        staff_id = request.session.get('staff_id', None)
+        if is_Login != True or staff_id == None:
+            return JsonResponse({'alert': 'Not Valid, 請登入帳號'})
+
+        user_id = request.POST.get('user_id', None)
+        with transaction.atomic():  # transaction
+            try:
+                queryset = Account.objects.get(user_id=user_id)
+                queryset.is_active = True
+                queryset.save()
+                return JsonResponse({'result': 'success'})
+            except Account.DoesNotExist:
+                return JsonResponse({'alert': '帳號已刪除或是不存在'})
+
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 @require_http_methods(['POST'])
 def staff_cancel_event(request):
