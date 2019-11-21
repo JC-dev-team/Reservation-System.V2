@@ -13,6 +13,51 @@
 </div>
 
 
+<!-- add Modal -->
+<div id="add_Modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+        <header class="w3-container w3-teal w3-center w3-padding-32">
+            <span onclick="document.getElementById('add_Modal').style.display='none'"
+                class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
+            <h2 class="w3-wide"><i class="fa fa-bell"></i> 新增管理員</h2>
+        </header>
+        <div class="w3-container">
+            <br>
+            <font size="4">
+                <input id='add_staff_id' type="text" style="display: none">
+                <!-- action-->
+                <label><span> 管理者姓名： </label>
+                <input id='add_staff_name' type="text" class="w3-input w3-border" value="" >
+                <br>
+                <label><span> 管理者電話： </label>
+                <input id='add_staff_phone' type="tel" class="w3-input w3-border" value="" >
+                <br>
+                <label><span> 管理者信箱： </label>
+                <input id='add_email' type="text" class="w3-input w3-border" value="" >
+                <br>
+                <label><span> 管理者權限： </label>
+                <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
+                    id='add_is_superuser' required>
+                    <option name='auth' value="is_superuser" selected>最高權限管理員</option>
+                    <option name='auth' value="is_admin">店長</option>
+                </select>
+
+
+                <br>
+                <button id='modal_button_save' onclick='save_edit()'
+                    class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">確定新增
+                    <i class="fa fa-check"></i></button>
+                
+                <button class="w3-button w3-red w3-section"
+                    onclick="document.getElementById('add_Modal').style.display='none'">關閉 <i
+                        class="fa fa-remove"></i></button>
+            </font>
+        </div>
+
+    </div>
+</div>
+
+
 
 <div class="w3-container">
 
@@ -46,13 +91,30 @@
                             onclick="document.getElementById('edit_email').removeAttribute('disabled')"><i
                                 class="far fa-edit w3-right"></i></span>
                         <input id='edit_email' type="text" class="w3-input w3-border" value="" disabled>
-
+                        <br>
+                        <label><span> 管理者密碼： </label><span
+                            onclick="document.getElementById('edit_password').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
+                        <br>
+                        <label><span> 管理者權限： </label><span
+                            onclick="document.getElementById('edit_is_superuser').removeAttribute('disabled')"><i
+                                class="far fa-edit w3-right"></i></span>
+                        <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
+                            id='edit_is_superuser' required>
+                            <option name='auth' value="is_superuser" selected>最高權限管理員</option>
+                            <option name='auth' value="is_admin">店長</option>
+                        </select>
 
 
                         <br>
                         <button id='modal_button_save' onclick='save_edit()'
                             class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">儲存
                             <i class="fa fa-check"></i></button>
+                        <button id='modal_button_delect_admin'
+                            onclick="delete_admin(this,'{{element.staff_id}}','{{element.email}}')"
+                            class="w3-button w3-block w3-red w3-padding-16 w3-section w3-right">刪除管理者
+                            <i class="fas fa-trash-alt"></i></button>
+
                         <button class="w3-button w3-red w3-section"
                             onclick="document.getElementById('edit_Modal').style.display='none'">關閉 <i
                                 class="fa fa-remove"></i></button>
@@ -62,8 +124,6 @@
             </div>
         </div>
         <li class="w3-bar">
-            <button onclick="lock_admin(this,'{{element.staff_id}}')" class="w3-button w3-white w3-large w3-right"><i
-                    class="fas fa-ban" style="color:red"></i></button>
             <button
                 onclick="edit_admin(this,'{{element.staff_id}}','{{element.staff_name}}', '{{element.staff_phone}}','{{element.email}}')"
                 class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
@@ -72,16 +132,18 @@
             <div class="w3-bar-item">
                 <!-- <span class="w3-left w3-large">({{data.count}})</span> -->
                 <span class="w3-large"><i class="far fa-user"></i> {{element.staff_name}}
-                    </span><br>
+                </span><br>
                 <span><i class="fas fa-phone"></i> {{element.staff_phone}}</span><br>
                 <span><i class="far fa-envelope"></i> {{element.email}}</span>
-                
+
             </div>
         </li>
 
         {% endfor %}
 
     </ul>
+    <button onclick="add_admin()" class="w3-button w3-white w3-xxlarge w3-right"><i
+        class="fas fa-plus-circle"></i></button>
 </div>
 
 
@@ -120,7 +182,7 @@
     function ajax_save_edit(data) {
         $.ajax({
             type: 'POST',
-            url: '/softwayliving/modify_member/',
+            url: '/softwayliving/ModifyAdmin/',
             data: data,
             success: function (response) {
                 if (response.error != null) {
@@ -147,7 +209,7 @@
         })
     }
 
-    function ajax_lock_admin(t, data) {
+    function ajax_delete_admin(t, data) {
         $.ajax({
             type: 'POST',
             url: '/softwayliving/DeleteAdmin/',
@@ -161,7 +223,7 @@
                     Notiflix.Report.Warning('警告', response.outdated, 'ok');
                     window.location.replace(response.action)
                 } else {
-                    Notiflix.Notify.Success('已刪除會員！！');
+                    Notiflix.Notify.Success('已刪除管理者！！');
                     t.parentElement.style.display = 'none'
                 }
                 Notiflix.Loading.Remove();
@@ -203,6 +265,10 @@
 
     }
 
+    function add_admin() {
+        document.getElementById('add_Modal').style.display = 'inline'
+    }
+
     function edit_admin(t, staff_id, staff_name, staff_phone, email) {
         document.getElementById('edit_Modal').style.display = 'inline'
         document.getElementById('edit_staff_id').value = staff_id
@@ -213,21 +279,20 @@
     }
 
 
-    function lock_admin(t, staff_id) {
-        Notiflix.Confirm.Show('管理者權限', '確定要凍結嗎?', '是-凍結會員', '否',
+    function delete_admin(t, staff_id, email) {
+        Notiflix.Confirm.Show('管理者權限', '確定要永久刪除嗎?', '是-刪除', '否',
             function () {
                 var data = {
-                    'staff_id': staff_id
+                    'staff_id': staff_id,
+                    'email': email
                 }
                 //spinner show
-                Notiflix.Loading.Hourglass('正在凍結....');
-                ajax_lock_admin(t, data)
+                Notiflix.Loading.Hourglass('正在刪除....');
+                ajax_delete_admin(t, data)
 
             },
-            function () {
-            });
+            function () {});
     }
-
 </script>
 
 {% endblock %}
