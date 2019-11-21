@@ -701,6 +701,7 @@
                     var waiting_num = result[i].waiting_num
                     var confirm = result[i].is_confirm
                     var is_cancel = result[i].is_cancel
+                    var bk_ps = result[i].bk_ps
 
                     var user_phone = account[i].phone
                     var user_name = account[i].username
@@ -734,6 +735,9 @@
                         start: date + time,
                         backgroundColor: color,
                         textColor: 'white',
+                        extendedProps: {
+                            bk_ps: bk_ps
+                        }
                     });
 
                     successCallback(Event)
@@ -849,7 +853,8 @@
                 var id = info.event.id
                 var date = info.event.start.toISOString().slice(0, 10)
                 var time = info.event.start.toTimeString().slice(0, 5)
-
+                var bk_ps = info.event.extendedProps.bk_ps
+                
                 var time_session = info.event.title.slice(0, 2)
                 var information = info.event.title.split('\n')[0]
                 var user_name = info.event.title.split('\n')[1].split(' ')[0]
@@ -890,13 +895,8 @@
                     '<p id="modal_status">' + '<label><i class="fa fa-info-circle"></i></label>' +
                     ' 訂單狀態： ' + status + '</p>'
 
-                '{% if bk_ps != null %}'
-                document.getElementById('modal_ps').innerText =
-                    '#'+'{% bk_ps %}'
-                '{% endif %}'
 
-                
-                // document.getElementById('bk_ps').value = 
+                document.getElementById('bk_ps').value = bk_ps
             }
         });
         if (action == 'render') {
