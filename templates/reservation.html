@@ -61,7 +61,7 @@
                     <option name='noon' value="L13:00" disable='disabled'>中午：13:00</option>
                     <option name='noon' value="L13:30" disable='disabled'>中午：13:30</option>
                     <option name='none' disabled>------------</option>
-                    <option name='night' value="D17:00" disable='disabled'>晚上：17:00</option>
+                    <option name='night' value="D17:00" selected disable='disabled'>晚上：17:00</option>
                     <option name='night' value="D17:30" disable='disabled'>晚上：17:30</option>
                     <option name='night' value="D18:00" disable='disabled'>晚上：18:00</option>
                     <option name='night' value="D18:30" disable='disabled'>晚上：18:30</option>
@@ -409,13 +409,15 @@
                     } else if (lunch_status == '午餐：店休') {
                         $('#button_submit').attr('disabled', false)
                         $("option[name='noon']").attr('disabled', true)
+                        $("option[name='noon']").attr('selected', false)
                         $("option[name='night']").attr('disabled', false);
-                        $("option[name='night']").attr('selected', 'selected');
+                        $("option[name='night']").attr('selected', true);
                     } else if (dinner_status == '晚餐：店休') {
                         $('#button_submit').attr('disabled', false)
                         $("option[name='night']").attr('disabled', true)
+                        $("option[name='night']").attr('selected', false)
                         $("option[name='noon']").attr('disabled', false);
-                        $("option[name='noon']").attr('selected', 'selected');
+                        $("option[name='noon']").attr('selected', true);
                     } else {
                         $('#button_submit').attr('disabled', false)
                         $("option[name='noon']").attr('disabled', false)
@@ -543,7 +545,7 @@
                     startRecur: new Date().addDays(3),
                     backgroundColor: 'green',
                     textColor: 'white',
-                    daysOfWeek: [2, 3, 4, 5, 6, 0]
+                    daysOfWeek: [1,2, 3, 4, 5, 6, 0]
                 },
                 {
                     id: '2',
@@ -552,18 +554,18 @@
                     startRecur: new Date().addDays(3),
                     backgroundColor: 'green',
                     textColor: 'white',
-                    daysOfWeek: [2, 3, 4, 5, 6, 0]
+                    daysOfWeek: [1,2, 3, 4, 5, 6, 0]
                 },
-                {
-                    id: '3',
-                    title: '店休',
-                    start: new Date(),
-                    startRecur: new Date().addDays(3),
-                    backgroundColor: 'red',
-                    textColor: 'white',
-                    daysOfWeek: [1],
+                // {
+                //     id: '3',
+                //     title: '店休',
+                //     start: new Date(),
+                //     startRecur: new Date().addDays(3),
+                //     backgroundColor: 'red',
+                //     textColor: 'white',
+                //     daysOfWeek: [1],
 
-                },
+                // },
 
             ],
 

@@ -26,27 +26,27 @@
                 <!-- action-->
 
                 <label><span> 店家名稱<font color='red'>*</font>： </label>
-                <input id='add_store_name' type="text" class="w3-input w3-border" placeholder="E.g: $1200" value="">
+                <input id='add_store_name' type="text" class="w3-input w3-border" placeholder="請輸入店家名稱" value="">
                 <br>
                 <label><span> 店家地址<font color='red'>*</font>： </label>
-                <input id='add_store_address' type="text" class="w3-input w3-border" placeholder="E.g: 1200" value="">
+                <input id='add_store_address' type="text" class="w3-input w3-border" placeholder="請輸入店家地址" value="">
                 <br>
                 <label><span> 店家電話<font color='red'>*</font>： </label>
-                <input id='add_store_phone' type="tel" class="w3-input w3-border" placeholder="E.g: $1200" value="">
+                <input id='add_store_phone' type="tel" class="w3-input w3-border" placeholder="請輸入店家電話" value="">
                 <br>
                 <label><span> 店家傳真<font color='red'>*</font>： </label>
-                <input id='add_store_fax' type="tel" class="w3-input w3-border" placeholder="E.g: 1200" value="">
+                <input id='add_store_fax' type="tel" class="w3-input w3-border" placeholder="請輸入店家傳真" value="">
                 <br>
                 <label><span> 提供外帶<font color='red'>*</font>： </label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
                     id='add_tk_service' required>
-                    <option name='tk_service' value="True" selected >提供外帶</option>
-                    <option name='tk_service' value="False" >不提供外帶</option>
+                    <option name='tk_service' value="True" selected>提供外帶</option>
+                    <option name='tk_service' value="False">不提供外帶</option>
 
                 </select>
                 <br>
                 <label><span> 店內座位<font color='red'>*</font>： </label>
-                <input id='add_seat' type="tel" class="w3-input w3-border" placeholder="E.g: 1200" value="">
+                <input id='add_seat' type="tel" class="w3-input w3-border" placeholder="請輸入店內座位數" value="">
                 <br>
 
 
@@ -105,7 +105,12 @@
                         <label><span> 提供外帶： </label><span
                             onclick="document.getElementById('edit_tk_service').removeAttribute('disabled')"><i
                                 class="far fa-edit w3-right"></i></span>
-                        <input id='edit_tk_service' type="text" class="w3-input w3-border" value="" disabled>
+                        <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
+                            id='edit_tk_service' disabled>
+                            <option name='tk_service' value="True" selected>提供外帶</option>
+                            <option name='tk_service' value="False">不提供外帶</option>
+                        </select>
+                        
                         <br>
                         <label><span> 店內座位： </label><span
                             onclick="document.getElementById('edit_seat').removeAttribute('disabled')"><i
@@ -129,7 +134,7 @@
         </div>
         <li class="w3-bar">
             <!--go to admin_setting-->
-            <button onclick= "setting('admin')" class="w3-button w3-white w3-large w3-right"><i
+            <button onclick="setting('admin')" class="w3-button w3-white w3-large w3-right"><i
                     class="fas fa-angle-right"></i></button>
             <!--edit-->
             <button

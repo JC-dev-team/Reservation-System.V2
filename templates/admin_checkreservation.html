@@ -43,6 +43,8 @@
                 <p id='modal_user'></p>
                 <!-- State-->
                 <p id='modal_status'></p>
+                <!-- ps -->
+                <p id='modal_ps'></p>
                 <!-- action-->
                 <label><i class="fa fa-bolt"></i> 動作： </label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
@@ -834,7 +836,7 @@
                     $("option[name='cancel']").show()
                     //selected
                     $("option[name='pass']").attr("selected", true)
-                } else if (list_backgroundcolor == 'grey')  {
+                } else if (list_backgroundcolor == 'grey') {
                     //open dayoff modal
                     document.getElementById('dayoff_Modal').style.display = 'inline';
                     document.getElementById('modal_date_dayoff').innerHTML =
@@ -843,6 +845,7 @@
 
 
                 }
+                
                 var id = info.event.id
                 var date = info.event.start.toISOString().slice(0, 10)
                 var time = info.event.start.toTimeString().slice(0, 5)
@@ -887,6 +890,12 @@
                     '<p id="modal_status">' + '<label><i class="fa fa-info-circle"></i></label>' +
                     ' 訂單狀態： ' + status + '</p>'
 
+                '{% if bk_ps != null %}'
+                document.getElementById('modal_ps').innerText =
+                    '#'+'{% bk_ps %}'
+                '{% endif %}'
+
+                
                 // document.getElementById('bk_ps').value = 
             }
         });
@@ -947,8 +956,7 @@
                     admin_confirm(data, event)
 
                 },
-                function () {
-                });
+                function () {});
 
         }
         //刪除訂單
@@ -964,8 +972,7 @@
                     //spinner show
                     Notiflix.Loading.Hourglass('刪除中....');
                 },
-                function () {
-                });
+                function () {});
         }
         //遞補候位
         else if ($("#action_select").val() == 'pass') {
@@ -983,8 +990,7 @@
                     //spinner show
                     Notiflix.Loading.Hourglass('遞補中....');
                 },
-                function () {
-                });
+                function () {});
         }
     })
 
@@ -1084,7 +1090,6 @@
         Notiflix.Loading.Hourglass('讀取中....');
         ajax_canceled(num)
     })
-
 </script>
 
 
