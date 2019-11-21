@@ -49,7 +49,7 @@ class StaffManager(BaseUserManager):
 
 class Staff(AbstractBaseUser, PermissionsMixin):
     staff_id = models.CharField(primary_key=True, max_length=45)
-    store = models.ForeignKey('Store', models.DO_NOTHING)
+    store = models.ForeignKey('Store', models.CASCADE)
     # username
     email = models.EmailField(unique=True, max_length=100)
     password = models.CharField(max_length=150)
@@ -106,9 +106,9 @@ class Account(models.Model):
 
 class BkList(models.Model):
     bk_uuid = models.CharField(primary_key=True, max_length=45)
-    user = models.ForeignKey(Account, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(Account, models.SET_NULL, blank=True, null=True)
     store = models.ForeignKey(
-        'Store', models.DO_NOTHING, blank=True, null=True)
+        'Store', models.SET_NULL, blank=True, null=True)
     bk_date = models.DateField()
     time_session = models.CharField(max_length=10)
     bk_st = models.TimeField()
@@ -130,7 +130,7 @@ class BkList(models.Model):
 
 class Production(models.Model):
     prod_id = models.CharField(primary_key=True, max_length=45)
-    store = models.ForeignKey('Store', models.DO_NOTHING)
+    store = models.ForeignKey('Store', models.CASCADE)
     prod_name = models.CharField(max_length=45)
     prod_price = models.PositiveIntegerField()
     prod_created = models.DateTimeField(blank=True, null=True)
@@ -155,7 +155,7 @@ class Store(models.Model):
 
 class StoreEvent(models.Model):
     event_id = models.CharField(primary_key=True, max_length=45, default=None)
-    store = models.ForeignKey(Store, models.DO_NOTHING)
+    store = models.ForeignKey(Store, models.CASCADE)
     event_type = models.CharField(max_length=45)
     event_date = models.DateField()
     time_session = models.CharField(max_length=45)
@@ -166,7 +166,7 @@ class StoreEvent(models.Model):
 
 
 class StaffActionLog(models.Model):
-    staff = models.ForeignKey(Staff, models.DO_NOTHING)
+    staff = models.ForeignKey(Staff, models.DO_NOTHING,)
     location = models.CharField(max_length=300)
     ip_address = models.CharField(max_length=200)
     operation = models.CharField(max_length=150)
@@ -177,7 +177,7 @@ class StaffActionLog(models.Model):
 
 
 class UserActionLog(models.Model):
-    user = models.ForeignKey(Account, models.DO_NOTHING)
+    user = models.ForeignKey(Account, models.DO_NOTHING, )
     operation = models.CharField(max_length=200)
     location = models.CharField(max_length=300)
     created_date = models.DateTimeField(blank=True, null=True)
