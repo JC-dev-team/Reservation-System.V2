@@ -502,9 +502,9 @@ def staff_pass_reservation(request):
             acc_queryset = Account.objects.get(
                 user_id=bk_queryset.user_id
             )
-
+            acc_serializer =Acc_Serializer(acc_queryset)
             line_send_result = linebot_send_msg(
-                acc_queryset.social_id, acc_queryset, bklist_serializer.data)
+                acc_queryset.social_id, acc_serializer.data, bklist_serializer.data)
 
             if line_send_result == 'failure':
                 raise Exception('linebot send message failed')
@@ -540,7 +540,7 @@ def staff_cancel_reservation(request):
 
             # Send Line message
             line_send_result = linebot_send_msg(
-                acc_queryset['social_id'], acc_queryset, bklist_serializer.data)
+                acc_queryset.social_id, acc_queryset, bklist_serializer.data)
 
             return JsonResponse({'result': 'success'})
 
