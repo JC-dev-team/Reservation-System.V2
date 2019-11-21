@@ -110,7 +110,7 @@
                             <option name='tk_service' value="True" selected>提供外帶</option>
                             <option name='tk_service' value="False">不提供外帶</option>
                         </select>
-                        
+
                         <br>
                         <label><span> 店內座位： </label><span
                             onclick="document.getElementById('edit_seat').removeAttribute('disabled')"><i
@@ -287,22 +287,22 @@
                 var tk_service = $('#add_tk_service').val();
                 var seat = $('#add_seat').val();
 
-                if (store_name == '') {
+                if (store_name == '' || store_name == null) {
                     Notiflix.Notify.Failure('請輸入店家名稱！！')
                     status = false;
-                } else if (store_address == '') {
+                } else if (store_address == '' || store_address == null) {
                     Notiflix.Notify.Failure('請輸入店家地址！！')
                     status = false;
-                } else if (store_phone == '') {
+                } else if (store_phone == '' || store_phone == null) {
                     Notiflix.Notify.Failure('請輸入店家電話！！')
                     status = false;
-                } else if (store_fax == '') {
+                } else if (store_fax == '' || store_fax == null) {
                     Notiflix.Notify.Failure('請輸入店家傳真！！')
                     status = false;
-                } else if (tk_service == '') {
+                } else if (tk_service == '' || tk_service == null) {
                     Notiflix.Notify.Failure('請輸入是否提供外帶！！')
                     status = false;
-                } else if (seat == '') {
+                } else if (seat == '' || seat == null) {
                     Notiflix.Notify.Failure('請輸入店內座位數！！')
                     status = false;
                 }
@@ -316,7 +316,6 @@
                         'tk_service': tk_service,
                         'seat': seat
                     }
-
                     //spinner show
                     Notiflix.Loading.Hourglass('新增中....');
                     ajax_add_store(data)
@@ -335,14 +334,12 @@
                 var prod_id = $('#edit_prod_id').val();
                 var prod_name = $('#edit_prod_name').val();
                 var prod_price = $('#edit_prod_price').val();
-
-
                 var data = {
                     'prod_id': prod_id,
                     'prod_name': prod_name,
                     'prod_price': prod_price
                 }
-
+                
                 //spinner show
                 Notiflix.Loading.Hourglass('更新中....');
                 ajax_edit_product(data)
@@ -369,7 +366,6 @@
         document.getElementById('edit_seat').value = seat
 
 
-
     }
 
 
@@ -387,16 +383,14 @@
 
             },
             function () {
-
-
             });
     }
-
     function setting(action) {
         if (action == 'admin') {
             window.location.href = '/softwayliving/admins/'
         }
     }
+
 </script>
 
 {% endblock %}

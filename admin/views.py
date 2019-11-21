@@ -357,11 +357,13 @@ def staff_stores_page(request):
         if request.user.is_authenticated == False:
             return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
-        store_id = request.session.get('store_id', None)
-
-        queryset = Store.objects.filter(
-            store_id=store_id
-        )
+        if request.user.is_superuser:
+            queryset = Store.objects.all()
+        else:
+            store_id = request.session.get('store_id', None)
+            queryset = Store.objects.filter(
+                store_id=store_id
+            )
         serializers = Store_Serializer(queryset, many=True)
 
         return render(request, 'admin_storesetting.html', {'data': serializers.data})
@@ -538,7 +540,7 @@ def staff_cancel_reservation(request):
 
             # Send Line message
             line_send_result = linebot_send_msg(
-                acc_queryset.social_id, acc_queryset, bklist_serializer.data)
+                acc_queryset['social_id'], acc_queryset, bklist_serializer.data)
 
             return JsonResponse({'result': 'success'})
 
@@ -877,8 +879,18 @@ def add_admin(request):
 
         store_id = request.POST.get('store_id', None)
         email = request.POST.get('email', None)
-        is_superuser = request.POST.get('is_superuser', False)
-        is_admin = request.POST.get('is_admin', False)
+        # Check is superuser or is admin or others
+        auth = request.POST.get('auth', None)
+        if auth == 'is_superuser':
+            is_superuser = True
+            is_admin = True
+        elif auth == 'is_admin':
+            is_superuser = False
+            is_admin = True
+        else:
+            is_superuser = False
+            is_admin = False
+        
         staff_name = request.POST.get('staff_name', None)
         staff_phone = request.POST.get('staff_phone', None)
         password = create_passwords()
