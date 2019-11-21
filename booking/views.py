@@ -507,17 +507,22 @@ def getStoreInfo(request):
             request.session.set_expiry(900)
         action = request.GET.get('action', None)
         if request.user.is_authenticated:
-            store_id = request.session.get('store_id', None)
-            queryset = Store.objects.filter(
-                store_id=store_id)
-            if queryset.exists() == False:
-                return JsonResponse({'error': '無法取得店家資料，請重新登入', 'action': '/softwayliving/error/'})
+            if request.user.is_superuser:
+                queryset = Store.objects.all()
+                if queryset.exists() == False:
+                    return JsonResponse({'error': '無法取得店家資料，請重新登入', 'action': '/softwayliving/error/'})
+            else:
+                store_id = request.session.get('store_id', None)
+                queryset = Store.objects.filter(
+                    store_id=store_id)
+                if queryset.exists() == False:
+                    return JsonResponse({'error': '無法取得店家資料，請重新登入', 'action': '/softwayliving/error/'})
 
         else:
             queryset = Store.objects.all()
-
+            if queryset.exists() == False:
+                    return JsonResponse({'error': '無法取得店家資料，請重新登入', 'action': '/softwayliving/error/'})
         store_serializer = Store_form_serializer(queryset, many=True)
-
         return JsonResponse({'result': store_serializer.data, })
     except Exception as e:
         if action == 'main':
@@ -533,7 +538,7 @@ def getStoreSeat(request):
         if request.session.get('is_Login', None) != None:
             request.session.set_expiry(900)
         action = request.GET.get('action', None)
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and request.user.is_superuser == False:
             store_id = request.session.get('store_id', None)
         else:
             store_id = request.GET.get('store_id', None)
