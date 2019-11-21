@@ -125,13 +125,13 @@
             } else {
                 // Clean drop-down menu
                 $('#store_name_select').empty()
+                
                 for (var i = 0; i < response.result.length; i++) {
                     $("#store_name_select").append($("<option></option>").attr("value", response.result[
                         i].store_id).text(response.result[i].store_name));
                 }
-                if (response.result.length == 1) {
                     getStoreSeat()
-                }
+                
             }
             Notiflix.Loading.Remove();
         },
@@ -214,8 +214,7 @@
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                 } else {
                     result = response.result
-                    //console.log('result : ' + result)
-                    //Function of calendar (return calendar.render())
+                    //Function of calendar 
                     calendar_fun(result, num)
                 }
                 Notiflix.Loading.Remove();
@@ -250,7 +249,6 @@
 
                     //select disable
                     if (lunch_status == '午餐：店休' && dinner_status == '晚餐：店休') {
-                        console.log('disable')
                         $('#button_submit').attr('disabled', true)
                         $("option[name='noon']").attr('disabled', true)
                         $("option[name='night']").attr('disabled', true)
@@ -387,7 +385,6 @@
                 var title = info.event.title
                 var color = info.event.backgroundColor
 
-                // console.log(result[0].title)
                 for (var i = 0; i < result.length; i++) {
 
                     //red : 人數額滿
@@ -400,7 +397,6 @@
                     if (result[i].start == start && result[i].title == title && result[i]
                         .backgroundColor ==
                         'yellow') {
-                        //console.log(info.event.id)
                         var event = calendar.getEventById(info.event.id)
                         event.setProp('title', '店休')
                         info.el.style.backgroundColor = 'red';
@@ -413,7 +409,6 @@
 
             //Function
             dateClick: function (info) {
-                console.log('dateClick: ' + info)
 
             },
             eventClick: function (info) {
@@ -430,7 +425,6 @@
                 } else {
                     var time_session = 'Dinner'
                 }
-                //console.log(time_session)
                 //Monday disable
                 if (title == '店休') {
                     //Notiflix  Report
@@ -549,7 +543,6 @@
     })
 
     $('#people_number_submit').click(function (e) {
-        console.log('people_number_submit.click()')
         var num = parseInt($('#date_num').val())
         //do the fuction of ajax_post()
         ajax_post(num)

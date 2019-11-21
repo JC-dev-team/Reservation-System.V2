@@ -4,8 +4,8 @@ from main.models import (BkList, Account, Production,
                          Staff, Store, StoreEvent, UserActionLog, StaffActionLog)
 from common.serializers import (Acc_Serializer, Bklist_Serializer,
                                 Prod_Serializer, Staff_Serializer, Store_Serializer,
-                                StoreEvent_Serializer, Store_form_serializer, 
-                                UserActionLog_Serializer, StaffActionLog_Serializer,checkStaffAuth)
+                                StoreEvent_Serializer, Store_form_serializer,
+                                UserActionLog_Serializer, StaffActionLog_Serializer, checkStaffAuth)
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -43,7 +43,7 @@ def staff_login_portal(request):
     # If the session is not outdated
     if request.user.is_authenticated:
         return render(request, 'admin_dashbroad.html')
-    return render(request, 'admin_login.html', {'error': ''})
+    return render(request, 'admin_login.html', {'error': '', 'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
 
 
 @login_required(login_url='/softwayliving/login/')
@@ -77,7 +77,7 @@ def member_management(request):
 @require_http_methods(['POST', 'GET'])
 def staff_auth(request):  # authentication staff
     try:
-        
+
         email = request.POST.get('email', None)
         password = request.POST.get('password', None)
 
@@ -114,7 +114,7 @@ def staff_auth(request):  # authentication staff
             request.session['staff_id'] = result['staff_id']
             request.session['staff_name'] = result['staff_name']
 
-            return render(request, 'admin_dashbroad.html')       
+            return render(request, 'admin_dashbroad.html')
     except Exception as e:
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
@@ -139,20 +139,21 @@ def staff_add_reservation(request):  # Help client to add reservation
             )
         except Account.DoesNotExist:
             with transaction.atomic():  # transaction
-                acc = Account.objects.create(
-                    phone=phone,
-                    username=username,
-                    social_id='電話訂位',
-                    social_app='電話訂位',
-                    social_name='電話訂位',
-                    is_active=True,
-                )
-                queryset = Account.objects.get(
-                    phone=phone,
-                    username=username,
-                )
-        except Account.MultipleObjectsReturned:
-            return render(request, 'admin_reservation.html', {'error': '姓名與手機重複申請，無法進行訂位與註冊'})
+                try:
+                    acc = Account.objects.create(
+                        phone=phone,
+                        username=username,
+                        social_id='電話訂位',
+                        social_app='電話訂位',
+                        social_name='電話訂位',
+                        is_active=True,
+                    )
+                    queryset = Account.objects.get(
+                        phone=phone,
+                        username=username,
+                    )
+                except Account.MultipleObjectsReturned:
+                    return render(request, 'admin_reservation.html', {'error': '姓名與手機重複申請，無法進行訂位與註冊'})
 
         request.session['user_id'] = queryset.user_id
 
@@ -349,7 +350,6 @@ def staff_admins_page(request):
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
 
-
 @login_required(login_url='/softwayliving/login/')
 def staff_stores_page(request):
     try:
@@ -522,18 +522,22 @@ def staff_cancel_reservation(request):
         bk_date = request.POST.get('bk_date', None)
 
         with transaction.atomic():  # transaction
-            bk_queryset = BkList.objects.select_for_update().filter(
+            bk_queryset = BkList.objects.select_for_update().get(
                 bk_uuid=bk_uuid,
                 bk_date=bk_date,
                 is_cancel=False,
             )
-            if bk_queryset.exists() == False:
-                return JsonResponse({'alert': '資料不存在或是已被刪除'})
-            bk_queryset.update(is_cancel=True)
+            user_id = bk_queryset.user_id
+            acc_queryset = Account.objects.get(user_id=user_id)
+            # save changes
+            bk_queryset.is_cancel = True
+            bk_queryset.save()
+
+            bklist_serializer = Bklist_Serializer(bk_queryset)
 
             # Send Line message
-            # line_send_result = linebot_send_msg(
-            #     acc_queryset.social_id, acc_queryset, bklist_serializer.data)
+            line_send_result = linebot_send_msg(
+                acc_queryset.social_id, acc_queryset, bklist_serializer.data)
 
             return JsonResponse({'result': 'success'})
 
@@ -802,6 +806,7 @@ def staff_lock_member(request):
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
+
 @require_http_methods(['POST'])
 def staff_unlock_member(request):
     try:
@@ -827,6 +832,7 @@ def staff_unlock_member(request):
 
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
+
 
 @require_http_methods(['POST'])
 def staff_cancel_event(request):

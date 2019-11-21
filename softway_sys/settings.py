@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 # Invisible reCaptcha
-RECAPTCHA_PUBLIC_KEY = '6LftQr0UAAAAAJ8Pkllthz85Wzj7gaAmsPLISMcu'
-RECAPTCHA_PRIVATE_KEY = '6LftQr0UAAAAAJqjEwg2fiEzZXAd-NGgGWQwDulz'
+RECAPTCHA_PUBLIC_KEY = '6LdG38MUAAAAAHVni33TLj3b27-gCC5X1-foxhQO'
+RECAPTCHA_PRIVATE_KEY = '6LdG38MUAAAAAIX4_sTGovEK81Wa15798opihJ9n'
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -62,13 +62,14 @@ MIDDLEWARE = [
 
 # Security settings
 SECURE_CONTENT_TYPE_NOSNIFF = True
-CSRF_COOKIE_SECURE = False # need to be True when production
+CSRF_COOKIE_SECURE = False  # need to be True when production
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT = False  # need to be True when production
 X_FRAME_OPTIONS = 'DENY'  # default = 'SAMEORIGIN'
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Authentication
-AUTH_USER_MODEL  = 'main.Staff'
+AUTH_USER_MODEL = 'main.Staff'
 AUTHENTICATION_BACKENDS = ['common.utility.auth.ClientAuthBackend',
                            'common.utility.auth.StaffAuthBackend',
                            'django.contrib.auth.backends.ModelBackend',
@@ -79,7 +80,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_SECURE = False  # when deploy need to set to True
 # SESSION_SAVE_EVERY_REQUEST=True
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 60*15 
+SESSION_COOKIE_AGE = 60*15
 
 # linebot keys
 LINE_CHANNEL_ACCESS_TOKEN = "hVTaUoLcsdGG+pGoBTcAXG8OB41nU9YLxb3SeQiCi9leMxE50U2BaW9dFfIcf0wAvIQpW080FGL6efM545aq7tfEZMNffOIJZBFl0pFglvq71onAm6Wfy7tdX8c696QrrPSgZB+uePfe1b+9+swpElGUYhWQfeY8sLGRXgo3xvw="
@@ -139,13 +140,6 @@ DATABASES = {
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            # 'ssl': {
-            #     'ca': os.path.join(os.path.dirname(__file__), 
-            #     'rds-combined-ca-bundle.pem')
-            #     }
-            # 'ssl': {
-            #     'ssl-ca': '/Users/cheyuwu/Downloads/rds-combined-ca-bundle.pem'
-            #     }
         }
     }
 }
@@ -192,3 +186,8 @@ STATICFILES_DIRS = (
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    
+)

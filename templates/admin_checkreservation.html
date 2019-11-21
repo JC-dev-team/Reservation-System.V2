@@ -277,7 +277,6 @@
                     window.location.replace(response.action)
                 } else {
                     result = response.result
-                    console.log(result)
                     Notiflix.Notify.Success('已設為店休！！');
                     //Reload
                     window.location.reload();
@@ -312,7 +311,6 @@
                     window.location.replace(response.action)
                 } else {
                     result = response.result
-                    console.log(result)
                     Notiflix.Notify.Success('已取消店休！！');
                     //Reload
                     window.location.reload();
@@ -346,7 +344,6 @@
                     window.location.replace(response.action)
                 } else {
                     result = response.result
-                    console.log(result)
                     event.setProp('backgroundColor', 'grey')
                     Notiflix.Notify.Success('訂單已刪除！！');
 
@@ -389,8 +386,6 @@
                 Notiflix.Notify.Failure('很抱歉，發生未知錯誤');
                 Notiflix.Loading.Remove();
                 document.getElementById('information_Modal').style.display = 'none';
-                console.log(errorThrown)
-                // window.location.replace('/booking/error/');
             }
 
         });
@@ -424,8 +419,6 @@
                 Notiflix.Notify.Failure('很抱歉，發生未知錯誤');
                 Notiflix.Loading.Remove();
                 document.getElementById('information_Modal').style.display = 'none';
-                console.log(errorThrown)
-                // window.location.replace('/booking/error/');
             }
 
         });
@@ -450,10 +443,7 @@
                     result = response.result
                     account = response.account
                     event = 'none'
-                    // console.log(result)
-                    // console.log(account)
-                    // console.log(event)
-                    //Function of calendar (return calendar.render())
+                    //Function of calendar
                     calendar_fun(event, account, result, num)
 
                 }
@@ -464,8 +454,6 @@
                 Notiflix.Notify.Failure('很抱歉，發生未知錯誤');
                 Notiflix.Loading.Remove();
                 document.getElementById('dayoff_Modal').style.display = 'none';
-                console.log(errorThrown)
-                // window.location.replace('/booking/error/');
             }
 
         })
@@ -499,8 +487,6 @@
                 Notiflix.Notify.Failure('很抱歉，發生未知錯誤');
                 Notiflix.Loading.Remove();
                 document.getElementById('dayoff_Modal').style.display = 'none';
-                console.log(errorThrown)
-                // window.location.replace('/booking/error/');
             }
         })
     }
@@ -522,9 +508,6 @@
                     result = response.result
                     account = response.account
                     event = 'none'
-                    // console.log(result)
-                    // console.log(account)
-                    // console.log(event)
                     //Function of calendar (return calendar.render())
                     calendar_fun(event, account, result, num)
 
@@ -536,8 +519,6 @@
                 Notiflix.Notify.Failure('很抱歉，發生未知錯誤');
                 Notiflix.Loading.Remove();
                 document.getElementById('dayoff_Modal').style.display = 'none';
-                console.log(errorThrown)
-                // window.location.replace('/booking/error/');
             }
         })
     }
@@ -559,9 +540,6 @@
                     result = response.result
                     account = response.account
                     event = 'none'
-                    // console.log(result)
-                    // console.log(account)
-                    // console.log(event)
                     //Function of calendar (return calendar.render())
                     calendar_fun(event, account, result, num)
 
@@ -595,7 +573,6 @@
                     result = response.result
                     account = response.account
                     event = response.event
-                    // console.log(event)
                     //Function of calendar (return calendar.render())
                     calendar_fun(event, account, result, num)
 
@@ -615,14 +592,6 @@
     //ajax function
     function ajax_post(num = 0) {
         //ajax data
-        // var status = true;
-
-        // var store_id = '{{request.session.store_id}}';
-        // console.log('store_id :' + store_id);
-        // var start_month = moment().add(num, 'M').startOf('month').format('YYYY-MM-DD')
-        // var end_month = moment().add(num, 'M').endOf('month').format('YYYY-MM-DD');
-
-
 
         //Clean the calendar
         document.getElementById('calendar').innerHTML = ''
@@ -766,7 +735,6 @@
                     });
 
                     successCallback(Event)
-                    //console.log(Event)
                 }
 
                 if (event != 'none') {
@@ -799,7 +767,6 @@
             },
 
             eventRender: function (info) {
-                //console.log(info)
                 var month_text = info.el.text
 
                 if (month_text != undefined) {
@@ -822,12 +789,8 @@
 
             //Function
             dateClick: function (info) {
-                //console.log(info)
                 var date = info.dateStr
                 $("#dayoff_date").val(date)
-
-                console.log(date)
-
 
                 //document modal
                 document.getElementById('dayoff_Modal').style.display = 'inline';
@@ -839,7 +802,6 @@
 
             },
             eventClick: function (info) {
-                //console.log(info.event)
                 //clean ps data
                 var date = info.event.start.addDays(1).toISOString().slice(0, 10)
                 $("#dayoff_date").val(date)
@@ -889,8 +851,6 @@
                 var information = info.event.title.split('\n')[0]
                 var user_name = info.event.title.split('\n')[1].split(' ')[0]
                 var user_phone = info.event.title.split('\n')[1].split(' ')[1]
-                console.log(info)
-                console.log(info.event)
 
                 if (time_session == '午餐') {
                     time_session = 'Lunch'
@@ -933,7 +893,6 @@
         if (action == 'render') {
             return calendar.render();
         } else if (action == 'refetch') {
-            console.log('refetch')
             return calendar.refetchEvents()
         }
 
@@ -967,7 +926,6 @@
 
     //eventClick -> information Modal -> modal button
     $('#modal_button').click(function (e) {
-        console.log($("#action_select").val())
         var id = $('#info_event_id').val()
         var date = $('#info_event_start').val()
         var time_session = $('#info_event_timesession').val()
@@ -976,7 +934,6 @@
 
             Notiflix.Confirm.Show('管理者權限', '確定要確認此訂單嗎?', '是-確認訂單', '再看看',
                 function () {
-                    console.log('確認訂單 Y')
 
                     var data = {
                         'bk_uuid': id,
@@ -991,9 +948,6 @@
 
                 },
                 function () {
-                    console.log('確認訂單 N')
-
-
                 });
 
         }
@@ -1001,7 +955,6 @@
         else if ($("#action_select").val() == 'cancel') {
             Notiflix.Confirm.Show('管理者權限', '確定要刪除此訂單嗎?', '刪除訂單', '不要刪除',
                 function () {
-                    console.log('刪除訂單 Y')
                     var data = {
                         'bk_uuid': id,
                         'bk_date': date
@@ -1012,14 +965,12 @@
                     Notiflix.Loading.Hourglass('刪除中....');
                 },
                 function () {
-                    console.log('刪除訂單 N')
                 });
         }
         //遞補候位
         else if ($("#action_select").val() == 'pass') {
             Notiflix.Confirm.Show('管理者權限', '確定要遞補此訂單嗎?', '遞補候位', '取消遞補',
                 function () {
-                    console.log('遞補候位 Y')
                     var data = {
                         'bk_uuid': id,
                         'bk_date': date,
@@ -1033,7 +984,6 @@
                     Notiflix.Loading.Hourglass('遞補中....');
                 },
                 function () {
-                    console.log('遞補候位 N')
                 });
         }
     })
@@ -1044,8 +994,6 @@
         var date = $("#dayoff_date").val()
         var action = $("#dayoff_action_select_1").val()
         var time_session = $('#dayoff_action_select_2').val()
-        console.log('time_session: ' + action)
-        console.log('time_session: ' + time_session)
         if (action == 'cancel_dayoff') {
             var data = {
                 'event_date': date,
@@ -1071,7 +1019,6 @@
     })
 
     $("#dayoff_action_select_1").change(function (e) {
-        console.log('selected')
         if ($(this).val() == 'cancel_dayoff') {
             $("option[value='Allday']").hide()
         } else {
@@ -1099,7 +1046,6 @@
 
     //Click 待確認
     $('#sidebar_not_confirm').click(function (e) {
-        console.log('sidebar_not_confirm')
         var num = parseInt($('#date_num').val())
         //hidden sidebar
         document.getElementById('mySidebar').style.display = 'none'
@@ -1110,7 +1056,6 @@
     })
     //Click 已確認
     $('#sidebar_confirm').click(function (e) {
-        console.log('sidebar_confirm')
         var num = parseInt($('#date_num').val())
         //hidden sidebar
         document.getElementById('mySidebar').style.display = 'none'
@@ -1121,7 +1066,6 @@
     })
     //Click 候補名單
     $('#sidebar_waiting').click(function (e) {
-        console.log('sidebar_waiting')
         var num = parseInt($('#date_num').val())
         //hidden sidebar
         document.getElementById('mySidebar').style.display = 'none'
@@ -1132,7 +1076,6 @@
     })
     //Click 已刪除
     $('#sidebar_cancel').click(function (e) {
-        console.log('sidebar_cancel')
         var num = parseInt($('#date_num').val())
         //hidden sidebar
         document.getElementById('mySidebar').style.display = 'none'

@@ -26,8 +26,11 @@
             <input id="password" name='password' class="w3-input w3-border w3-round-large" type="password" value=''
                 required>
         </font>
-        <p><font color='red'>{{error}}</p>
-
+        <p>
+            <font color='red'>{{error}}
+        </p>
+        <a class="g-recaptcha" data-sitekey={{google_keys}} data-callback="onSubmit" data-size="invisible">
+        </a>
         <font size='4'>
             <button id="checklogin_form_submit"
                 class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right">登入</button>
@@ -61,7 +64,7 @@
     //ready
     $(function () {
         document.getElementById("top_block").style.display = 'none'
-        
+
         //Notiflix.Loading.Hourglass('讀取中....');
         //init LIFF
         liff.init(function (data) {
@@ -69,7 +72,7 @@
         });
         //$('#email').val('123@123.com'); //data.context.userId
         //$('#password').val('Line');
-        
+
 
         // if ($('#email').val() != '' && $('#password').val() != '') {
         //     send()
@@ -80,25 +83,25 @@
     });
 
     $(function () {
-    $('#checklogin_form_submit').click(function (e) {
-      var status = true;
-      var email = $('#email').val();
-      var password = $('#password').val();
+        $('#checklogin_form_submit').click(function (e) {
+            var status = true;
+            var email = $('#email').val();
+            var password = $('#password').val();
 
-      if (email == '') {
-        alert('請輸入信箱！')
-        status = false;
-      } else if (password == '') {
-        alert('請輸入密碼！')
-        status = false;
-      } 
+            if (email == '') {
+                alert('請輸入信箱！')
+                status = false;
+            } else if (password == '') {
+                alert('請輸入密碼！')
+                status = false;
+            }
 
-      if (status) {
-        send()
-      }
+            if (status) {
+                send()
+            }
 
+        });
     });
-  });
 
 </script>
 {% endblock %}
