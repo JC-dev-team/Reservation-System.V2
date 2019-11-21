@@ -198,7 +198,7 @@ def admin_InsertReservation(request):  # insert booking list
         bk_price = request.POST.get('price', None)
         is_cancel = False
         waiting_num = 0
-        is_confirm = False
+        is_confirm = True
         # Check data format
         Bklist_Serializer(data={
             'user_id': user_id,
@@ -539,9 +539,9 @@ def staff_cancel_reservation(request):
             bklist_serializer = Bklist_Serializer(bk_queryset)
 
             # Send Line message
+            acc_serializer = Acc_Serializer(acc_queryset)
             line_send_result = linebot_send_msg(
-                acc_queryset.social_id, acc_queryset, bklist_serializer.data)
-
+                acc_queryset.social_id, acc_serializer.data, bklist_serializer.data)
             return JsonResponse({'result': 'success'})
 
     except Exception as e:

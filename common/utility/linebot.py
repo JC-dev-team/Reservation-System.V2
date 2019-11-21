@@ -202,5 +202,4 @@ def linebot_send_msg(line_id, user=None, info=None):
 
         return 'success'
     except Exception as e:
-        print('line:',e)
         return 'failure'
