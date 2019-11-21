@@ -523,7 +523,7 @@ def staff_cancel_reservation(request):
         request.session.set_expiry(900)
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
-
+        bk_ps = request.POST.get('bk_ps', None)
         with transaction.atomic():  # transaction
             bk_queryset = BkList.objects.select_for_update().get(
                 bk_uuid=bk_uuid,
@@ -534,6 +534,7 @@ def staff_cancel_reservation(request):
             acc_queryset = Account.objects.get(user_id=user_id)
             # save changes
             bk_queryset.is_cancel = True
+            bk_queryset.bk_ps=bk_ps
             bk_queryset.save()
 
             bklist_serializer = Bklist_Serializer(bk_queryset)

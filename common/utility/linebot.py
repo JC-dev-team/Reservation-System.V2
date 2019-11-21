@@ -11,7 +11,7 @@ def linebot_send_msg(line_id, user=None, info=None):
         else:
             time_session_info = '午餐'
 
-        if info['is_confirm']:
+        if info['is_confirm'] and info['is_cancel']==False:
             is_confirm_info = 'SoftWay 訂位已確認'
             color = '#05C11C'
         elif info['is_cancel']:
