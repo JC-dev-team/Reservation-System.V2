@@ -55,9 +55,7 @@ class Staff(AbstractBaseUser, PermissionsMixin):
     password = models.CharField(max_length=150)
     staff_name = models.CharField(max_length=45)
     staff_phone = models.CharField(max_length=10, blank=True, null=True)
-    staff_birth = models.DateField(blank=True, null=True)
     last_login = models.DateTimeField(blank=True, null=True)
-    staff_level = models.PositiveIntegerField()
     staff_created = models.DateTimeField(blank=True, null=True)
     is_superuser = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
@@ -73,7 +71,7 @@ class Staff(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
-    def get_full_name(self):
+    def get_name(self):
         return self.staff_name
 
     # this methods are require to login super user from admin panel
@@ -134,9 +132,7 @@ class Production(models.Model):
     prod_id = models.CharField(primary_key=True, max_length=45)
     store = models.ForeignKey('Store', models.DO_NOTHING)
     prod_name = models.CharField(max_length=45)
-    prod_img = models.CharField(max_length=100,blank=True, null=True)
     prod_price = models.PositiveIntegerField()
-    prod_desc = models.CharField(max_length=200, blank=True, null=True)
     prod_created = models.DateTimeField(blank=True, null=True)
 
     class Meta:

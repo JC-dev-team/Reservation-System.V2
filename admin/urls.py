@@ -76,6 +76,8 @@ urlpatterns = [
     ### admin api
     # /softwayliving/AddAdmin/
     path('AddAdmin/',views.add_admin),
+    # /softwayliving/ModifyAdmin/
+    path('ModifyAdmin/',views.modify_admin),
     # /softwayliving/DeleteAdmin/
     path('DeleteAdmin/',views.delete_admin),
 

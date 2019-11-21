@@ -640,7 +640,7 @@ def getCalendar(request):  # full calendar
                     event_sub_arr = {}  # event dictionary
                     event_sub_arr['title'] = '午餐'
                     event_sub_arr['start'] = sub_key
-
+                    # Check if number of people is greater than max seats
                     if (int(sub_value)+total) > store_query.seat:
                         event_sub_arr['backgroundColor'] = 'red'
                     else:

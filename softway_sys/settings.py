@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-# ADMIN_ENABLED = False
 # Application definition
 
 INSTALLED_APPS = [
@@ -66,7 +65,10 @@ CSRF_COOKIE_SECURE = False  # need to be True when production
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT = False  # need to be True when production
 X_FRAME_OPTIONS = 'DENY'  # default = 'SAMEORIGIN'
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_HSTS_SECONDS = 31536000 # need to be uncomment when production
+SECURE_HSTS_INCLUDE_SUBDOMAINS=False # need to be True when production
+SECURE_HSTS_PRELOAD=False # need to be True when production
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') # need to be uncomment when production
 
 # Authentication
 AUTH_USER_MODEL = 'main.Staff'
@@ -189,5 +191,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    
+
 )
+
+# Email Setttings
+EMAIL_HOST_USER = 'softwayliving@gmail.com'
+EMAIL_HOST_PASSWORD = 'SoftwayLiving210158'

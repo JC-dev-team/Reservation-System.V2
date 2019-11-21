@@ -16,8 +16,8 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404, JsonResponse
 from common.utility import auth
 from common.utility.geolocation import get_client_ip
-from common.utility.auth import _login_required
-from django.contrib.auth import authenticate,  logout
+from common.utility.auth import create_passwords, _login_required as Clinet_login_required
+from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
 from django.db import transaction, DatabaseError
 from django.db.models import Q  # complex lookup
@@ -341,7 +341,8 @@ def staff_admins_page(request):
 
         queryset = Staff.objects.filter(
             store_id=store_id
-        ).order_by('-staff_level')
+        )
+
         serializers = Staff_Serializer(queryset, many=True)
 
         return render(request, 'admin_adminsetting.html', {'data': serializers.data})
@@ -876,23 +877,69 @@ def add_admin(request):
 
         store_id = request.POST.get('store_id', None)
         email = request.POST.get('email', None)
-        staff_level = request.POST.get('staff_level', None)
         is_superuser = request.POST.get('is_superuser', False)
         is_admin = request.POST.get('is_admin', False)
         staff_name = request.POST.get('staff_name', None)
+        staff_phone = request.POST.get('staff_phone', None)
+        password = create_passwords()
+        insert_password = make_password(password)
+
+        with transaction.atomic():  # transaction
+            try:
+                queryset = Staff.objects.get(
+                    email=email,
+                )
+                return JsonResponse({'alert': '該信箱帳號已經被註冊過了'})
+            except Staff.DoesNotExist:
+                queryset = Staff.objects.create_admin(
+                    email=email,
+                    password=insert_password,
+                    staff_name=staff_name,
+                    store_id=store_id,
+                    is_superuser=is_superuser,
+                    is_admin=is_admin,
+                    staff_phone=staff_phone
+                )
+                Staff.email_user(
+                    'Password from softwayliving admininstrator system <DO NOT REPLY>'
+                    '<h1>Email : ', email, '</h1>\
+                    <h1>This is your password : ', password, '</h1>',
+
+                )
+                return JsonResponse({'reuslt': 'success', })
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
+
+
+@require_http_methods(['POST'])
+def modify_admin(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'outdated': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        elif request.user.is_superuser == False:
+            return JsonResponse({'alert': '權限不足'})
+        request.session.set_expiry(900)
+
+        staff_id = request.POST.get('staff_id', None)
+        is_superuser = request.POST.get('is_superuser', False)
+        is_admin = request.POST.get('is_admin', False)
+        staff_name = request.POST.get('staff_name', None)
+        staff_phone = request.POST.get('staff_phone', None)
         password = make_password(request.POST.get('password', None))
 
         with transaction.atomic():  # transaction
-            queryset = Staff.objects.create_admin(
-                email=email,
-                password=password,
-                staff_level=staff_level,
-                staff_name=staff_name,
-                store_id=store_id,
-                is_superuser=is_superuser,
-                is_admin=is_admin,
-            )
-            return JsonResponse({'reuslt': 'success'})
+            try:
+                queryset = Staff.objects.get(staff_id=staff_id)
+                queryset.is_superuser = is_superuser
+                queryset.is_admin = is_admin
+                queryset.staff_name = staff_name
+                queryset.password = password
+                queryset.staff_phone = staff_phone
+                queryset.save()
+                return JsonResponse({'reuslt': 'success'})
+            except Staff.DoesNotExist:
+                return JsonResponse({'alert': '該信箱帳號已經被使用了'})
+
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -907,13 +954,11 @@ def delete_admin(request):
 
         request.session.set_expiry(900)
         staff_id = request.POST.get('staff_id', None)
-        staff_name = request.POST.get('staff_name', None)
         email = request.POST.get('email', None)
 
         with transaction.atomic():  # transaction
             queryset = Staff.objects.get(
                 staff_id=staff_id,
-                staff_name=staff_name,
                 email=email,
             )
             queryset.delete()
@@ -936,16 +981,12 @@ def add_product(request):
         store_id = request.session.get('store_id', None)
         prod_name = request.POST.get('prod_name', None)
         prod_price = request.POST.get('prod_price', None)
-        prod_img = request.POST.get('prod_img', None)
-        prod_desc = request.POST.get('prod_desc', None)
 
         with transaction.atomic():  # transaction
             queryset = Production.objects.create(
                 store_id=store_id,
                 prod_name=prod_name,
                 prod_price=prod_price,
-                prod_img=prod_img,
-                prod_desc=prod_desc,
             )
             return JsonResponse({'reuslt': 'success'})
     except Exception as e:
@@ -964,8 +1005,6 @@ def modify_product(request):
         store_id = request.session.get('store_id', None)
         prod_name = request.POST.get('prod_name', None)
         prod_price = request.POST.get('prod_price', None)
-        prod_img = request.POST.get('prod_img', None)
-        prod_desc = request.POST.get('prod_desc', None)
 
         with transaction.atomic():  # transaction
             queryset = Production.objects.get(
@@ -974,8 +1013,6 @@ def modify_product(request):
             )
             queryset.prod_name = prod_name
             queryset.prod_price = prod_price
-            queryset.prod_img = prod_img
-            queryset.prod_desc = prod_desc
             queryset.save()
             return JsonResponse({'result': 'success'})
     except Production.DoesNotExist:
