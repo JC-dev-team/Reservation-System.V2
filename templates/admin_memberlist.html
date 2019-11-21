@@ -58,9 +58,10 @@
 
             </div>
         </div>
+        {% if element.is_active == 1 %}
         <li class="w3-bar">
-            <button onclick="lock_member(this,'{{element.user_id}}')" class="w3-button w3-white w3-large w3-right"><i
-                    class="fas fa-ban" style="color:red"></i></button>
+
+            <button onclick="lock_member(this,'{{element.user_id}}')" class="w3-button w3-white w3-large w3-right"><i class="fas fa-unlock" style="color:green"></i></button>
             <button
                 onclick="edit_member(this,'{{element.user_id}}','{{element.username}}', '{{element.phone}}','{{element.birth}}')"
                 class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
@@ -73,8 +74,10 @@
                 <span><i class="fas fa-birthday-cake"></i> {{element.birth}}</span>
                 {% endif %}
             </div>
-        </li>
 
+
+        </li>
+        {% endif %}
         {% endfor %}
 
     </ul>
@@ -84,12 +87,10 @@
 <div id='ban_list' class="w3-container" style="display: none">
     <ul class="w3-ul w3-card-4">
         {% for element in data %}
-
+        {% if element.is_active == 0 %}
         <li class="w3-bar">
-            {% if element.is_active == False %}
-            <button onclick="unlock_member(this,'{{element.user_id}}')" class="w3-button w3-white w3-large w3-right"><i
-                    class="fas fa-unlock-alt" style="color:green"></i></button>
 
+            <button onclick="unlock_member(this,'{{element.user_id}}')" class="w3-button w3-white w3-large w3-right"><i class="fas fa-lock" style="color:red"></i></button>
 
             <div class="w3-bar-item">
                 <span class="w3-large"><i class="far fa-user"></i> {{element.username}}
@@ -97,9 +98,8 @@
                 <span><i class="fas fa-phone"></i> {{element.phone}}</span><br>
 
             </div>
-            {% endif %}
         </li>
-
+        {% endif %}
         {% endfor %}
 
     </ul>
@@ -183,8 +183,38 @@
                     Notiflix.Report.Warning('警告', response.outdated, 'ok');
                     window.location.replace(response.action)
                 } else {
-                    Notiflix.Notify.Success('已刪除會員！！');
+                    Notiflix.Notify.Success('已凍結會員！！');
                     t.parentElement.style.display = 'none'
+                    window.location.reload();
+                }
+                Notiflix.Loading.Remove();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('很抱歉，發生未知錯誤！！');
+                Notiflix.Loading.Remove();
+
+            }
+
+        })
+    }
+
+    function ajax_unlock_member(t, data) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/unlock_member/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                } else if (response.outdated != null) {
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
+                } else {
+                    Notiflix.Notify.Success('已解除！！');
+                    t.parentElement.style.display = 'none'
+                    window.location.reload();
                 }
                 Notiflix.Loading.Remove();
             },
@@ -249,11 +279,26 @@
             function () {});
     }
 
+    function unlock_member(t, user_id) {
+        Notiflix.Confirm.Show('管理者權限', '確定要解除凍結嗎?', '是-解除', '否',
+            function () {
+                var data = {
+                    'user_id': user_id
+                }
+                //spinner show
+                Notiflix.Loading.Hourglass('正在解除凍結....');
+                ajax_unlock_member(t, data)
+
+            },
+            function () {});
+    }
+
+
     function switch_list(action) {
         if (action == 'ban') {
             document.getElementById('ban_list').style.display = 'inline'
             document.getElementById('normal_list').style.display = 'none'
-        } else if (action == 'normal'){
+        } else if (action == 'normal') {
             document.getElementById('ban_list').style.display = 'none'
             document.getElementById('normal_list').style.display = 'inline'
         }

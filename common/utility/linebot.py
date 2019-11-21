@@ -11,6 +11,8 @@ def linebot_send_msg(line_id, user=None,info=None):
         else:
             time_session_info = '午餐'
 
+        
+
         if info['is_confirm'] :
             is_confirm_info ='SoftWay 訂位已確認'
             color = '#05C11C'
@@ -31,7 +33,6 @@ def linebot_send_msg(line_id, user=None,info=None):
         phone_info = user['phone']
         habit_info = info['bk_habit']
         price_info = str(info['bk_price'])
-        
         
         text = ""
         flex ={

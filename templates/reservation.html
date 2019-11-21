@@ -268,10 +268,10 @@
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                     Notiflix.Loading.Remove();
-                }else if(response.outdated != null){
+                } else if (response.outdated != null) {
                     Notiflix.Report.Warning('警告', response.outdated, 'ok');
                     window.location.replace(response.action)
-                }  else {
+                } else {
                     $('#price_select').empty();
                     for (var i = 0; i < response.result.length; i++) {
                         $('#price_select').append($("<option></option>").attr("value", response.result[
@@ -301,7 +301,7 @@
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                     Notiflix.Loading.Remove();
-                } else if(response.outdated != null){
+                } else if (response.outdated != null) {
                     Notiflix.Report.Warning('警告', response.outdated, 'ok');
                     window.location.replace(response.action)
                 } else {
@@ -310,7 +310,7 @@
                     $('#children_select').empty();
                     for (var i = 1; i <= response.result.seat; i++) {
                         $("#adult_select").append($("<option></option>").attr("value", i).text(i
-                        .toString() + ' 大人'));
+                            .toString() + ' 大人'));
                         $("#children_select").append($("<option></option>").attr("value", i - 1).text((i -
                             1).toString() + ' 小孩'));
                     }
@@ -363,10 +363,10 @@
                     Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
-                }else if(response.outdated != null){
+                } else if (response.outdated != null) {
                     Notiflix.Report.Warning('警告', response.outdated, 'ok');
                     window.location.replace(response.action)
-                }  else {
+                } else {
                     result = response.result
                     calendar_fun(result, num)
                 }
@@ -390,7 +390,7 @@
                     Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
-                } else if(response.outdated != null){
+                } else if (response.outdated != null) {
                     Notiflix.Report.Warning('警告', response.outdated, 'ok');
                     window.location.replace(response.action)
                 } else {
@@ -787,13 +787,18 @@
     })
 
     $('#people_number_submit').click(function (e) {
-        console.log('people_number_submit.click()')
-        var num = parseInt($('#date_num').val())
-        //do the fuction of ajax_post()
-        ajax_post(num)
+        var adult_int = parseInt($('#adult_select').val())
+        var child_int = parseInt($('#children_select').val())
+        if (adult_int + child_int >= 16) {
+            Notiflix.Report.Warning('警告', '人數不得超過15人，如需預訂15人以上，請電洽 02-2821-6659', 'ok');
+        } else {
+            var num = parseInt($('#date_num').val())
+            //do the fuction of ajax_post()
+            ajax_post(num)
+        }
+
 
 
     })
-
 </script>
 {% endblock %}
