@@ -65,7 +65,7 @@ def member_management(request):
         if request.user.is_authenticated == False:
             return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
-        queryset = Account.objects.all()
+        queryset = Account.objects.all().order_by('-is_active')
         serializer_class = Acc_Serializer(queryset, many=True)
         return render(request, 'admin_memberlist.html', {'data': serializer_class.data})
     except Exception as e:
