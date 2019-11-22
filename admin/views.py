@@ -32,14 +32,18 @@ from django.views.decorators.csrf import csrf_exempt
 from copy import deepcopy
 from django.core.mail import send_mail
 
+
 def error(request):
     request.session.flush()
     return render(request, 'error/error.html', {'action': '/softwayliving/login/'})
 
 # admin dashboard ------------------- page
+
+
 def staff_logout(request):
     logout(request)
     return render(request, 'admin_login.html', {'error': '帳號已登出', 'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
+
 
 def staff_login_portal(request):
     # If the session is not outdated
@@ -90,7 +94,6 @@ def staff_auth(request):  # authentication staff
                               'error': 'Trying too many times',
                           })
         # Check Auth
-
         result = auth.StaffAuthentication(email, password)
         if result == None or result == False:
             request.session.flush()
@@ -316,7 +319,7 @@ def admin_InsertReservation(request):  # insert booking list
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
-
+@require_http_methods(['POST'])
 @login_required(login_url='/softwayliving/login/')
 def staff_productions_page(request):
     try:
@@ -333,15 +336,15 @@ def staff_productions_page(request):
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
-
+@require_http_methods(['GET','POST'])
 @login_required(login_url='/softwayliving/login/')
 def staff_admins_page(request):
     try:
         if request.user.is_authenticated == False:
             return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
-        store_id = request.session.get('store_id', None)
-
+        store_id = request.GET.get('store_id', None)
+        print('admin page',store_id)
         queryset = Staff.objects.filter(
             store_id=store_id
         )
@@ -353,7 +356,7 @@ def staff_admins_page(request):
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
-
+@require_http_methods(['POST','GET'])
 @login_required(login_url='/softwayliving/login/')
 def staff_stores_page(request):
     try:
@@ -505,7 +508,7 @@ def staff_pass_reservation(request):
             acc_queryset = Account.objects.get(
                 user_id=bk_queryset.user_id
             )
-            acc_serializer =Acc_Serializer(acc_queryset)
+            acc_serializer = Acc_Serializer(acc_queryset)
             line_send_result = linebot_send_msg(
                 acc_queryset.social_id, acc_serializer.data, bklist_serializer.data)
 
@@ -537,7 +540,7 @@ def staff_cancel_reservation(request):
             acc_queryset = Account.objects.get(user_id=user_id)
             # save changes
             bk_queryset.is_cancel = True
-            bk_queryset.bk_ps=bk_ps
+            bk_queryset.bk_ps = bk_ps
             bk_queryset.save()
 
             bklist_serializer = Bklist_Serializer(bk_queryset)
@@ -894,13 +897,12 @@ def add_admin(request):
         else:
             is_superuser = False
             is_admin = False
-        
+
         staff_name = request.POST.get('staff_name', None)
         staff_phone = request.POST.get('staff_phone', None)
         password = create_passwords()
-        insert_password = make_password(password)
-        subject ='Password from softwayliving admininstrator system <DO NOT REPLY>'
-        message ='Email : '+email+', \n This is your password : '+password
+        subject = 'Password from softwayliving admininstrator system <DO NOT REPLY>'
+        message = 'Email : '+email+',\nThis is your password : '+password
         with transaction.atomic():  # transaction
             try:
                 queryset = Staff.objects.get(
@@ -910,7 +912,7 @@ def add_admin(request):
             except Staff.DoesNotExist:
                 queryset = Staff.objects._create_user(
                     email=email,
-                    password=insert_password,
+                    password=password,
                     staff_name=staff_name,
                     store_id=store_id,
                     is_superuser=is_superuser,
@@ -924,7 +926,6 @@ def add_admin(request):
                     recipient_list=[email])
                 return JsonResponse({'reuslt': 'success', })
     except Exception as e:
-        print(e)
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
@@ -972,7 +973,7 @@ def delete_admin(request):
         request.session.set_expiry(900)
         staff_id = request.POST.get('staff_id', None)
         email = request.POST.get('email', None)
-        if staff_id == request.session.get('staff_id',None):
+        if staff_id == request.session.get('staff_id', None):
             return JsonResponse({'alert': '無法刪除正在使用的帳號'})
 
         with transaction.atomic():  # transaction
