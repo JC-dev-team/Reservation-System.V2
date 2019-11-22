@@ -5,7 +5,7 @@
 {% block content %}
 {% load static %}
 <div class="w3-center">
-    
+
 </div>
 
 <form id='checklogin_form' method="post">
@@ -17,23 +17,22 @@
 
 <script>
     function send() {
-        if (true) {
-            document.getElementById("checklogin_form").action = "/booking/member/";
-            document.getElementById("checklogin_form").submit();
-        }
+        document.getElementById("checklogin_form").action = "/booking/member/";
+        document.getElementById("checklogin_form").submit();
+
     }
 
     function initializeApp(data) {
         liff.getProfile().then(profile => {
             var disname = {
-              'name': profile.displayName
+                'name': profile.displayName
             };
             disname_json = JSON.parse(JSON.stringify(disname.name))
             $('#img').attr('src', profile.pictureUrl);
             $('#social_id').val(data.context.userId); //data.context.userId
             $('#social_app').val('Line');
             $('#social_name').val(disname_json)
-            
+
             send()
         })
     }
@@ -58,10 +57,8 @@
         // }else{
         //     send()
         // }
-        
+
 
     });
-
-
 </script>
 {% endblock %}
