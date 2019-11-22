@@ -35,8 +35,7 @@ def linebot_send_msg(line_id, user=None, info=None):
         habit_info = info['bk_habit']
         price_info = str(info['bk_price'])
 
-        text = ""
-        flex = {
+        flex_user = {
             "type": "bubble",
             "body": {
                 "type": "box",
@@ -192,6 +191,75 @@ def linebot_send_msg(line_id, user=None, info=None):
                     ]
             }
         }
+
+        flex_admin = {
+            "type": "bubble",
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": '訂位通知',
+                            "size": "xl",
+                            "weight": "bold",
+                            "color": '#E7881D'
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "spacing": "sm",
+                            "margin": "lg",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "預約",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": username_info,
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": True
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "日期",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": date_info,
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": True
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+            }
+        }
         # user
         line_bot_api_client = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
         # push message to user
@@ -202,7 +270,7 @@ def linebot_send_msg(line_id, user=None, info=None):
         if is_confirm_info == 'SoftWay 訂位處理中':
             # admin
             line_bot_api_admin = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN_ADMIN)
-            line_bot_api_admin.push_message('Uf7e1093512c0dac60f60974ff53e4a2c', FlexSendMessage(
+            line_bot_api_admin.push_message('U5ee811f1f2f899eb66844500ef14a371', FlexSendMessage(
                 alt_text="訂位通知", contents=flex_admin))
 
         return 'success'
