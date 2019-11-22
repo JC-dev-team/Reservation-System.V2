@@ -196,14 +196,14 @@ def linebot_send_msg(line_id, user=None, info=None):
         line_bot_api_client = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
         # push message to user
         line_bot_api_client.push_message(line_id, FlexSendMessage(
-            alt_text="訂位資訊通知", contents=flex))
+            alt_text="訂位資訊通知", contents=flex_user))
         # push message to admin user
         ## Only send message for admin with incoming waiting message
         if is_confirm_info == 'SoftWay 訂位處理中':
             # admin
             line_bot_api_admin = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN_ADMIN)
             line_bot_api_admin.push_message('Uf7e1093512c0dac60f60974ff53e4a2c', FlexSendMessage(
-                alt_text="訂位資訊通知", contents=flex))
+                alt_text="訂位通知", contents=flex_admin))
 
         return 'success'
     except Exception as e:
