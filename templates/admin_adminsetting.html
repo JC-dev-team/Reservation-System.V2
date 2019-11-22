@@ -292,6 +292,7 @@
                 } else {
                     Notiflix.Notify.Success('已刪除管理者！！');
                     t.parentElement.style.display = 'none'
+                    window.location.reload();
                 }
                 Notiflix.Loading.Remove();
             },

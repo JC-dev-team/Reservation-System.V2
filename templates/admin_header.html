@@ -23,6 +23,7 @@
     style="font-size:20px"><i class="fas fa-code-branch" style="font-size:26px;width:23px"></i> 分店管理</a>
 
 
+
   <!-- <hr>
   <h4 style="text-align: center"><b>查詢</b></h4> -->
 
@@ -45,7 +46,8 @@
       已刪除</a>
 
   </div>
-
+  <a id='sidebar_log_out' onclick="send('sidebar_log_out')" class="w3-bar-item w3-button" style="font-size:20px"><i
+      class="fas fa-sign-out-alt" style="font-size:26px;width:23px"></i> 登出</a>
   <!-- <hr>
   <a onclick="send('all')" class="w3-bar-item w3-button" style="font-size:20px"><i class="fas fa-star"
       style="color:rgb(255, 217, 0);"></i></i>
@@ -117,12 +119,17 @@
       //分店管理
       window.location.href = '/softwayliving/stores/'
 
-    }else if (action == 'sidebar_admin_reservation') {
+    } else if (action == 'sidebar_admin_reservation') {
       Notiflix.Loading.Hourglass('讀取中....');
       //訂位（管理者
       window.location.href = '/softwayliving/reservation/'
+
+    } else if (action == 'sidebar_log_out') {
+      Notiflix.Loading.Hourglass('讀取中....');
+      //訂位（管理者
+      window.location.href = '/softwayliving/logout/'
     }
 
-    
+
   }
 </script>
