@@ -896,7 +896,9 @@ def add_admin(request):
         staff_phone = request.POST.get('staff_phone', None)
         password = create_passwords()
         insert_password = make_password(password)
-
+        subject ='Password from softwayliving admininstrator system <DO NOT REPLY>'
+        message ='<h1>Email : ', email, '</h1>\
+                <h1>This is your password : ', password, '</h1>'
         with transaction.atomic():  # transaction
             try:
                 queryset = Staff.objects.get(
@@ -913,12 +915,7 @@ def add_admin(request):
                     is_admin=is_admin,
                     staff_phone=staff_phone
                 )
-                Staff.email_user(
-                    'Password from softwayliving admininstrator system <DO NOT REPLY>'
-                    '<h1>Email : ', email, '</h1>\
-                    <h1>This is your password : ', password, '</h1>',
-
-                )
+                Staff.email_user(subject=subject,message=message,from_email=settings.DEFAULT_FROM_EMAIL)
                 return JsonResponse({'reuslt': 'success', })
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
@@ -968,6 +965,8 @@ def delete_admin(request):
         request.session.set_expiry(900)
         staff_id = request.POST.get('staff_id', None)
         email = request.POST.get('email', None)
+        if staff_id == request.session.get('staff_id',None):
+            return JsonResponse({'alert': '無法刪除正在使用的帳號'})
 
         with transaction.atomic():  # transaction
             queryset = Staff.objects.get(

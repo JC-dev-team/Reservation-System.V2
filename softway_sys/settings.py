@@ -197,3 +197,4 @@ STATICFILES_FINDERS = (
 # Email Setttings
 EMAIL_HOST_USER = 'softwayliving@gmail.com'
 EMAIL_HOST_PASSWORD = 'SoftwayLiving210158'
+DEFAULT_FROM_EMAIL= 'softwayliving@gmail.com'
