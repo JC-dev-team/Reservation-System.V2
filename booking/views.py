@@ -285,8 +285,7 @@ def InsertReservation(request):  # insert booking list
             # Use linebot
             line_send_result = linebot_send_msg(
                 social_id, account_serializer.data, bklist_serializer.data)
-            if line_send_result == 'failure':
-                raise Exception('linebot send message failed')
+
             # request.session.flush()
             return render(request, 'reservation_finish.html', {
                 'data': bklist_serializer.data,
