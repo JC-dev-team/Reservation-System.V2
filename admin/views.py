@@ -779,7 +779,8 @@ def staff_modify_member(request):
             try:
                 queryset = Account.objects.get(user_id=user_id)
                 if birth != None and birth != '' and birth != 'None':
-                    queryset.birth = birth
+                    # convert format of birthday
+                    queryset.birth = datetime.strptime(birth, "%Y/%m/%d").strftime("%Y-%m-%d")
                 queryset.username = username
                 queryset.phone = phone
                 queryset.save()
