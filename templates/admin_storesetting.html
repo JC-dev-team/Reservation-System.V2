@@ -134,7 +134,7 @@
         </div>
         <li class="w3-bar">
             <!--go to admin_setting-->
-            <button onclick="setting('admin')" class="w3-button w3-white w3-large w3-right"><i
+            <button onclick="setting('admin','{{element.store_id}}')" class="w3-button w3-white w3-large w3-right"><i
                     class="fas fa-angle-right"></i></button>
             <!--edit-->
             <button
@@ -331,6 +331,7 @@
     function save_edit() {
         Notiflix.Confirm.Show('管理者權限', '確定要更動嗎?', '是-儲存', '否',
             function () {
+                var status = true;
                 var store_name = $('#edit_store_name').val();
                 var store_address = $('#edit_store_address').val();
                 var store_phone = $('#edit_store_phone').val();
@@ -338,18 +339,43 @@
                 var tk_service = $('#edit_tk_service').val();
                 var seat = $('#edit_seat').val();
 
-                var data = {
-                    'store_name': store_name,
-                    'store_address': store_address,
-                    'store_phone': store_phone,
-                    'store_fax':store_fax,
-                    'tk_service':tk_service,
-                    'seat':seat
+
+                if (store_name == '' || store_name == null) {
+                    Notiflix.Notify.Failure('請輸入店家名稱！！')
+                    status = false;
+                } else if (store_address == '' || store_address == null) {
+                    Notiflix.Notify.Failure('請輸入店家地址！！')
+                    status = false;
+                } else if (store_phone == '' || store_phone == null) {
+                    Notiflix.Notify.Failure('請輸入店家電話！！')
+                    status = false;
+                } else if (store_fax == '' || store_fax == null) {
+                    Notiflix.Notify.Failure('請輸入店家傳真！！')
+                    status = false;
+                } else if (tk_service == '' || tk_service == null) {
+                    Notiflix.Notify.Failure('請輸入是否提供外帶！！')
+                    status = false;
+                } else if (seat == '' || seat == null) {
+                    Notiflix.Notify.Failure('請輸入店內座位數！！')
+                    status = false;
                 }
-                
-                //spinner show
-                Notiflix.Loading.Hourglass('更新中....');
-                ajax_edit_store(data)
+
+                if (status) {
+                    var data = {
+                        'store_name': store_name,
+                        'store_address': store_address,
+                        'store_phone': store_phone,
+                        'store_fax': store_fax,
+                        'tk_service': tk_service,
+                        'seat': seat
+                    }
+                    //spinner show
+                    Notiflix.Loading.Hourglass('更新中....');
+                    ajax_edit_store(data)
+                }
+
+
+
 
             },
             function () {
@@ -389,18 +415,17 @@
                 ajax_delete_store(t, data)
 
             },
-            function () {
-            });
+            function () {});
     }
 
-    
-    function setting(action) {
+
+    function setting(action,store_id) {
         if (action == 'admin') {
             Notiflix.Loading.Hourglass('請稍候...');
-            window.location.href = '/softwayliving/admins/'
+            console.log(store_id)
+            window.location.href = '/softwayliving/admins/?store_id=' + store_id
         }
     }
-
 </script>
 
 {% endblock %}

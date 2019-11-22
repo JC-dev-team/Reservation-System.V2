@@ -86,6 +86,11 @@
 
 <div id='ban_list' class="w3-container" style="display: none">
     <ul class="w3-ul w3-card-4">
+        
+        {% if data.is_active == None %}
+        <h4>目前無資料</h4>
+        {% endif %}
+        
         {% for element in data %}
         {% if element.is_active == 0 %}
         <li class="w3-bar">
