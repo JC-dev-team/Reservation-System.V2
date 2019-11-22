@@ -66,8 +66,8 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT = False  # need to be True when production
 X_FRAME_OPTIONS = 'DENY'  # default = 'SAMEORIGIN'
 # SECURE_HSTS_SECONDS = 31536000 # need to be uncomment when production
-SECURE_HSTS_INCLUDE_SUBDOMAINS=False # need to be True when production
-SECURE_HSTS_PRELOAD=False # need to be True when production
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False  # need to be True when production
+SECURE_HSTS_PRELOAD = False  # need to be True when production
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') # need to be uncomment when production
 
 # Authentication
@@ -85,12 +85,10 @@ SESSION_COOKIE_SECURE = False  # when deploy need to set to True
 SESSION_COOKIE_AGE = 60*15
 
 # linebot keys for user
-LINE_CHANNEL_ACCESS_TOKEN = "hVTaUoLcsdGG+pGoBTcAXG8OB41nU9YLxb3SeQiCi9leMxE50U2BaW9dFfIcf0wAvIQpW080FGL6efM545aq7tfEZMNffOIJZBFl0pFglvq71onAm6Wfy7tdX8c696QrrPSgZB+uePfe1b+9+swpElGUYhWQfeY8sLGRXgo3xvw="
-LINE_CHANNEL_SECRET = "b5391bea9569c6739730808037e88d4e"
+LINE_CHANNEL_ACCESS_TOKEN_USER = "hVTaUoLcsdGG+pGoBTcAXG8OB41nU9YLxb3SeQiCi9leMxE50U2BaW9dFfIcf0wAvIQpW080FGL6efM545aq7tfEZMNffOIJZBFl0pFglvq71onAm6Wfy7tdX8c696QrrPSgZB+uePfe1b+9+swpElGUYhWQfeY8sLGRXgo3xvw="
 
 # linebot keys for admin
-LINE_CHANNEL_ACCESS_TOKEN_ADMIN="WNL6Vheu7WDAwWrsgF3YUPq+lFPrk4ri/RhofuQNUivNj9D7A2HtWhbX0UgaQnYo3IpdJD3C7RwDlnpAUYzUphd98alCoslZeDqORjY2K2yRnb7LqlpzwValLK8twnidKRarObyXMKNgk+6SzFLAo1GUYhWQfeY8sLGRXgo3xvw="
-LINE_CHANNEL_SECRET_ADMIN ="f34f5efb51d18b7cc961b011ec89cecf"
+LINE_CHANNEL_ACCESS_TOKEN_ADMIN = "kizgP14pi0bH/Mm4fGvjCwrriOj8sOvAZrKOrIoVbh41ryKDT8manl2AnguR0fV76q4UQiBbo0e1l8e4x2GUCeH6cFTRlP08260WALo9fRFA5Pm7o6nT9RljC6QXw9bX91AghNxBKgZlMSV3fBsGYQdB04t89/1O/w1cDnyilFU="
 
 ROOT_URLCONF = 'softway_sys.urls'
 
@@ -205,4 +203,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'softwayliving@gmail.com'
 EMAIL_HOST_PASSWORD = 'mzrmfbgxebtwmlvc'
-DEFAULT_FROM_EMAIL= EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
