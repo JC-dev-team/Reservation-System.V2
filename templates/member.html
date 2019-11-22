@@ -24,6 +24,12 @@
       <input id="member_phone" name='phone' class="w3-input w3-border w3-round-large" type="tel"
         placeholder="E.g. : 0900123456" autocomplete="off" pattern="[0]{1}[9]{1}[0-9]{8}" value='' required>
     </font>
+    <br>
+    <font size="4">
+        <label><b>會員生日</b></label>
+        <input id="member_birth" name='birth' class="w3-input w3-border w3-round-large" type="date"
+          placeholder="E.g. : 2000-01-01" format="YYYY-MM-DD" value="" required>
+      </font>
 
     <font size="3">
       <input type='checkbox' name='Member_agree' id="privacy_policy" class="w3-check"
@@ -100,7 +106,8 @@
     liff.init(function (data) {
       initializeApp(data);
     });
-    //ButtonSendMsg
+    
+    document.getElementById("member_birth").valueAsDate = new Date();
 
   });
 
