@@ -35,7 +35,7 @@ def linebot_send_msg(line_id, user=None, info=None):
         price_info = str(info['bk_price'])
 
         text = ""
-        flex = {
+        flex_user = {
             "type": "bubble",
             "body": {
                 "type": "box",
@@ -192,13 +192,82 @@ def linebot_send_msg(line_id, user=None, info=None):
             }
         }
 
+        flex_admin = {
+            "type": "bubble",
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": '訂位通知',
+                            "size": "xl",
+                            "weight": "bold",
+                            "color": '#E7881D'
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "spacing": "sm",
+                            "margin": "lg",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "預約",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": username_info,
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": True
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": "日期",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": date_info,
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": True
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+            }
+        }
+
         line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
         # push message to one user
         line_bot_api.push_message(line_id, FlexSendMessage(
-            alt_text="訂位資訊通知", contents=flex))
+            alt_text="訂位資訊通知", contents=flex_user))
         # push message to one user
         line_bot_api.push_message('Uf7e1093512c0dac60f60974ff53e4a2c', FlexSendMessage(
-            alt_text="訂位資訊通知", contents=flex))
+            alt_text="訂位通知", contents=flex_admin))
 
         return 'success'
     except Exception as e:
