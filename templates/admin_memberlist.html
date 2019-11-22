@@ -44,7 +44,7 @@
                         <label><span> 生日： </label><span
                             onclick="document.getElementById('edit_birth').removeAttribute('disabled')"><i
                                 class="far fa-edit w3-right"></i></span>
-                        <input id='edit_birth' type="text" class="w3-input w3-border" value="" disabled>
+                        <input id='edit_birth' type="date" class="w3-input w3-border" data-date-format="YYYY-MM-DD" value="" disabled>
 
                         <br>
                         <button id='modal_button_save' onclick='save_edit()'
