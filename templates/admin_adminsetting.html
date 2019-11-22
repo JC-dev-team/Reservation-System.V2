@@ -117,7 +117,7 @@
                             class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">儲存
                             <i class="fa fa-check"></i></button>
                         <button id='modal_button_delect_admin'
-                            onclick="delete_admin(this,'{{element.staff_id}}','{{element.email}}')"
+                            onclick="delete_admin()"
                             class="w3-button w3-block w3-red w3-padding-16 w3-section w3-right">刪除管理者
                             <i class="fas fa-trash-alt"></i></button>
 
@@ -393,13 +393,16 @@
     }
 
 
-    function delete_admin(t, staff_id, email) {
+    function delete_admin() {
+        var delete_staff_id = $('#edit_staff_id').val()
+        var delete_email = $('#edit_email').val()
         Notiflix.Confirm.Show('管理者權限', '確定要永久刪除嗎?', '是-刪除', '否',
             function () {
                 var data = {
-                    'staff_id': staff_id,
-                    'email': email
+                    'staff_id': delete_staff_id,
+                    'email': delete_email
                 }
+                
                 //spinner show
                 Notiflix.Loading.Hourglass('正在刪除....');
                 ajax_delete_admin(t, data)

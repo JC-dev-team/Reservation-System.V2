@@ -12,6 +12,7 @@
 <!-- content-->
 {% block content %}
 {% load static %}
+
 <div id="cover-spin"></div>
 <div class="container" style='display: none'>
     <form id="reservation_form" method="post">
@@ -220,6 +221,59 @@
         cancelButtonBackground: '#a9a9a9',
         plainText: true,
     });
+    //Notiflix Report
+    Notiflix.Report.Init({
+        className: 'notiflix-report',
+        width: '320px',
+        backgroundColor: '#f8f8f8',
+        borderRadius: '25px',
+        rtl: false,
+        zindex: 4002,
+        backOverlay: true,
+        backOverlayColor: 'rgba(0,0,0,0.5)',
+        useGoogleFont: false,
+        fontFamily: 'Quicksand',
+        svgSize: '110px',
+        plainText: true,
+        titleFontSize: '19px',
+        titleMaxLength: 34,
+        messageFontSize: '18px',
+        messageMaxLength: 400,
+        buttonFontSize: '15px',
+        buttonMaxLength: 34,
+        cssAnimation: true,
+        cssAnimationDuration: 360,
+        cssAnimationStyle: 'fade',
+        success: {
+            svgColor: '#00b462',
+            titleColor: '#1e1e1e',
+            messageColor: '#242424',
+            buttonBackground: '#00b462',
+            buttonColor: '#fff',
+        },
+        failure: {
+            svgColor: '#f44336',
+            titleColor: '#1e1e1e',
+            messageColor: '#242424',
+            buttonBackground: '#f44336',
+            buttonColor: '#fff',
+        },
+        warning: {
+            svgColor: '#f2bd1d',
+            titleColor: '#1e1e1e',
+            messageColor: '#242424',
+            buttonBackground: '#f2bd1d',
+            buttonColor: '#fff',
+        },
+        info: {
+            svgColor: '#00bcd4',
+            titleColor: '#1e1e1e',
+            messageColor: '#242424',
+            buttonBackground: '#00bcd4',
+            buttonColor: '#fff',
+        },
+    });
+
     // store selector
     $.ajax({
         type: "GET",
@@ -242,7 +296,7 @@
                     $("#store_name_select").append($("<option></option>").attr("value", response.result[
                         i].store_id).text(response.result[i].store_name));
                 }
-                    getStoreSeat()
+                getStoreSeat()
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -401,7 +455,7 @@
 
                     //select disable
                     if (lunch_status == '午餐：店休' && dinner_status == '晚餐：店休') {
-                
+
                         $('#button_submit').attr('disabled', true)
                         $("option[name='noon']").attr('disabled', true)
                         $("option[name='night']").attr('disabled', true)
@@ -483,6 +537,7 @@
         }
 
     }
+
     function calendar_fun(result, num = 0) {
         //spinner hide
         Notiflix.Loading.Remove();
@@ -545,7 +600,7 @@
                     startRecur: new Date().addDays(3),
                     backgroundColor: 'green',
                     textColor: 'white',
-                    daysOfWeek: [1,2, 3, 4, 5, 6, 0]
+                    daysOfWeek: [1, 2, 3, 4, 5, 6, 0]
                 },
                 {
                     id: '2',
@@ -554,7 +609,7 @@
                     startRecur: new Date().addDays(3),
                     backgroundColor: 'green',
                     textColor: 'white',
-                    daysOfWeek: [1,2, 3, 4, 5, 6, 0]
+                    daysOfWeek: [1, 2, 3, 4, 5, 6, 0]
                 },
                 // {
                 //     id: '3',
@@ -598,8 +653,7 @@
             },
 
             //Function
-            dateClick: function (info) {
-            },
+            dateClick: function (info) {},
             eventClick: function (info) {
                 var adult = $('#adult_select').val();
                 var child = $('#children_select').val();
@@ -756,9 +810,11 @@
     $('#people_number_submit').click(function (e) {
         var adult_int = parseInt($('#adult_select').val())
         var child_int = parseInt($('#children_select').val())
-        var max_seat = (parseInt($('#adult_select option:last-child').val())-5)
-        if ((adult_int + child_int > max_seat)&&'{{request.user.is_authenticated}}'==false) {
-            Notiflix.Report.Warning('警告', '人數不得超過'+max_seat+'人，如需預訂'+max_seat+'人以上，請電洽 02-2821-6659', 'ok');
+        var max_seat = (parseInt($('#adult_select option:last-child').val()) - 5)
+        if ((adult_int + child_int > max_seat) && '{{request.user.is_authenticated}}' == 'False') {
+
+            Notiflix.Report.Warning('警告', '人數不得超過' + max_seat + '人，如需預訂' + max_seat + '人以上，請電洽 02-2821-6659',
+                'ok');
         } else {
 
             var num = parseInt($('#date_num').val())
