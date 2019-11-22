@@ -55,7 +55,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
         social_name = request.session.get('social_name', None)
         phone = request.POST.get('phone', None)
         username = request.POST.get('username', None)
-
+        birth = request.POST.get('birth', None)
         if social_id == None or social_app == None or social_id == '' or social_app == '':
             raise Exception('Not Valid, 無法取得帳號資料')
         # Check data format
@@ -67,10 +67,11 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
             'social_name': social_name,
             'username': username,
             'phone': phone,
+            'birth':birth,
         })
 
         if valid.is_valid() == False:
-            raise Exception('Not valid, 帳號資料錯誤')
+            raise Exception('Not valid, 資料格式有誤')
         # Check is the account Exists
         try:
             with transaction.atomic():  # transaction
@@ -91,6 +92,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                 checkaccount.social_app = social_app
                 checkaccount.social_id = social_id
                 checkaccount.username = username
+                checkaccount.birth=birth
                 checkaccount.save()
 
         except Account.DoesNotExist:
@@ -102,6 +104,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                     social_id=social_id,
                     social_app=social_app,
                     social_name=social_name,
+                    birth=birth,
                 )
         queryset = Account.objects.get(
             phone=phone,

@@ -344,7 +344,6 @@ def staff_admins_page(request):
             return render(request, 'error/error.html', {'error': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
         request.session.set_expiry(900)
         store_id = request.GET.get('store_id', None)
-        print('admin page',store_id)
         queryset = Staff.objects.filter(
             store_id=store_id
         )
@@ -772,15 +771,11 @@ def staff_modify_member(request):
         request.session.set_expiry(900)
         # Set auth in future
         user_id = request.POST.get('user_id', None)
-        birth = request.POST.get('birth', None)
         username = request.POST.get('username', None)
         phone = request.POST.get('phone', None)
         with transaction.atomic():  # transaction
             try:
                 queryset = Account.objects.get(user_id=user_id)
-                if birth != None and birth != '' and birth != 'None':
-                    # convert format of birthday
-                    queryset.birth = datetime.strptime(birth, "%Y/%m/%d").strftime("%Y-%m-%d")
                 queryset.username = username
                 queryset.phone = phone
                 queryset.save()
