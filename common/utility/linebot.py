@@ -1,7 +1,8 @@
 from django.conf import settings
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage
+from linebot.models import (FlexSendMessage, MessageEvent, TextMessage,
+                            TextSendMessage)
 
 
 def linebot_send_msg(line_id, user=None, info=None):
@@ -191,14 +192,18 @@ def linebot_send_msg(line_id, user=None, info=None):
                     ]
             }
         }
-
-        line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
-        # push message to one user
-        line_bot_api.push_message(line_id, FlexSendMessage(
+        # user
+        line_bot_api_client = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
+        # push message to user
+        line_bot_api_client.push_message(line_id, FlexSendMessage(
             alt_text="訂位資訊通知", contents=flex))
-        # push message to one user
-        line_bot_api.push_message('Uf7e1093512c0dac60f60974ff53e4a2c', FlexSendMessage(
-            alt_text="訂位資訊通知", contents=flex))
+        # push message to admin user
+        ## Only send message for admin with incoming waiting message
+        if is_confirm_info == 'SoftWay 訂位處理中':
+            # admin
+            line_bot_api_admin = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN_ADMIN)
+            line_bot_api_admin.push_message('Uf7e1093512c0dac60f60974ff53e4a2c', FlexSendMessage(
+                alt_text="訂位資訊通知", contents=flex))
 
         return 'success'
     except Exception as e:

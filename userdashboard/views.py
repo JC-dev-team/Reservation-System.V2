@@ -20,6 +20,7 @@ from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from common.utility.auth import _login_required as Clinet_login_required
 from common.utility.geolocation import get_client_ip
+from common.utility.linebot import linebot_send_msg
 
 def error(request):
     request.session.flush()
@@ -156,7 +157,7 @@ def user_cancel_reservation(request):
 
         bk_uuid = request.POST.get('bk_uuid', None)
         bk_date = request.POST.get('bk_date', None)
-
+        social_id = request.session.get('social_id', None)
         # Account Exist
         with transaction.atomic():  # transaction
             bk_date_ = datetime.strptime(bk_date, '%Y-%m-%d')
@@ -165,15 +166,24 @@ def user_cancel_reservation(request):
                 return JsonResponse({'alert': '超過三天取消訂位期限'})
             else:
                 bk_date_ = bk_date_.date()  # format datetime
-                bk_queryset = BkList.objects.select_for_update().filter(
+                bk_queryset = BkList.objects.select_for_update().get(
                     bk_uuid=bk_uuid,
                     bk_date=bk_date,
                     is_cancel=False,
                 )
-                if bk_queryset.exists() == False:
-                    return JsonResponse({'error': '資料已經刪除或是不存在', 'action': '/userdashboard/error/'})
-                bk_queryset.update(is_cancel=True)
+                bk_queryset.is_cancel = True
+                bk_queryset.save()
+                bklist_serializer = Bklist_Serializer(bk_queryset)
+                acc_queryset=Account.objects.get(
+                    user_id=bk_queryset.user_id
+                )
+                account_serializer = Acc_Serializer(acc_queryset)
+                # Use linebot
+                line_send_result = linebot_send_msg(
+                    social_id, account_serializer.data, bklist_serializer.data)
+                
                 return JsonResponse({'result': 'success'})
-
+    except BkList.DoesNotExist:
+        return JsonResponse({'error': '資料已經刪除或是不存在', 'action': '/userdashboard/error/'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/userdashboard/error/'})
