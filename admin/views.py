@@ -30,14 +30,16 @@ from common.utility.linebot import linebot_send_msg
 from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.csrf import csrf_exempt
 from copy import deepcopy
-
+from django.core.mail import send_mail
 
 def error(request):
     request.session.flush()
     return render(request, 'error/error.html', {'action': '/softwayliving/login/'})
 
 # admin dashboard ------------------- page
-
+def staff_logout(request):
+    logout(request)
+    return render(request, 'admin_login.html', {'error': '帳號已登出', 'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
 
 def staff_login_portal(request):
     # If the session is not outdated
@@ -882,7 +884,6 @@ def add_admin(request):
         email = request.POST.get('email', None)
         # Check is superuser or is admin or others
         auth = request.POST.get('auth', None)
-        print(email)
         if auth == 'is_superuser':
             is_superuser = True
             is_admin = True
@@ -898,17 +899,14 @@ def add_admin(request):
         password = create_passwords()
         insert_password = make_password(password)
         subject ='Password from softwayliving admininstrator system <DO NOT REPLY>'
-        message ='<h1>Email : ', email, '</h1>\
-                <h1>This is your password : ', password, '</h1>'
+        message ='Email : '+email+', \n This is your password : '+password
         with transaction.atomic():  # transaction
             try:
-                print('hello1')
                 queryset = Staff.objects.get(
                     email=email,
                 )
                 return JsonResponse({'alert': '該信箱帳號已經被註冊過了'})
             except Staff.DoesNotExist:
-                print('hello2')
                 queryset = Staff.objects._create_user(
                     email=email,
                     password=insert_password,
@@ -918,9 +916,11 @@ def add_admin(request):
                     is_admin=is_admin,
                     staff_phone=staff_phone
                 )
-                print('hello4')
-                Staff.email_user(subject=subject,message=message,from_email=settings.DEFAULT_FROM_EMAIL)
-                print('hello3')
+                send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email])
                 return JsonResponse({'reuslt': 'success', })
     except Exception as e:
         print(e)

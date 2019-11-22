@@ -27,6 +27,8 @@ urlpatterns = [
     path('admins/',views.staff_admins_page),
     # /softwayliving/stores/
     path('stores/',views.staff_stores_page),
+    # /softwayliving/logout/
+    path('logout/',views.staff_logout),
 
 
     ## Ajax api

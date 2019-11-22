@@ -127,7 +127,7 @@ def StaffAuthentication(email, password):  # staff account checking
         return {'error': e}
 
 
-def create_passwords(string_length=10):
+def create_passwords(string_length=8):
     """Returns a random string of length string_length."""
     random = str(uuid.uuid4()) # Convert UUID format to a Python string.
     random = random.upper() # Make all characters uppercase.
