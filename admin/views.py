@@ -882,6 +882,7 @@ def add_admin(request):
         email = request.POST.get('email', None)
         # Check is superuser or is admin or others
         auth = request.POST.get('auth', None)
+        print(email)
         if auth == 'is_superuser':
             is_superuser = True
             is_admin = True
@@ -901,12 +902,14 @@ def add_admin(request):
                 <h1>This is your password : ', password, '</h1>'
         with transaction.atomic():  # transaction
             try:
+                print('hello1')
                 queryset = Staff.objects.get(
                     email=email,
                 )
                 return JsonResponse({'alert': '該信箱帳號已經被註冊過了'})
             except Staff.DoesNotExist:
-                queryset = Staff.objects.create_admin(
+                print('hello2')
+                queryset = Staff.objects._create_user(
                     email=email,
                     password=insert_password,
                     staff_name=staff_name,
@@ -915,9 +918,12 @@ def add_admin(request):
                     is_admin=is_admin,
                     staff_phone=staff_phone
                 )
+                print('hello4')
                 Staff.email_user(subject=subject,message=message,from_email=settings.DEFAULT_FROM_EMAIL)
+                print('hello3')
                 return JsonResponse({'reuslt': 'success', })
     except Exception as e:
+        print(e)
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
 
