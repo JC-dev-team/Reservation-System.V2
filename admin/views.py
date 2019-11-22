@@ -90,6 +90,7 @@ def staff_auth(request):  # authentication staff
                               'error': 'Trying too many times',
                           })
         # Check Auth
+
         result = auth.StaffAuthentication(email, password)
         if result == None or result == False:
             request.session.flush()

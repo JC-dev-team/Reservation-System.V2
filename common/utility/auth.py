@@ -115,6 +115,7 @@ def StaffAuthentication(email, password):  # staff account checking
             queryset = Staff.objects.get(
                 email=email,
             )
+            
             if check_password(password,queryset.password):
                 serializers = Staff_Serializer(queryset)
                 return serializers.data
