@@ -27,20 +27,9 @@
     </font>
 </div>
 
+<script src="{% static '/js/templates/user_dashboard.js' %}"></script>
 <script>
-    function user_reservation() {
-        Notiflix.Loading.Hourglass('讀取中....');
-        window.location.href = '/booking/member/'
-    }
-
-    function user_check() {
-        Notiflix.Loading.Hourglass('讀取中....');
-        document.getElementById("userdashboard_form").action = "/userdashboard/checkreservation/";
-        document.getElementById("userdashboard_form").submit();
-    }
-
-    $("#displayName").text('{{data.username}}' + '(' + '{{data.social_name}}' + ')')
+$("#displayName").text('{{data.username}}' + '(' + '{{data.social_name}}' + ')')
 </script>
-
 
 {% endblock %}

@@ -22,16 +22,8 @@
                 class="fas fa-edit"></i> 查詢/確認/修改</button>
     </font>
 </div>
-<script>
-    function admin_reservation() {
-        Notiflix.Loading.Hourglass('讀取中....');
-        window.location.href = '/softwayliving/reservation/'
-    }
 
-    function admin_check() {
-        Notiflix.Loading.Hourglass('讀取中....');
-        window.location.href = '/softwayliving/checkreservation/'
-    }
-</script>
+
+<script src="{% static '/js/templates/admin_dashbroad.js' %}"></script>
 
 {% endblock %}

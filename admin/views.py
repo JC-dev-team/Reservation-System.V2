@@ -319,7 +319,7 @@ def admin_InsertReservation(request):  # insert booking list
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
-@require_http_methods(['POST'])
+@require_http_methods(['POST','GET'])
 @login_required(login_url='/softwayliving/login/')
 def staff_productions_page(request):
     try:
