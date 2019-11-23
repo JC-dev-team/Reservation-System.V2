@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'compressor'
 ]
 # Invisible reCaptcha
 RECAPTCHA_PUBLIC_KEY = '6LdG38MUAAAAAHVni33TLj3b27-gCC5X1-foxhQO'
@@ -193,7 +194,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-
+    'compressor.finders.CompressorFinder',
 )
 
 # Email Setttings
