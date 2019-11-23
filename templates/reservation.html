@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
-
-<!-- include 'header.html' -->
+{% load compress %}
 <!-- Headmessage-->
 {% block headmessage %}
 <div class='w3-center'>
@@ -31,7 +30,6 @@
         <input id='bk_habit' name='bk_habit' type="text" value="" style="display: none">
         <input id='price' name='price' type="number" value="" style="display: none">
 
-        <!-- <input id="reservation_form_submit" type="submit" style="display: none"> -->
     </form>
 </div>
 
@@ -78,11 +76,6 @@
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id='price_select' required>
                     <option selected disabled hidden>請選擇價位</option>
-                    <!-- <option value="500" selected>$500</option>
-                    <option value="600">$600</option>
-                    <option value="800">$800</option>
-                    <option value="1000">$1000(戰斧牛排套餐)</option>
-                    <option value="1200">$1200</option> -->
                 </select>
 
                 <br>
@@ -91,7 +84,6 @@
                 <label><i class="fa fa-bell"></i> 飲食習慣：</label>
                 <select class="select form-control" style='font-size:18px; height:40px;' type="number" value=""
                     id='bk_habit_select' required>
-                    <!-- <option  selected disabled hidden>請選擇飲食習慣</option> -->
                     <option value="無" selected>無</option>
                     <option value="不吃牛">不吃牛</option>
                     <option value="不吃海鮮">不吃海鮮</option>
@@ -168,6 +160,7 @@
     <div id='calendar'>
     </div>
 </div>
+{% compress js %} 
 <script>
     $('#displayName').html('{{ data.username }}' + '(' + '{{data.social_name}}' + ')');
     $('#displayPhone').html('{{ data.phone }}');
@@ -221,7 +214,7 @@
         });
 </script>
 <script src="{% static '/js/templates/reservation.js' %}"></script>
-
+{% endcompress %} 
 
 
 

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load compress %} 
 <!-- include 'header.html'   => image-->
 <!-- content-->
 {% block content %}
@@ -14,8 +14,8 @@
     <input id="social_app" style="display: none" name='social_app' value="">
     <input id="social_name" style="display: none" name='social_name' value="">
 </form>
-
+{% compress js %} 
 <script src="{% static '/js/templates/login.js' %}"></script>
-
+{% endcompress %} 
 
 {% endblock %}

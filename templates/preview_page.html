@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load compress %}
 <!-- include 'header.html' -->
 <!-- Headmessage-->
 {% block headmessage %}
@@ -92,7 +92,8 @@
     </div>
 </div>
 
+{% compress js %} 
 <script src="{% static '/js/templates/preview_page.js' %}"></script>
-
+{% endcompress %} 
 
 {% endblock %}

@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
-
-<!-- include 'header.html'   => image-->
+{% load compress %} 
 <!-- Headmessage-->
 {% block headmessage %}
 <div class="w3-center">
@@ -66,8 +65,8 @@
 
 </div>
 
-
+{% compress js%} 
 <script src="{% static '/js/templates/member.js' %}"></script>
-
+{% endcompress %} 
 
 {% endblock %}

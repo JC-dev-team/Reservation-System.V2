@@ -1,0 +1,1 @@
+;function send(action){if(action=='reservation'){window.location.href='/booking/login/'}else if(action=='check_reservation'){Notiflix.Loading.Hourglass('讀取中....');window.location.href='/userdashboard/checkreservation/'}}

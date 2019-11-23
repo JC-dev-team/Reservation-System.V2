@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load compress %}
 {% block headmessage %}
 <div class="w3-center">
     <h3><b>使用者 - 查詢/修改</b></h3>
@@ -11,11 +11,7 @@
 {% block content %}
 {% load static %}
 {% load tagfunctions %}
-<!-- <center>
-    <h1>Hello!! {{user_info.username}}</h1>
-    <hr>
-</center> -->
-<!-- No reservation -->
+
 {% if data == False %}
 
 <div class="w3-center">
@@ -53,32 +49,13 @@
     <br><br>
 </div>
 {% endif %}
-<!-- Cancel-->
-<!-- <div class="w3-center" style="display: none">
-    <font size="10">
-        <i class="far fa-times-circle"></i>
-    </font>
-    <h4>訂位已取消</h4>
 
-    <br><br>
-</div> -->
-
-<!-- reservation information-->
-<!-- <font size='4'>
-    <button id='hidden_list' class="w3-btn w3-round-large w3-block w3-teal">
-        隱藏列表 <i class="fas fa-angle-up"></i></button>
-</font> -->
 <div name='information' class="w3-container w3-border w3-round-xxlarge">
     <div class="w3-center">
         <font size='6'>
             <h2>訂位資訊</h2>
             <hr>
-
-
-            <!-- <h3><label><i class="fas fa-user-circle"></i> 訂位人： {{user_info.username}}</label></h3> -->
             <div class="w3-container" align="left">
-                <!-- <input type="text" id='bk_uuid' value="" style="display: none">
-                <input type="text" id='bk_date' value="" style="display: none"> -->
 
                 <h4>店家：{{ store|index:forloop.counter0|index:'store_name' }}</h4>
                 <h4>用餐日期：{{element.bk_date}} </h4>
@@ -115,11 +92,10 @@
     <input name='bk_uuid' value='' type="hidden">
 </form>
 
-
+{% compress js %} 
 <script src="{% static '/js/templates/user_checkreservation.js' %}"></script>
-
 <script>
     $('#displayName').html('{{user_info.username}}' + '(' + '{{user_info.social_name}}' + ')')
 </script>
-
+{% endcompress %} 
 {% endblock %}
