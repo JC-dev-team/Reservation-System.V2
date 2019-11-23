@@ -25,6 +25,7 @@ SECRET_KEY = 'd91v90b$q&w!9x6wn5_iaej@a%^wj#v!!b(*%+h@$pj8e6=gz='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 COMPRESS_ENABLED = True
+OMPRESS_OFFLINE = True
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -196,8 +197,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
-COMPRESS_URL = STATIC_URL 
-COMPRESS_ROOT = STATIC_ROOT 
 # COMPRESS_FILTERS = "staticfiles.storage.StaticFileStorage" 
 
 # Email Setttings
