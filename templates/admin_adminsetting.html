@@ -4,6 +4,7 @@
 <!-- content-->
 {% block content %}
 {% load static %}
+{% load compress %}
 <div class="w3-center">
     <font size='5' face="DFKai-sb">
         <b><I>聰明工作，智慧生活</I></b>
@@ -155,7 +156,10 @@
             class="fas fa-plus-circle"></i></button>
 </div>
 
-
+{% compress js %}
 <script src="{% static '/js/templates/admin_adminsetting.js' %}"></script>
+
+{% endcompress %}
+
 
 {% endblock %}

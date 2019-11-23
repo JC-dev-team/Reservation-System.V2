@@ -1,5 +1,5 @@
 {% extends 'admin_base.html' %}
-
+{% load compress %}
 <!-- include 'header.html'   => image-->
 <!-- content-->
 {% block content %}
@@ -38,6 +38,8 @@
     </form>
 </div>
 
-
+{% compress js %}
 <script src="{% static '/js/templates/admin_login.js' %}"></script>
+{% endcompress %}
+
 {% endblock %}
