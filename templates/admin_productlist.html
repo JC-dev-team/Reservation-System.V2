@@ -1,5 +1,5 @@
 {% extends 'admin_base.html' %}
-
+{% load compress %}
 <!-- include 'header.html'   => image-->
 <!-- content-->
 {% block content %}
@@ -106,7 +106,9 @@
 
 </div>
 
-
+{% compress js %}
 <script src="{% static '/js/templates/admin_productlist.js' %}"></script>
+{% endcompress %}
+
 
 {% endblock %}

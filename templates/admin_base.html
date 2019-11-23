@@ -11,14 +11,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title> </title>
 
-    {% compress css %}
     <!-- css-->
+    <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 
-    <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
+
+    {% compress css %}
+
     <link href="{% static '/js/packages/core/main.css' %}" rel='stylesheet' />
     <link href="{% static '/js/packages/daygrid/main.css' %}" rel='stylesheet' />
     <link href="{% static '/js/packages/list/main.css' %}" rel='stylesheet' />
@@ -28,8 +30,6 @@
     {% endcompress %}
 
     <!------------------------------------------------------------------------------>
-
-    {% compress js %}
     <!-- js-->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
@@ -60,6 +60,11 @@
     <!--Full calendar-->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js'></script>
+    <!-- Google reCaptcha -->
+    <script src="https://www.google.com/recaptcha/api.js?render=_reCAPTCHA_site_key"></script>
+
+
+    {% compress js %}
 
     <script src="{% static '/js/packages/core/main.js' %}"></script>
     <script src="{% static '/js/packages/daygrid/main.js' %}"></script>
@@ -70,8 +75,7 @@
     <script src="{% static '/js/Notiflix/Minified/notiflix-1.9.1.min.js' %}"></script>
 
     <script src="{% static '/js/packages/core/locales-all.js' %}"></script>
-    <!-- Google reCaptcha -->
-    <script src="https://www.google.com/recaptcha/api.js?render=_reCAPTCHA_site_key"></script>
+
     {% endcompress %}
 
 
@@ -96,4 +100,3 @@
 </body>
 
 </html>
-
