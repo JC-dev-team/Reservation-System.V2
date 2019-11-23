@@ -261,27 +261,22 @@ def linebot_send_msg(line_id, user=None, info=None):
             }
         }
         # user
-        line_bot_api_client = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN_USER)
-        print(line_bot_api_client)
+        line_bot_api_client = LineBotApi(
+            settings.LINE_CHANNEL_ACCESS_TOKEN_USER)
         # push message to user
         line_bot_api_client.push_message(line_id, FlexSendMessage(
             alt_text="訂位資訊通知", contents=flex_user))
-
-        # line_bot_api_admin = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN_ADMIN)
-        # line_bot_api_admin.push_message(line_id, FlexSendMessage(
-        #     alt_text="訂位資訊通知", contents=flex_user))
 
         # push message to admin user
         # Only send message for admin with incoming waiting message
         if is_confirm_info == 'SoftWay 訂位處理中':
             # admin
-            
-            line_bot_api_admin = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN_ADMIN)
-            line_bot_api_admin.push_message('U5ee811f1f2f899eb66844500ef14a371', FlexSendMessage(
+            line_bot_api_admin = LineBotApi(
+                settings.LINE_CHANNEL_ACCESS_TOKEN_ADMIN)
+            # kevin line id, future maybe will use something else
+            line_bot_api_admin.push_message('U0feb309a1c1132925b03975d3ebc318d', FlexSendMessage(
                 alt_text="訂位通知", contents=flex_admin))
-        #kevin line id
-
         return 'success'
     except Exception as e:
-        
+
         return 'failure'
