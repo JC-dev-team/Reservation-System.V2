@@ -528,7 +528,7 @@ def getStoreInfo(request):
         return JsonResponse({'result': store_serializer.data, })
     except Exception as e:
         if action == 'main':
-            return JsonResponse({'error': '發生未知錯誤', 'action': '/error/'})
+            return JsonResponse({'error': str(e), 'action': '/error/'})
         elif request.user.is_authenticated:
             return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
         return JsonResponse({'error': '發生未知錯誤', 'action': '/booking/error/'})
