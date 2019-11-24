@@ -3,5 +3,4 @@ function initializeApp(data){liff.getProfile().then(profile=>{var disname={'name
 $('#img').attr('src',profile.pictureUrl);$('#social_id').val(data.context.userId);$('#social_app').val('Line');$('#social_name').val(disname_json)
 send()})}
 $(function(){$('#social_id').val('9644ff56-e78b-11e9-a2b8-0ec425232523');$('#social_app').val('Line');$('#social_name').val('James')
-console.log('12e')
 send()});
