@@ -129,6 +129,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                     operation='Login'
                 )
             except Exception as e:
+                print(e)
                 pass
         # render html
         return render(request, 'reservation.html', {
@@ -136,6 +137,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
             'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
 
     except Exception as e:
+        print(e)
         # render html
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
