@@ -129,7 +129,6 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                     operation='Login'
                 )
             except Exception as e:
-                print(e)
                 pass
         # render html
         return render(request, 'reservation.html', {
@@ -137,7 +136,6 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
             'google_keys': settings.RECAPTCHA_PUBLIC_KEY})
 
     except Exception as e:
-        print(e)
         # render html
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
@@ -348,6 +346,20 @@ def member(request):
             request.session['social_app'] = social_app
             request.session['social_name'] = social_name
             request.session['user_id'] = result.user_id
+            with transaction.atomic():  # transaction
+                try:
+                    ip,location,err=get_client_ip(request)
+                    if err != None:
+                        raise Exception(err)
+                        # return render(request, 'error/error.html', {'error': str(err), 'action': '/softwayliving/login/'})
+                    UserActionLog.objects.create(
+                        user_id=result.user_id,
+                        location=location, 
+                        ip=ip,
+                        operation='Login'
+                    )
+                except Exception as e:
+                    pass
             # Test linebot remove after finish
             return render(request, 'reservation.html', {
                 'data': serializer.data,

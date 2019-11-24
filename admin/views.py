@@ -119,7 +119,20 @@ def staff_auth(request):  # authentication staff
             request.session['store_id'] = result['store']
             request.session['staff_id'] = result['staff_id']
             request.session['staff_name'] = result['staff_name']
-
+            with transaction.atomic():  # transaction
+                try:
+                    ip,location,err=get_client_ip(request)
+                    if err != None:
+                        raise Exception(err)
+                        # return render(request, 'error/error.html', {'error': str(err), 'action': '/softwayliving/login/'})
+                    StaffActionLog.objects.create(
+                        staff=result['staff_id'],
+                        location=location, 
+                        ip=ip,
+                        operation='Login'
+                    )
+                except Exception as e:
+                    pass
             return render(request, 'admin_dashbroad.html')
     except Exception as e:
         request.session.flush()
