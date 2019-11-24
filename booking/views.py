@@ -138,7 +138,6 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
     except Exception as e:
         # render html
         request.session.flush()
-
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/booking/login/'})
 
 
