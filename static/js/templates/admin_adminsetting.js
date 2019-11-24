@@ -66,11 +66,14 @@
             data: data,
             success: function (response) {
                 if (response.error != null) {
-                    Notiflix.Notify.Failure('發生錯誤！！');
+                    Notiflix.Report.Failure('錯誤', response.error, 'ok');
                     Notiflix.Loading.Remove();
                 } else if (response.alert != null) {
                     Notiflix.Report.Warning('警告', response.alert, 'ok');
                     Notiflix.Loading.Remove();
+                } else if (response.outdated != null) {
+                    Notiflix.Report.Warning('警告', response.outdated, 'ok');
+                    window.location.replace(response.action)
                 } else {
                     Notiflix.Notify.Success('已新增！！');
                     document.getElementById('add_Modal').style.display = 'none'

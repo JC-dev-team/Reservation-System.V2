@@ -316,11 +316,10 @@ def admin_InsertReservation(request):  # insert booking list
             store_serializer = Store_form_serializer(get_store_name)
             bklist_serializer = Bklist_Serializer(final_queryset)
 
+            # maybe the customer isn't member
             line_send_result = linebot_send_msg(
                 get_user_info.social_id, account_serializer.data, bklist_serializer.data)
 
-            if line_send_result == 'failure':
-                raise Exception('linebot send message failed')
             del request.session['user_id']
             request.session.set_expiry(settings.SESSION_COOKIE_AGE)
             return render(request, 'reservation_finish.html', {
@@ -419,6 +418,7 @@ def staff_check_reservation(request):
             event_date__gte=now,
         )
         # get user phone number
+        
         acc_arr = []
         for i in bk_queryset:
             acc_queryset = Account.objects.get(
@@ -426,7 +426,6 @@ def staff_check_reservation(request):
             )
             acc_serializers = Acc_Serializer(acc_queryset)
             acc_arr.append(acc_serializers.data)
-
         event_serializers = StoreEvent_Serializer(event_queryset, many=True)
         bk_serializers = Bklist_Serializer(bk_queryset, many=True)
         return JsonResponse({
@@ -434,7 +433,6 @@ def staff_check_reservation(request):
             'event': event_serializers.data,
             'account': acc_arr,
         })
-
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
@@ -1037,7 +1035,7 @@ def modify_pwd(request):
         )
         # Check the old password is same or not
         if check_password(old_password, queryset.password) == False:
-            return JsonResponse({'alert': '舊密碼不一致'})
+            return JsonResponse({'alert': '舊密碼不正確'})
         # Insert new password
         with transaction.atomic():  # transaction
             queryset.password = make_password(new_password)

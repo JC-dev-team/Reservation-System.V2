@@ -443,6 +443,7 @@
             type: 'POST',
             url: '/softwayliving/staff_check/',
             success: function (response) {
+                console.log('hello')
                 if (response.error != null) {
                     Notiflix.Report.Failure('錯誤', response.error, 'ok');
                 } else if (response.alert != null) {
