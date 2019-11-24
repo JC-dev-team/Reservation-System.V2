@@ -13,6 +13,40 @@
 
 </div>
 
+<!-- password Modal -->
+<div id="password_Modal" class="w3-modal">
+        <div class="w3-modal-content w3-animate-top w3-card-4">
+            <header class="w3-container w3-teal w3-center w3-padding-32">
+                <span onclick="document.getElementById('password_Modal').style.display='none'"
+                    class="w3-button w3-teal w3-xlarge w3-display-topright">X</span>
+                <h2 class="w3-wide"><i class="fa fa-bell"></i> 變更管理者密碼</h2>
+            </header>
+            <div class="w3-container">
+                <br>
+                <font size="4">
+                    <!-- action-->
+                    <label><span> 舊密碼： </label>
+                    <input id='old_password' type="text" class="w3-input w3-border" value="" >
+                    <br>
+                    <label><span> 新密碼： </label>
+                    <input id='new_password' type="password" class="w3-input w3-border" value="" >
+                    <br>
+                    <label><span> 確認新密碼： </label>
+                    <input id='new_again_password' type="password" class="w3-input w3-border" value="">
+                    <br>
+                    
+                    <button id='modal_button_password_save' onclick='change_password()'
+                        class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">更改
+                        <i class="fa fa-check"></i></button>
+
+                    <button class="w3-button w3-red w3-section"
+                        onclick="$('#password_Modal').toggle();$('#edit_Modal').toggle()">關閉 <i
+                            class="fa fa-remove"></i></button>
+                </font>
+            </div>
+
+        </div>
+    </div>
 
 <!-- add Modal -->
 <div id="add_Modal" class="w3-modal">
@@ -99,9 +133,8 @@
                                 class="far fa-edit w3-right"></i></span>
                         <input id='edit_email' type="text" class="w3-input w3-border" value="" disabled>
                         <br>
-                        <label><span> 管理者密碼： </label><span
-                            onclick="document.getElementById('edit_password').removeAttribute('disabled')"><i
-                                class="far fa-edit w3-right"></i></span>
+                        <label><span> 管理者密碼： </label><span onclick="$('#password_Modal').toggle();$('#edit_Modal').toggle()"><i class="far fa-edit w3-right"></i></span>
+                        <input id='edit_password' type="password" class="w3-input w3-border" value="" disabled>
                         <br>
                         <label><span> 管理者權限： </label><span
                             onclick="document.getElementById('edit_is_superuser').removeAttribute('disabled')"><i
@@ -117,8 +150,7 @@
                         <button id='modal_button_save' onclick='save_edit()'
                             class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">儲存
                             <i class="fa fa-check"></i></button>
-                        <button id='modal_button_delect_admin'
-                            onclick="delete_admin()"
+                        <button id='modal_button_delect_admin' onclick="delete_admin()"
                             class="w3-button w3-block w3-red w3-padding-16 w3-section w3-right">刪除管理者
                             <i class="fas fa-trash-alt"></i></button>
 
@@ -134,7 +166,7 @@
             <button onclick="setting('admin')" class="w3-button w3-white w3-large w3-left"><i
                     class="fas fa-angle-left"></i></button>
             <button
-                onclick="edit_admin(this,'{{element.staff_id}}','{{element.staff_name}}', '{{element.staff_phone}}','{{element.email}}')"
+                onclick="edit_admin(this,'{{element.staff_id}}','{{element.staff_name}}', '{{element.staff_phone}}','{{element.email}}','{{element.password}}')"
                 class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
 
 

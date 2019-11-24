@@ -59,6 +59,38 @@
         }
     });
 
+
+    function ajax_save_password(data) {
+        $.ajax({
+            type: 'POST',
+            url: '/softwayliving/ModifyPwd/',
+            data: data,
+            success: function (response) {
+                if (response.error != null) {
+                    Notiflix.Notify.Failure('發生錯誤！！');
+                    Notiflix.Loading.Remove();
+                } else if (response.alert != null) {
+                    Notiflix.Report.Warning('警告', response.alert, 'ok');
+                    Notiflix.Loading.Remove();
+                } else {
+                    Notiflix.Notify.Success('已更新密碼！！');
+                    // document.getElementById('password_Modal').style.display = 'none'
+                    // window.location.reload();
+                    $('#edit_Modal').toggle()
+                    $('#password_Modal').toggle()
+                }
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                Notiflix.Notify.Failure('發生未知錯誤！！');
+                Notiflix.Loading.Remove();
+
+            }
+
+        })
+    }
+
+
     function ajax_add_staff(data) {
         $.ajax({
             type: 'POST',
@@ -201,13 +233,14 @@
                 var staff_name = $('#edit_staff_name').val();
                 var staff_phone = $('#edit_staff_phone').val();
                 var email = $('#edit_email').val();
-
+                var auth = $('#edit_is_superuser').val();
 
                 var data = {
                     'staff_id': staff_id,
                     'staff_name': staff_name,
                     'staff_phone': staff_phone,
-                    'email': email
+                    'email': email,
+                    'auth': auth
                 }
 
                 //spinner show
@@ -225,12 +258,13 @@
         document.getElementById('add_Modal').style.display = 'inline'
     }
 
-    function edit_admin(t, staff_id, staff_name, staff_phone, email) {
+    function edit_admin(t, staff_id, staff_name, staff_phone, email,password) {
         document.getElementById('edit_Modal').style.display = 'inline'
         document.getElementById('edit_staff_id').value = staff_id
         document.getElementById('edit_staff_name').value = staff_name
         document.getElementById('edit_staff_phone').value = staff_phone
         document.getElementById('edit_email').value = email
+        document.getElementById('edit_password').value = password
 
     }
 
@@ -258,5 +292,46 @@
             Notiflix.Loading.Hourglass('請稍候...');
             window.location.href = '/softwayliving/stores/'
         }
+    }
+
+    function change_password() {
+        Notiflix.Confirm.Show('管理者權限', '確定要變更密碼?', '是-更改', '否',
+            function () {
+                var status = true
+                var old_password = $('#old_password').val();
+                var new_password = $('#new_password').val();
+                var new_again_password = $('#new_again_password').val();
+                
+                if (new_password != new_again_password) {
+                    Notiflix.Report.Warning('錯誤',  '密碼與確認密碼不同', 'ok');
+                    status = false
+                } else if(old_password == '') {
+                    Notiflix.Report.Warning('錯誤',  '請輸入舊密碼', 'ok');
+                    status = false
+                } else if (new_password ==''){
+                    Notiflix.Report.Warning('錯誤',  '請輸入新密碼', 'ok');
+                    status = false
+                } else if (new_again_password == ''){
+                    Notiflix.Report.Warning('錯誤',  '請輸入確認新密碼', 'ok');
+                    status = false
+                }
+
+                if (status) {
+                    var data = {
+                        'old_password': old_password,
+                        'new_password': new_password,
+                        'new_again_password': new_again_password,
+                    }
+    
+                    //spinner show
+                    Notiflix.Loading.Hourglass('更新密碼中....');
+                    ajax_save_password(data)
+    
+                }
+                
+            },
+            function () {
+                
+            });
     }
 
