@@ -972,7 +972,7 @@ def modify_admin(request):
                 # If they want to modify his/her own auth
                 if (queryset.is_superuser != is_superuser or queryset.is_admin != is_admin) and\
                         request.user.is_superuser == False:
-                    return JsonResponse({'alert': '權限不足'})
+                    return JsonResponse({'alert': '權限不足，無法修改錯誤'})
                 elif request.session.get('staff_id', None) == staff_id and \
                         (queryset.is_superuser != is_superuser or queryset.is_admin != is_admin):
                     return JsonResponse({'alert': '無法修改自己帳號的權限'})
@@ -1036,7 +1036,7 @@ def modify_pwd(request):
             store_id=store_id,
         )
         # Check the old password is same or not
-        if check_password(old_password, queryset.password):
+        if check_password(old_password, queryset.password) == False:
             return JsonResponse({'alert': '舊密碼不一致'})
         # Insert new password
         with transaction.atomic():  # transaction
