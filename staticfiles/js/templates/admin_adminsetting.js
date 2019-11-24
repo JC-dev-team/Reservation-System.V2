@@ -78,6 +78,7 @@
                     // window.location.reload();
                     $('#edit_Modal').toggle()
                     $('#password_Modal').toggle()
+                    Notiflix.Loading.Remove();
                 }
 
             },
