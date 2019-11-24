@@ -25,7 +25,7 @@ SECRET_KEY = 'd91v90b$q&w!9x6wn5_iaej@a%^wj#v!!b(*%+h@$pj8e6=gz='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True #
 COMPRESS_ENABLED = True
-COMPRESS_OFFLINE = True
+# COMPRESS_OFFLINE = True
 ALLOWED_HOSTS = ['*.softway.com.tw','.softway.com.tw','*']
 
 # Application definition
