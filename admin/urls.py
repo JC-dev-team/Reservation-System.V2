@@ -82,6 +82,8 @@ urlpatterns = [
     path('ModifyAdmin/',views.modify_admin),
     # /softwayliving/DeleteAdmin/
     path('DeleteAdmin/',views.delete_admin),
+    # /softwayliving/ModifyPwd/
+    path('ModifyPwd/',views.modify_pwd),
 
     ### Store api
     # /softwayliving/AddStore/

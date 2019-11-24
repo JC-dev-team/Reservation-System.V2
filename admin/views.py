@@ -121,13 +121,13 @@ def staff_auth(request):  # authentication staff
             request.session['staff_name'] = result['staff_name']
             with transaction.atomic():  # transaction
                 try:
-                    ip,location,err=get_client_ip(request)
+                    ip, location, err = get_client_ip(request)
                     if err != None:
                         raise Exception(err)
                         # return render(request, 'error/error.html', {'error': str(err), 'action': '/softwayliving/login/'})
                     StaffActionLog.objects.create(
                         staff=result['staff_id'],
-                        location=location, 
+                        location=location,
                         ip=ip,
                         operation='Login'
                     )
@@ -332,7 +332,8 @@ def admin_InsertReservation(request):  # insert booking list
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
-@require_http_methods(['POST','GET'])
+
+@require_http_methods(['POST', 'GET'])
 @login_required(login_url='/softwayliving/login/')
 def staff_productions_page(request):
     try:
@@ -349,7 +350,8 @@ def staff_productions_page(request):
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
-@require_http_methods(['GET','POST'])
+
+@require_http_methods(['GET', 'POST'])
 @login_required(login_url='/softwayliving/login/')
 def staff_admins_page(request):
     try:
@@ -368,7 +370,8 @@ def staff_admins_page(request):
         request.session.flush()
         return render(request, 'error/error.html', {'error': '發生未知錯誤', 'action': '/softwayliving/login/'})
 
-@require_http_methods(['POST','GET'])
+
+@require_http_methods(['POST', 'GET'])
 @login_required(login_url='/softwayliving/login/')
 def staff_stores_page(request):
     try:
@@ -943,24 +946,40 @@ def modify_admin(request):
     try:
         if request.user.is_authenticated == False:
             return JsonResponse({'outdated': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
-        elif request.user.is_superuser == False:
+        elif request.user.is_admin == False:
             return JsonResponse({'alert': '權限不足'})
-        request.session.set_expiry(900)
 
+        request.session.set_expiry(900)
         staff_id = request.POST.get('staff_id', None)
-        is_superuser = request.POST.get('is_superuser', False)
-        is_admin = request.POST.get('is_admin', False)
         staff_name = request.POST.get('staff_name', None)
         staff_phone = request.POST.get('staff_phone', None)
-        password = make_password(request.POST.get('password', None))
+        # Check auth settings
+        auth = request.POST.get('auth', None)
+        if auth == 'is_superuser':
+            is_superuser = True
+            is_admin = True
+
+        elif auth == 'is_admin':
+            is_superuser = False
+            is_admin = True
+        else:
+            is_superuser = False
+            is_admin = False
 
         with transaction.atomic():  # transaction
             try:
                 queryset = Staff.objects.get(staff_id=staff_id)
+                # If they want to modify his/her own auth
+                if (queryset.is_superuser != is_superuser or queryset.is_admin != is_admin) and\
+                        request.user.is_superuser == False:
+                    return JsonResponse({'alert': '權限不足'})
+                elif request.session.get('staff_id', None) == staff_id and \
+                        (queryset.is_superuser != is_superuser or queryset.is_admin != is_admin):
+                    return JsonResponse({'alert': '無法修改自己帳號的權限'})
+
                 queryset.is_superuser = is_superuser
                 queryset.is_admin = is_admin
                 queryset.staff_name = staff_name
-                queryset.password = password
                 queryset.staff_phone = staff_phone
                 queryset.save()
                 return JsonResponse({'reuslt': 'success'})
@@ -993,6 +1012,37 @@ def delete_admin(request):
             queryset.delete()
 
             return JsonResponse({'reuslt': 'success'})
+    except Exception as e:
+        return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
+
+
+@require_http_methods(['POST'])
+def modify_pwd(request):
+    try:
+        if request.user.is_authenticated == False:
+            return JsonResponse({'outdated': '憑證已經過期，請重新登入', 'action': '/softwayliving/login/'})
+        elif request.user.is_admin == False:
+            return JsonResponse({'alert': '權限不足'})
+        store_id = request.session.get('store_id', None)
+        staff_id = request.session.get('staff_id', None)
+        old_password = request.POST.get('old_password', None)
+        new_password = request.POST.get('new_password', None)
+        new_again_password = request.POST.get('new_again_password', None)
+        # Check the new password is same or not
+        if new_password != new_again_password:
+            return JsonResponse({'alert': '新密碼不一致'})
+        queryset = Staff.objects.get(
+            staff_id=staff_id,
+            store_id=store_id,
+        )
+        # Check the old password is same or not
+        if check_password(old_password, queryset.password):
+            return JsonResponse({'alert': '舊密碼不一致'})
+        # Insert new password
+        with transaction.atomic():  # transaction
+            queryset.password = make_password(new_password)
+            queryset.save()
+            return JsonResponse({'result': 'success'})
     except Exception as e:
         return JsonResponse({'error': '發生未知錯誤', 'action': '/softwayliving/error/'})
 
