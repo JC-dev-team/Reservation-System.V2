@@ -34,7 +34,7 @@
         // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
         //send data 
-        //send()
+        // send()
         // if($('#social_id').val() == '' || $('#social_app').val() == ''){
         //     window.location.replace('/booking/error/');
         // }else{

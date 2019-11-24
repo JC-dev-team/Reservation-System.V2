@@ -10,4 +10,4 @@
         document.getElementById("userdashboard_form").submit();
     }
 
-    $("#displayName").text('{{data.username}}' + '(' + '{{data.social_name}}' + ')')
+    

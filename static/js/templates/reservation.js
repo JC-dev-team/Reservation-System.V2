@@ -339,33 +339,7 @@
         document.getElementById("reservation_form").submit();
     }
 
-    function reservation_submit() {
-        if ('{{request.session.staff_id}}' == null || '{{request.session.staff_id}}' == '') {
-            Notiflix.Loading.Hourglass('訂位處理中...');
-            reservation_form_submit()
-        } else if ('{{request.session.staff_id}}' != null && '{{request.session.staff_id}}' != '') {
-            Notiflix.Loading.Hourglass('訂位處理中...');
-            //submit data
-            document.getElementById("reservation_form").action =
-                "/softwayliving/insert_bk/";
-            document.getElementById("reservation_form").submit();
-        }
-
-
-        //Line Liff Data
-        var line_date = $('#bk_date').val();
-        var line_session = $('#time_session').val();
-        var line_time = $('#bk_st').val();
-        var line_number = $('#adult').val() + " 大 " + $('#children').val() + " 小"
-        var line_habit = $('#bk_habit').val();
-
-        if (line_session == 'L') {
-            line_session = '午餐'
-        } else {
-            line_session = '晚餐'
-        }
-
-    }
+   
 
     function calendar_fun(result, num = 0) {
         //spinner hide
@@ -634,21 +608,21 @@
         ajax_post(num)
     })
 
-    $('#people_number_submit').click(function (e) {
-        var adult_int = parseInt($('#adult_select').val())
-        var child_int = parseInt($('#children_select').val())
-        var max_seat = (parseInt($('#adult_select option:last-child').val()) - 5)
-        if ((adult_int + child_int > max_seat) && '{{request.user.is_authenticated}}' == 'False') {
+    // $('#people_number_submit').click(function (e) {
+    //     var adult_int = parseInt($('#adult_select').val())
+    //     var child_int = parseInt($('#children_select').val())
+    //     var max_seat = (parseInt($('#adult_select option:last-child').val()) - 5)
+    //     if ((adult_int + child_int > max_seat) && '{{request.user.is_authenticated}}' == 'False') {
 
-            Notiflix.Report.Warning('警告', '人數不得超過' + max_seat + '人，如需預訂' + max_seat + '人以上，請電洽 02-2821-6659',
-                'ok');
-        } else {
+    //         Notiflix.Report.Warning('警告', '人數不得超過' + max_seat + '人，如需預訂' + max_seat + '人以上，請電洽 02-2821-6659',
+    //             'ok');
+    //     } else {
 
-            var num = parseInt($('#date_num').val())
-            //do the fuction of ajax_post()
-            ajax_post(num)
-        }
+    //         var num = parseInt($('#date_num').val())
+    //         //do the fuction of ajax_post()
+    //         ajax_post(num)
+    //     }
 
 
 
-    })
+    // })
