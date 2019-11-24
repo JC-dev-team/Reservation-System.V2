@@ -259,7 +259,7 @@
         document.getElementById('add_Modal').style.display = 'inline'
     }
 
-    function edit_admin(t, staff_id, staff_name, staff_phone, email,password) {
+    function edit_admin(t, staff_id, staff_name, staff_phone, email,password ,is_superuser) {
         document.getElementById('edit_Modal').style.display = 'inline'
         document.getElementById('edit_staff_id').value = staff_id
         document.getElementById('edit_staff_name').value = staff_name
@@ -267,10 +267,23 @@
         document.getElementById('edit_email').value = email
         document.getElementById('edit_password').value = password
 
+        if (is_superuser == 'True') {
+            var auth = 'is_superuser'
+        } else{
+            var auth = 'is_admin'
+        }
+        document.getElementById('edit_is_superuser').value = auth
+        if ($('#edit_is_superuser').val() == 'is_superuser') {
+            $("option[name='auth_super']").attr('selected',true)
+            $("option[name='auth_not_super']").attr('selected',false)
+        } else {
+            $("option[name='auth_super']").attr('selected',false)
+            $("option[name='auth_not_super']").attr('selected',true)
+        }
     }
 
 
-    function delete_admin() {
+    function delete_admin(t) {
         var delete_staff_id = $('#edit_staff_id').val()
         var delete_email = $('#edit_email').val()
         Notiflix.Confirm.Show('管理者權限', '確定要永久刪除嗎?', '是-刪除', '否',
@@ -335,4 +348,7 @@
                 
             });
     }
+
+    
+    
 

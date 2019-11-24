@@ -140,9 +140,9 @@
                             onclick="document.getElementById('edit_is_superuser').removeAttribute('disabled')"><i
                                 class="far fa-edit w3-right"></i></span>
                         <select class="select form-control" style='font-size:18px; height:40px;' type="text" value=""
-                            id='edit_is_superuser' required>
+                            id='edit_is_superuser' disabled>
                             <option name='auth' value="is_superuser" selected>最高權限管理員</option>
-                            <option name='auth' value="is_admin">店長</option>
+                            <option name='auth' value="is_admin" selected='false'>店長</option>
                         </select>
 
 
@@ -150,7 +150,7 @@
                         <button id='modal_button_save' onclick='save_edit()'
                             class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">儲存
                             <i class="fa fa-check"></i></button>
-                        <button id='modal_button_delect_admin' onclick="delete_admin()"
+                        <button id='modal_button_delect_admin' onclick="delete_admin(this)"
                             class="w3-button w3-block w3-red w3-padding-16 w3-section w3-right">刪除管理者
                             <i class="fas fa-trash-alt"></i></button>
 
@@ -166,7 +166,7 @@
             <button onclick="setting('admin')" class="w3-button w3-white w3-large w3-left"><i
                     class="fas fa-angle-left"></i></button>
             <button
-                onclick="edit_admin(this,'{{element.staff_id}}','{{element.staff_name}}', '{{element.staff_phone}}','{{element.email}}','{{element.password}}')"
+                onclick="edit_admin(this,'{{element.staff_id}}','{{element.staff_name}}', '{{element.staff_phone}}','{{element.email}}','{{element.password}}','{{element.is_superuser}}')"
                 class="w3-button w3-white w3-large w3-right"><i class="far fa-edit"></i></button>
 
 
