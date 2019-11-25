@@ -471,8 +471,8 @@ def staff_confirm_reservation(request):
             line_send_result = linebot_send_msg(
                 acc_queryset.social_id, acc_serializer.data, bk_serializer.data)
 
-            if line_send_result == 'failure':
-                raise Exception('linebot send message failed')
+            # if line_send_result == 'failure':
+            #     raise Exception('linebot send message failed')
             return JsonResponse({'result': 'success'})
 
     except Account.DoesNotExist:
@@ -525,8 +525,8 @@ def staff_pass_reservation(request):
             line_send_result = linebot_send_msg(
                 acc_queryset.social_id, acc_serializer.data, bklist_serializer.data)
 
-            if line_send_result == 'failure':
-                raise Exception('linebot send message failed')
+            # if line_send_result == 'failure':
+            #     raise Exception('linebot send message failed')
 
             return JsonResponse({'result': 'success'})
 
