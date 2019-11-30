@@ -414,16 +414,6 @@
                     textColor: 'white',
                     daysOfWeek: [1, 2, 3, 4, 5, 6, 0]
                 },
-                // {
-                //     id: '3',
-                //     title: '店休',
-                //     start: new Date(),
-                //     startRecur: new Date().addDays(3),
-                //     backgroundColor: 'red',
-                //     textColor: 'white',
-                //     daysOfWeek: [1],
-
-                // },
 
             ],
 

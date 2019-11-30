@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'd91v90b$q&w!9x6wn5_iaej@a%^wj#v!!b(*%+h@$pj8e6=gz='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False #
+DEBUG = True #
 COMPRESS_ENABLED = True
-ALLOWED_HOSTS = ['*.softway.com.tw','.softway.com.tw']
+ALLOWED_HOSTS = ['*.softway.com.tw','.softway.com.tw','*']
 
 # Application definition
 
@@ -61,16 +61,18 @@ MIDDLEWARE = [
 # SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 
 # Security settings
-SECURE_CONTENT_TYPE_NOSNIFF = True
-CSRF_COOKIE_SECURE = True  # need to be True when production
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_SSL_REDIRECT = True  # need to be True when production
-X_FRAME_OPTIONS = 'DENY'  # default = 'SAMEORIGIN'
-SECURE_HSTS_SECONDS = 31536000 # need to be uncomment when production
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # need to be True when production
-SECURE_HSTS_PRELOAD = True  # need to be True when production
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') # need to be uncomment when production
-
+if DEBUG ==False:
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    CSRF_COOKIE_SECURE = True  # need to be True when production
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_SSL_REDIRECT = True  # need to be True when production
+    X_FRAME_OPTIONS = 'DENY'  # default = 'SAMEORIGIN'
+    SECURE_HSTS_SECONDS = 31536000 # need to be uncomment when production
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # need to be True when production
+    SECURE_HSTS_PRELOAD = True  # need to be True when production
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') # need to be uncomment when production
+    SESSION_COOKIE_SECURE = True  # when deploy need to set to True
+    
 # Authentication
 AUTH_USER_MODEL = 'main.Staff'
 AUTHENTICATION_BACKENDS = ['common.utility.auth.ClientAuthBackend',
@@ -80,7 +82,6 @@ AUTHENTICATION_BACKENDS = ['common.utility.auth.ClientAuthBackend',
 
 # session options
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_SECURE = True  # when deploy need to set to True
 # SESSION_SAVE_EVERY_REQUEST=True
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 60*15
