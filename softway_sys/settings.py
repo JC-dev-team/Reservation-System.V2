@@ -143,7 +143,7 @@ else:
             'NAME': 'softway',
             'USER': 'root',
             'PASSWORD': 'rootadmin',
-            'HOST': 'mysqlbeenattack.cbelqfilciuy.us-east-1.rds.amazonaws.com',
+            'HOST': 'aauj1g2435ho2s.cper01mkzcrd.ap-northeast-1.rds.amazonaws.com',
             'PORT': '3306',
             'OPTIONS': {
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
