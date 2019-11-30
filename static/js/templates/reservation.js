@@ -233,7 +233,7 @@
         }
     });
 
-    function people_number(data, num, calendar) {
+    function people_number(data, num, reserve_limit) {
         $.ajax({
             type: 'GET',
             url: '/booking/getCalendar/',
@@ -248,7 +248,7 @@
                     window.location.replace(response.action)
                 } else {
                     result = response.result
-                    calendar_fun(result, num)
+                    calendar_fun(result, num,reserve_limit)
                 }
                 Notiflix.Loading.Remove();
             },
@@ -341,7 +341,7 @@
 
    
 
-    function calendar_fun(result, num = 0) {
+    function calendar_fun(result, num = 0 ,reserve_limit=3) {
         //spinner hide
         Notiflix.Loading.Remove();
         document.getElementById('calendar_container').style.display = 'inline'
@@ -378,7 +378,7 @@
             //Default View
             defaultView: 'dayGridMonth',
             //defaultDate
-            defaultDate: (new Date().addDays(3).addMonths(num)).toISOString().slice(0, 10),
+            defaultDate: (new Date().addDays(reserve_limit).addMonths(num)).toISOString().slice(0, 10),
             //Height
             height: 'auto',
             contentHeight: 500,
@@ -400,7 +400,7 @@
                     id: '1',
                     title: '午餐',
                     start: new Date(),
-                    startRecur: new Date().addDays(3),
+                    startRecur: new Date().addDays(reserve_limit),
                     backgroundColor: 'green',
                     textColor: 'white',
                     daysOfWeek: [1, 2, 3, 4, 5, 6, 0]
@@ -409,7 +409,7 @@
                     id: '2',
                     title: '晚餐',
                     start: new Date(),
-                    startRecur: new Date().addDays(3),
+                    startRecur: new Date().addDays(reserve_limit),
                     backgroundColor: 'green',
                     textColor: 'white',
                     daysOfWeek: [1, 2, 3, 4, 5, 6, 0]
@@ -489,7 +489,7 @@
         return calendar.render();
     }
 
-    function ajax_post(num = 0) {
+    function ajax_post(num = 0,reserve_limit) {
         //ajax data
         var status = true;
         var adult = $('#adult_select').val();
@@ -511,7 +511,7 @@
             // do ajax fuction
             if (data.adult != null && data.children != null && data.adult != '' && data.children != '' && data
                 .store_id != '' && data.store_id != null) {
-                people_number(data, num)
+                people_number(data, num,reserve_limit)
 
                 //spinner show
                 document.getElementById('calendar_container').style.display = 'inline'
@@ -586,7 +586,7 @@
         var num = parseInt(num_str) + 1
         $('#date_num').val(num)
         //do the fuction of ajax_post()
-        ajax_post(num)
+        ajax_post(num,reserve_limit)
     })
 
     //previous month of button
@@ -595,24 +595,7 @@
         var num = parseInt(num_str) - 1
         $('#date_num').val(num)
         //do the fuction of ajax_post()
-        ajax_post(num)
+        ajax_post(num,reserve_limit)
     })
 
-    // $('#people_number_submit').click(function (e) {
-    //     var adult_int = parseInt($('#adult_select').val())
-    //     var child_int = parseInt($('#children_select').val())
-    //     var max_seat = (parseInt($('#adult_select option:last-child').val()) - 5)
-    //     if ((adult_int + child_int > max_seat) && '{{request.user.is_authenticated}}' == 'False') {
-
-    //         Notiflix.Report.Warning('警告', '人數不得超過' + max_seat + '人，如需預訂' + max_seat + '人以上，請電洽 02-2821-6659',
-    //             'ok');
-    //     } else {
-
-    //         var num = parseInt($('#date_num').val())
-    //         //do the fuction of ajax_post()
-    //         ajax_post(num)
-    //     }
-
-
-
-    // })
+    
