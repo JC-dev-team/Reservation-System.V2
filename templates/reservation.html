@@ -160,7 +160,7 @@
     <div id='calendar'>
     </div>
 </div>
-{% compress js %} 
+{% compress js %}
 <script>
     $('#displayName').html('{{ data.username }}' + '(' + '{{data.social_name}}' + ')');
     $('#displayPhone').html('{{ data.phone }}');
@@ -193,28 +193,40 @@
 
     }
 
-        $(function () {
-            $('#people_number_submit').click(function (e) {
-                var adult_int = parseInt($('#adult_select').val())
-                var child_int = parseInt($('#children_select').val())
-                var max_seat = (parseInt($('#adult_select option:last-child').val()) - 5)
-                if ((adult_int + child_int > max_seat) && '{{request.user.is_authenticated}}' ==
-                    'False') {
+    $(function () {
+        $('#people_number_submit').click(function (e) {
+            var adult_int = parseInt($('#adult_select').val())
+            var child_int = parseInt($('#children_select').val())
+            var max_seat = (parseInt($('#adult_select option:last-child').val()) - 5)
+            if ((adult_int + child_int > max_seat) && '{{request.user.is_authenticated}}' ==
+                'False') {
 
-                    Notiflix.Report.Warning('警告', '人數不得超過' + max_seat + '人，如需預訂' + max_seat +
-                        '人以上，請電洽 02-2821-6659',
-                        'ok');
-                } else {
+                Notiflix.Report.Warning('警告', '人數不得超過' + max_seat + '人，如需預訂' + max_seat +
+                    '人以上，請電洽 02-2821-6659',
+                    'ok');
+            } else {
 
-                    var num = parseInt($('#date_num').val())
-                    //do the fuction of ajax_post()
-                    ajax_post(num)
-                }
-            })
-        });
+                var num = parseInt($('#date_num').val())
+                //do the fuction of ajax_post()
+                console.log(reserve_limit)
+                ajax_post(num, reserve_limit)
+            }
+
+
+        })
+    });
+    var reserve_limit;
+    //request.user.is_authenticated is user(False) or admin(True)
+    $(function () {
+        if ('{{request.user.is_authenticated}}' == 'False') {
+            reserve_limit = 3
+        } else {
+            reserve_limit = 0
+        }
+    })
 </script>
 <script src="{% static '/js/templates/reservation.js' %}"></script>
-{% endcompress %} 
+{% endcompress %}
 
 
 
