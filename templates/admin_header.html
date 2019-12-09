@@ -1,15 +1,15 @@
 {% load static %}
 {% load compress %}
 
-<ul id="slide-out" class="side-nav">
+<!-- <ul id="slide-out" class="side-nav">
   <li>
     <div class="user-view">
       <div class="background">
-        
+          
       </div>
+      <a><img class="circle" src="{% static '/images/Logo1.jpg' %}"></a>
+      <a><span class="black-text name">管理者</span></a>
       
-      <a href="#!name"><span class="white-text name">John Doe</span></a>
-      <a href="#!email"><span class="white-text email">jdandturk@gmail.com</span></a>
     </div>
   </li>
   <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
@@ -21,7 +21,7 @@
   <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
 </ul>
 <a href="#" data-activates="slide-out"  class="button-collapse"><i
-    class="material-icons">menu</i></a>
+    class="material-icons">menu</i></a> -->
 
 <!-- Sidebar (hidden by default) -->
 <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left"
@@ -73,25 +73,10 @@
   <br>
   <a id='sidebar_log_out' onclick="send('sidebar_log_out')" class="w3-bar-item w3-button w3-display-bottommiddle"
     style="font-size:20px"><i class="fas fa-sign-out-alt" style="font-size:26px;width:23px"></i> 登出</a>
-  <!-- <hr>
-  <a onclick="send('all')" class="w3-bar-item w3-button" style="font-size:20px"><i class="fas fa-star"
-      style="color:rgb(255, 217, 0);"></i></i>
-    總表</a>
-  <a id='sidebar_not_confirm' class="w3-bar-item w3-button" style="font-size:20px"><i class="fa fa-spinner"
-      style="color:orange;"></i>
-    待確認(含候補</a>
-  <a id='sidebar_confirm' class="w3-bar-item w3-button" style="font-size:20px"><i class="fa fa-check"
-      style="color:green;"></i> 已確認</a>
-  <a id='sidebar_waiting' class="w3-bar-item w3-button" style="font-size:20px"><i class="fa fa-circle-o"
-      style="color:red;"></i> 候補名單</a>
-  <a id='sidebar_cancel' class="w3-bar-item w3-button" style="font-size:20px"><i class="fas fa-trash-alt"></i> 已刪除</a>
- -->
-
-
-
-
 
 </nav>
+
+
 
 <!-- Top menu -->
 <div id='top_block' class="w3-top">
@@ -116,18 +101,12 @@
 
 {% compress js %}
 <script src="{% static '/js/templates/admin_header.js' %}"></script>
-<script src="{% static '/js/templates/jquery.sidebar.js' %}"></script>
+<!-- <script src="{% static '/js/templates/jquery.sidebar.js' %}"></script> -->
 
 {% endcompress %}
-<!-- CSS -->
-<!-- Compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-<!-- Compiled and minified JavaScript -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 
 
-<script>
+<!-- <script>
   $(".button-collapse").sideNav();
   $('.button-collapse').sideNav({
     menuWidth: 300, // Default is 300
@@ -138,4 +117,4 @@
     onClose: function (el) {}, // A function to be called when sideNav is closed
   });
   $('.button-collapse').sideNav('show');
-</script>
+</script> -->
