@@ -99,7 +99,7 @@ def staff_auth(request):  # authentication staff
             request.session.flush()
             return render(request, 'admin_login.html', {'error': '請輸入帳號和密碼'})
         # Account or password is wrong
-        elif result == 'ERROR':
+        elif result == 'ERROR' or result == False:
             request.session['try_time'] = int(
                 request.session.get('try_time', 0))+1
             return render(request, 'admin_login.html', {'error': '帳號或是密碼輸入錯誤'})

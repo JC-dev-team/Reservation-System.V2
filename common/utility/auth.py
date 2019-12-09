@@ -122,7 +122,7 @@ def StaffAuthentication(email, password):  # staff account checking
                 return 'ERROR'
             
     except Staff.DoesNotExist:  # Account Not Exist
-        return 'ERROR'
+        return False
     except Exception as e:
         return {'error': e}
 
