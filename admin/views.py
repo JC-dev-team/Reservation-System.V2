@@ -91,13 +91,14 @@ def staff_auth(request):  # authentication staff
             return render(request, 'error/error.html',
                           {
                               'action': '/softwayliving/login/',
-                              'error': 'Trying too many times',
+                              'error': 'Trying too many times, please wait 15 minutes',
                           })
         # Check Auth
         result = auth.StaffAuthentication(email, password)
-        if result == None or result == False:
+        if result == None :
             request.session.flush()
-            return render(request, 'error/error404.html', {'action': '/softwayliving/login/'})
+            return render(request, 'admin_login.html', {'error': '請輸入帳號和密碼'})
+        # Account or password is wrong
         elif result == 'ERROR':
             request.session['try_time'] = int(
                 request.session.get('try_time', 0))+1
