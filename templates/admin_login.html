@@ -16,15 +16,25 @@
         {% csrf_token %}
 
         <font size="4">
-            <div class="input-field col s12">
-                <input id="email" type="email" name='email' class="validate"  value='kevin210158@gmail.com'>
+            <label><b>帳號</b></label>
+            <input id="email" name='email' class="w3-input w3-border w3-round-large" type="email"
+                placeholder="abc@example.com" value='' required>
+
+            <!-- <div class="input-field col s12">
+                <input id="email" type="email" name='email' class="validate" value='kevin210158@gmail.com'>
                 <label for="email" style="size:5px">帳號</label>
-            </div>
-        <br>
-            <div class="input-field col s12">
+            </div> -->
+            <br>
+            <label><b>帳號</b></label>
+            <input id="password" name='password' class="w3-input w3-border w3-round-large" type="password" value=''
+                required>
+
+            <!-- <div class="input-field col s12">
                 <input id="password" type="password" name='password' class="validate" value=''>
                 <label for="password" style="size:510px">密碼</label>
-            </div>
+            </div> -->
+            <br>
+            <input id="memory" name='memory' class="checkbox" type="checkbox"> <label><b> 記住帳號</b></label>
 
         </font>
         <p>
@@ -36,15 +46,13 @@
             <button id="checklogin_form_submit"
                 class="w3-btn w3-round-large w3-block w3-teal w3-padding-16 w3-section w3-right">登入</button>
         </font>
-        
+
     </form>
 </div>
 
 
 {% compress js %}
 <script src="{% static '/js/templates/admin_login.js' %}"></script>
-<!-- <script src="{% static '/js/templates/jquery.cookie.js' %}"></script> -->
-
 {% endcompress %}
 
 {% endblock %}

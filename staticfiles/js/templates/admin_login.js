@@ -22,21 +22,11 @@ function initializeApp(data) {
 //ready
 $(function () {
     document.getElementById("top_block").style.display = 'none'
-
-    //Notiflix.Loading.Hourglass('讀取中....');
     //init LIFF
     liff.init(function (data) {
         initializeApp(data);
     });
-    //$('#email').val('123@123.com'); //data.context.userId
-    //$('#password').val('Line');
-
-
-    // if ($('#email').val() != '' && $('#password').val() != '') {
-    //     send()
-    // } else {
-    //     window.location.replace('/softwayliving/error/');
-    // }
+    
 
 });
 
@@ -47,10 +37,8 @@ $(function () {
         var password = $('#password').val();
 
         if (email == '') {
-            alert('請輸入信箱！')
             status = false;
         } else if (password == '') {
-            alert('請輸入密碼！')
             status = false;
         }
 
@@ -61,4 +49,46 @@ $(function () {
     });
 });
 
+//cookie 
+$(function () {
+    if (getCookie('name')) {
+        $('#email').val(getCookie('name'));
+        $('#memory').prop('checked', 'checked');
+    } else {
+        $('#email').val('');
+    }
+});
+$('#checklogin_form_submit').click(function () {
+    if ($('#memory').prop('checked')) {
+        var email = $('#email').val();
+        setCookie("name", email);
+    } else {
+        delCookie('name');
+    }
+});
+//        主要函数
+function setCookie(name, value) //设置cookie
+{
+    var Days = 30;
+    var exp = new Date();
+    exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+    document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+}
 
+function getCookie(name) //拿到cookie
+{
+    var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    if (arr = document.cookie.match(reg))
+        return unescape(arr[2]);
+    else
+        return null;
+}
+
+function delCookie(name) //删除cookie
+{
+    var exp = new Date();
+    exp.setTime(exp.getTime() - 1);
+    var cval = getCookie(name);
+    if (cval != null)
+        document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+}
