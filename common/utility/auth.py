@@ -66,8 +66,6 @@ class ClientAuthBackend(ModelBackend):
             return None
 
 # decorators
-
-
 def valid_pass_test(test_fun, redirect_url='/'):
     def decorator(view_func):
         @wraps(view_func)
