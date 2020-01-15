@@ -10,7 +10,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.utils import timezone
 from django.core.mail import send_mail
-
+import uuid
 
 # auth
 class StaffManager(BaseUserManager):
@@ -48,7 +48,7 @@ class StaffManager(BaseUserManager):
 
 
 class Staff(AbstractBaseUser, PermissionsMixin):
-    staff_id = models.CharField(primary_key=True, max_length=45)
+    staff_id = models.UUIDField(primary_key=True, default=uuid.uuid4())
     store = models.ForeignKey('Store', models.CASCADE)
     # username
     email = models.EmailField(unique=True, max_length=100)
@@ -56,7 +56,7 @@ class Staff(AbstractBaseUser, PermissionsMixin):
     staff_name = models.CharField(max_length=45)
     staff_phone = models.CharField(max_length=10, blank=True, null=True)
     last_login = models.DateTimeField(blank=True, null=True)
-    staff_created = models.DateTimeField(blank=True, null=True)
+    staff_created = models.DateTimeField(blank=True, default=timezone.now())
     is_superuser = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -90,14 +90,14 @@ class Staff(AbstractBaseUser, PermissionsMixin):
 
 
 class Account(models.Model):
-    user_id = models.CharField(primary_key=True, max_length=45)
+    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4())
     social_id = models.CharField(max_length=45, blank=True, null=True)
     social_app = models.CharField(max_length=45, blank=True, null=True)
     social_name = models.CharField(max_length=45)
     username = models.CharField(max_length=45)
     phone = models.CharField(max_length=10)
     birth = models.DateField(blank=True, null=True)
-    created_date = models.DateTimeField(blank=True, null=True)
+    created_date = models.DateTimeField(blank=True, default=timezone.now())
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -105,7 +105,7 @@ class Account(models.Model):
 
 
 class BkList(models.Model):
-    bk_uuid = models.CharField(primary_key=True, max_length=45)
+    bk_uuid = models.UUIDField(primary_key=True, default=uuid.uuid4())
     user = models.ForeignKey(Account, models.SET_NULL, blank=True, null=True)
     store = models.ForeignKey(
         'Store', models.SET_NULL, blank=True, null=True)
@@ -129,37 +129,37 @@ class BkList(models.Model):
 
 
 class Production(models.Model):
-    prod_id = models.CharField(primary_key=True, max_length=45)
+    prod_id = models.UUIDField(primary_key=True, default=uuid.uuid4())
     store = models.ForeignKey('Store', models.CASCADE)
     prod_name = models.CharField(max_length=45)
     prod_price = models.PositiveIntegerField()
-    prod_created = models.DateTimeField(blank=True, null=True)
+    prod_created = models.DateTimeField(blank=True, default=timezone.now())
 
     class Meta:
         db_table = 'prod___db'
 
 
 class Store(models.Model):
-    store_id = models.CharField(primary_key=True, max_length=45)
+    store_id = models.UUIDField(primary_key=True, default=uuid.uuid4())
     store_name = models.CharField(unique=True, max_length=45)
     store_address = models.CharField(max_length=45)
     store_phone = models.CharField(max_length=20)
     store_fax = models.CharField(max_length=20, blank=True, null=True)
     tk_service = models.BooleanField(default=False)
     seat = models.PositiveIntegerField()
-    store_created = models.DateTimeField(blank=True, null=True)
+    store_created = models.DateTimeField(blank=True, default=timezone.now())
 
     class Meta:
         db_table = 'store___db'
 
 
 class StoreEvent(models.Model):
-    event_id = models.CharField(primary_key=True, max_length=45, default=None)
+    event_id = models.UUIDField(primary_key=True, default=uuid.uuid4())
     store = models.ForeignKey(Store, models.CASCADE)
     event_type = models.CharField(max_length=45)
     event_date = models.DateField()
     time_session = models.CharField(max_length=45)
-    event_created = models.DateTimeField(blank=True, null=True)
+    event_created = models.DateTimeField(blank=True, default=timezone.now())
 
     class Meta:
         db_table = 'store_event___db'
@@ -170,7 +170,7 @@ class StaffActionLog(models.Model):
     location = models.CharField(max_length=300)
     ip_address = models.CharField(max_length=200)
     operation = models.CharField(max_length=150)
-    created_date = models.DateTimeField(blank=True, null=True)
+    created_date = models.DateTimeField(blank=True, default=timezone.now())
 
     class Meta:
         db_table = 'staff_action_log___db'
@@ -180,7 +180,7 @@ class UserActionLog(models.Model):
     user = models.ForeignKey(Account, models.DO_NOTHING, )
     operation = models.CharField(max_length=200)
     location = models.CharField(max_length=300)
-    created_date = models.DateTimeField(blank=True, null=True)
+    created_date = models.DateTimeField(blank=True, default=timezone.now())
     ip_address = models.CharField(max_length=200)
 
     class Meta:
