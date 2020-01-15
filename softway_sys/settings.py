@@ -142,9 +142,9 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'softway',
-            'USER': 'root',
-            'PASSWORD': 'rootadmin',
-            'HOST': 'aauj1g2435ho2s.cper01mkzcrd.ap-northeast-1.rds.amazonaws.com',
+            'USER': 'admin',
+            'PASSWORD': 'rootroot',
+            'HOST': 'database-1.cpzr4nfqaynx.ap-northeast-1.rds.amazonaws.com',
             'PORT': '3306',
             'OPTIONS': {
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
