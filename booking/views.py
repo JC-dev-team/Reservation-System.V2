@@ -79,7 +79,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
                     phone=phone,
                 )
                 try:
-                    checkaccount = Account.objects.get(
+                    checkaccount = Account.objects.select_for_update().get(
                         phone=phone,
                         social_name='電話訂位',
                         social_app='電話訂位',
@@ -97,6 +97,7 @@ def ToBookingView(request):  # The member.html via here in oreder to enroll new 
 
         except Account.DoesNotExist:
             with transaction.atomic():  # transaction
+
                 queryset = Account.objects.create(
                     phone=phone,
                     username=username,
