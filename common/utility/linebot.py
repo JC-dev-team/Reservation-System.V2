@@ -273,8 +273,8 @@ def linebot_send_msg(line_id, user=None, info=None):
             line_bot_api_admin = LineBotApi(
                 settings.LINE_CHANNEL_ACCESS_TOKEN_ADMIN)
             # kevin line id, future maybe will use something else
-            line_bot_api_admin.push_message('U0feb309a1c1132925b03975d3ebc318d', FlexSendMessage(
-                alt_text="訂位通知", contents=flex_admin))
+            #line_bot_api_admin.push_message('U0feb309a1c1132925b03975d3ebc318d', FlexSendMessage(
+             #   alt_text="訂位通知", contents=flex_admin))
         return 'success'
     except Exception as e:
         return 'failure'
