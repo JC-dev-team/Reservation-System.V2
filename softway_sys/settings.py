@@ -143,7 +143,7 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'softway',
-            'USER': 'root'',
+            'USER': 'root',
             'PASSWORD': 'rootadmin',
             'HOST': 'aauj1g2435ho2s.cper01mkzcrd.ap-northeast-1.rds.amazonaws.com',
             'PORT': '3306',
