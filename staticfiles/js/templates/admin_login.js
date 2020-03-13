@@ -4,18 +4,18 @@ function send() {
     document.getElementById("checklogin_form").submit();
 }
 
-function initializeApp(data) {
-    liff.getProfile().then(profile => {
-        // var disname = {
-        //   'name': profile.displayName
-        // };
-        // disname_json = JSON.parse(JSON.stringify(disname.name))
-        // $('#img').attr('src', profile.pictureUrl);
-        // $('#social_id').val(data.context.userId); //data.context.userId
-        // $('#social_app').val('Line');
+// function initializeApp(data) {
+//     liff.getProfile().then(profile => {
+//         // var disname = {
+//         //   'name': profile.displayName
+//         // };
+//         // disname_json = JSON.parse(JSON.stringify(disname.name))
+//         // $('#img').attr('src', profile.pictureUrl);
+//         // $('#social_id').val(data.context.userId); //data.context.userId
+//         // $('#social_app').val('Line');
 
-    })
-}
+//     })
+// }
 
 
 
@@ -23,9 +23,9 @@ function initializeApp(data) {
 $(function () {
     document.getElementById("top_block").style.display = 'none'
     //init LIFF
-    liff.init(function (data) {
-        initializeApp(data);
-    });
+    // liff.init(function (data) {
+    //     initializeApp(data);
+    // });
     
 
 });
