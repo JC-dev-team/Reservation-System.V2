@@ -21,22 +21,47 @@
 
   })
 
-  function initializeApp(data) {
-    liff.getProfile().then(profile => {
-      var disname = {
-        'name': profile.displayName
-      };
-      disname_json = JSON.parse(JSON.stringify(disname.name))
-      $('#img').attr('src', profile.pictureUrl);
+  // function initializeApp(data) {
+  //   liff.getProfile().then(profile => {
+  //     var disname = {
+  //       'name': profile.displayName
+  //     };
+  //     disname_json = JSON.parse(JSON.stringify(disname.name))
+  //     $('#img').attr('src', profile.pictureUrl);
       
-    })
-  }
+  //   })
+  // }
+
+  function initializeLiff(MyLiffId) {
+    liff
+        .init({
+            liffId: MyLiffId
+        })
+        .then(() => {
+            // start to use LIFF's api
+            initializeApp();
+        })
+        .catch((err) => {
+            // document.getElementById("liffAppContent").classList.add('hidden');
+            // document.getElementById("liffInitErrorMessage").classList.remove('hidden');
+        });
+}
+
   //ready
   $(function () {
     //init LIFF
-    liff.init(function (data) {
-      initializeApp(data);
-    });
+    // liff.init(function (data) {
+    //   initializeApp(data);
+    // });
+    
+    initializeLiff('1653788675-gE0L04We')
+    liff.getProfile()
+        .then(profile => {
+            const name = profile.displayName
+            // document.getElementById('displayName').value = name
+            $('#img').attr('src', profile.pictureUrl);
+            
+        })
     
     document.getElementById("member_birth").valueAsDate = new Date();
 

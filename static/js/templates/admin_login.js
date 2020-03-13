@@ -4,39 +4,29 @@ function send() {
     document.getElementById("checklogin_form").submit();
 }
 
-function initializeApp(data) {
-    liff.getProfile().then(profile => {
-        // var disname = {
-        //   'name': profile.displayName
-        // };
-        // disname_json = JSON.parse(JSON.stringify(disname.name))
-        // $('#img').attr('src', profile.pictureUrl);
-        // $('#social_id').val(data.context.userId); //data.context.userId
-        // $('#social_app').val('Line');
+// function initializeApp(data) {
+//     liff.getProfile().then(profile => {
+//         // var disname = {
+//         //   'name': profile.displayName
+//         // };
+//         // disname_json = JSON.parse(JSON.stringify(disname.name))
+//         // $('#img').attr('src', profile.pictureUrl);
+//         // $('#social_id').val(data.context.userId); //data.context.userId
+//         // $('#social_app').val('Line');
 
-    })
-}
+//     })
+// }
 
 
 
 //ready
 $(function () {
     document.getElementById("top_block").style.display = 'none'
-
-    //Notiflix.Loading.Hourglass('讀取中....');
     //init LIFF
-    liff.init(function (data) {
-        initializeApp(data);
-    });
-    //$('#email').val('123@123.com'); //data.context.userId
-    //$('#password').val('Line');
-
-
-    // if ($('#email').val() != '' && $('#password').val() != '') {
-    //     send()
-    // } else {
-    //     window.location.replace('/softwayliving/error/');
-    // }
+    // liff.init(function (data) {
+    //     initializeApp(data);
+    // });
+    
 
 });
 
