@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'd91v90b$q&w!9x6wn5_iaej@a%^wj#v!!b(*%+h@$pj8e6=gz='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 COMPRESS_ENABLED = True
-ALLOWED_HOSTS = ['*.softway.com.tw', '.softway.com.tw', ]
+ALLOWED_HOSTS = ['*.softway.com.tw', '.softway.com.tw','*']
 
 # Application definition
 
@@ -138,20 +138,20 @@ if 'RDS_HOSTNAME' in os.environ:
             }
         }
     }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.mysql',
-#             'NAME': 'softway',
-#             'USER': 'admin',
-#             'PASSWORD': 'rootroot',
-#             'HOST': 'database-1.cpzr4nfqaynx.ap-northeast-1.rds.amazonaws.com',
-#             'PORT': '3306',
-#             'OPTIONS': {
-#                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-#             }
-#         }
-#     }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'softway',
+            'USER': 'root'',
+            'PASSWORD': 'rootadmin',
+            'HOST': 'aauj1g2435ho2s.cper01mkzcrd.ap-northeast-1.rds.amazonaws.com',
+            'PORT': '3306',
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            }
+        }
+    }
 
 
 # Password validation
