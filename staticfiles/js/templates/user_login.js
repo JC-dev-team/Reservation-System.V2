@@ -62,7 +62,6 @@ $(function () {
             $('#social_id').val(userId); //data.context.userId
             $('#social_app').val('Line');
             $('#social_name').val(name)
-            console.log("good")
             send()
         })
 });
