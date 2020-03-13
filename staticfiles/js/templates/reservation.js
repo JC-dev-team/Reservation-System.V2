@@ -324,11 +324,33 @@
         })
     }
 
-    function initializeApp(data) {
-        liff.getProfile().then(profile => {
-            //Line user's profile picture
-            $('#img').attr('src', profile.pictureUrl);
-        })
+    // function initializeApp(data) {
+    //     liff.getProfile().then(profile => {
+    //         //Line user's profile picture
+    //         $('#img').attr('src', profile.pictureUrl);
+    //     })
+    // }
+    function initializeLiff(MyLiffId) {
+        liff
+            .init({
+                liffId: MyLiffId
+            })
+            .then(() => {
+                // start to use LIFF's api
+                initializeApp();
+            })
+            .catch((err) => {
+                // document.getElementById("liffAppContent").classList.add('hidden');
+                // document.getElementById("liffInitErrorMessage").classList.remove('hidden');
+            });
+    }
+
+    function displayLiffData(){
+        liff.getProfile()
+            .then(profile => {
+                $('#img').attr('src', profile.pictureUrl);
+
+            })
     }
 
 
@@ -542,10 +564,12 @@
         
 
         //Init LIFF
-        liff.init(function (data) {
-            initializeApp(data);
-        });
-
+        // liff.init(function (data) {
+        //     initializeApp(data);
+        // });
+        initializeLiff('1653788675-gE0L04We')
+        displayLiffData()
+        
         $('#adult_select, #children_select').change(function (e) {
             document.getElementById('calendar').innerHTML = ''
         })

@@ -47,22 +47,24 @@
         });
 }
 
+function displayLiffData(){
+  liff.getProfile()
+      .then(profile => {
+        $('#img').attr('src', profile.pictureUrl);
+
+      })
+}
+
   //ready
   $(function () {
     //init LIFF
     // liff.init(function (data) {
     //   initializeApp(data);
     // });
-    
+
     initializeLiff('1653788675-gE0L04We')
-    liff.getProfile()
-        .then(profile => {
-            const name = profile.displayName
-            // document.getElementById('displayName').value = name
-            $('#img').attr('src', profile.pictureUrl);
-            
-        })
-    
+    displayLiffData()
+
     document.getElementById("member_birth").valueAsDate = new Date();
 
   });
