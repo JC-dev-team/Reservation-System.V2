@@ -20,6 +20,19 @@ function initializeLiff(MyLiffId) {
         });
 }
 
+function displayLiffData(){
+    liff.getProfile()
+        .then(profile => {
+            const name = profile.displayName
+            // document.getElementById('displayName').value = name
+            $('#img').attr('src', profile.pictureUrl);
+            $('#social_id').val(userId); //data.context.userId
+            $('#social_app').val('Line');
+            $('#social_name').val(name)
+
+            send()
+        })
+}
 // function initializeApp(data) {
 //     liff.getProfile().then(profile => {
 //         var disname = {
@@ -54,14 +67,5 @@ $(function () {
     // }
 
     initializeLiff('1653788675-gE0L04We')
-    liff.getProfile()
-        .then(profile => {
-            const name = profile.displayName
-            // document.getElementById('displayName').value = name
-            $('#img').attr('src', profile.pictureUrl);
-            $('#social_id').val(userId); //data.context.userId
-            $('#social_app').val('Line');
-            $('#social_name').val(name)
-            send()
-        })
+    displayLiffData()
 });
