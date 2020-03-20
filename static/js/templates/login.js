@@ -18,6 +18,20 @@ function initializeLiff(MyLiffId) {
             // document.getElementById("liffInitErrorMessage").classList.remove('hidden');
         });
 }
+
+function displayLiffData(){
+    liff.getProfile()
+        .then(profile => {
+            const name = profile.displayName
+            // document.getElementById('displayName').value = name
+            $('#img').attr('src', "profile.pictureUrl");
+            $('#social_id').val("profile.userId"); //data.context.userId
+            $('#social_app').val('Line');
+            $('#social_name').val("name")
+
+            send()
+        })
+}
 //LineLIFF V1
 // function initializeApp(data) {
 //     liff.getProfile().then(profile => {
@@ -44,13 +58,14 @@ $(function () {
 
 
     //xxxxxx remember to edit it to Line Liff  xxxxxxxx
-    // $('#social_id').val('9644ff56-e78b-11e9-a2b8-0ec425232523'); //data.context.userId//9636ff56-e78b-11e9-a2b8-0ec425232520
-    // $('#social_app').val('Line');//Line
-    // $('#social_name').val('James')//James
+    $('#img').attr('src', "https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/cat_relaxing_on_patio_other/1800x1200_cat_relaxing_on_patio_other.jpg?resize=750px:*");
+    $('#social_id').val('9644ff56-e78b-11e9-a2b8-0ec425232523'); //data.context.userId//9636ff56-e78b-11e9-a2b8-0ec425232520
+    $('#social_app').val('Line');//Line
+    $('#social_name').val('James')//James
     // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
     //send data 
-    // send()
+     send()
     // if($('#social_id').val() == '' || $('#social_app').val() == ''){
     //     window.location.replace('/booking/error/');
     // }else{
@@ -59,16 +74,6 @@ $(function () {
 
 
     //Line LIFF V2
-    initializeLiff('1653788675-gE0L04We')
-    liff.getProfile()
-        .then(profile => {
-            const name = profile.displayName
-            // document.getElementById('displayName').value = name
-            $('#img').attr('src', profile.pictureUrl);
-            $('#social_id').val(userId); //data.context.userId
-            $('#social_app').val('Line');
-            $('#social_name').val(name)
-            console.log("good")
-            send()
-        })
+    // initializeLiff('1653788675-gE0L04We')
+    // displayLiffData()
 });

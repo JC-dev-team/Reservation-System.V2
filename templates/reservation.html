@@ -194,6 +194,7 @@
 
     $(function () {
         $('#people_number_submit').click(function (e) {
+
             var adult_int = parseInt($('#adult_select').val())
             var child_int = parseInt($('#children_select').val())
             var max_seat = (parseInt($('#adult_select option:last-child').val()) - 5)

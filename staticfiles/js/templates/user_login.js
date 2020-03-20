@@ -11,12 +11,10 @@ function initializeLiff(MyLiffId) {
             liffId: MyLiffId
         })
         .then(() => {
-            // start to use LIFF's api
-            initializeApp();
+            displayLiffData()
         })
         .catch((err) => {
-            // document.getElementById("liffAppContent").classList.add('hidden');
-            // document.getElementById("liffInitErrorMessage").classList.remove('hidden');
+            //alert(err)
         });
 }
 
@@ -24,32 +22,34 @@ function displayLiffData(){
     liff.getProfile()
         .then(profile => {
             const name = profile.displayName
-            // document.getElementById('displayName').value = name
             $('#img').attr('src', profile.pictureUrl);
-            $('#social_id').val(userId); //data.context.userId
+            $('#social_id').val(profile.userId);
             $('#social_app').val('Line');
             $('#social_name').val(name)
 
             send()
         })
 }
+
+
 // function initializeApp(data) {
 //     liff.getProfile().then(profile => {
-//         var disname = {
-//             'name': profile.displayName
-//         };
-//         disname_json = JSON.parse(JSON.stringify(disname.name))
+//         const name = profile.displayName
 //         $('#img').attr('src', profile.pictureUrl);
 //         $('#social_id').val(data.context.userId); //data.context.userId
 //         $('#social_app').val('Line');
-//         $('#social_name').val(disname_json)
+//         $('#social_name').val(name)
 
 //         send()
 //     })
 // }
+
 //ready
 $(function () {
     Notiflix.Loading.Hourglass('讀取中....');
+    //Liff init v2
+    initializeLiff('1653788675-gE0L04We')
+
     //init LIFF
     // liff.init(function (data) {
     //     initializeApp(data);
@@ -66,6 +66,5 @@ $(function () {
     //     window.location.replace('/userdashboard/error/');
     // }
 
-    initializeLiff('1653788675-gE0L04We')
-    displayLiffData()
+    
 });

@@ -17,7 +17,7 @@
     </font>
     <h4>訂位處理中</h4>
     <h5>請靜候通知，由專人為您確認訂位</h5>
-    <h5>有任何訂位問題，請聯絡我們：<a href='tel:0936336233' class="w3-text-blue">0936336233</a></h5>
+    <h5>有任何訂位問題，請聯絡我們：<a href='tel:0900111222' class="w3-text-blue">0900111222</a></h5>
     <font size='4'>
         <button id="close_button" onclick="closewindow();" class="w3-btn w3-round-large  w3-teal">關閉</button>
     </font>
@@ -37,6 +37,7 @@
                 <h4>用餐日期：{{data.bk_date}}</h4>
                 <h4>用餐時段：{{data.time_session}} - {{data.bk_st}}</h4>
                 <h4>訂位人： {{user_info.username}} 先生/小姐</h4>
+                <h4>電話：{{user_info.phone}}</h4>
                 <h4>用餐人數： {{data.adult}} 大 {{data.children}} 小</h4>
                 <h4>價位：＄{{data.bk_price}}</h4>
                 <h4>飲食習慣：{{data.bk_habit}}</h4>
@@ -47,17 +48,203 @@
 </div>
 {% compress js %}
 <script>
+
+    function initializeLiff(MyLiffId) {
+        liff
+            .init({
+                liffId: MyLiffId
+            })
+            .catch((err) => {
+                //alert(err)
+            });
+    }
+
     function closewindow() {
         if ('{{action}}' == 'admin') {
             window.location.href = '/softwayliving/login/'
         } else {
+            send_flexMessage()
             liff.closeWindow()
         }
+    }
 
+    function send_flexMessage() {
+        var username = '{{user_info.username}}'
+        var adult = '{{data.adult}}'+ '大'
+        var children = '{{data.children}}' + '小'
+        var phone = '{{user_info.phone}}'
+        var date = '{{data.bk_date}}'
+        var session = '{{data.time_session}}' + ' ' + '{{data.bk_st}}'
+        var price = 'NT$ '+'{{data.bk_price}}'
+        var habit = '{{data.bk_habit}}'
+
+        var user_flexMessage = {
+            "type": "flex",
+            "altText": "Flex Message",
+            "contents": {
+                "type": "bubble",
+                "body": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "contents": [{
+                            "type": "text",
+                            "text": "SoftWay 訂位處理中",
+                            "size": "xl",
+                            "weight": "bold",
+                            "color": "#E7881D"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "spacing": "sm",
+                            "margin": "lg",
+                            "contents": [{
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [{
+                                            "type": "text",
+                                            "text": "預約",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": username +' ' + adult + children,
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [{
+                                            "type": "text",
+                                            "text": "電話",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": phone,
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [{
+                                            "type": "text",
+                                            "text": "日期",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": date +' '+ session,
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [{
+                                            "type": "text",
+                                            "text": "價位",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": price,
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [{
+                                            "type": "text",
+                                            "text": "習慣",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": habit,
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": true
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "baseline",
+                                    "spacing": "sm",
+                                    "contents": [{
+                                            "type": "text",
+                                            "text": "備註",
+                                            "flex": 1,
+                                            "size": "sm",
+                                            "color": "#AAAAAA"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": habit,
+                                            "flex": 5,
+                                            "size": "sm",
+                                            "color": "#666666",
+                                            "wrap": true
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+
+        liff.sendMessages([
+                user_flexMessage
+            ])
+            .catch((err) => {
+                //alert(err)
+            });
 
     }
 
+
     $(function () {
+        //Liff init
+        initializeLiff('1653788675-gE0L04We')
+
         if ('{{action}}' == 'admin') {
             document.getElementById('close_button').innerText = '返回管理者介面'
         }
