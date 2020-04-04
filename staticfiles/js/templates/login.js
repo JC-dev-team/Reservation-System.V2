@@ -48,7 +48,7 @@ function displayLiffData() {
 $(function () {
     Notiflix.Loading.Hourglass('讀取中....');
     //Line LIFF V2
-    initializeLiff('1653788675-gE0L04We')
+    initializeLiff('1654026454-2jpQJ4Py')
 
     //init LIFF
     // liff.init(function (data) {

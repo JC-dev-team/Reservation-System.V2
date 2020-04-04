@@ -260,12 +260,18 @@ def linebot_send_msg(line_id, user=None, info=None):
                     ]
             }
         }
+
         # push message to user
-        if is_confirm_info == 'SoftWay 訂位已確認':
-            line_bot_api_client = LineBotApi(
+        line_bot_api_client = LineBotApi(
                 settings.LINE_CHANNEL_ACCESS_TOKEN_USER)
-            line_bot_api_client.push_message('U5ee811f1f2f899eb66844500ef14a371', FlexSendMessage(
+        line_bot_api_client.push_message(line_id, FlexSendMessage(
                 alt_text="訂位資訊通知", contents=flex_user))
+        # if is_confirm_info == 'SoftWay 訂位處理中':
+        #     line_bot_api_client = LineBotApi(
+        #         settings.LINE_CHANNEL_ACCESS_TOKEN_USER)
+        #     line_bot_api_client.push_message(line_id, FlexSendMessage(
+        #         alt_text="訂位資訊通知", contents=flex_user))
+
         # push message to admin user
         if is_confirm_info == 'SoftWay 訂位處理中':
             # admin

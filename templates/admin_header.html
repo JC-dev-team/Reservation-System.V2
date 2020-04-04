@@ -1,27 +1,7 @@
 {% load static %}
 {% load compress %}
 
-<!-- <ul id="slide-out" class="side-nav">
-  <li>
-    <div class="user-view">
-      <div class="background">
-          
-      </div>
-      <a><img class="circle" src="{% static '/images/Logo1.jpg' %}"></a>
-      <a><span class="black-text name">管理者</span></a>
-      
-    </div>
-  </li>
-  <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-  <li><a href="#!">Second Link</a></li>
-  <li>
-    <div class="divider"></div>
-  </li>
-  <li><a class="subheader">Subheader</a></li>
-  <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
-</ul>
-<a href="#" data-activates="slide-out"  class="button-collapse"><i
-    class="material-icons">menu</i></a> -->
+
 
 <!-- Sidebar (hidden by default) -->
 <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left"
@@ -34,45 +14,43 @@
   <p style="text-align: center"> 管理者</p>
   <hr>
 
-  <!-- <h4 style="text-align: center"><b>會員</b></h4>
-  <hr> -->
+
   <a onclick="send('sidebar_admin_reservation')" class="w3-bar-item w3-button" style="font-size:20px"><i
       class="fas fa-calendar-alt" style="font-size:24px;width:23px"></i> 代客訂位</a>
+
   <a id='sidebar_member_list' onclick="send('sidebar_member_list')" class="w3-bar-item w3-button"
     style="font-size:20px"><i class="far fa-user-circle" style="font-size:24px;width:23px"></i> 會員管理</a>
+
   <a id='sidebar_production_list' onclick="send('sidebar_product_list')" class="w3-bar-item w3-button"
     style="font-size:20px"><i class="fas fa-tags" style="font-size:20px;width:23px"></i> 價位管理</a>
+    
   <a id='sidebar_store_list' onclick="send('sidebar_store_list')" class="w3-bar-item w3-button"
     style="font-size:20px"><i class="fas fa-code-branch" style="font-size:26px;width:23px"></i> 分店管理</a>
 
 
 
-  <!-- <hr>
-  <h4 style="text-align: center"><b>查詢</b></h4> -->
+  <a onclick="myAccFunc()" class="w3-bar-item w3-button w3-block w3-white w3-left-align" id="myBtn" style="font-size:20px"><i
+      class="far fa-edit" style="font-size:22px;width:23px"></i>
+    訂位管理 <i class="fa fa-caret-down"></i></a>
 
-  <a onclick="myAccFunc()" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align" id="myBtn"
-    style="font-size:20px"><i class="far fa-edit" style="font-size:22px;width:23px"></i>
-    訂位管理 <i class="fa fa-caret-down"></i>
-  </a>
-  <div id="demoAcc" class="w3-bar-block w3-hide w3-padding-large w3-medium">
-    <a onclick="send('all')" class="w3-bar-item w3-button" style="font-size:20px"><i class="fas fa-star"
-        style="color:rgb(255, 217, 0);"></i></i>
-      總表</a>
-    <a id='sidebar_not_confirm' class="w3-bar-item w3-button" style="font-size:20px"><i class="fa fa-spinner"
-        style="color:orange;"></i>
-      待確認</a>
-    <a id='sidebar_confirm' class="w3-bar-item w3-button" style="font-size:20px"><i class="far fa-check-circle"
-        style="color:green;"></i> 已確認</a>
-    <a id='sidebar_waiting' class="w3-bar-item w3-button" style="font-size:20px"><i class="far fa-circle"
-        style="color:red;"></i> 候補名單</a>
-    <a id='sidebar_cancel' class="w3-bar-item w3-button" style="font-size:20px"><i class="far fa-times-circle"></i>
-      已刪除</a>
 
-  </div>
-  <br>
-  <br>
-  <a id='sidebar_log_out' onclick="send('sidebar_log_out')" class="w3-bar-item w3-button w3-display-bottommiddle"
-    style="font-size:20px"><i class="fas fa-sign-out-alt" style="font-size:26px;width:23px"></i> 登出</a>
+    <div id="demoAcc" class="w3-bar-block w3-hide w3-padding-large w3-medium">
+      <a onclick="send('all')" class=" w3-button" style="font-size:20px"><i class="fas fa-star"
+          style="color:rgb(255, 217, 0);"></i></i>
+        總表</a>
+      <a id='sidebar_not_confirm' class=" w3-button" style="font-size:20px"><i class="fa fa-spinner"
+          style="color:orange;"></i>
+        待確認</a>
+      <a id='sidebar_confirm' class=" w3-button" style="font-size:20px"><i class="far fa-check-circle"
+          style="color:green;"></i> 已確認</a>
+      <a id='sidebar_waiting' class=" w3-button" style="font-size:20px"><i class="far fa-circle"
+          style="color:red;"></i> 候補名單</a>
+      <a id='sidebar_cancel' class=" w3-button" style="font-size:20px"><i class="far fa-times-circle"></i>
+        已刪除</a>
+    </div>
+
+  <a id='sidebar_log_out' onclick="send('sidebar_log_out')" class="w3-bar-item w3-button"
+    style="font-size:20px"><i class="fas fa-sign-out-alt" style="font-size:26px;width:23px;"></i> 登出</a>
 
 </nav>
 
@@ -104,17 +82,3 @@
 <!-- <script src="{% static '/js/templates/jquery.sidebar.js' %}"></script> -->
 
 {% endcompress %}
-
-
-<!-- <script>
-  $(".button-collapse").sideNav();
-  $('.button-collapse').sideNav({
-    menuWidth: 300, // Default is 300
-    edge: 'left', // Choose the horizontal origin
-    closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
-    draggable: true, // Choose whether you can drag to open on touch screens,
-    onOpen: function (el) {}, // A function to be called when sideNav is opened
-    onClose: function (el) {}, // A function to be called when sideNav is closed
-  });
-  $('.button-collapse').sideNav('show');
-</script> -->

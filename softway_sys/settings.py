@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'd91v90b$q&w!9x6wn5_iaej@a%^wj#v!!b(*%+h@$pj8e6=gz='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 COMPRESS_ENABLED = True
-ALLOWED_HOSTS = ['*.softway.com.tw', '.softway.com.tw',]
+ALLOWED_HOSTS = ['*.softway.com.tw', 'www.softway.com.tw','*']
 
 # Application definition
 
@@ -61,7 +61,7 @@ MIDDLEWARE = [
 # SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 
 # Security settings
-if DEBUG == False:
+if DEBUG == True:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     CSRF_COOKIE_SECURE = True  # need to be True when production
     SECURE_BROWSER_XSS_FILTER = True
